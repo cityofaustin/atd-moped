@@ -1,25 +1,19 @@
 import React, { useState, useMemo } from "react";
 import {
   Alert,
-  Avatar,
   Card,
   CardContent,
   CircularProgress,
   Divider,
   Grid,
-  IconButton,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  ListItemText,
   Typography,
   FormControlLabel,
+  Switch,
+  Tooltip,
+  FormHelperText,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import EditIcon from "@mui/icons-material/EditOutlined";
 
-import makeStyles from "@mui/styles/makeStyles";
 import { getSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -29,7 +23,7 @@ import DOMPurify from "dompurify";
 import NoteInput from "src/views/projects/projectView/ProjectNotes/NoteInput";
 import NoteTypeButton from "src/views/projects/projectView/ProjectNotes/NoteTypeButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import ProjectNote from "src/views/projects/projectView/ProjectNotes/ProjectNote";
 
 import * as yup from "yup";
 import { yupValidator } from "src/utils/validation";
@@ -37,64 +31,25 @@ import { yupValidator } from "src/utils/validation";
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
 import {
-  NOTES_QUERY,
+  COMBINED_NOTES_QUERY,
   ADD_PROJECT_NOTE,
   UPDATE_PROJECT_NOTE,
   DELETE_PROJECT_NOTE,
-} from "../../../queries/notes";
-import {
-  makeHourAndMinutesFromTimeStampTZ,
-  makeUSExpandedFormDateFromTimeStampTZ,
-} from "src/utils/dateAndTime";
-import { getUserFullName } from "src/utils/userNames";
+} from "src/queries/notes";
+import { PROJECT_UPDATE_ECAPRIS_SYNC } from "src/queries/project";
 import { agolValidation } from "src/constants/projects";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  authorText: {
-    display: "inline",
-    fontWeight: 500,
-  },
-  noteDate: {
-    display: "inline",
-    fontSize: ".875rem",
-  },
-  editableNote: {
-    marginRight: "30px",
-  },
-  filterNoteType: {
-    display: "inline",
-    marginLeft: "12px",
-    color: theme.palette.primary.main,
-    textTransform: "uppercase",
-    fontSize: ".875rem",
-    fontWeight: 500,
-  },
-  emptyState: {
-    margin: theme.spacing(3),
-  },
-  showButtonItem: {
-    margin: theme.spacing(2),
-  },
-  editControls: {
-    top: "0%",
-    marginTop: "25px",
-  },
-  editButtons: {
-    color: theme.palette.text.primary,
-  },
-}));
-
+/* Validation for note input (create or edit) */
 const validationSchema = yup.object().shape({
   projectStatusUpdate: agolValidation.projectStatusUpdate,
 });
-
 const validator = (value) => yupValidator(value, validationSchema);
 
-// reshape the array of note types into an object with key slug, value id
+/**
+ * Hook to create an object mapping note type slugs to their IDs
+ * @param {Array} noteTypes - Array of note types from moped_note_types query
+ * @returns
+ */
 export const useNoteTypeObject = (noteTypes) =>
   useMemo(
     () =>
@@ -108,19 +63,43 @@ export const useNoteTypeObject = (noteTypes) =>
     [noteTypes]
   );
 
-const useFilterNotes = (notes, filterNoteType) =>
+/**
+ * Hook to filter notes based on the selected note type and if eCAPRIS status syncing is enabled
+ * @param {Array} notes - Array of notes to filter
+ * @param {Number} filterNoteType - The ID of the note type to filter by
+ * @param {Boolean} shouldSyncEcaprisStatuses - Whether to sync eCAPRIS statuses / show eCAPRIS statuses
+ * @param {Boolean} isStatusEditModal - we only show status updates in the ProjectSummaryStatusUpdate modal
+ * @returns
+ */
+const useFilterNotes = (
+  notes,
+  filterNoteType,
+  shouldSyncEcaprisStatuses,
+  isStatusEditModal
+) =>
   useMemo(() => {
-    if (!filterNoteType) {
-      // show all the notes
-      return notes;
-    } else {
-      // Check to see if array exists before trying to filter
-      const filteredNotes = notes
-        ? notes.filter((n) => n.project_note_type === filterNoteType)
-        : [];
-      return filteredNotes;
+    let displayNotes = notes ? [...notes] : [];
+
+    /* If eCAPRIS status syncing is not enabled, filter out eCAPRIS status updates */
+    if (!shouldSyncEcaprisStatuses) {
+      displayNotes = displayNotes.filter(
+        (note) => note.note_type_slug !== "ecapris_status_update"
+      );
     }
-  }, [notes, filterNoteType]);
+
+    /* If the component is being used in the status edit modal, only show status updates
+     * Otherwise, show all notes or filter by note type if specified
+     */
+    if (isStatusEditModal) {
+      return displayNotes.filter((note) => note.is_status_update);
+    } else {
+      if (!filterNoteType) {
+        return displayNotes;
+      } else {
+        return displayNotes.filter((n) => n.note_type_id === filterNoteType);
+      }
+    }
+  }, [notes, filterNoteType, shouldSyncEcaprisStatuses, isStatusEditModal]);
 
 /**
  * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
@@ -131,6 +110,7 @@ const useFilterNotes = (notes, filterNoteType) =>
  * @param {function} closeModalDialog - Function to close the modal dialog
  * @param {function} refetchProjectSummary - Function to refetch the project summary data
  * @param {string} projectId - The project ID if rendered in the ProjectSummaryStatusUpdate modal
+ * @param {string} eCaprisSubprojectId - The eCAPRIS subproject ID if present
  * @returns JSX.Element
  */
 const ProjectNotes = ({
@@ -141,32 +121,42 @@ const ProjectNotes = ({
   closeModalDialog,
   refetch: refetchProjectSummary,
   projectId,
+  eCaprisSubprojectId = null,
 }) => {
-  // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
-  // otherwise use data passed from ProjectView
+  /* User details for create and update mutations */
+  const userSessionData = useMemo(() => getSessionDatabaseData(), []);
+
+  /** Get projectId from URL params if not passed down from ProjectSummaryStatusUpdate component
+   * If component is being used in edit modal from dashboard get project id from props instead of url params.
+   */
+  let { projectId: projectIdFromParam } = useParams();
+  const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
+
+  /* Use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
+  otherwise use data passed from ProjectView */
   const noteCurrentPhaseId = isStatusEditModal
     ? currentPhaseId
     : projectData?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
-  let { projectId: projectIdFromParam } = useParams();
-  const classes = useStyles();
-  const userSessionData = getSessionDatabaseData();
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
   );
   const [noteText, setNoteText] = useState("");
+
+  /* New note */
   const [newNoteType, setNewNoteType] = useState(
     isStatusEditModal
       ? noteTypesIDLookup["status_update"]
       : noteTypesIDLookup["internal_note"]
   );
-  const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
+
+  /* Edit existing note */
+  const [editingNoteType, setEditingNoteType] = useState(null);
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState(null);
-  const [filterNoteType, setFilterNoteType] = useState(
-    isStatusEditModal ? noteTypesIDLookup["status_update"] : null
-  );
+
+  const [filterNoteType, setFilterNoteType] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
@@ -175,22 +165,40 @@ const ProjectNotes = ({
     (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
     (isEditingNote && editingNoteType === noteTypesIDLookup["status_update"]);
 
-  // if component is being used in edit modal from dashboard
-  // get project id from props instead of url params
-  const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
+  /* Query Moped and eCAPRIS notes with matching filters */
+  const queryVariables = eCaprisSubprojectId
+    ? {
+        projectNoteConditions: {
+          _or: [
+            { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
+            { project_id: { _eq: Number(noteProjectId) } },
+          ],
+        },
+      }
+    : {
+        projectNoteConditions: {
+          project_id: { _eq: Number(noteProjectId) },
+        },
+      };
 
-  const { loading, error, data, refetch } = useQuery(NOTES_QUERY, {
-    variables: {
-      projectNoteConditions: {
-        project_id: { _eq: Number(noteProjectId) },
-        is_deleted: { _eq: false },
-      },
-    },
+  const { loading, error, data, refetch } = useQuery(COMBINED_NOTES_QUERY, {
+    variables: { ...queryVariables, order_by: { created_at: "desc" } },
     fetchPolicy: "no-cache",
   });
 
-  const mopedProjNotes = data?.moped_proj_notes;
+  const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
+  const shouldSyncFromECAPRIS =
+    projectData.moped_project[0].should_sync_ecapris_statuses;
 
+  const combinedNotes = data?.combined_project_notes_view || [];
+  const displayNotes = useFilterNotes(
+    combinedNotes,
+    filterNoteType,
+    shouldSyncFromECAPRIS,
+    isStatusEditModal
+  );
+
+  /* Add, edit, and delete mutations */
   const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
     onCompleted() {
       setNoteText("");
@@ -237,6 +245,9 @@ const ProjectNotes = ({
     },
   });
 
+  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_SYNC);
+
+  /* Handlers */
   const submitNewNote = () => {
     setNoteAddLoading(true);
     addNewNote({
@@ -260,10 +271,10 @@ const ProjectNotes = ({
   };
 
   const editNote = (index, item) => {
-    setEditingNoteType(item.project_note_type);
+    setEditingNoteType(item.note_type_id);
     setIsEditingNote(true);
     setNoteText(displayNotes[index].project_note);
-    setEditingNoteId(item.project_note_id);
+    setEditingNoteId(item.original_id);
   };
 
   const cancelNoteEdit = () => {
@@ -309,11 +320,30 @@ const ProjectNotes = ({
       );
   };
 
-  const displayNotes = useFilterNotes(mopedProjNotes, filterNoteType);
-
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
     setDeleteConfirmationId(id);
+  };
+
+  const handleECaprisSwitch = () => {
+    updateShouldSyncECapris({
+      variables: {
+        projectId: noteProjectId,
+        shouldSync: !shouldSyncFromECAPRIS,
+      },
+    })
+      .then(() => {
+        handleSnackbar(true, "eCAPRIS sync status updated", "success");
+      })
+      .catch((error) =>
+        handleSnackbar(
+          true,
+          "Error updating eCAPRIS sync status",
+          "error",
+          error
+        )
+      );
+    refetchProjectSummary();
   };
 
   if (error) {
@@ -356,29 +386,66 @@ const ProjectNotes = ({
         {/* Visible note types can only be filtered on the Notes Tab.
           The status edit modal only shows statuses, and does not show internal notes */}
         {!isStatusEditModal && (
-          <Grid item xs={12}>
-            <FormControlLabel
-              className={classes.showButtonItem}
-              label="Show"
-              control={<span />}
-            />
-            <NoteTypeButton
-              showButtonItemStyle={classes.showButtonItem}
-              filterNoteType={filterNoteType}
-              setFilterNoteType={setFilterNoteType}
-              noteTypeId={null}
-              label="All"
-            />
-            {projectData?.moped_note_types.map((type) => (
+          <Grid
+            container
+            item
+            xs={12}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Grid item>
+              <FormControlLabel
+                sx={{ margin: 2 }}
+                label="Show"
+                control={<span />}
+              />
               <NoteTypeButton
-                showButtonItemStyle={classes.showButtonItem}
                 filterNoteType={filterNoteType}
                 setFilterNoteType={setFilterNoteType}
-                noteTypeId={type.id}
-                label={type.name}
-                key={type.slug}
+                noteTypeId={null}
+                label="All"
               />
-            ))}
+              {projectData?.moped_note_types.map((type) => (
+                <NoteTypeButton
+                  filterNoteType={filterNoteType}
+                  setFilterNoteType={setFilterNoteType}
+                  noteTypeId={type.id}
+                  label={type.name}
+                  key={type.slug}
+                  isDisabled={
+                    type.slug === "ecapris_status_update" &&
+                    (!hasECaprisId || !shouldSyncFromECAPRIS)
+                  }
+                  disabledMessage="Enable eCAPRIS syncing to filter to eCAPRIS statuses"
+                />
+              ))}
+            </Grid>
+            <Grid item>
+              <Tooltip
+                placement="top"
+                title={
+                  !hasECaprisId
+                    ? "Add eCAPRIS subproject ID to enable syncing"
+                    : null
+                }
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={shouldSyncFromECAPRIS}
+                      disabled={!hasECaprisId}
+                      onChange={handleECaprisSwitch}
+                    />
+                  }
+                  label="Sync from eCAPRIS"
+                />
+                {hasECaprisId ? (
+                  <FormHelperText>
+                    Statuses are synced every 30 minutes
+                  </FormHelperText>
+                ) : null}
+              </Tooltip>
+            </Grid>
           </Grid>
         )}
         {/*Now the notes*/}
@@ -387,134 +454,60 @@ const ProjectNotes = ({
             {loading || !displayNotes ? (
               <CircularProgress />
             ) : displayNotes.length > 0 ? (
-              <List className={classes.root}>
+              <List
+                sx={{
+                  width: "100%",
+                }}
+              >
                 <DeleteConfirmationModal
                   type="note"
                   submitDelete={() => submitDeleteNote(deleteConfirmationId)}
                   isDeleteConfirmationOpen={isDeleteConfirmationOpen}
                   setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
                 >
-                  {displayNotes.map((item, i) => {
+                  {displayNotes.map((note, i) => {
                     const isNotLastItem = i < displayNotes.length - 1;
-                    const phaseKey = item.moped_phase?.phase_key;
-                    const phaseName = item.moped_phase?.phase_name;
+
                     /**
-                     * Only allow the user who wrote the status to edit it
+                     * Only allow the user who wrote the status to edit it - if it is editable
                      */
-                    const editableNote =
-                      userSessionData.user_id === item.created_by_user_id;
+                    const isNoteEditable =
+                      userSessionData.user_id === note.created_by_user_id &&
+                      note.is_editable;
+                    const isEditingNote = editingNoteId === note.original_id;
                     return (
-                      <React.Fragment key={item.project_note_id}>
-                        <ListItem alignItems="flex-start">
-                          <ListItemAvatar>
-                            <Avatar />
-                          </ListItemAvatar>
-                          <ListItemText
-                            className={editableNote ? classes.editableNote : ""}
-                            secondaryTypographyProps={{
-                              className: classes.editButtons,
-                            }}
-                            primary={
-                              <>
-                                <Typography
-                                  component={"span"}
-                                  className={classes.authorText}
-                                >
-                                  {getUserFullName(item.moped_user)}
-                                </Typography>
-                                <Typography
-                                  component={"span"}
-                                  className={classes.noteDate}
-                                >
-                                  {` - ${makeUSExpandedFormDateFromTimeStampTZ(
-                                    item.created_at
-                                  )} ${makeHourAndMinutesFromTimeStampTZ(
-                                    item.created_at
-                                  )}`}
-                                </Typography>
-                                <Typography
-                                  component={"span"}
-                                  className={classes.filterNoteType}
-                                >
-                                  {item.moped_note_type?.name}
-                                </Typography>
-                                <Typography component={"span"}>
-                                  {/* only show note's status badge if the note has a phase_id */}
-                                  {phaseKey && phaseName && (
-                                    <ProjectStatusBadge
-                                      phaseKey={phaseKey}
-                                      phaseName={phaseName}
-                                      condensed
-                                      leftMargin
-                                    />
-                                  )}
-                                </Typography>
-                              </>
-                            }
-                            secondary={
-                              editingNoteId === item.project_note_id ? (
-                                <NoteInput
-                                  noteText={noteText}
-                                  setNoteText={setNoteText}
-                                  isEditingNote={isEditingNote}
-                                  noteAddLoading={noteAddLoading}
-                                  noteAddSuccess={noteAddSuccess}
-                                  submitNewNote={submitNewNote}
-                                  submitEditNote={submitEditNote}
-                                  cancelNoteEdit={cancelNoteEdit}
-                                  editingNoteType={editingNoteType}
-                                  setEditingNoteType={setEditingNoteType}
-                                  isStatusEditModal={isStatusEditModal}
-                                  noteTypes={
-                                    projectData?.moped_note_types ?? []
-                                  }
-                                  validator={isStatusUpdate ? validator : null}
-                                />
-                              ) : (
-                                <Typography
-                                  component={"span"}
-                                  className={"noteBody"}
-                                >
-                                  {parse(item.project_note)}
-                                </Typography>
-                              )
-                            }
-                          />
-                          {
-                            // show edit/delete icons if note authored by logged in user
-                            // or user is admin
-                            editableNote && (
-                              <ListItemSecondaryAction
-                                className={classes.editControls}
-                              >
-                                {editingNoteId !== item.project_note_id && (
-                                  <IconButton
-                                    edge="end"
-                                    aria-label="edit"
-                                    onClick={() => editNote(i, item)}
-                                    size="large"
-                                  >
-                                    <EditIcon className={classes.editButtons} />
-                                  </IconButton>
-                                )}
-                                {!isEditingNote && (
-                                  <IconButton
-                                    edge="end"
-                                    aria-label="delete"
-                                    onClick={() =>
-                                      handleDeleteOpen(item.project_note_id)
-                                    }
-                                    size="large"
-                                  >
-                                    <DeleteIcon
-                                      className={classes.editButtons}
-                                    />
-                                  </IconButton>
-                                )}
-                              </ListItemSecondaryAction>
+                      <React.Fragment key={note.id}>
+                        <ProjectNote
+                          note={note}
+                          noteIndex={i}
+                          isNoteEditable={isNoteEditable}
+                          isEditingNote={isEditingNote}
+                          handleDeleteOpen={handleDeleteOpen}
+                          handleEditClick={editNote}
+                          secondary={
+                            isEditingNote ? (
+                              <NoteInput
+                                noteText={noteText}
+                                setNoteText={setNoteText}
+                                isEditingNote={isEditingNote}
+                                noteAddLoading={noteAddLoading}
+                                noteAddSuccess={noteAddSuccess}
+                                submitNewNote={submitNewNote}
+                                submitEditNote={submitEditNote}
+                                cancelNoteEdit={cancelNoteEdit}
+                                editingNoteType={editingNoteType}
+                                setEditingNoteType={setEditingNoteType}
+                                isStatusEditModal={isStatusEditModal}
+                                noteTypes={projectData?.moped_note_types ?? []}
+                                validator={isStatusUpdate ? validator : null}
+                              />
+                            ) : (
+                              <Typography component={"span"}>
+                                {parse(note.project_note)}
+                              </Typography>
                             )
                           }
-                        </ListItem>
+                        />
                         {isNotLastItem && <Divider component="li" />}
                       </React.Fragment>
                     );
@@ -522,7 +515,11 @@ const ProjectNotes = ({
                 </DeleteConfirmationModal>
               </List>
             ) : (
-              <Typography className={classes.emptyState}>
+              <Typography
+                sx={{
+                  margin: 3,
+                }}
+              >
                 No notes to display
               </Typography>
             )}
