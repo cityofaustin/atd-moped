@@ -41,11 +41,6 @@ const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     margin: theme.spacing(2),
   },
-  editIconConfirm: {
-    cursor: "pointer",
-    margin: ".25rem 0",
-    fontSize: "24px",
-  },
   fieldLabel: {
     width: "100%",
     color: theme.palette.text.secondary,
@@ -276,7 +271,7 @@ const useColumns = ({
     deptUnitData,
   ]);
 
-const ProjectFundingTable = ({ handleSnackbar }) => {
+const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -590,7 +585,10 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
               projectId: projectId,
               eCaprisID: eCaprisID,
               data: data,
-              refetch: refetch,
+              refetch: () => {
+                refetch();
+                refetchProjectSummary();
+              },
               handleSnackbar: handleSnackbar,
               classes: classes,
               noWrapper: true,

@@ -13,8 +13,10 @@ export const DASHBOARD_QUERY = gql`
       user_id
       project {
         project_id
+        ecapris_subproject_id
         project_name
         project_name_full
+        should_sync_ecapris_statuses
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
           moped_phase {
             phase_name
@@ -26,16 +28,8 @@ export const DASHBOARD_QUERY = gql`
           project_id
           completed
         }
-        moped_proj_notes(
-          where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-          order_by: { created_at: desc }
-        ) {
-          moped_user {
-            first_name
-            last_name
-          }
-          project_note_type
-          project_note
+        project_list_view {
+          project_status_update
         }
       }
     }
@@ -47,8 +41,10 @@ export const DASHBOARD_QUERY = gql`
     ) {
       project {
         project_id
+        ecapris_subproject_id
         project_name
         project_name_full
+        should_sync_ecapris_statuses
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
           moped_phase {
             phase_name
@@ -60,12 +56,8 @@ export const DASHBOARD_QUERY = gql`
           project_id
           completed
         }
-        moped_proj_notes(
-          where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-          order_by: { created_at: desc }
-        ) {
-          project_note_type
-          project_note
+        project_list_view {
+          project_status_update
         }
       }
     }

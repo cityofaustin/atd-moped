@@ -110,7 +110,7 @@ export const handleApplyValidation = (filterParameters, filtersConfig) => {
         feedback.push("• One or more operators have not been selected.");
       }
 
-      if (value === null || value.trim() === "") {
+      if (value === null || value?.trim() === "") {
         if (operator && !isFilterNullType(operator)) {
           feedback.push("• One or more missing values.");
         }

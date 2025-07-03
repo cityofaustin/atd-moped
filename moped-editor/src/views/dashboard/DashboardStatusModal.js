@@ -12,8 +12,24 @@ import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ProjectNotes from "../projects/projectView/ProjectNotes";
 
+/**
+ * Dashboard status modal component
+ * @param {Number} projectId - The id of the current project being viewed
+ * @param {String} eCaprisSubprojectId - The eCapris subproject ID associated with project (if there is one)
+ * @param {Number} projectName - The name of the current project being viewed
+ * @param {Number} currentPhaseId - The id of the current phase of the project
+ * @param {String} modalParent - The parent of the modal - either "summary" or "dashboard"
+ * @param {String} statusUpdate - The current status update for the project
+ * @param {Function} queryRefetch - The refetch function to fire on modal close
+ * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
+ * @param {JSX.Element} children - The content to render inside the modal
+ * @param {Object} classes - The shared style settings
+ * @param {Object} data - The project data object from the GraphQL query
+ * @returns {JSX.Element}
+ */
 const DashboardStatusModal = ({
   projectId,
+  eCaprisSubprojectId,
   projectName,
   currentPhaseId,
   modalParent,
@@ -77,6 +93,7 @@ const DashboardStatusModal = ({
           <ProjectNotes
             modal
             projectId={projectId}
+            eCaprisSubprojectId={eCaprisSubprojectId}
             currentPhaseId={currentPhaseId}
             closeModalDialog={handleDialogClose}
             handleSnackbar={handleSnackbar}
