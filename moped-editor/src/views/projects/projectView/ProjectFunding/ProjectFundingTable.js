@@ -41,11 +41,6 @@ const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     margin: theme.spacing(2),
   },
-  editIconConfirm: {
-    cursor: "pointer",
-    margin: ".25rem 0",
-    fontSize: "24px",
-  },
   fieldLabel: {
     width: "100%",
     color: theme.palette.text.secondary,
