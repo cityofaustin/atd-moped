@@ -8,12 +8,13 @@ import {
   Paper,
   Popper,
   ClickAwayListener,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import Hidden from "@mui/material/Hidden";
 import Icon from "@mui/material/Icon";
-import Switch from "@mui/material/Switch";
+import ListRoundedIcon from "@mui/icons-material/ListRounded";
+import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "src/components/GridTable/SearchBar";
@@ -55,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   },
   gridSearchPadding: {
     padding: "12px",
+  },
+  toggleButtonGroup: {
+    display: "inline",
+    marginRight: theme.spacing(3),
   },
 }));
 
@@ -212,17 +217,19 @@ const Search = ({
                           Search
                         </Button>
                       </Hidden>
-                      <FormGroup sx={{ display: "inline" }}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={showMapView}
-                              onChange={handleMapToggle}
-                            />
-                          }
-                          label="Map"
-                        />
-                      </FormGroup>
+                      <ToggleButtonGroup
+                        className={classes.toggleButtonGroup}
+                        value={showMapView}
+                        exclusive
+                        onChange={handleMapToggle}
+                      >
+                        <ToggleButton aria-label="list view">
+                          <ListRoundedIcon />
+                        </ToggleButton>
+                        <ToggleButton aria-label="map view">
+                          <MapOutlinedIcon />
+                        </ToggleButton>
+                      </ToggleButtonGroup>
                       <Button
                         disabled={
                           (parentData?.[queryConfig.table] ?? []).length === 0
