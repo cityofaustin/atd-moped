@@ -2,7 +2,11 @@
 # file for the VSCode plugin "REST Client" https://open-vsx.org/extension/humao/rest-client. 
 
 @API_SERVER = http://localhost:5001
-@AUTH_BEARER_TOKEN = The unquoted token from the Authorization header in a client's graphql endpoint request 
+
+# Bearer Token starts with 'ey...', no quotes
+@AUTH_BEARER_TOKEN = ey...
+
+
 
 # Health Check
 {{API_SERVER}}
@@ -33,10 +37,14 @@ Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 # Users Endpoint
 # ------------------------------------------------------------------------------
 
+# This can be found via the `/users/` endpoint
+
+@USER_ID = <uuid>
+
 ### Users listing
 # Lists all users in the Cognito user pool, excluding those with usernames
 # starting with 'azuread_'. Requires a valid user session.
-{{API_SERVER}}/users
+{{API_SERVER}}/users/
 Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 
 ### user_get_user()
@@ -51,12 +59,12 @@ Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 # Creates a new user. Requires moped-admin role.
 # The password must be at least 12 characters and contain at least one uppercase letter,
 # one lowercase letter, one number, and one special character.
-POST {{API_SERVER}}/users
+POST {{API_SERVER}}/users/
 Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 Content-Type: application/json
 
 {
-    "email": "test.user@austintexas.gov",
+    "email": "test.user2@austintexas.gov",
     "first_name": "FirstName",
     "last_name": "LastName",
     "is_coa_staff": true,
@@ -75,13 +83,14 @@ Content-Type: application/json
 # The payload is similar to the create user payload.
 # A password is not required unless you want to change it.
 #This hardcoded value is a test user created in our staging environment
-@USER_ID = UUID from AWS Cognito
+
+
 PUT {{API_SERVER}}/users/{{USER_ID}}
 Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 Content-Type: application/json
 
 {
-    "email": "test.user@austintexas.gov",
+    "email": "test.user2@austintexas.gov",
     "first_name": "UpdatedFirstName",
     "last_name": "UpdatedLastName",
     "is_coa_staff": true,
@@ -118,7 +127,6 @@ Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 # The password must be at least 12 characters and contain at least one uppercase letter,
 # one lowercase letter, one number, and one special character.
 # I don't think is currently in use.
-@USER_ID = UUID from AWS Cognito
 PUT {{API_SERVER}}/users/{{USER_ID}}/password
 Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 Content-Type: application/json
