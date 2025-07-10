@@ -127,7 +127,12 @@ const ProjectsListViewTable = () => {
   });
 
   const { query: mapQuery } = useGetProjectListView({
-    columnsToReturn: ["project_id", "current_phase_key", "project_name_full"],
+    columnsToReturn: [
+      "project_id",
+      "current_phase_key",
+      "current_phase",
+      "project_name_full",
+    ],
     searchWhereString: searchWhereString,
     advancedSearchWhereString: advancedSearchWhereString,
     queryName: "ProjectListViewMap",

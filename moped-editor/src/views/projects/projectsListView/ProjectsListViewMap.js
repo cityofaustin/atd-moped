@@ -10,9 +10,11 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { useProjectGeographies } from "./useProjectGeographies/useProjectGeographies";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
+import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 
 const useStyles = makeStyles(() => ({
   content: {
@@ -119,15 +121,29 @@ const ProjectsListViewMap = ({
               <ListItem key={projectData?.project_id} disablePadding>
                 <ListItemText
                   primary={
-                    <Link
-                      component={RouterLink}
-                      to={`/moped/projects/${projectData?.project_id}`}
-                      state={{ queryString }}
-                    >
-                      {projectData?.project_name_full}
-                    </Link>
+                    <Box sx={{ mb: 0.25 }}>
+                      <Link
+                        component={RouterLink}
+                        to={`/moped/projects/${projectData?.project_id}`}
+                        state={{ queryString }}
+                      >
+                        {projectData?.project_name_full}
+                      </Link>
+                      <Box
+                        component="span"
+                        sx={{ color: "text.secondary", ml: 1 }}
+                      >
+                        {`#${projectData?.project_id}`}
+                      </Box>
+                    </Box>
                   }
-                  secondary={`#${projectData?.project_id}`}
+                  secondary={
+                    <ProjectStatusBadge
+                      phaseName={projectData?.current_phase}
+                      phaseKey={projectData?.current_phase_key}
+                      condensed
+                    />
+                  }
                 />
               </ListItem>
             ))
