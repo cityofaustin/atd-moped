@@ -192,4 +192,4 @@ def file_download(path) -> redirect:
         Params={"Bucket": MOPED_API_UPLOADS_S3_BUCKET, "Key": path},
     )
 
-    return jsonify({"status": "sucess", "message": "success", "download_url": url})
+    return jsonify({"status": "success", "message": "success", "download_url": url})
