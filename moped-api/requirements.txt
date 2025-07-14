@@ -5,4 +5,4 @@ Flask==2.3.*
 Flask-Cognito==1.18.*
 Flask-Cors==3.0.*
 requests==2.32.*
-zappa==0.56.*
+gunicorn==23.0.0
