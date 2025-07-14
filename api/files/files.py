@@ -38,7 +38,7 @@ MOPED_API_UPLOADS_S3_BUCKET = os.getenv("MOPED_API_UPLOADS_S3_BUCKET", None)
 files_blueprint = Blueprint("files_blueprint", __name__)
 
 try:
-    aws_s3_client = boto3.client("s3", region_name=os.getenv("DEFAULT_REGION"))
+    aws_s3_client = boto3.client("s3", region_name=os.getenv("AWS_DEFAULT_REGION"))
 
 except Exception as e:
     print(f"FILES/FILES.PY: ERROR creating S3 client: {type(e).__name__}: {str(e)}")
