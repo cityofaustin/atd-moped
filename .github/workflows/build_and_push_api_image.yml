@@ -1,4 +1,4 @@
-name: "Build Moped API Docker image and push to AWS ECR"
+name: "Build Moped API image and push to AWS ECR"
 on:
   push:
     # branches:
