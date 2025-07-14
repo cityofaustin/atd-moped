@@ -11,4 +11,4 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-CMD [ "python", "app.py" ]
+CMD ["gunicorn", "--threads", "4", "--workers", "2", "--bind", "0.0.0.0:5000", "app:app"]
