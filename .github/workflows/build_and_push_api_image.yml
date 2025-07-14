@@ -49,3 +49,30 @@ jobs:
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ steps.determine-tag.outputs.tag }}
           context: ./api
+
+      - name: Set environment for ECS update
+        if: steps.determine-tag.outputs.tag != 'unknown'
+        # elif [ "${{ github.ref_name }}" == "main" ]; then
+        run: |
+          if [ "${{ github.ref_name }}" == "production" ]; then
+            echo "ECS_CLUSTER=${{ secrets.ECS_CLUSTER_PRODUCTION }}" >> $GITHUB_ENV
+            echo "ECS_SERVICE=${{ secrets.ECS_SERVICE_PRODUCTION }}" >> $GITHUB_ENV
+          else
+            echo "ECS_CLUSTER=${{ secrets.ECS_CLUSTER_STAGING }}" >> $GITHUB_ENV
+            echo "ECS_SERVICE=${{ secrets.ECS_SERVICE_STAGING }}" >> $GITHUB_ENV
+          fi
+
+      - name: Force redeploy ECS service
+        if: steps.determine-tag.outputs.tag != 'unknown'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_ECS_CONTROL }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ECS_CONTROL }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
+          ECS_CLUSTER: ${{ env.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ env.ECS_SERVICE }}
+        run: |
+          sleep 30
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service $ECS_SERVICE \
+            --force-new-deployment
