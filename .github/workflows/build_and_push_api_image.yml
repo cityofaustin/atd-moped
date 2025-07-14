@@ -5,7 +5,7 @@ on:
     # - main
     # - production
     paths:
-      - ".github/workflows/atd_moped_etl_arcgis_docker.yml"
+      - ".github/workflows/build_and_push_api_image.yml"
       - "api/**"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
