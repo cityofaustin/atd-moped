@@ -1,9 +1,9 @@
 name: "Build Moped API Docker image and push to AWS ECR"
 on:
   push:
-    branches:
-      - main
-      - production
+    # branches:
+    # - main
+    # - production
     paths:
       - ".github/workflows/atd_moped_etl_arcgis_docker.yml"
       - "api/**"
