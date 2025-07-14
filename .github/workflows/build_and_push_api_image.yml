@@ -29,14 +29,15 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Determine image tag
-        id: determine-tag
+        id:
+          determine-tag
+          #elif [ "${{ github.ref_name }}" = "main" ]; then
+          #echo "tag=staging" >> $GITHUB_OUTPUT
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "tag=staging" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref_name }}" = "production" ]; then
+          if [ "${{ github.ref_name }}" = "production" ]; then
             echo "tag=production" >> $GITHUB_OUTPUT
           else
-            echo "tag=unknown" >> $GITHUB_OUTPUT
+            echo "tag=staging" >> $GITHUB_OUTPUT
           fi
 
       - name: Set up Docker Buildx
@@ -51,8 +52,6 @@ jobs:
           context: ./api
 
       - name: Set environment for ECS update
-        if: steps.determine-tag.outputs.tag != 'unknown'
-        # elif [ "${{ github.ref_name }}" == "main" ]; then
         run: |
           if [ "${{ github.ref_name }}" == "production" ]; then
             echo "ECS_CLUSTER=${{ secrets.ECS_CLUSTER_PRODUCTION }}" >> $GITHUB_ENV
@@ -65,8 +64,8 @@ jobs:
       - name: Force redeploy ECS service
         if: steps.determine-tag.outputs.tag != 'unknown'
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_ECS_CONTROL }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ECS_CONTROL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
           ECS_CLUSTER: ${{ env.ECS_CLUSTER }}
           ECS_SERVICE: ${{ env.ECS_SERVICE }}
