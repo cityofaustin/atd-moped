@@ -122,18 +122,6 @@ Content-Type: application/json
 DELETE {{API_SERVER}}/users/{{USER_ID}}
 Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 
-### user_update_password()
-# Updates the authenticated user's password. The USER_ID must match the user from the auth token.
-# The password must be at least 12 characters and contain at least one uppercase letter,
-# one lowercase letter, one number, and one special character.
-# I don't think is currently in use.
-PUT {{API_SERVER}}/users/{{USER_ID}}/password
-Authorization: Bearer {{AUTH_BEARER_TOKEN}}
-Content-Type: application/json
-
-{
-  "password": "c3st-ne-p@s-un-MOT-de-passe-neW!"
-}
 
 # ------------------------------------------------------------------------------
 # Files Endpoint
