@@ -11,3 +11,27 @@ services:
       - FLASK_APP=app.py
       - FLASK_ENV=development
     command: flask run --host=0.0.0.0 --port 5000
+
+  api-gunicorn:
+    profiles: [production, staging, uat]
+    command:
+      [
+        "gunicorn",
+        "--threads",
+        "4",
+        "--workers",
+        "2",
+        "--bind",
+        "0.0.0.0:5000",
+        "app:app",
+      ]
+    working_dir: /root/app
+    container_name: moped-api-gunicorn
+    build: .
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:5001:5000"
+    volumes:
+      - .:/root/app
+    env_file:
+      - .env
