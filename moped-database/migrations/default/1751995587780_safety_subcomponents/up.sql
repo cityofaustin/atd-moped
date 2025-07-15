@@ -13,4 +13,4 @@ SELECT
 FROM moped_components AS mc
 CROSS JOIN moped_subcomponents AS ms
 WHERE mc.component_name_full IN ('Project Extent - Generic (linear)', 'Roadway')
-    AND ms.subcomponent_name = 'Speed Limit Changes';
+    AND ms.subcomponent_name = 'Speed limit changes';
