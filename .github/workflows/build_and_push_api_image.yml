@@ -29,10 +29,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Determine image tag
-        id:
-          determine-tag
-          #elif [ "${{ github.ref_name }}" = "main" ]; then
-          #echo "tag=staging" >> $GITHUB_OUTPUT
+        id: determine-tag
         run: |
           if [ "${{ github.ref_name }}" = "production" ]; then
             echo "tag=production" >> $GITHUB_OUTPUT
