@@ -2,10 +2,10 @@
 UPDATE moped_subcomponents SET subcomponent_name = 'Bicycle signal face (interim approval / protected only)'
 WHERE subcomponent_name = 'Bicycle signal face (interim approval)';
 
--- Add new Speed Limit Changes subcomponent
-INSERT INTO moped_subcomponents (subcomponent_name) VALUES ('Speed Limit Changes');
+-- Add new Speed limit changes subcomponent
+INSERT INTO moped_subcomponents (subcomponent_name) VALUES ('Speed limit changes');
 
--- Add Speed Limit Changes subcomponent to Project Extent - Generic (linear) and Roadway
+-- Add Speed limit changes subcomponent to Project Extent - Generic (linear) and Roadway
 INSERT INTO moped_components_subcomponents (component_id, subcomponent_id)
 SELECT
     mc.component_id,

@@ -2,7 +2,7 @@
 UPDATE moped_subcomponents SET subcomponent_name = 'Bicycle signal face (interim approval)'
 WHERE subcomponent_name = 'Bicycle signal face (interim approval / protected only)';
 
--- Remove Speed Limit Changes subcomponent from Project Extent - Generic (linear) and Roadway components
+-- Remove Speed limit changes subcomponent from Project Extent - Generic (linear) and Roadway components
 DELETE FROM moped_components_subcomponents
 WHERE component_id IN (
         SELECT component_id
@@ -13,9 +13,9 @@ WHERE component_id IN (
     AND subcomponent_id = (
         SELECT subcomponent_id
         FROM moped_subcomponents
-        WHERE subcomponent_name = 'Speed Limit Changes'
+        WHERE subcomponent_name = 'Speed limit changes'
     );
 
--- Remove new Speed Limit Changes subcomponent
+-- Remove new Speed limit changes subcomponent
 DELETE FROM moped_subcomponents
-WHERE subcomponent_name = 'Speed Limit Changes';
+WHERE subcomponent_name = 'Speed limit changes';
