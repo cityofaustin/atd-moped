@@ -121,9 +121,14 @@ const getStyle = (phaseKey) => {
 };
 
 /**
- * Gets the chip styles based on phase key and condensed state
+ * Gets the chip styles based on phase key and options
  */
-const getChipStyles = (phaseKey, condensed = false) => {
+const getChipStyles = ({
+  phaseKey,
+  condensed = false,
+  clickable = false,
+  leftMargin = false,
+}) => {
   const style = getStyle(phaseKey ?? "");
   return {
     fontWeight: "500",
@@ -133,6 +138,8 @@ const getChipStyles = (phaseKey, condensed = false) => {
     padding: condensed ? undefined : ".5rem",
     backgroundColor: style.background,
     color: style.color,
+    ...(clickable && { cursor: "pointer" }),
+    ...(leftMargin && { marginLeft: "1rem" }),
   };
 };
 
@@ -153,16 +160,12 @@ const ProjectStatusBadge = ({
   /**
    * Create an abstract component pointer
    */
-  const ChipIcon = getStyle(phaseKey ?? "")?.icon ?? defaultIcon;
   const style = getStyle(phaseKey ?? "");
+  const ChipIcon = style?.icon ?? defaultIcon;
 
   return (
     <Chip
-      sx={{
-        ...getChipStyles(phaseKey, condensed),
-        ...(clickable && { cursor: "pointer" }),
-        ...(leftMargin && { marginLeft: "1rem" }),
-      }}
+      sx={getChipStyles({ phaseKey, condensed, clickable, leftMargin })}
       icon={<ChipIcon sx={{ color: style.color }} color="action" />}
       label={phaseName || defaultLabel}
       color={"default"}
