@@ -10,17 +10,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
-import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
 import { useProjectGeographies } from "./useProjectGeographies/useProjectGeographies";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
-
-const useStyles = makeStyles(() => ({
-  content: {
-    display: "flex",
-    height: "100%",
-    width: "100%",
-  },
-}));
+import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 
 const ProjectsListViewMap = ({
   mapQuery,
@@ -29,8 +22,6 @@ const ProjectsListViewMap = ({
   searchWhereString,
   advancedSearchWhereString,
 }) => {
-  const classes = useStyles();
-
   /* Get search params to pass in project links for back button in Project Summary view */
   const location = useLocation();
   const queryString = location.search;
@@ -111,7 +102,10 @@ const ProjectsListViewMap = ({
   });
 
   return (
-    <Paper component="main" className={classes.content}>
+    <Paper
+      component="main"
+      sx={{ display: "flex", height: "100%", width: "100%" }}
+    >
       <MapDrawer title={"Projects"} ref={mapRef} open={open} setOpen={setOpen}>
         <List>
           {selectedProjectsData.length > 0 ? (
@@ -119,15 +113,29 @@ const ProjectsListViewMap = ({
               <ListItem key={projectData?.project_id} disablePadding>
                 <ListItemText
                   primary={
-                    <Link
-                      component={RouterLink}
-                      to={`/moped/projects/${projectData?.project_id}`}
-                      state={{ queryString }}
-                    >
-                      {projectData?.project_name_full}
-                    </Link>
+                    <Box sx={{ mb: 0.25 }}>
+                      <Link
+                        component={RouterLink}
+                        to={`/moped/projects/${projectData?.project_id}`}
+                        state={{ queryString }}
+                      >
+                        {projectData?.project_name_full}
+                      </Link>
+                      <Box
+                        component="span"
+                        sx={{ color: "text.secondary", ml: 1 }}
+                      >
+                        {`#${projectData?.project_id}`}
+                      </Box>
+                    </Box>
                   }
-                  secondary={`#${projectData?.project_id}`}
+                  secondary={
+                    <ProjectStatusBadge
+                      phaseName={projectData?.current_phase}
+                      phaseKey={projectData?.current_phase_key}
+                      condensed
+                    />
+                  }
                 />
               </ListItem>
             ))
