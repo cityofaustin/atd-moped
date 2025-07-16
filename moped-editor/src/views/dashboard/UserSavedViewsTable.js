@@ -12,7 +12,7 @@ import {
   UPDATE_USER_SAVED_VIEW,
   DELETE_USER_SAVED_VIEW,
 } from "src/queries/userSavedViews";
-import { getSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/user";
 
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -113,7 +113,7 @@ const useColumns = ({
 
 const UserSavedViewsTable = ({ handleSnackbar }) => {
   // user data
-  const userSessionData = getSessionDatabaseData();
+  const userSessionData = useSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
   const { loading, error, data, refetch } = useQuery(USER_SAVED_VIEWS_QUERY, {

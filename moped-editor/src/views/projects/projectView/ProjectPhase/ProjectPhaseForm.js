@@ -22,7 +22,7 @@ import {
   useSubphases,
   useCurrentPhaseIdsToClear,
 } from "./helpers";
-import { getSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "../ProjectComponents/utils/form";
 import {
   UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE,
@@ -41,7 +41,7 @@ const ProjectPhaseForm = ({
   handleSnackbar,
 }) => {
   const isNewPhase = !phase.project_phase_id;
-  const userSessionData = getSessionDatabaseData();
+  const userSessionData = useSessionDatabaseData();
 
   const noteTypesIDLookup = useNoteTypeObject(noteTypes);
   const statusNoteTypeID = noteTypesIDLookup["status_update"];

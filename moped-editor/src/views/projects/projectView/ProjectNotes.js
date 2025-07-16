@@ -14,7 +14,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 
-import { getSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
@@ -124,7 +124,7 @@ const ProjectNotes = ({
   eCaprisSubprojectId = null,
 }) => {
   /* User details for create and update mutations */
-  const userSessionData = useMemo(() => getSessionDatabaseData(), []);
+  const userSessionData = useSessionDatabaseData();
 
   /** Get projectId from URL params if not passed down from ProjectSummaryStatusUpdate component
    * If component is being used in edit modal from dashboard get project id from props instead of url params.

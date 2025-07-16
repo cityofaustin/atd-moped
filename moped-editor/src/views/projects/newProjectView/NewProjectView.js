@@ -11,7 +11,7 @@ import {
 } from "src/queries/project";
 import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 
-import { getSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/user";
 
 import { generateProjectComponent } from "src/utils/signalComponentHelpers";
 
@@ -29,7 +29,7 @@ const NewProjectView = () => {
   const navigate = useNavigate();
 
   // user data
-  const userSessionData = getSessionDatabaseData();
+  const userSessionData = useSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
   /**

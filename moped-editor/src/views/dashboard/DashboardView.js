@@ -33,7 +33,7 @@ import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
 
 import { DASHBOARD_QUERY } from "src/queries/dashboard";
 
-import { getSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/user";
 
 import parse from "html-react-parser";
 
@@ -253,7 +253,7 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
 const DashboardView = () => {
   const classes = useStyles();
 
-  const userSessionData = getSessionDatabaseData();
+  const userSessionData = useSessionDatabaseData();
   const userId = userSessionData?.user_id;
   const userName = userSessionData?.first_name;
 
