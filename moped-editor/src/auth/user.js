@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
   useState,
-  useCallback,
 } from "react";
 
 import Amplify, { Auth } from "aws-amplify";
