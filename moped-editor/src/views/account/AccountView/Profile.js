@@ -20,7 +20,7 @@ import {
   setSessionDatabaseData,
   getDatabaseId,
   useUser,
-} from "../../../auth/user";
+} from "src/auth/user";
 import emailToInitials from "../../../utils/emailToInitials";
 import { getInitials } from "src/utils/userNames";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";

@@ -19,7 +19,7 @@ import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CDNAvatar from "../../../components/CDN/Avatar";
-import { useSessionDatabaseData, useUser } from "../../../auth/user";
+import { useSessionDatabaseData, useUser } from "src/auth/user";
 import { getInitials } from "src/utils/userNames";
 import emailToInitials from "../../../utils/emailToInitials";
 

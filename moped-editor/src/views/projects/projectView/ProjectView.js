@@ -55,7 +55,7 @@ import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 
-import { useSessionDatabaseData } from "../../../auth/user";
+import { useSessionDatabaseData } from "src/auth/user";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
