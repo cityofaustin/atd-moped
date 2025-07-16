@@ -16,7 +16,7 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 
 import {
-  getSessionDatabaseData,
+  useSessionDatabaseData,
   setSessionDatabaseData,
   getDatabaseId,
   useUser,
@@ -51,6 +51,7 @@ const useStyles = makeStyles(() => ({
 const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
   const { user } = useUser();
+  const userSessionData = useSessionDatabaseData();
   const updateFailedPermissionMessage = `Error: Cannot update image, you are not allowed to update this account. Please contact the DTS team for further assistance.`;
 
   /**
@@ -70,9 +71,8 @@ const Profile = ({ className, ...rest }) => {
   const [deleteAccountPicture] = useMutation(ACCOUNT_USER_PICTURE_DELETE);
 
   const resetUserPicture = (fileKey) => {
-    const userData = getSessionDatabaseData();
-    if (userData) userData.picture = fileKey;
-    setSessionDatabaseData(userData);
+    if (userSessionData) userSessionData.picture = fileKey;
+    setSessionDatabaseData(userSessionData);
     refetch();
     window.location.reload();
   };

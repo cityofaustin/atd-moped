@@ -55,7 +55,7 @@ import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 
-import { getSessionDatabaseData } from "../../../auth/user";
+import { useSessionDatabaseData } from "../../../auth/user";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -195,7 +195,7 @@ const ProjectView = () => {
 
   const queryContext = useContext(ProjectListViewQueryContext);
 
-  const userSessionData = getSessionDatabaseData();
+  const userSessionData = useSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
