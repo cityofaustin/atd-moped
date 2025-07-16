@@ -13,13 +13,11 @@ CREATE OR REPLACE VIEW uniform_features AS SELECT
     feature_signals.created_by_user_id,
     feature_signals.updated_by_user_id
 FROM feature_signals
-LEFT JOIN (
-    SELECT
-        d.feature_id,
-        array_agg(d.council_district_id) AS council_districts
-    FROM features_council_districts d
-    GROUP BY d.feature_id
-) districts ON feature_signals.id = districts.feature_id
+LEFT JOIN (SELECT
+    d.feature_id,
+    array_agg(d.council_district_id) AS council_districts
+FROM features_council_districts d
+GROUP BY d.feature_id) districts ON feature_signals.id = districts.feature_id
 WHERE feature_signals.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -35,13 +33,11 @@ SELECT
     feature_street_segments.created_by_user_id,
     feature_street_segments.updated_by_user_id
 FROM feature_street_segments
-LEFT JOIN (
-    SELECT
-        d.feature_id,
-        array_agg(d.council_district_id) AS council_districts
-    FROM features_council_districts d
-    GROUP BY d.feature_id
-) districts ON feature_street_segments.id = districts.feature_id
+LEFT JOIN (SELECT
+    d.feature_id,
+    array_agg(d.council_district_id) AS council_districts
+FROM features_council_districts d
+GROUP BY d.feature_id) districts ON feature_street_segments.id = districts.feature_id
 WHERE feature_street_segments.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -57,13 +53,11 @@ SELECT
     feature_intersections.created_by_user_id,
     feature_intersections.updated_by_user_id
 FROM feature_intersections
-LEFT JOIN (
-    SELECT
-        d.feature_id,
-        array_agg(d.council_district_id) AS council_districts
-    FROM features_council_districts d
-    GROUP BY d.feature_id
-) districts ON feature_intersections.id = districts.feature_id
+LEFT JOIN (SELECT
+    d.feature_id,
+    array_agg(d.council_district_id) AS council_districts
+FROM features_council_districts d
+GROUP BY d.feature_id) districts ON feature_intersections.id = districts.feature_id
 WHERE feature_intersections.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -79,13 +73,11 @@ SELECT
     feature_drawn_points.created_by_user_id,
     feature_drawn_points.updated_by_user_id
 FROM feature_drawn_points
-LEFT JOIN (
-    SELECT
-        d.feature_id,
-        array_agg(d.council_district_id) AS council_districts
-    FROM features_council_districts d
-    GROUP BY d.feature_id
-) districts ON feature_drawn_points.id = districts.feature_id
+LEFT JOIN (SELECT
+    d.feature_id,
+    array_agg(d.council_district_id) AS council_districts
+FROM features_council_districts d
+GROUP BY d.feature_id) districts ON feature_drawn_points.id = districts.feature_id
 WHERE feature_drawn_points.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -101,13 +93,11 @@ SELECT
     feature_drawn_lines.created_by_user_id,
     feature_drawn_lines.updated_by_user_id
 FROM feature_drawn_lines
-LEFT JOIN (
-    SELECT
-        d.feature_id,
-        array_agg(d.council_district_id) AS council_districts
-    FROM features_council_districts d
-    GROUP BY d.feature_id
-) districts ON feature_drawn_lines.id = districts.feature_id
+LEFT JOIN (SELECT
+    d.feature_id,
+    array_agg(d.council_district_id) AS council_districts
+FROM features_council_districts d
+GROUP BY d.feature_id) districts ON feature_drawn_lines.id = districts.feature_id
 WHERE feature_drawn_lines.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -123,11 +113,9 @@ SELECT
     feature_school_beacons.created_by_user_id,
     feature_school_beacons.updated_by_user_id
 FROM feature_school_beacons
-LEFT JOIN (
-    SELECT
-        d.feature_id,
-        array_agg(d.council_district_id) AS council_districts
-    FROM features_council_districts d
-    GROUP BY d.feature_id
-) districts ON feature_school_beacons.id = districts.feature_id
+LEFT JOIN (SELECT
+    d.feature_id,
+    array_agg(d.council_district_id) AS council_districts
+FROM features_council_districts d
+GROUP BY d.feature_id) districts ON feature_school_beacons.id = districts.feature_id
 WHERE feature_school_beacons.is_deleted = FALSE;

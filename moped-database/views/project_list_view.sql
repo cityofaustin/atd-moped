@@ -273,15 +273,13 @@ LEFT JOIN project_district_association districts ON mp.project_id = districts.pr
 LEFT JOIN min_confirmed_phase_dates mcpd ON mp.project_id = mcpd.project_id
 LEFT JOIN min_estimated_phase_dates mepd ON mp.project_id = mepd.project_id
 LEFT JOIN project_component_work_types pcwt ON mp.project_id = pcwt.project_id
-LEFT JOIN LATERAL (
-    SELECT
-        combined_project_notes_view.project_note,
-        combined_project_notes_view.created_at AS date_created,
-        combined_project_notes_view.author
-    FROM combined_project_notes_view
-    WHERE (combined_project_notes_view.project_id = mp.project_id OR mp.should_sync_ecapris_statuses = true AND mp.ecapris_subproject_id IS NOT null AND combined_project_notes_view.ecapris_subproject_id = mp.ecapris_subproject_id) AND combined_project_notes_view.is_status_update = true
-    ORDER BY combined_project_notes_view.created_at DESC
-    LIMIT 1
-) proj_status_update ON true
+LEFT JOIN LATERAL (SELECT
+    combined_project_notes_view.project_note,
+    combined_project_notes_view.created_at AS date_created,
+    combined_project_notes_view.author
+FROM combined_project_notes_view
+WHERE (combined_project_notes_view.project_id = mp.project_id OR mp.should_sync_ecapris_statuses = true AND mp.ecapris_subproject_id IS NOT null AND combined_project_notes_view.ecapris_subproject_id = mp.ecapris_subproject_id) AND combined_project_notes_view.is_status_update = true
+ORDER BY combined_project_notes_view.created_at DESC
+LIMIT 1) proj_status_update ON true
 WHERE mp.is_deleted = false
 GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, proj_status_update.author, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;
