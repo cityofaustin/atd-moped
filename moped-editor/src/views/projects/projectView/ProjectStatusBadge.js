@@ -8,8 +8,6 @@ import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutline
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
-import { makeStyles } from "@mui/styles";
-import clsx from "clsx";
 import theme from "src/theme";
 
 const defaultIcon = HelpOutlineIcon;
@@ -123,46 +121,27 @@ const getStyle = (phaseKey) => {
 };
 
 /**
- * Picks the right color based on the status-phase combination
+ * Gets the chip styles based on phase key and options
  */
-const useFontColorStyles = makeStyles(() => ({
-  root: {
-    // Find text color
-    color: (props) => getStyle(props?.phaseKey ?? "").color,
-  },
-}));
-
-const useStyles = makeStyles(() => ({
-  clickableChip: {
-    cursor: "pointer",
-  },
-}));
-
-/**
- * Picks the right chip color based on status-phase combination
- */
-const useChipStyles = makeStyles(() => ({
-  root: {
+const getChipStyles = ({
+  phaseKey,
+  condensed = false,
+  clickable = false,
+  leftMargin = false,
+}) => {
+  const style = getStyle(phaseKey ?? "");
+  return {
     fontWeight: "500",
-    fontSize: "16px",
+    fontSize: condensed ? "12px" : "16px",
     borderRadius: "2rem",
-    height: "2.5rem",
-    padding: ".5rem",
-    // Find background color
-    backgroundColor: ({ phaseKey }) => getStyle(phaseKey ?? "").background,
-  },
-  condensed: {
-    fontWeight: "500",
-    fontSize: "12px",
-    borderRadius: "2rem",
-    height: "1.75rem",
-    // Find background color
-    backgroundColor: ({ phaseKey }) => getStyle(phaseKey ?? "").background,
-  },
-  leftMargin: {
-    marginLeft: "1rem",
-  },
-}));
+    height: condensed ? "1.75rem" : "2.5rem",
+    padding: condensed ? undefined : ".5rem",
+    backgroundColor: style.background,
+    color: style.color,
+    ...(clickable && { cursor: "pointer" }),
+    ...(leftMargin && { marginLeft: "1rem" }),
+  };
+};
 
 /**
  * Renders a chip
@@ -178,29 +157,16 @@ const ProjectStatusBadge = ({
   leftMargin = false,
   clickable = false,
 }) => {
-  const classes = useStyles();
-
-  /**
-   * Generate chip and icon classes
-   */
-  const chipClasses = useChipStyles({ phaseKey });
-  const iconClasses = useFontColorStyles({ phaseKey });
-
   /**
    * Create an abstract component pointer
    */
-  const ChipIcon = getStyle(phaseKey ?? "")?.icon ?? defaultIcon;
+  const style = getStyle(phaseKey ?? "");
+  const ChipIcon = style?.icon ?? defaultIcon;
 
   return (
     <Chip
-      className={clsx(
-        iconClasses.root,
-        clickable && classes.clickableChip,
-        condensed ? chipClasses.condensed : chipClasses.root,
-        leftMargin && chipClasses.leftMargin
-      )}
-      // for some reason passing color as a prop is ensuring the iconClasses.root style is being used
-      icon={<ChipIcon className={iconClasses.root} color="action" />}
+      sx={getChipStyles({ phaseKey, condensed, clickable, leftMargin })}
+      icon={<ChipIcon sx={{ color: style.color }} color="action" />}
       label={phaseName || defaultLabel}
       color={"default"}
     />
