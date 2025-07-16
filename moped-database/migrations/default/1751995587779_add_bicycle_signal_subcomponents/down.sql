@@ -6,7 +6,7 @@ AND subcomponent_id IN (
     FROM moped_subcomponents 
     WHERE subcomponent_name IN (
         'Bicycle signal (may use pedestrian signal sign)',
-        'Bicycle signal (permissive conflicts)'
+        'Bicycle signal face (permissive conflicts)'
     )
 );
 
@@ -14,5 +14,5 @@ AND subcomponent_id IN (
 DELETE FROM moped_subcomponents 
 WHERE subcomponent_name IN (
     'Bicycle signal (may use pedestrian signal sign)',
-    'Bicycle signal (permissive conflicts)'
+    'Bicycle signal face (permissive conflicts)'
 );
