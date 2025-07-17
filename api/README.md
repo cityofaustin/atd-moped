@@ -7,25 +7,10 @@ The Mobility Project Database API uses a unique stack consisting of the elements
 - AWS DynamoDB: It serves as a serverless key-value database.
 - AWS S3: It stores all the files that will be needed for the Moped database project.
 - AWS API Gateway: It helps manage the API endpoint and manages some of the security with Cognito.
-- AWS Lambda: It runs a serverless Flask API.
-- Zappa: It deploys the stack for us with minimal configuration.
-- Pytest: We will be using Pytest for our test-driven development practices.
-- Python: Version 3.8
+- AWS ECS: The webserver runs as a docker container serving up a WSGI app via `gunicorn`
+- Python: Version 3.13
 
 ## Getting Started
-
-#### Requirements
-
-The python requirements are organized in three environments:
-
-```
-requirements/
-├── dev.txt
-├── production.txt
-└── staging.txt
-```
-
-** TO DEVELOP LOCALLY YOU MUST CHOOSE DEV **
 
 Install the requirements in your machine, run these in order:
 
@@ -44,7 +29,7 @@ $ source venv/bin/activate
 3.Now you are ready to install the requirements
 
 ```
-$ pip install -r requirements/development.txt
+$ pip install -r requirements.txt
 ```
 
 If you run into problems with installing `cryptography`, see the [cryptography docs on installing on macOS](https://cryptography.io/en/latest/installation/#building-cryptography-on-macos). If you've already run the last command and install of `cryptography` failed, then you may need to:
@@ -58,10 +43,8 @@ $ env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib" CFLAGS="-I$(brew --prefix ope
 and then (to install the rest of the requirements):
 
 ```
-$ pip install -r requirements/development.txt
+$ pip install -r development.txt
 ```
-
-This particular requirements file includes tools such as pytest that make development and unit testing a lot easier, but it also makes the api bulky. Do not bother in installing the production or staging requirement files, those are only meant for cloud deployments.
 
 Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console. Your credentials will need read access to the AWS secret manager. These are the env vars of concern:
 
@@ -95,80 +78,6 @@ This is going to help scale large amounts of code into our API, it should also h
 To enable test-driven development patterns in our API I have created a tests folder with a sample test.
 
 In the API root directory, you can use these commands to run your tests:
-
-#### Testing
-
-We use pytest and follow its patters to test our code for the API. To get started with testing make
-sure you install the requirements/dev.txt files and run any of these commands:
-
-```
-# Run all tests
-$ pytest -vs
-
-# Run a specific test file
-$ pytest -vs tests/your_test.py
-
-# Run a specific test in a file:
-$ pytest -v tests/your_tests.py::TestClass::test_method
-```
-
-#### Creating a new test file
-
-You should look at a file called ./tests/test_app.py and copy it into a new file. Inside the test_app.py file you will see this syntax:
-
-First you need to make sure you import the Flask application:
-
-```python
-#!/usr/bin/env python
-import json, pdb
-from unittest.mock import patch
-
-# Imports the Flask application
-from app import app
-```
-
-Then, you create a test class, it must begin with the prefix Test in order to be valid, here we use TestApp but if you were to create a new test file for say the authentication blueprint, you could name the test class TestAuth so on and so forth:
-
-```python
-class TestApp:
-    @classmethod
-    def setup_class(cls):
-        # Gives us access to the app class
-        cls.app = app
-        cls.app.config["TESTING"] = True
-        # Allows us to have a client for every test we make via self
-        cls.client = cls.app.test_client()
-        print("Beginning tests for: TestApp")
-
-    @classmethod
-    def teardown_class(cls):
-        # Discards the app instance we have
-        cls.app = None
-        cls.client = None
-        print("\n\nAll tests finished for: TestApp")
-```
-
-And your first test could be something like this:
-
-```python
-    @staticmethod
-    def parse_response(response: bytes) -> dict:
-        """
-        Parses a response from Flask into a JSON dict
-        :param bytes response: The response bytes string
-        :return dict:
-        """
-        return json.loads(response.decode('utf-8'))
-
-    def test_app_initializes(self):
-        """Start with a blank database."""
-        response = self.client.get('/')
-        response_dict = self.parse_response(response.data)
-
-        assert isinstance(response_dict, dict)
-        assert "message" in response_dict
-        assert "MOPED API Available" in response_dict.get("message", "")
-```
 
 ## Parsing the JWT token within the API
 
