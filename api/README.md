@@ -43,7 +43,7 @@ $ env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib" CFLAGS="-I$(brew --prefix ope
 and then (to install the rest of the requirements):
 
 ```
-$ pip install -r development.txt
+$ pip install -r requirements.txt
 ```
 
 Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console. Your credentials will need read access to the AWS secret manager. These are the env vars of concern:
