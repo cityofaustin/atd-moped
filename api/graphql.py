@@ -1,5 +1,14 @@
 import requests
-from config import get_config
+
+try:
+    from config import get_config
+except Exception as e:
+    print(f"GRAPHQL.PY: ERROR importing from config: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
+
 from requests import Response
 
 
@@ -50,7 +59,7 @@ def generate_hasura_headers(alternative_conf=None) -> dict:
     return {
         "Accept": "*/*",
         "content-type": "application/json",
-        "x-hasura-admin-secret": get_hasura_admin_secret(alternative_conf)
+        "x-hasura-admin-secret": get_hasura_admin_secret(alternative_conf),
     }
 
 
@@ -67,10 +76,7 @@ def run_query(query: str, variables: dict, alternative_conf=None) -> Response:
     response = requests.post(
         url=get_hasura_endpoint(alternative_conf) + "/v1/graphql",
         headers=generate_hasura_headers(alternative_conf),
-        json={
-            "query": query,
-            "variables": variables
-        }
+        json={"query": query, "variables": variables},
     )
     response.encoding = "utf-8"
     return response
@@ -88,12 +94,7 @@ def run_sql(query: str, alternative_conf=None) -> Response:
     response = requests.post(
         url=get_hasura_endpoint(alternative_conf) + "/v1/query",
         headers=generate_hasura_headers(alternative_conf),
-        json={
-            "type": "run_sql",
-            "args": {
-                "sql": query
-            }
-        }
+        json={"type": "run_sql", "args": {"sql": query}},
     )
     response.encoding = "utf-8"
     return response

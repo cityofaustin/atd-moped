@@ -3,21 +3,49 @@ import datetime, boto3, os, json
 from flask import Blueprint, jsonify, request, redirect
 from flask_cognito import cognito_auth_required, current_cognito_jwt
 
-from claims import *
+try:
+    from claims import *
 
-from files.helpers import (
-    generate_clean_filename,
-    generate_random_hash,
-    is_valid_filename,
-    is_valid_number,
-    get_user_id,
-)
+except Exception as e:
+    print(f"FILES/FILES.PY: ERROR importing claims: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
+
+try:
+    from files.helpers import (
+        generate_clean_filename,
+        generate_random_hash,
+        is_valid_filename,
+        is_valid_number,
+        get_user_id,
+    )
+
+except Exception as e:
+    print(
+        f"FILES/FILES.PY: ERROR importing files.helpers: {type(e).__name__}: {str(e)}"
+    )
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
+
 MOPED_API_UPLOADS_S3_BUCKET = os.getenv("MOPED_API_UPLOADS_S3_BUCKET", None)
 
 files_blueprint = Blueprint("files_blueprint", __name__)
-aws_s3_client = boto3.client("s3", region_name=os.getenv("DEFALUT_REGION"))
+
+try:
+    aws_s3_client = boto3.client("s3", region_name=os.getenv("AWS_DEFAULT_REGION"))
+
+except Exception as e:
+    print(f"FILES/FILES.PY: ERROR creating S3 client: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 
 def is_user_authorized(session_token: dict, claims: dict) -> tuple:
@@ -37,7 +65,9 @@ def is_user_authorized(session_token: dict, claims: dict) -> tuple:
         return False, "Not Authorized: Invalid Database User ID"
 
     # Make sure the user is either an editor or an admin
-    if not has_user_role("moped-admin", claims) and not has_user_role("moped-editor", claims):
+    if not has_user_role("moped-admin", claims) and not has_user_role(
+        "moped-editor", claims
+    ):
         return False, "Not authorized: Insufficient access"
 
     return True, "Authorized"
@@ -73,8 +103,7 @@ def files_request_signature(claims: list) -> dict:
     """
     # Check the user is authorized
     user_authorized, auth_message = is_user_authorized(
-        session_token=current_cognito_jwt,
-        claims=claims
+        session_token=current_cognito_jwt, claims=claims
     )
 
     # Stop the request if there is an issue with the user credentials
@@ -93,7 +122,16 @@ def files_request_signature(claims: list) -> dict:
 
     # Check our parameters
     if not is_valid_filename(filename):
-        return jsonify({"status": "error", "message": "Invalid file name", "filename": filename}), 403
+        return (
+            jsonify(
+                {
+                    "status": "error",
+                    "message": "Invalid file name",
+                    "filename": filename,
+                }
+            ),
+            403,
+        )
 
     # Determine upload type
     if upload_type not in ["private", "public"]:
@@ -113,7 +151,9 @@ def files_request_signature(claims: list) -> dict:
     if upload_principal == "project":
         file_s3_key = f"{upload_type}/{upload_principal}/{project_id}/{user_id}_{file_new_unique_name}"
     else:
-        file_s3_key = f"{upload_type}/{upload_principal}/{user_id}/{file_new_unique_name}"
+        file_s3_key = (
+            f"{upload_type}/{upload_principal}/{user_id}/{file_new_unique_name}"
+        )
 
     # Generate upload credentials
     credentials = aws_s3_client.generate_presigned_post(
@@ -152,8 +192,4 @@ def file_download(path) -> redirect:
         Params={"Bucket": MOPED_API_UPLOADS_S3_BUCKET, "Key": path},
     )
 
-    return jsonify({
-        "status": "sucess",
-        "message": "success",
-        "download_url": url
-    })
+    return jsonify({"status": "success", "message": "success", "download_url": url})

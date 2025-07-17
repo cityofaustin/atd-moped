@@ -1,31 +1,71 @@
 import boto3
-
 from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort, Response
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
-from config import api_config
+
+try:
+    from config import api_config
+
+except Exception as e:
+    print(f"USERS/USERS.PY: ERROR importing api_config: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 # Import our custom code
-from claims import *
+try:
+    from claims import *
 
-from users.helpers import (
-    generate_user_profile,
-    generate_cognito_attributes,
-    get_user_email_from_attr,
-    get_user_database_ids,
-    is_valid_user_password,
-    is_users_password,
-    is_valid_user_profile,
-    db_create_user,
-    db_update_user,
-    db_activate_user,
-    db_deactivate_user,
-    cognito_user_exists,
-)
+except Exception as e:
+    print(f"USERS/USERS.PY: ERROR importing claims: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
+
+try:
+    from users.helpers import (
+        generate_user_profile,
+        generate_cognito_attributes,
+        get_user_email_from_attr,
+        get_user_database_ids,
+        is_valid_user_password,
+        is_users_password,
+        is_valid_user_profile,
+        db_create_user,
+        db_update_user,
+        db_activate_user,
+        db_deactivate_user,
+        cognito_user_exists,
+    )
+
+except Exception as e:
+    print(
+        f"USERS/USERS.PY: ERROR importing users.helpers: {type(e).__name__}: {str(e)}"
+    )
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 users_blueprint = Blueprint("users_blueprint", __name__)
 
-USER_POOL = api_config["COGNITO_USERPOOL_ID"]
+try:
+    USER_POOL = api_config["COGNITO_USERPOOL_ID"]
+except Exception as e:
+    print(
+        f"USERS/USERS.PY: ERROR getting COGNITO_USERPOOL_ID: {type(e).__name__}: {str(e)}"
+    )
+    raise
+
+try:
+    boto3.setup_default_session(region_name=api_config.get("AWS_REGION", "us-east-1"))
+except Exception as e:
+    print(
+        f"USERS/USERS.PY: ERROR setting up boto3 session: {type(e).__name__}: {str(e)}"
+    )
+    raise
 
 
 @users_blueprint.route("/", methods=["GET"])
@@ -478,52 +518,6 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
                 "database": db_response,
             }
         }
-        return jsonify(response)
-    else:
-        abort(403)
-
-
-@users_blueprint.route("/<id>/password", methods=["PUT"])
-@cognito_auth_required
-@normalize_claims
-def user_update_password(id: str) -> (Response, int):
-    """
-    Returns updated password details
-    :return Response, int:
-    """
-    if is_valid_user(current_cognito_jwt) and is_users_password(
-        current_cognito_jwt, id
-    ):
-        cognito_client = boto3.client("cognito-idp")
-
-        password_valid, password_error_feedback = is_valid_user_password(
-            password=request.json
-        )
-
-        if not password_valid:
-            return jsonify({"error": password_error_feedback}), 400
-
-        try:
-            json_data = request.json
-            password = json_data["password"]
-
-            cognito_response = cognito_client.admin_set_user_password(
-                UserPoolId=USER_POOL, Username=id, Password=password, Permanent=True
-            )
-
-        except ClientError as e:
-            if e.response["Error"]["Code"] == "InvalidPasswordException":
-                return jsonify(e.response), 400  # Bad request
-            else:
-                return jsonify(e.response), 400  # Internal Server Error
-
-        response = {
-            "success": {
-                "message": f"User password updated: {id}",
-                "cognito": cognito_response,
-            }
-        }
-
         return jsonify(response)
     else:
         abort(403)
