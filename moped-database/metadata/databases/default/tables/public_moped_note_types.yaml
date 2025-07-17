@@ -8,6 +8,7 @@ select_permissions:
         - id
         - name
         - slug
+        - source
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -16,6 +17,7 @@ select_permissions:
         - id
         - name
         - slug
+        - source
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -24,5 +26,6 @@ select_permissions:
         - id
         - name
         - slug
+        - source
       filter: {}
       allow_aggregations: true

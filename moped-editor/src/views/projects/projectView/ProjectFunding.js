@@ -5,7 +5,7 @@ import ProjectFundingTable from "./ProjectFunding/ProjectFundingTable";
 import ProjectWorkActivitiesTable from "./ProjectWorkActivity/ProjectWorkActivityTable";
 import { useParams } from "react-router-dom";
 
-const ProjectFunding = ({ handleSnackbar }) => {
+const ProjectFunding = ({ handleSnackbar, refetch: refetchProjectSummary }) => {
   const { projectId } = useParams();
   return (
     <CardContent>
@@ -14,6 +14,7 @@ const ProjectFunding = ({ handleSnackbar }) => {
           <ProjectFundingTable
             projectId={projectId}
             handleSnackbar={handleSnackbar}
+            refetchProjectSummary={refetchProjectSummary}
           />
         </Grid>
         <Grid item xs={12}>

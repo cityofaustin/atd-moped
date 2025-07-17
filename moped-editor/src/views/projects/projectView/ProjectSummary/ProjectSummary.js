@@ -33,16 +33,6 @@ const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     marginBottom: theme.spacing(3),
   },
-  editIconConfirm: {
-    cursor: "pointer",
-    margin: ".25rem 0",
-    fontSize: "24px",
-  },
-  editIconConfirmDisabled: {
-    margin: ".25rem 0",
-    fontSize: "24px",
-    color: theme.palette.text.secondary,
-  },
   fieldLabel: {
     width: "100%",
     color: theme.palette.text.secondary,
@@ -161,6 +151,7 @@ const ProjectSummary = ({
                   updateMutation={PROJECT_UPDATE_LEAD}
                   tooltipText="Division, department, or organization responsible for successful project implementation"
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -177,6 +168,7 @@ const ProjectSummary = ({
                   updateMutation={PROJECT_UPDATE_SPONSOR}
                   tooltipText="Division, department, or organization who is the main contributor of funds for the project"
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -186,6 +178,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryProjectPartners
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -211,6 +204,7 @@ const ProjectSummary = ({
                   updateMutation={PROJECT_UPDATE_PUBLIC_PROCESS}
                   tooltipText="Current public phase of a project"
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -220,6 +214,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryProjectWebsite
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -229,6 +224,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryInterimID
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -238,6 +234,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryProjectECapris
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}

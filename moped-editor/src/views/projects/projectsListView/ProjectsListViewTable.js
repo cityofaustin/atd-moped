@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { Box, Container, Paper } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import Search from "src/components/GridTable/Search";
@@ -37,12 +36,6 @@ import FeedbackSnackbar, {
 
 export const mapSearchParamName = "map";
 
-const useStyles = makeStyles(() => ({
-  paper: {
-    width: "100%",
-  },
-}));
-
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
@@ -51,7 +44,6 @@ const useStyles = makeStyles(() => ({
  */
 const ProjectsListViewTable = () => {
   const queryContext = useContext(ProjectListViewQueryContext);
-  const classes = useStyles();
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
@@ -127,7 +119,12 @@ const ProjectsListViewTable = () => {
   });
 
   const { query: mapQuery } = useGetProjectListView({
-    columnsToReturn: ["project_id", "current_phase_key", "project_name_full"],
+    columnsToReturn: [
+      "project_id",
+      "current_phase_key",
+      "current_phase",
+      "project_name_full",
+    ],
     searchWhereString: searchWhereString,
     advancedSearchWhereString: advancedSearchWhereString,
     queryName: "ProjectListViewMap",
@@ -209,7 +206,7 @@ const ProjectsListViewTable = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Container maxWidth={false} className={classes.root}>
+      <Container maxWidth={false}>
         <CsvDownloadOptionsDialog
           dialogOpen={downloadOptionsDialogOpen}
           handleDialogClose={handleOptionsDialogClose}
@@ -237,7 +234,7 @@ const ProjectsListViewTable = () => {
           handleSnackbar={handleSnackbar}
         />
         {/*Main Table Body*/}
-        <Paper className={classes.paper}>
+        <Paper sx={{ width: "100%" }}>
           <Box
             sx={{
               height: "75vh",

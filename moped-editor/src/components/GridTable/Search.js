@@ -130,7 +130,7 @@ const Search = ({
    * @param {Object} e - The event object
    */
   const handleSearchSubmission = (event) => {
-    const trimmedSearchFieldValue = searchFieldValue.trim();
+    const trimmedSearchFieldValue = searchFieldValue?.trim();
 
     // Stop if we don't have any value entered in the search field
     if (trimmedSearchFieldValue.length === 0) {
@@ -164,93 +164,98 @@ const Search = ({
   };
 
   return (
-    <div>
-      <Box mt={3}>
-        <Paper ref={divRef}>
-          <Grid container className={classes.searchBarContainer}>
-            <Grid item xs={12} md className={classes.gridSearchPadding}>
-              <SearchBar
-                searchFieldValue={searchFieldValue}
-                setSearchFieldValue={setSearchFieldValue}
-                handleSearchSubmission={handleSearchSubmission}
-                filters={filters}
-                setFilters={setFilters}
-                toggleAdvancedSearch={toggleAdvancedSearch}
-                advancedSearchAnchor={advancedSearchAnchor}
-                queryConfig={queryConfig}
-                isOr={isOr}
-                loading={loading}
-                filtersConfig={filtersConfig}
-                resetSimpleSearch={resetSimpleSearch}
-                setIsOr={setIsOr}
-                searchTerm={searchTerm}
-                setSearchParams={setSearchParams}
-                handleSnackbar={handleSnackbar}
-              />
-            </Grid>
-            <Grid item xs={12} md="auto" className={classes.downloadButtonGrid}>
-              <div>
-                {queryConfig.showExport && (
-                  <>
-                    <Hidden smUp>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<Icon>search</Icon>}
-                        onClick={handleSearchSubmission}
-                        sx={{ marginRight: theme.spacing(2) }}
-                      >
-                        Search
-                      </Button>
-                    </Hidden>
-                    <FormGroup sx={{ display: "inline" }}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={showMapView}
-                            onChange={handleMapToggle}
-                          />
-                        }
-                        label="Map"
-                      />
-                    </FormGroup>
-                    <Button
-                      disabled={
-                        (parentData?.[queryConfig.table] ?? []).length === 0
-                      }
-                      onClick={handleExportButtonClick}
-                      sx={{
-                        // Override startIcon margins to center icon when there is no "Download" text smDown
-                        "& .MuiButton-startIcon": {
-                          marginLeft: { xs: 0, sm: -theme.spacing(0.5) },
-                          marginRight: { xs: 0, sm: theme.spacing(1) },
-                        },
-                      }}
-                      startIcon={<SaveAltIcon />}
-                      variant="outlined"
-                      color="primary"
-                    >
-                      <Hidden smDown>Download</Hidden>
-                    </Button>
-                  </>
-                )}
-              </div>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Box>
-      <Popper
-        id="advancedSearch"
-        open={Boolean(advancedSearchAnchor)}
-        anchorEl={advancedSearchAnchor}
-        onClose={handleAdvancedSearchClose}
-        placement={"bottom"}
-        className={classes.advancedSearchRoot}
-      >
-        {/* FYI: you cannot use a Select component inside the click away listener
+    <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
+      {/* FYI: you cannot use a Select component inside the click away listener
         as discussed in this thread https://github.com/mui/material-ui/issues/25578 
         so we have opted to use Autocompletes instead*/}
-        <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
+      <div>
+        <Box mt={3}>
+          <Paper ref={divRef}>
+            <Grid container className={classes.searchBarContainer}>
+              <Grid item xs={12} md className={classes.gridSearchPadding}>
+                <SearchBar
+                  searchFieldValue={searchFieldValue}
+                  setSearchFieldValue={setSearchFieldValue}
+                  handleSearchSubmission={handleSearchSubmission}
+                  filters={filters}
+                  setFilters={setFilters}
+                  toggleAdvancedSearch={toggleAdvancedSearch}
+                  advancedSearchAnchor={advancedSearchAnchor}
+                  queryConfig={queryConfig}
+                  isOr={isOr}
+                  loading={loading}
+                  filtersConfig={filtersConfig}
+                  resetSimpleSearch={resetSimpleSearch}
+                  setIsOr={setIsOr}
+                  searchTerm={searchTerm}
+                  setSearchParams={setSearchParams}
+                  handleSnackbar={handleSnackbar}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md="auto"
+                className={classes.downloadButtonGrid}
+              >
+                <div>
+                  {queryConfig.showExport && (
+                    <>
+                      <Hidden smUp>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          startIcon={<Icon>search</Icon>}
+                          onClick={handleSearchSubmission}
+                          sx={{ marginRight: theme.spacing(2) }}
+                        >
+                          Search
+                        </Button>
+                      </Hidden>
+                      <FormGroup sx={{ display: "inline" }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={showMapView}
+                              onChange={handleMapToggle}
+                            />
+                          }
+                          label="Map"
+                        />
+                      </FormGroup>
+                      <Button
+                        disabled={
+                          (parentData?.[queryConfig.table] ?? []).length === 0
+                        }
+                        onClick={handleExportButtonClick}
+                        sx={{
+                          // Override startIcon margins to center icon when there is no "Download" text smDown
+                          "& .MuiButton-startIcon": {
+                            marginLeft: { xs: 0, sm: -theme.spacing(0.5) },
+                            marginRight: { xs: 0, sm: theme.spacing(1) },
+                          },
+                        }}
+                        startIcon={<SaveAltIcon />}
+                        variant="outlined"
+                        color="primary"
+                      >
+                        <Hidden smDown>Download</Hidden>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Box>
+        <Popper
+          id="advancedSearch"
+          open={Boolean(advancedSearchAnchor)}
+          anchorEl={advancedSearchAnchor}
+          onClose={handleAdvancedSearchClose}
+          placement={"bottom"}
+          className={classes.advancedSearchRoot}
+        >
           <Paper className={classes.advancedSearchPaper}>
             <Filters
               setFilters={setFilters}
@@ -266,9 +271,9 @@ const Search = ({
               setSearchTerm={setSearchTerm}
             />
           </Paper>
-        </ClickAwayListener>
-      </Popper>
-    </div>
+        </Popper>
+      </div>
+    </ClickAwayListener>
   );
 };
 

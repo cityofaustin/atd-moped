@@ -1,30 +1,29 @@
 import { gql } from "@apollo/client";
 
-export const NOTES_QUERY = gql`
-  query GetProjectNotes($projectNoteConditions: moped_proj_notes_bool_exp!) {
-    moped_proj_notes(
+export const COMBINED_NOTES_QUERY = gql`
+  query GetCombinedProjectNotes(
+    $projectNoteConditions: combined_project_notes_view_bool_exp!
+  ) {
+    combined_project_notes_view(
       where: $projectNoteConditions
       order_by: { created_at: desc }
     ) {
-      moped_user {
-        first_name
-        last_name
-      }
-      project_note
-      project_id
+      author
       created_at
-      project_note_id
-      project_note_type
-      is_deleted
+      ecapris_subproject_id
+      id
+      is_editable
+      note_type_name
+      note_type_slug
+      note_type_id
+      phase_id
+      project_id
+      project_note
       created_by_user_id
-      moped_note_type {
-        id
-        name
-      }
-      moped_phase {
-        phase_key
-        phase_name
-      }
+      original_id
+      phase_key
+      phase_name
+      is_status_update
     }
   }
 `;
