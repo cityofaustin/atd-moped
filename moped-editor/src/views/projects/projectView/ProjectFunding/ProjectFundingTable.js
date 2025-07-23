@@ -564,7 +564,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
           getRowId={(row) => row.proj_funding_id}
           editMode="row"
           rowModesModel={rowModesModel}
-          onRowEditStop={handleRowEditStop}
+          onRowEditStop={handleRowEditStop(rows, setRows)}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => console.error(error)}

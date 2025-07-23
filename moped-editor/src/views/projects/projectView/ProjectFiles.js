@@ -473,7 +473,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
           rows={rows}
           getRowId={(row) => row.project_file_id}
           editMode="row"
-          onRowEditStop={handleRowEditStop}
+          onRowEditStop={handleRowEditStop(rows, setRows)}
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
