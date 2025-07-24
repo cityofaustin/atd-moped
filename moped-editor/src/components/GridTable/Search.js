@@ -159,10 +159,14 @@ const Search = ({
     });
   };
 
-  const handleMapToggle = () => {
-    setShowMapView(!showMapView);
+  const handleMapToggle = (event, view) => {
+    if (view === null) {
+      // If no view is selected, do nothing
+      return;
+    }
+    setShowMapView(view === "map");
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(mapSearchParamName, !showMapView);
+      prevSearchParams.set(mapSearchParamName, view === "map");
 
       return prevSearchParams;
     });
@@ -219,14 +223,14 @@ const Search = ({
                       </Hidden>
                       <ToggleButtonGroup
                         className={classes.toggleButtonGroup}
-                        value={showMapView}
+                        value={showMapView === true ? "map" : "list"} // Highlight selected button
                         exclusive
                         onChange={handleMapToggle}
                       >
-                        <ToggleButton aria-label="list view">
+                        <ToggleButton value="list" aria-label="list view">
                           <ListRoundedIcon />
                         </ToggleButton>
-                        <ToggleButton aria-label="map view">
+                        <ToggleButton value="map" aria-label="map view">
                           <MapOutlinedIcon />
                         </ToggleButton>
                       </ToggleButtonGroup>
