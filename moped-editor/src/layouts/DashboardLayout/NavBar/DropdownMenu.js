@@ -120,7 +120,7 @@ const DropdownMenu = ({
           </ListItemIcon>
           Account
         </MenuItem>
-        <Divider />
+        <Divider sx={{ marginY: 1 }} />
         <Link
           href={arcGISLink.link}
           target="_blank"
@@ -133,7 +133,7 @@ const DropdownMenu = ({
             {arcGISLink.title}
           </MenuItem>
         </Link>
-        <Divider />
+        <Divider sx={{ marginY: 1 }} />
         <Typography
           variant="button"
           color="textSecondary"
@@ -185,7 +185,7 @@ const DropdownMenu = ({
           }
           return null;
         })}
-        <Divider />
+        <Divider sx={{ marginY: 1 }} />
         <MenuItem onClick={() => navigate("/moped/logout")}>
           <ListItemIcon>
             <ExitToAppIcon fontSize="small" />
