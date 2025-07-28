@@ -2,10 +2,9 @@
 # file for the VSCode plugin "REST Client" https://open-vsx.org/extension/humao/rest-client. 
 
 @API_SERVER = http://localhost:5001/
-#@API_SERVER = https://moped-user-file-api-staging.austinmobility.io/
 
 # Bearer Token starts with 'ey...', no quotes
-@AUTH_BEARER_TOKEN = eyJraWQiOiJqVXltd2JzdFJFa1MwK2lEcjJoelk2amRHZFV5blA5TDFLeFVwa0Z4UXpBPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJhZWFlYjk2Zi02ZjY5LTRiOTUtYTI3Mi05NTY0NDUxODljNTQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaHR0cHM6XC9cL2hhc3VyYS5pb1wvand0XC9jbGFpbXMiOiJ7XCJ4LWhhc3VyYS11c2VyLWlkXCI6IFwiYWVhZWI5NmYtNmY2OS00Yjk1LWEyNzItOTU2NDQ1MTg5YzU0XCIsIFwieC1oYXN1cmEtZGVmYXVsdC1yb2xlXCI6IFwibW9wZWQtdmlld2VyXCIsIFwieC1oYXN1cmEtYWxsb3dlZC1yb2xlc1wiOiBbXCJtb3BlZC1hZG1pblwiXSwgXCJ4LWhhc3VyYS11c2VyLWRiLWlkXCI6IFwiNjhcIiwgXCJ4LWhhc3VyYS11c2VyLXdnLWlkXCI6IFwiM1wifSIsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX1UyZHpreGZUdiIsImNvZ25pdG86dXNlcm5hbWUiOiJhZWFlYjk2Zi02ZjY5LTRiOTUtYTI3Mi05NTY0NDUxODljNTQiLCJhdWQiOiIzdTluOTM3M2UzN3Y2MDN0YnAyNWdzNWZkYyIsImV2ZW50X2lkIjoiOTY5ZDcwYTktN2VmMS00MTlkLWFmODgtM2RmOGRiMjA0OWJlIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3NTMyODY3NjAsImV4cCI6MTc1Mzc2MzAzMCwiaWF0IjoxNzUzNzE5ODM1LCJlbWFpbCI6ImZyYW5rLmhlcmVmb3JkQGF1c3RpbnRleGFzLmdvdiJ9.N1rgMB_Bhf3zcBJ4Uy_uQNJ4ItLp64oXjU_0pbZdqm4_vtTbL400GduZEpgkDfgP2cN3jDD3kZMITF7ROHhTxofoJiyWho591LRYGGParIx8cU09mryHqTx-SbhfX1QZv0fryRyAEVybDlA79Okb16uAOMaAM62zdfdbg2RsQWPMoHY-ZtjNGyQlGEKFrCzIuxVeWw-jXVKqB2TAq4gOH9VQaeRj8AAziikixibywVaKYSv6HteNg-UPpOKNv1QAxR5uYA1oewN0LNavFObECg4a2m6185Gynm0rA13_ovl-c75Efra7CpgJhcBJNDfBbDnjSP9-ARn2UYG0gQwxdw
+@AUTH_BEARER_TOKEN = ey...
 
 
 
@@ -44,7 +43,7 @@ Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 
 # This can be found via the `/users/` endpoint
 
-@USER_ID = aeaeb96f-6f69-4b95-a272-956445189c54
+@USER_ID = <uuid>
 
 ### Users listing
 # Lists all users in the Cognito user pool, excluding those with usernames
