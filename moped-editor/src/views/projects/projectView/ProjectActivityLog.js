@@ -33,10 +33,6 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     verticalAlign: "top",
   },
-  avatarSmall: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-  },
   avatarName: {
     margin: "0.3rem 0 0 .5rem",
   },
@@ -240,7 +236,7 @@ const ProjectActivityLog = () => {
                         <Box display="flex" p={0}>
                           <Box p={0}>
                             <CDNAvatar
-                              className={classes.avatarSmall}
+                              size="small"
                               src={change?.updated_by_user?.picture}
                               initials={getInitials(change?.updated_by_user)}
                               // todo: do we want this to not be always gray if its just the initials?

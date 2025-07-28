@@ -112,7 +112,7 @@ const DropdownMenu = ({
         >
           <ListItemIcon>
             <CDNAvatar
-              sx={{ height: "30px", width: "30px" }}
+              size="small"
               src={userDbData?.picture}
               initials={userInitials}
               userColor={user?.userColor}
