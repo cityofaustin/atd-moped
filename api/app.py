@@ -3,30 +3,17 @@ from flask import Flask, jsonify, Response
 from flask_cognito import CognitoAuth
 from flask_cors import CORS
 
-try:
-    from config import api_config
-except Exception as e:
-    print(f"APP.PY: ERROR importing config: {type(e).__name__}: {str(e)}")
-    import traceback
+from config import api_config
 
-    traceback.print_exc()
-    raise
 
 MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
 print(f"APP.PY: MOPED_API_CURRENT_ENVIRONMENT = {MOPED_API_CURRENT_ENVIRONMENT}")
 
-try:
-    from auth.auth import auth_blueprint
-    from users.users import users_blueprint
-    from files.files import files_blueprint
+from auth.auth import auth_blueprint
+from users.users import users_blueprint
+from files.files import files_blueprint
 
-    print("APP.PY: Successfully imported all blueprints")
-except Exception as e:
-    print(f"APP.PY: ERROR importing blueprints: {type(e).__name__}: {str(e)}")
-    import traceback
-
-    traceback.print_exc()
-    raise
+print("APP.PY: Successfully imported all blueprints")
 
 
 print("APP.PY: Creating Flask app instance...")
@@ -68,14 +55,7 @@ except Exception as e:
 # it requires authentication.
 #
 print("APP.PY: Configuring CORS...")
-try:
-    cors = CORS(app)
-except Exception as e:
-    print(f"APP.PY: ERROR configuring CORS: {type(e).__name__}: {str(e)}")
-    import traceback
-
-    traceback.print_exc()
-    raise
+cors = CORS(app)
 
 
 #

@@ -1,14 +1,8 @@
 import json, boto3, datetime
 from functools import wraps
 
-try:
-    from config import api_config
-except Exception as e:
-    print(f"CLAIMS.PY: ERROR importing api_config: {type(e).__name__}: {str(e)}")
-    import traceback
+from config import api_config
 
-    traceback.print_exc()
-    raise
 
 from flask_cognito import _request_ctx_stack, current_cognito_jwt
 from werkzeug.local import LocalProxy
@@ -17,25 +11,12 @@ from cryptography.fernet import Fernet
 from typing import Optional
 from typing import Callable
 
-try:
-    MOPED_API_CURRENT_ENVIRONMENT = api_config.get(
-        "MOPED_API_CURRENT_ENVIRONMENT", "STAGING"
-    )
-    print(f"CLAIMS.PY: MOPED_API_CURRENT_ENVIRONMENT = {MOPED_API_CURRENT_ENVIRONMENT}")
+MOPED_API_CURRENT_ENVIRONMENT = api_config.get(
+    "MOPED_API_CURRENT_ENVIRONMENT", "STAGING"
+)
+AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
+AWS_COGNITO_DYNAMO_SECRET_KEY = api_config.get("COGNITO_DYNAMO_SECRET_KEY", None)
 
-    AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
-    print(f"CLAIMS.PY: AWS_COGNITO_DYNAMO_TABLE_NAME = {AWS_COGNITO_DYNAMO_TABLE_NAME}")
-
-    AWS_COGNITO_DYNAMO_SECRET_KEY = api_config.get("COGNITO_DYNAMO_SECRET_KEY", None)
-    print(
-        f"CLAIMS.PY: AWS_COGNITO_DYNAMO_SECRET_KEY present: {AWS_COGNITO_DYNAMO_SECRET_KEY is not None}"
-    )
-except Exception as e:
-    print(f"CLAIMS.PY: ERROR setting up module constants: {type(e).__name__}: {str(e)}")
-    import traceback
-
-    traceback.print_exc()
-    raise
 
 #
 # LocalProxy is a funny class in werkzeug.local, it seems to be a way

@@ -3,33 +3,15 @@ import datetime, boto3, os, json
 from flask import Blueprint, jsonify, request, redirect
 from flask_cognito import cognito_auth_required, current_cognito_jwt
 
-try:
-    from claims import *
+from claims import *
 
-except Exception as e:
-    print(f"FILES/FILES.PY: ERROR importing claims: {type(e).__name__}: {str(e)}")
-    import traceback
-
-    traceback.print_exc()
-    raise
-
-try:
-    from files.helpers import (
-        generate_clean_filename,
-        generate_random_hash,
-        is_valid_filename,
-        is_valid_number,
-        get_user_id,
-    )
-
-except Exception as e:
-    print(
-        f"FILES/FILES.PY: ERROR importing files.helpers: {type(e).__name__}: {str(e)}"
-    )
-    import traceback
-
-    traceback.print_exc()
-    raise
+from files.helpers import (
+    generate_clean_filename,
+    generate_random_hash,
+    is_valid_filename,
+    is_valid_number,
+    get_user_id,
+)
 
 MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
 
@@ -37,15 +19,7 @@ MOPED_API_UPLOADS_S3_BUCKET = os.getenv("MOPED_API_UPLOADS_S3_BUCKET", None)
 
 files_blueprint = Blueprint("files_blueprint", __name__)
 
-try:
-    aws_s3_client = boto3.client("s3", region_name=os.getenv("AWS_DEFAULT_REGION"))
-
-except Exception as e:
-    print(f"FILES/FILES.PY: ERROR creating S3 client: {type(e).__name__}: {str(e)}")
-    import traceback
-
-    traceback.print_exc()
-    raise
+aws_s3_client = boto3.client("s3", region_name=os.getenv("DEFALUT_REGION"))
 
 
 def is_user_authorized(session_token: dict, claims: dict) -> tuple:

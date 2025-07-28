@@ -2,14 +2,9 @@ import datetime
 from flask import Blueprint, jsonify
 from flask_cognito import cognito_auth_required, current_cognito_jwt
 
-try:
-    from claims import normalize_claims, get_claims
-except Exception as e:
-    print(f"AUTH/AUTH.PY: ERROR importing claims: {type(e).__name__}: {str(e)}")
-    import traceback
+# Import our custom code
+from claims import normalize_claims, get_claims
 
-    traceback.print_exc()
-    raise
 
 auth_blueprint = Blueprint("auth_blueprint", __name__)
 
