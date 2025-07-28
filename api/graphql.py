@@ -1,13 +1,6 @@
 import requests
 
-try:
-    from config import get_config
-except Exception as e:
-    print(f"GRAPHQL.PY: ERROR importing from config: {type(e).__name__}: {str(e)}")
-    import traceback
-
-    traceback.print_exc()
-    raise
+from config import get_config
 
 from requests import Response
 
