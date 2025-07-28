@@ -154,5 +154,4 @@ def get_config(key_name: str, default: str = None) -> str:
     :param default:
     :return:
     """
-    value = api_config.get(key_name, default)
-    return value
+    return api_config.get(key_name, default)
