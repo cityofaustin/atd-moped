@@ -6,11 +6,14 @@ import os, json
 
 from typing import Optional
 from botocore.exceptions import ClientError
+from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 api_configuration = os.getenv(
     "MOPED_API_CONFIGURATION_SETTINGS", "ATD_MOPED_API_CONFIGURATION_STAGING"
 )
-print(f"CONFIG.PY: api_configuration environment variable: {api_configuration}")
+logger.info(f"api_configuration environment variable: {api_configuration}")
 
 
 def parse_key(aws_key_name: str, aws_key_json: str = None) -> Optional[str]:
@@ -44,43 +47,43 @@ def get_secret(secret_name: str, is_json: bool = False) -> Optional[str]:
         get_secret_value_response = client.get_secret_value(SecretId=secret_name)
     except ClientError as e:
         error_code = e.response["Error"]["Code"]
-        print(f"CONFIG.PY: ClientError occurred: {error_code}")
-        print(f"CONFIG.PY: Full error: {str(e)}")
+        logger.error(f"ClientError occurred: {error_code}")
+        logger.error(f"Full error: {str(e)}")
         if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
             # Deal with the exception here, and/or rethrow at your discretion.
-            print(
-                "CONFIG.PY: DecryptionFailureException - Secrets Manager can't decrypt the protected secret text"
+            logger.error(
+                "DecryptionFailureException - Secrets Manager can't decrypt the protected secret text"
             )
             raise e
         elif e.response["Error"]["Code"] == "InternalServiceErrorException":
             # An error occurred on the server side.
             # Deal with the exception here, and/or rethrow at your discretion.
-            print(
-                "CONFIG.PY: InternalServiceErrorException - An error occurred on the server side"
+            logger.error(
+                "InternalServiceErrorException - An error occurred on the server side"
             )
             raise e
         elif e.response["Error"]["Code"] == "InvalidParameterException":
             # You provided an invalid value for a parameter.
             # Deal with the exception here, and/or rethrow at your discretion.
-            print("CONFIG.PY: InvalidParameterException - Invalid parameter value")
+            logger.error("InvalidParameterException - Invalid parameter value")
             raise e
         elif e.response["Error"]["Code"] == "InvalidRequestException":
             # You provided a parameter value that is not valid for the current state of the resource.
             # Deal with the exception here, and/or rethrow at your discretion.
-            print("CONFIG.PY: InvalidRequestException - Invalid request")
+            logger.error("InvalidRequestException - Invalid request")
             raise e
         elif e.response["Error"]["Code"] == "ResourceNotFoundException":
             # We can't find the resource that you asked for.
             # Deal with the exception here, and/or rethrow at your discretion.
-            print("CONFIG.PY: ResourceNotFoundException - Can't find the secret")
+            logger.error("ResourceNotFoundException - Can't find the secret")
             raise e
         else:
-            print(f"CONFIG.PY: Unknown ClientError: {error_code}")
+            logger.error(f"Unknown ClientError: {error_code}")
             raise e
     except Exception as e:
-        print(
-            f"CONFIG.PY: Unexpected error getting secret: {type(e).__name__}: {str(e)}"
+        logger.error(
+            f"Unexpected error getting secret: {type(e).__name__}: {str(e)}"
         )
         raise
     else:
@@ -93,7 +96,7 @@ def get_secret(secret_name: str, is_json: bool = False) -> Optional[str]:
             )
         else:
             # If the secret string is not read by now, then it is binary. Return None
-            print("CONFIG.PY: Secret is binary, returning None")
+            logger.warning("Secret is binary, returning None")
             return None
 
     return None

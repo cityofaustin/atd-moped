@@ -2,6 +2,9 @@ import json, boto3, datetime
 from functools import wraps
 
 from config import api_config
+from logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 from flask_cognito import _request_ctx_stack, current_cognito_jwt
@@ -63,7 +66,7 @@ def resolve_hasura_claims(func: Callable) -> Callable:
     """
 
     def wrapper(*args, **kwargs):
-        print("resolve_hasura_claims: start")
+        logger.debug("resolve_hasura_claims: start")
         cognito_jwt_dict = current_cognito_jwt._get_current_object()
         _request_ctx_stack.top.hasura_claims = json.loads(
             cognito_jwt_dict["https://hasura.io/jwt/claims"]
@@ -83,7 +86,7 @@ def normalize_claims(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        print("resolve_hasura_claims: start")
+        logger.debug("normalize_claims: start")
         claims = current_cognito_jwt._get_current_object()
         claims["https://hasura.io/jwt/claims"] = json.loads(
             claims["https://hasura.io/jwt/claims"]
