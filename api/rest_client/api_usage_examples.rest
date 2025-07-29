@@ -7,7 +7,7 @@
 #AUTH_BEARER_TOKEN = ey...
 #USER_ID = <uuid>
 #USER_EMAIL = <email>
-#VALID_PASSWORD = <password>
+#USER_PASSWORD = <password>
 
 # Health Check
 {{$dotenv API_SERVER}}
@@ -71,7 +71,7 @@ Content-Type: application/json
     "is_coa_staff": true,
     "title": "This is a job title",
     "workgroup_id": 1,
-    "password": "{{$dotenv VALID_PASSWORD}}",
+    "password": "{{$dotenv USER_PASSWORD}}",
     "roles": [
         "moped-viewer"
     ],
@@ -100,7 +100,8 @@ Content-Type: application/json
         "moped-editor"
     ],
     "is_user_group_member": true,
-    "note": "This is an updated note."
+    "note": "This is an updated note.",
+    "password": "{{$dotenv USER_PASSWORD}}"
 }
 
 ### user_activate_user()
@@ -112,7 +113,7 @@ Content-Type: application/json
 
 {
     "email": "some.user.in.the.database@austintexas.gov",
-    "password": "{{$dotenv VALID_PASSWORD}}",
+    "password": "{{$dotenv USER_PASSWORD}}",
     "roles": ["moped-viewer"]
 }
 
