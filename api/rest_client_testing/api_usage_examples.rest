@@ -6,6 +6,8 @@
 #API_SERVER=http://localhost:5001/
 #AUTH_BEARER_TOKEN = ey...
 #USER_ID = <uuid>
+#USER_EMAIL = <email>
+#VALID_PASSWORD = <password>
 
 # Health Check
 {{$dotenv API_SERVER}}
@@ -63,13 +65,13 @@ Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 Content-Type: application/json
 
 {
-    "email": "test.user2@austintexas.gov",
+    "email": "{{$dotenv USER_EMAIL}}",
     "first_name": "FirstName",
     "last_name": "LastName",
     "is_coa_staff": true,
     "title": "This is a job title",
     "workgroup_id": 1,
-    "password": "c3st-ne-p@s-un-MOT-de-passe",
+    "password": "{{$dotenv VALID_PASSWORD}}",
     "roles": [
         "moped-viewer"
     ],
@@ -81,7 +83,6 @@ Content-Type: application/json
 # Updates a user. Requires moped-admin role. The USER_ID is the Cognito user ID.
 # The payload is similar to the create user payload.
 # A password is not required unless you want to change it.
-#This hardcoded value is a test user created in our staging environment
 
 
 PUT {{$dotenv API_SERVER}}/users/{{$dotenv USER_ID}}
@@ -89,7 +90,7 @@ Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 Content-Type: application/json
 
 {
-    "email": "test.user2@austintexas.gov",
+    "email": "{{$dotenv USER_EMAIL}}",
     "first_name": "UpdatedFirstName",
     "last_name": "UpdatedLastName",
     "is_coa_staff": true,
@@ -111,7 +112,7 @@ Content-Type: application/json
 
 {
     "email": "some.user.in.the.database@austintexas.gov",
-    "password": "c3st-ne-p@s-un-MOT-de-passe",
+    "password": "{{$dotenv VALID_PASSWORD}}",
     "roles": ["moped-viewer"]
 }
 
