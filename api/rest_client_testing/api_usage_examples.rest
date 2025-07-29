@@ -1,14 +1,14 @@
 # This file contains example HTTP calls and it also the configuration
 # file for the VSCode plugin "REST Client" https://open-vsx.org/extension/humao/rest-client. 
 
-Add the following to the .env file in this directory:
+#Add the following to the .env file in this directory:
 
-REST_CLIENT_API_SERVER=http://localhost:5001/
-REST_CLIENT_AUTH_BEARER_TOKEN = ey...
-REST_CLIENT_USER_ID = <uuid>
+#API_SERVER=http://localhost:5001/
+#AUTH_BEARER_TOKEN = ey...
+#USER_ID = <uuid>
 
 # Health Check
-{{$EST_CLIENT_API_SERVER}}
+{{$dotenv API_SERVER}}
 
 # ------------------------------------------------------------------------------
 # Auth Endpoint
@@ -16,13 +16,13 @@ REST_CLIENT_USER_ID = <uuid>
 
 ### Auth Health Check
 # Returns a health check message for the auth endpoint.
-{{$dotenv REST_CLIENT_API_SERVER}}/auth/
+{{$dotenv API_SERVER}}/auth/
 
 ### auth_current_user()
 # Current User. You can get the AUTH_BEARER_TOKEN from the browser's console by looking at 
 # a request to graphql-engine. It is only as long-lived as your browser session.
 # Returns the current user's Cognito username, email, Hasura claims, and the full decrypted JWT.
-{{$dotenv REST_CLIENT_API_SERVER}}/auth/current_user
+{{$dotenv API_SERVER}}/auth/current_user
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 
 ### auth_current_user2()
@@ -30,11 +30,8 @@ Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 # parsed dictionary of claims. 
 # Returns the user's Cognito username, email, and Hasura claims.
 
-{{$dotenv REST_CLIENT_API_SERVER}}/auth/current_user2
+{{$dotenv API_SERVER}}/auth/current_user2
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
-
-
-### soemthindg something
 
 # ------------------------------------------------------------------------------
 # Users Endpoint
@@ -46,22 +43,22 @@ Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 ### Users listing
 # Lists all users in the Cognito user pool, excluding those with usernames
 # starting with 'azuread_'. Requires a valid user session.
-{{$dotenv REST_CLIENT_API_SERVER}}/users/
+{{$dotenv API_SERVER}}/users/
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 
 ### user_get_user()
 # Returns detailed information for a specific user, including Cognito user info 
 # and their Hasura roles. 
-# The REST_CLIENT_USER_ID is the Cognito user ID ("Username" from the user list endpoint). 
+# The USER_ID is the Cognito user ID ("Username" from the user list endpoint). 
 # Requires a valid user session.
-{{$dotenv REST_CLIENT_API_SERVER}}/users/{{$dotenv REST_CLIENT_USER_ID}}
+{{$dotenv API_SERVER}}/users/{{$dotenv USER_ID}}
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 
 ### user_create_user()
 # Creates a new user. Requires moped-admin role.
 # The password must be at least 12 characters and contain at least one uppercase letter,
 # one lowercase letter, one number, and one special character.
-POST {{$dotenv REST_CLIENT_API_SERVER}}/users/
+POST {{$dotenv API_SERVER}}/users/
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 Content-Type: application/json
 
@@ -81,13 +78,13 @@ Content-Type: application/json
 }
 
 ### user_update_user()
-# Updates a user. Requires moped-admin role. The REST_CLIENT_USER_ID is the Cognito user ID.
+# Updates a user. Requires moped-admin role. The USER_ID is the Cognito user ID.
 # The payload is similar to the create user payload.
 # A password is not required unless you want to change it.
 #This hardcoded value is a test user created in our staging environment
 
 
-PUT {{$dotenv REST_CLIENT_API_SERVER}}/users/{{$dotenv REST_CLIENT_USER_ID}}
+PUT {{$dotenv API_SERVER}}/users/{{$dotenv USER_ID}}
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 Content-Type: application/json
 
@@ -108,7 +105,7 @@ Content-Type: application/json
 ### user_activate_user()
 # Activates a user that exists in the database but not in Cognito.
 # Requires moped-admin role.
-PUT {{$dotenv REST_CLIENT_API_SERVER}}/users/activate/
+PUT {{$dotenv API_SERVER}}/users/activate/
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 Content-Type: application/json
 
@@ -120,8 +117,8 @@ Content-Type: application/json
 
 ### user_delete_user()
 # Deletes a user from Cognito and deactivates them in the Moped database.
-# The REST_CLIENT_USER_ID is the Cognito user ID. Requires moped-admin role.
-DELETE {{$dotenv REST_CLIENT_API_SERVER}}/users/{{$dotenv REST_CLIENT_USER_ID}}
+# The USER_ID is the Cognito user ID. Requires moped-admin role.
+DELETE {{$dotenv API_SERVER}}/users/{{$dotenv USER_ID}}
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 
 
@@ -131,7 +128,7 @@ Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 
 
 ### Files Health Check
-{{$dotenv REST_CLIENT_API_SERVER}}/files/
+{{$dotenv API_SERVER}}/files/
 
 
 ### files_request_signature() for a project
@@ -139,14 +136,14 @@ Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 # The file name should be a valid file name.
 # The project_id associates the file with a project.
 # The type is optional, it can be 'private' or 'public'. Defaults to 'private'.
-{{$dotenv REST_CLIENT_API_SERVER}}/files/request-signature?file=test-project-file.jpg&project_id=1&type=public
+{{$dotenv API_SERVER}}/files/request-signature?file=test-project-file.jpg&project_id=1&type=public
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 
 ### files_request_signature() for a user
 # Requests a pre-signed URL to upload a file to S3 associated with the user.
 # The file name should be a valid file name.
 # No project_id is provided.
-{{$dotenv REST_CLIENT_API_SERVER}}/files/request-signature?file=test-user-file.png&type=private
+{{$dotenv API_SERVER}}/files/request-signature?file=test-user-file.png&type=private
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 
 ### file_download()
@@ -156,5 +153,5 @@ Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
 # You would need to replace {{FILE_S3_KEY}} with a real file key from a previous request.
 # Example path: private/user/1/some-file.txt
 @FILE_S3_KEY = private/city-of-austin-logo.png
-GET {{$dotenv REST_CLIENT_API_SERVER}}/files/download/{{FILE_S3_KEY}}
+GET {{$dotenv API_SERVER}}/files/download/{{FILE_S3_KEY}}
 Authorization: Bearer {{$dotenv AUTH_BEARER_TOKEN}}
