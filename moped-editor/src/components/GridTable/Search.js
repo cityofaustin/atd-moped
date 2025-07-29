@@ -161,7 +161,10 @@ const Search = ({
 
   const handleMapToggle = (event, view) => {
     if (view === null) {
-      // If no view is selected, do nothing
+      // If no view is selected, do nothing. This is necessary because the ToggleButtonGroup
+      // will call this function with `null` when the user clicks on the currently selected button.
+      // This behavior is associated with the `exclusive` prop of the ToggleButtonGroup, see
+      // https://v5.mui.com/material-ui/api/toggle-button-group/#toggle-button-group-prop-onChange
       return;
     }
     setShowMapView(view === "map");
