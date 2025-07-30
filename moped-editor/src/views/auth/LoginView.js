@@ -121,8 +121,7 @@ const LoginView = () => {
       title="Login"
       sx={{
         height: "100%",
-        paddingBottom: 3,
-        paddingTop: 3,
+        paddingY: 3,
       }}
     >
       <Box
