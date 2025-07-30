@@ -26,7 +26,7 @@ export const formatComponentsActivity = (
   const componentText = {
     text: `${component} (#${componentID})`,
     style: "boldText",
-    link: componentLink
+    link: componentLink,
   };
   const phase = phaseList[change.record_data.event.data.new.phase_id];
   const subphase = subphaseList[change.record_data.event.data.new.subphase_id];
@@ -44,16 +44,13 @@ export const formatComponentsActivity = (
   if (change.description.length === 0) {
     return {
       changeIcon,
-      changeText: [
-        { text: "Added a component: ", style: null },
-        componentText,
-      ],
+      changeText: [{ text: "Added a component: ", style: null }, componentText],
     };
   }
 
   // delete an existing component
-  if (change.description[0].field === "is_deleted") {
-    const {link, ...simpleComponentText} = componentText;
+  if (change.description[0].fields.includes("is_deleted")) {
+    const { link, ...simpleComponentText } = componentText;
     if (change.record_data.event.data.new.is_deleted) {
       return {
         changeIcon,
@@ -71,10 +68,9 @@ export const formatComponentsActivity = (
         simpleComponentText,
       ],
     };
-
   }
 
-  if (change.description[0].field === "project_id") {
+  if (change.description[0].fields.includes("project_id")) {
     if (change.record_data.event.data.old.project_id === parseInt(projectId)) {
       // a component was moved from this project to another project
       return {

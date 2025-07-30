@@ -17,7 +17,7 @@ export const formatPersonnelActivity = (change, userList) => {
     };
   }
 
-  if (change.description[0].field === "user_id") {
+  if (change.description[0].fields.includes("user_id")) {
     return {
       changeIcon,
       changeText: [
@@ -30,7 +30,7 @@ export const formatPersonnelActivity = (change, userList) => {
   }
 
   // remove a person from the team
-  if (change.description[0].field === "is_deleted") {
+  if (change.description[0].fields.includes("is_deleted")) {
     return {
       changeIcon,
       changeText: [
@@ -42,23 +42,22 @@ export const formatPersonnelActivity = (change, userList) => {
   }
 
   // update the notes field
-  if (change.description[0].field === "notes")
-    return {
-    changeIcon,
-    changeText: [
-      { text: "Updated team member notes for " },
-      { text: userList[changeData.new.user_id], style: "boldText" },
-    ],
-  };
-
-  // the only other change that would be reflected here is adding or removing roles
-  else {
+  if (change.description[0].fields.includes("notes")) {
     return {
       changeIcon,
       changeText: [
-        { text: "Updated personnel role for "},
-        { text: userList[changeData.new.user_id], style: "boldText"},
-      ]
-    }
+        { text: "Updated team member notes for " },
+        { text: userList[changeData.new.user_id], style: "boldText" },
+      ],
+    };
+    // the only other change that would be reflected here is adding or removing roles
+  } else {
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Updated personnel role for " },
+        { text: userList[changeData.new.user_id], style: "boldText" },
+      ],
+    };
   }
 };

@@ -22,7 +22,7 @@ export const formatNotesActivity = (change, entityList) => {
     };
   }
 
-  if (change.description[0].field === "is_deleted") {
+  if (change.description[0].fields.includes("is_deleted")) {
     return {
       changeIcon,
       changeText: [

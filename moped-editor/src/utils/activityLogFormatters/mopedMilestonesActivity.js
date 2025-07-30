@@ -1,4 +1,4 @@
-import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
+import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import { ProjectActivityLogTableMaps } from "src/views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatMilestonesActivity = (change, milestoneList) => {
@@ -22,7 +22,7 @@ export const formatMilestonesActivity = (change, milestoneList) => {
   }
 
   // delete an existing milestone
-  if (change.description[0].field === "is_deleted") {
+  if (change.description[0].fields.includes("is_deleted")) {
     return {
       changeIcon,
       changeText: [

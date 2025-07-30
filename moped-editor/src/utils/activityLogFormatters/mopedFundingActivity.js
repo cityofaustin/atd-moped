@@ -56,7 +56,7 @@ export const formatFundingActivity = (
     }
   }
   // delete an existing record
-  if (change.description[0].field === "is_deleted") {
+  if (change.description[0].fields.includes("is_deleted")) {
     if (fundingSourceText) {
       return {
         changeIcon,

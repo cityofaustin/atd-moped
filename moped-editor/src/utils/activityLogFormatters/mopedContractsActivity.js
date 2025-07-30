@@ -25,7 +25,7 @@ export const formatContractsActivity = (change) => {
   }
 
   // delete an existing work activity
-  if (change.description[0].field === "is_deleted") {
+  if (change.description[0].fields.includes("is_deleted")) {
     return {
       changeIcon,
       changeText: [

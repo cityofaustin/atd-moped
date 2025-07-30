@@ -35,7 +35,7 @@ export const formatFilesActivity = (change) => {
   }
 
   // delete an existing file
-  if (change.description[0].field === "is_deleted") {
+  if (change.description[0].fields.includes("is_deleted")) {
     return {
       changeIcon,
       changeText: [{ text: "Deleted the file ", style: null }, fileText],
