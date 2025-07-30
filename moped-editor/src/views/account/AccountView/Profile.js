@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
 import {
   Avatar,
   Box,
@@ -13,43 +11,28 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
-
 import {
   getSessionDatabaseData,
   setSessionDatabaseData,
   getDatabaseId,
   useUser,
-} from "../../../auth/user";
-import emailToInitials from "../../../utils/emailToInitials";
+} from "src/auth/user";
+import emailToInitials from "src/utils/emailToInitials";
 import { getInitials } from "src/utils/userNames";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import FileUploadDialogSimple from "../../../components/FileUpload/FileUploadDialogSimple";
+import FileUploadDialogSimple from "src/components/FileUpload/FileUploadDialogSimple";
 
 import {
   ACCOUNT_USER_PROFILE_GET,
   ACCOUNT_USER_PICTURE_UPDATE,
   ACCOUNT_USER_PICTURE_DELETE,
-} from "../../../queries/account";
+} from "src/queries/account";
 
 import { useMutation, useQuery } from "@apollo/client";
-import CDNAvatar from "../../../components/CDN/Avatar";
+import CDNAvatar from "src/components/CDN/Avatar";
 import { DeleteForever } from "@mui/icons-material";
 
-const useStyles = makeStyles(() => ({
-  root: {},
-  avatar: {
-    height: 100,
-    width: 100,
-    marginBottom: 8,
-  },
-  userInitials: {
-    fontSize: "2rem",
-  },
-}));
-
-const Profile = ({ className, ...rest }) => {
-  const classes = useStyles();
+const Profile = ({ ...rest }) => {
   const { user } = useUser();
   const updateFailedPermissionMessage = `Error: Cannot update image, you are not allowed to update this account. Please contact the DTS team for further assistance.`;
 
@@ -151,16 +134,16 @@ const Profile = ({ className, ...rest }) => {
     <>
       {loading && <CircularProgress />}
       {error && (
-        <Card className={clsx(classes.root, className)} {...rest}>
+        <Card {...rest}>
           <CardContent>
             <Box alignItems="center" display="flex" flexDirection="column">
               <Box>
                 <Avatar
-                  className={classes.avatar}
+                  sx={{ height: 100, width: 100, marginBottom: 8 }}
                   src={user?.userAvatar}
                   style={{ backgroundColor: user?.userColor }}
                 >
-                  <Typography className={classes.userInitials}>
+                  <Typography sx={{ fontSize: "2rem" }}>
                     {emailToInitials(user?.idToken?.payload?.email)}
                   </Typography>
                 </Avatar>
@@ -201,13 +184,7 @@ const Profile = ({ className, ...rest }) => {
       )}
 
       {userProfile && (
-        <Card
-          xs={12}
-          sm={6}
-          md={6}
-          className={clsx(classes.root, className)}
-          {...rest}
-        >
+        <Card xs={12} sm={6} md={6} {...rest}>
           <CardContent>
             <Box alignItems="center" display="flex" flexDirection="column">
               <Box>
@@ -263,10 +240,6 @@ const Profile = ({ className, ...rest }) => {
       )}
     </>
   );
-};
-
-Profile.propTypes = {
-  className: PropTypes.string,
 };
 
 export default Profile;

@@ -1,16 +1,6 @@
 import React from "react";
 import Link from "@mui/material/Link";
-import makeStyles from "@mui/styles/makeStyles";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-
-const useStyles = makeStyles(() => ({
-  iconStyle: {
-    fontSize: "1rem",
-    marginLeft: "2px",
-    position: "relative",
-    bottom: "-3px",
-  },
-}));
 
 /**
  * ExternalLink component
@@ -26,12 +16,9 @@ const ExternalLink = ({
   url,
   text,
   linkColor,
-  iconStyle,
   linkProps,
   stopPropagation = false,
 }) => {
-  const classes = useStyles();
-
   return (
     <span
       onClick={(e) => {
@@ -50,9 +37,12 @@ const ExternalLink = ({
         >
           {text}
           <OpenInNewIcon
-            // If iconStyle prop exists, use that override. Otherwise, use the
-            // styles set in the makeStyles() above.
-            className={iconStyle ? iconStyle : classes.iconStyle}
+            sx={{
+              fontSize: "1rem",
+              marginLeft: "2px",
+              position: "relative",
+              bottom: "-3px",
+            }}
           />
         </Link>
       ) : (

@@ -1,21 +1,18 @@
 import React from "react";
-import { Divider, List, ListItem, ListItemText } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import {
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const useStyles = makeStyles(() => ({
-  padding: {
-    paddingTop: "0px",
-    paddingBottom: "0px",
-  },
-  listItemSecondaryAction: {
-    fontSize: "1.125rem",
-  },
-}));
+const listPaddingStyles = { paddingX: 0 };
 
 const ListItemLink = (props) => (
-  <ListItem button component={RouterLink} {...props} />
+  <ListItemButton component={RouterLink} {...props} />
 );
 
 const NavigationSearchResults = ({
@@ -23,12 +20,11 @@ const NavigationSearchResults = ({
   handleDropdownClose,
   searchTerm,
 }) => {
-  const classes = useStyles();
   const firstResults = results.slice(0, 5);
 
   if (results.length === 0) {
     return (
-      <List className={classes.padding}>
+      <List sx={listPaddingStyles}>
         <ListItem>
           <ListItemText primary="No results found" />
         </ListItem>
@@ -37,7 +33,7 @@ const NavigationSearchResults = ({
   }
 
   return (
-    <List className={classes.padding}>
+    <List sx={listPaddingStyles}>
       {firstResults.map((result) => (
         <ListItemLink
           to={`/moped/projects/${result.project_id}`}
@@ -60,7 +56,7 @@ const NavigationSearchResults = ({
             reloadDocument
           >
             <ListItemText primary="More results" />
-            <ArrowForwardIosIcon className={classes.listItemSecondaryAction} />
+            <ArrowForwardIosIcon sx={{ fontSize: "1.125rem" }} />
           </ListItemLink>
         </>
       )}
