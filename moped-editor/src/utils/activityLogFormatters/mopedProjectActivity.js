@@ -53,12 +53,12 @@ export const formatProjectActivity = (change, lookupList) => {
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
     // typeof(null) === "object", check that field is not null before checking if object
-    if (!!newRecord[field] && typeof newRecord[field] === "object") {
-      if (!isEqual(newRecord[field], oldRecord[field])) {
+    if (!!newRecord?.[field] && typeof newRecord?.[field] === "object") {
+      if (!isEqual(newRecord?.[field], oldRecord?.[field])) {
         changes.push(entryMap.fields[field]?.label);
       }
     } else if (
-      newRecord[field] !== oldRecord[field] &&
+      newRecord?.[field] !== oldRecord?.[field] &&
       !fieldsToSkip.includes(field)
     ) {
       changes.push(entryMap.fields[field]?.label);

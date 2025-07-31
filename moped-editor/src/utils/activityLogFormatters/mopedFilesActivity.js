@@ -55,7 +55,7 @@ export const formatFilesActivity = (change) => {
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
-    if (newRecord[field] !== oldRecord[field]) {
+    if (newRecord?.[field] !== oldRecord?.[field]) {
       if (CHANGE_FIELDS_TO_IGNORE.includes(field)) {
         return;
       }
