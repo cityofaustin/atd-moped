@@ -119,15 +119,21 @@ const useLookupTables = (data) =>
 const CHANGE_FIELDS_TO_IGNORE = ["updated_by_user_id", "updated_at"];
 
 /**
- * Updates the description field with newData and oldData
- * Makes sure the project creation event is the last in the returned Array
- * The formatters expect the following object shape:
- * {
- *   "new": true,
- *   "old": false,
+ * Formats the activity log data for display in the project activity log.
+ * For our old schema, it extracts the changed fields from the description array.
+ * For the new schema, it compares the old and new record data to find the changed fields.
+ * It returns an array of formatted activity log entries.
+ *
+ * The formatters expect the following description object shape when handling updated records:
+ * event.description = [{
+ *   "new": {...the new record data},
+ *   "old": {...the old record data},
  *   "fields": ["completed", "is_deleted", ...]
- * }
- * @param {Array} eventList - The data object as provided by apollo
+ * }]
+ * The formatters expect the following description object shape when handling inserted records:
+ * event.description = []
+ *
+ * @param {Array} activityData - The data object as provided by apollo
  * @returns {Array}
  */
 const usePrepareActivityData = (activityData) =>
@@ -185,7 +191,7 @@ const usePrepareActivityData = (activityData) =>
             {
               new: newData,
               old: oldData,
-              fields: changedFields, // Extract from old schema's field-by-field tracking
+              fields: changedFields, // Extracted from old schema's field-by-field tracking
             },
           ];
         }
