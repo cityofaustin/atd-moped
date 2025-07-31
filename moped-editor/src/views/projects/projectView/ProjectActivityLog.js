@@ -121,6 +121,12 @@ const CHANGE_FIELDS_TO_IGNORE = ["updated_by_user_id", "updated_at"];
 /**
  * Updates the description field with newData and oldData
  * Makes sure the project creation event is the last in the returned Array
+ * The formatters expect the following object shape:
+ * {
+ *   "new": true,
+ *   "old": false,
+ *   "fields": ["completed"]
+ *}
  * @param {Array} eventList - The data object as provided by apollo
  * @returns {Array}
  */
@@ -135,13 +141,6 @@ const usePrepareActivityData = (activityData) =>
       let outputEvent = { ...event };
       // if the description includes "newSchema", we need to manually find the difference in the update
       if (event.description[0]?.newSchema) {
-        if (
-          event.record_type === "moped_proj_milestones" &&
-          (event.activity_id !== "42c0c12f-8c4f-4da1-8860-41ea3a2515e1" ||
-            event.activity_id !== "42c0c12f-8c4f-4da1-8860-41ea3a2515e1")
-        ) {
-          console.log("new schema", event);
-        }
         // if event is an INSERT there is no previous record to compare to
         if (event.operation_type === "INSERT") {
           outputEvent.description = [];
@@ -185,11 +184,6 @@ const usePrepareActivityData = (activityData) =>
             fields: changedFields, // Extract from old schema's field-by-field tracking
           },
         ];
-        console.log("old schema", event, {
-          new: newData,
-          old: oldData,
-          fields: changedFields, // Extract from old schema's field-by-field tracking
-        });
       }
       outputList.push(outputEvent);
 
