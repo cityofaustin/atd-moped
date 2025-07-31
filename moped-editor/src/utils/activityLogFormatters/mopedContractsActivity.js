@@ -7,6 +7,7 @@ export const formatContractsActivity = (change) => {
 
   const changeIcon = <AssignmentIndIconOutlined />;
   const referenceID = change.record_data.event.data.new.reference_id;
+  const newIsDeleted = change.record_data.event.data.new.is_deleted;
   const referenceIdText = {
     text: referenceID,
     style: "boldText",
@@ -25,7 +26,10 @@ export const formatContractsActivity = (change) => {
   }
 
   // delete an existing work activity
-  if (change.description[0].field === "is_deleted") {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     return {
       changeIcon,
       changeText: [
@@ -47,12 +51,12 @@ export const formatContractsActivity = (change) => {
   Object.keys(newRecord).forEach((field) => {
     // typeof(null) resolves as "object", check that field is not null before checking if object
     // task orders are in arrays
-    if (!!newRecord[field] && typeof newRecord[field] === "object") {
-      if (!isEqual(newRecord[field], oldRecord[field])) {
+    if (!!newRecord?.[field] && typeof newRecord?.[field] === "object") {
+      if (!isEqual(newRecord?.[field], oldRecord?.[field])) {
         changes.push(entryMap.fields[field]?.label);
       }
     } else if (
-      newRecord[field] !== oldRecord[field] &&
+      newRecord?.[field] !== oldRecord?.[field] &&
       !fieldsToSkip.includes(field)
     ) {
       changes.push(entryMap.fields[field]?.label);

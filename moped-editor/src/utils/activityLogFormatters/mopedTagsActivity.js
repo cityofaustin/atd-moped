@@ -20,7 +20,7 @@ export const formatTagsActivity = (change, tagList) => {
     return {
       changeIcon,
       changeText: [
-        { text: "Project tag deleted  ", style: null },
+        { text: "Project tag removed  ", style: null },
         {
           text: tagList[change.record_data.event.data.new.tag_id],
           style: "boldText",
