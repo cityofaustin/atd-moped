@@ -38,7 +38,7 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
   let changes = [];
 
   // if the record has been deleted that supersedes any other changes
-  if (newRecord["is_deleted"] === true) {
+  if (newRecord?.["is_deleted"] === true) {
     return {
       changeIcon,
       changeText: [
