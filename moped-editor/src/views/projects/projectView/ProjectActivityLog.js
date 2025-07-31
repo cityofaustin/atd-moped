@@ -135,6 +135,13 @@ const usePrepareActivityData = (activityData) =>
       let outputEvent = { ...event };
       // if the description includes "newSchema", we need to manually find the difference in the update
       if (event.description[0]?.newSchema) {
+        if (
+          event.record_type === "moped_proj_milestones" &&
+          (event.activity_id !== "42c0c12f-8c4f-4da1-8860-41ea3a2515e1" ||
+            event.activity_id !== "42c0c12f-8c4f-4da1-8860-41ea3a2515e1")
+        ) {
+          console.log("new schema", event);
+        }
         // if event is an INSERT there is no previous record to compare to
         if (event.operation_type === "INSERT") {
           outputEvent.description = [];
@@ -165,6 +172,24 @@ const usePrepareActivityData = (activityData) =>
             },
           ];
         }
+      } else {
+        // Handle old schema - extract changed fields from description array
+        const changedFields = event.description.map((change) => change.field);
+        const newData = outputEvent.record_data.event.data.new;
+        const oldData = outputEvent.record_data.event.data.old;
+
+        outputEvent.description = [
+          {
+            new: newData,
+            old: oldData,
+            fields: changedFields, // Extract from old schema's field-by-field tracking
+          },
+        ];
+        console.log("old schema", event, {
+          new: newData,
+          old: oldData,
+          fields: changedFields, // Extract from old schema's field-by-field tracking
+        });
       }
       outputList.push(outputEvent);
 
