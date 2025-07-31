@@ -1,7 +1,7 @@
 # Architecture Independent Docker Stack Components for Moped Development Environment
 services:
     hasura:
-        image: hasura/graphql-engine:v2.48.1
+        image: hasura/graphql-engine:v2.48.3
         depends_on:
             - moped-pgsql
         expose:
