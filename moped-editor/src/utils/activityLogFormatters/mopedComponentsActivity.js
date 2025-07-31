@@ -119,7 +119,7 @@ export const formatComponentsActivity = (
     return {
       changeIcon,
       changeText: [
-        { text: "Deleted the phase from component ", style: null },
+        { text: "Removed the phase from component ", style: null },
         componentText,
       ],
     };

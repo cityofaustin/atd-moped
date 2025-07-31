@@ -38,7 +38,7 @@ export const formatFilesActivity = (change) => {
   if (change.description[0].fields.includes("is_deleted")) {
     return {
       changeIcon,
-      changeText: [{ text: "Deleted the file ", style: null }, fileText],
+      changeText: [{ text: "Removed the file ", style: null }, fileText],
     };
   }
 

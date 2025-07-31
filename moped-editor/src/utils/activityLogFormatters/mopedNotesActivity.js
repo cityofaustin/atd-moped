@@ -28,7 +28,7 @@ export const formatNotesActivity = (change, entityList) => {
       changeText: [
         {
           text:
-            noteType === 2 ? "Deleted a status update " : "Deleted a comment ",
+            noteType === 2 ? "Removed a status update " : "Removed a comment ",
           style: null,
         },
       ],

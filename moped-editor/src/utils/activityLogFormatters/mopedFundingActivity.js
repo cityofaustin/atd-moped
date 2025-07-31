@@ -61,7 +61,7 @@ export const formatFundingActivity = (
       return {
         changeIcon,
         changeText: [
-          { text: "Deleted a funding source: ", style: null },
+          { text: "Removed a funding source: ", style: null },
           {
             text: fundingSourceText,
             style: "boldText",
@@ -71,7 +71,7 @@ export const formatFundingActivity = (
     } else {
       return {
         changeIcon,
-        changeText: [{ text: "Deleted a funding source", style: null }],
+        changeText: [{ text: "Removed a funding source", style: null }],
       };
     }
   }

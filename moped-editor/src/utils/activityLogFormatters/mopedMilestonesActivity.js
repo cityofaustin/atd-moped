@@ -26,7 +26,7 @@ export const formatMilestonesActivity = (change, milestoneList) => {
     return {
       changeIcon,
       changeText: [
-        { text: "Deleted the milestone ", style: null },
+        { text: "Removed the milestone ", style: null },
         {
           text: milestoneList[change.record_data.event.data.new.milestone_id],
           style: "boldText",
