@@ -23,7 +23,7 @@ export const formatActivityLogEntry = (change, lookupData, projectId) => {
     case "moped_project":
       // if the user is changing the public process status id field,
       // provide the publicProcessStatusList lookup object
-      if (change?.description[0]?.field === "public_process_status_id") {
+      if (change?.description[0]?.fields.includes("public_process_status_id")) {
         return formatProjectActivity(
           change,
           lookupData.publicProcessStatusList
