@@ -8,12 +8,13 @@ import {
   Paper,
   Popper,
   ClickAwayListener,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import Hidden from "@mui/material/Hidden";
 import Icon from "@mui/material/Icon";
-import Switch from "@mui/material/Switch";
+import ListRoundedIcon from "@mui/icons-material/ListRounded";
+import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "src/components/GridTable/SearchBar";
@@ -55,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   },
   gridSearchPadding: {
     padding: "12px",
+  },
+  toggleButtonGroup: {
+    display: "inline",
+    marginRight: theme.spacing(3),
   },
 }));
 
@@ -154,10 +159,17 @@ const Search = ({
     });
   };
 
-  const handleMapToggle = () => {
-    setShowMapView(!showMapView);
+  const handleMapToggle = (event, view) => {
+    if (view === null) {
+      // If no view is selected, do nothing. This is necessary because the ToggleButtonGroup
+      // will call this function with `null` when the user clicks on the currently selected button.
+      // This behavior is associated with the `exclusive` prop of the ToggleButtonGroup, see
+      // https://v5.mui.com/material-ui/api/toggle-button-group/#toggle-button-group-prop-onChange
+      return;
+    }
+    setShowMapView(view === "map");
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(mapSearchParamName, !showMapView);
+      prevSearchParams.set(mapSearchParamName, view === "map");
 
       return prevSearchParams;
     });
@@ -212,17 +224,19 @@ const Search = ({
                           Search
                         </Button>
                       </Hidden>
-                      <FormGroup sx={{ display: "inline" }}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={showMapView}
-                              onChange={handleMapToggle}
-                            />
-                          }
-                          label="Map"
-                        />
-                      </FormGroup>
+                      <ToggleButtonGroup
+                        className={classes.toggleButtonGroup}
+                        value={showMapView === true ? "map" : "list"} // Highlight selected button
+                        exclusive
+                        onChange={handleMapToggle}
+                      >
+                        <ToggleButton value="list" aria-label="list view">
+                          <ListRoundedIcon />
+                        </ToggleButton>
+                        <ToggleButton value="map" aria-label="map view">
+                          <MapOutlinedIcon />
+                        </ToggleButton>
+                      </ToggleButtonGroup>
                       <Button
                         disabled={
                           (parentData?.[queryConfig.table] ?? []).length === 0
