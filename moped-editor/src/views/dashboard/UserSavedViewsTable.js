@@ -251,7 +251,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         onRowModesModelChange={handleRowModesModelChange}
         onProcessRowUpdateError={(error) => console.error}
         editMode="row"
-        onRowEditStop={handleRowEditStop}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
         hideFooter
         disableRowSelectionOnClick
