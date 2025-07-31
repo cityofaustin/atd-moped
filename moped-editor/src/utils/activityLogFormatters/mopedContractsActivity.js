@@ -51,12 +51,12 @@ export const formatContractsActivity = (change) => {
   Object.keys(newRecord).forEach((field) => {
     // typeof(null) resolves as "object", check that field is not null before checking if object
     // task orders are in arrays
-    if (!!newRecord[field] && typeof newRecord[field] === "object") {
-      if (!isEqual(newRecord[field], oldRecord[field])) {
+    if (!!newRecord?.[field] && typeof newRecord?.[field] === "object") {
+      if (!isEqual(newRecord?.[field], oldRecord?.[field])) {
         changes.push(entryMap.fields[field]?.label);
       }
     } else if (
-      newRecord[field] !== oldRecord[field] &&
+      newRecord?.[field] !== oldRecord?.[field] &&
       !fieldsToSkip.includes(field)
     ) {
       changes.push(entryMap.fields[field]?.label);
