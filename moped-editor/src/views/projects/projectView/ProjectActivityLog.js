@@ -125,8 +125,8 @@ const CHANGE_FIELDS_TO_IGNORE = ["updated_by_user_id", "updated_at"];
  * {
  *   "new": true,
  *   "old": false,
- *   "fields": ["completed"]
- *}
+ *   "fields": ["completed", "is_deleted", ...]
+ * }
  * @param {Array} eventList - The data object as provided by apollo
  * @returns {Array}
  */
