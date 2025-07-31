@@ -4,6 +4,7 @@ import parse from "html-react-parser";
 export const formatNotesActivity = (change, entityList) => {
   const changeIcon = <SpeakerNotesOutlinedIcon />;
   const noteType = change.record_data.event.data.new.project_note_type;
+  const newIsDeleted = change.record_data.event.data.new.is_deleted;
 
   // Adding a new note
   if (change.description.length === 0) {
@@ -22,7 +23,10 @@ export const formatNotesActivity = (change, entityList) => {
     };
   }
 
-  if (change.description[0].fields.includes("is_deleted")) {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     return {
       changeIcon,
       changeText: [

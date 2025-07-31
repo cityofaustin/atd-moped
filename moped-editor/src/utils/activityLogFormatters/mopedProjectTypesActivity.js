@@ -4,6 +4,7 @@ export const formatProjectTypesActivity = (change, projectTypeList) => {
   );
   const projectType =
     projectTypeList[change.record_data.event.data.new.project_type_id];
+  const newIsDeleted = change.record_data.event.data.new.is_deleted;
   const displayText = {
     text: projectType,
     style: "boldText",
@@ -22,7 +23,10 @@ export const formatProjectTypesActivity = (change, projectTypeList) => {
   }
 
   // delete an existing project type
-  if (change.description[0].fields.includes("is_deleted")) {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     return {
       changeIcon,
       changeText: [

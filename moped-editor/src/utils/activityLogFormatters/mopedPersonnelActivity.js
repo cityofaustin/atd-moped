@@ -4,6 +4,7 @@ export const formatPersonnelActivity = (change, userList) => {
   let changeIcon = <PeopleOutlineIcon />;
 
   const changeData = change.record_data.event.data;
+  const newIsDeleted = changeData.new.is_deleted;
 
   // Adding a new person to project team
   if (change.description.length === 0) {
@@ -30,7 +31,10 @@ export const formatPersonnelActivity = (change, userList) => {
   }
 
   // remove a person from the team
-  if (change.description[0].fields.includes("is_deleted")) {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     return {
       changeIcon,
       changeText: [

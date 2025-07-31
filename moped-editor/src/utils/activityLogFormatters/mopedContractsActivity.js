@@ -7,6 +7,7 @@ export const formatContractsActivity = (change) => {
 
   const changeIcon = <AssignmentIndIconOutlined />;
   const referenceID = change.record_data.event.data.new.reference_id;
+  const newIsDeleted = change.record_data.event.data.new.is_deleted;
   const referenceIdText = {
     text: referenceID,
     style: "boldText",
@@ -25,7 +26,10 @@ export const formatContractsActivity = (change) => {
   }
 
   // delete an existing work activity
-  if (change.description[0].fields.includes("is_deleted")) {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     return {
       changeIcon,
       changeText: [

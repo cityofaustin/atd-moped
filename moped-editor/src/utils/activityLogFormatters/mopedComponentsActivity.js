@@ -51,7 +51,7 @@ export const formatComponentsActivity = (
   // delete an existing component
   if (change.description[0].fields.includes("is_deleted")) {
     const { link, ...simpleComponentText } = componentText;
-    if (change.record_data.event.data.new.is_deleted) {
+    if (change.record_data.event.data.new.is_deleted === true) {
       return {
         changeIcon,
         changeText: [

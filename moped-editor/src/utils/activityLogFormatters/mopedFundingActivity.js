@@ -26,6 +26,7 @@ export const formatFundingActivity = (
 
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
+  const newIsDeleted = newRecord.is_deleted;
 
   const fundingSourceText = getFundingSourceIdText(
     newRecord,
@@ -56,7 +57,10 @@ export const formatFundingActivity = (
     }
   }
   // delete an existing record
-  if (change.description[0].fields.includes("is_deleted")) {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     if (fundingSourceText) {
       return {
         changeIcon,

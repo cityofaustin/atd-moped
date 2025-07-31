@@ -5,6 +5,7 @@ export const formatMilestonesActivity = (change, milestoneList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_milestones"];
 
   const changeIcon = <EventNoteOutlinedIcon />;
+  const newIsDeleted = change.record_data.event.data.new.is_deleted;
 
   // add a new milestone
   if (change.description.length === 0) {
@@ -22,7 +23,10 @@ export const formatMilestonesActivity = (change, milestoneList) => {
   }
 
   // delete an existing milestone
-  if (change.description[0].fields.includes("is_deleted")) {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     return {
       changeIcon,
       changeText: [

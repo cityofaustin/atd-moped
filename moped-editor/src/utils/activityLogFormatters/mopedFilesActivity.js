@@ -15,6 +15,7 @@ export const formatFilesActivity = (change) => {
   const changeIcon = <AttachFileOutlined />;
   const oldFileName = change.record_data.event.data.old?.file_name;
   const newFileName = change.record_data.event.data.new.file_name;
+  const newIsDeleted = change.record_data.event.data.new.is_deleted;
   const fileText = {
     // if there is no old file name (previous state where file name did not exist),
     // display current file name, otherwise displays old file name that was changed
@@ -35,7 +36,10 @@ export const formatFilesActivity = (change) => {
   }
 
   // delete an existing file
-  if (change.description[0].fields.includes("is_deleted")) {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     return {
       changeIcon,
       changeText: [{ text: "Removed the file ", style: null }, fileText],
