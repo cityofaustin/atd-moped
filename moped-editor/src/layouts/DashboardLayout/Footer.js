@@ -1,23 +1,18 @@
 import React from "react";
-import { Typography } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { Typography, Box } from "@mui/material";
 import ExternalLink from "../../components/ExternalLink";
 
 var pckg = require("../../../package.json");
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(4),
-    paddingBottom: theme.spacing(2),
-  },
-}));
-
 const Footer = () => {
-  const classes = useStyles();
-
   return (
-    <div className={classes.root}>
+    <Box
+      sx={{
+        paddingTop: 1,
+        paddingLeft: 4,
+        paddingBottom: 2,
+      }}
+    >
       <Typography variant="caption" color="textSecondary">
         Moped{" "}
         <ExternalLink
@@ -26,7 +21,7 @@ const Footer = () => {
           linkColor="inherit"
         />
       </Typography>
-    </div>
+    </Box>
   );
 };
 
