@@ -172,18 +172,23 @@ const usePrepareActivityData = (activityData) =>
           ];
         }
       } else {
-        // Handle old schema - extract changed fields from description array
-        const changedFields = event.description.map((change) => change.field);
-        const newData = outputEvent.record_data.event.data.new;
-        const oldData = outputEvent.record_data.event.data.old;
+        // if event is an INSERT there is no previous record to compare to
+        if (event.operation_type === "INSERT") {
+          outputEvent.description = [];
+        } else {
+          // Handle old schema - extract changed fields from description array
+          const changedFields = event.description.map((change) => change.field);
+          const newData = outputEvent.record_data.event.data.new;
+          const oldData = outputEvent.record_data.event.data.old;
 
-        outputEvent.description = [
-          {
-            new: newData,
-            old: oldData,
-            fields: changedFields, // Extract from old schema's field-by-field tracking
-          },
-        ];
+          outputEvent.description = [
+            {
+              new: newData,
+              old: oldData,
+              fields: changedFields, // Extract from old schema's field-by-field tracking
+            },
+          ];
+        }
       }
       outputList.push(outputEvent);
 
