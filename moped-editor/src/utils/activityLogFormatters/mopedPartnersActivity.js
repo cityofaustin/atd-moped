@@ -2,6 +2,7 @@ import GroupOutlined from "@mui/icons-material/GroupOutlined";
 
 export const formatPartnersActivity = (change, entityList) => {
   const changeIcon = <GroupOutlined />;
+  const newIsDeleted = change.record_data.event.data.new.is_deleted;
 
   // Adding a new partner
   if (change.description.length === 0) {
@@ -17,10 +18,10 @@ export const formatPartnersActivity = (change, entityList) => {
     };
   } else {
     const description = change?.description?.[0];
-    const changedField = description?.field;
+    const changedFields = description?.fields;
 
     // If the changed field is is_deleted, then the partner was removed
-    if (changedField === "is_deleted") {
+    if (changedFields.includes("is_deleted") && newIsDeleted === true) {
       return {
         changeIcon,
         changeText: [

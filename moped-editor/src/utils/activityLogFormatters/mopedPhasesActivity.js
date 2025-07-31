@@ -42,7 +42,7 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
     return {
       changeIcon,
       changeText: [
-        { text: "Deleted the phase ", style: null },
+        { text: "Removed the phase ", style: null },
         phaseText,
         // include subphase name if one exists
         ...(subphase ? [subphaseText] : []),

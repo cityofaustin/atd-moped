@@ -26,6 +26,7 @@ export const formatFundingActivity = (
 
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
+  const newIsDeleted = newRecord.is_deleted;
 
   const fundingSourceText = getFundingSourceIdText(
     newRecord,
@@ -56,12 +57,15 @@ export const formatFundingActivity = (
     }
   }
   // delete an existing record
-  if (change.description[0].field === "is_deleted") {
+  if (
+    change.description[0].fields.includes("is_deleted") &&
+    newIsDeleted === true
+  ) {
     if (fundingSourceText) {
       return {
         changeIcon,
         changeText: [
-          { text: "Deleted a funding source: ", style: null },
+          { text: "Removed a funding source: ", style: null },
           {
             text: fundingSourceText,
             style: "boldText",
@@ -71,7 +75,7 @@ export const formatFundingActivity = (
     } else {
       return {
         changeIcon,
-        changeText: [{ text: "Deleted a funding source", style: null }],
+        changeText: [{ text: "Removed a funding source", style: null }],
       };
     }
   }
