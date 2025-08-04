@@ -1,9 +1,9 @@
 name: "Build Moped API image and push to Docker Hub"
 on:
   push:
-    # branches:
-    # - main
-    # - production
+    branches:
+      - main
+      - production
     paths:
       - ".github/workflows/build_and_push_api_image.yml"
       - "api/**"
