@@ -72,12 +72,6 @@ We will adhere to a blueprint architecture as it is stipulated in their document
 
 This is going to help scale large amounts of code into our API, it should also help with modularity and code re-use and our testing strategies. Please refer to the architecture notes below for details on how blueprints work.
 
-## Test-driven development
-
-To enable test-driven development patterns in our API I have created a tests folder with a sample test.
-
-In the API root directory, you can use these commands to run your tests:
-
 ## Parsing the JWT token within the API
 
 Parsing JWT tokens provided by AWS Cognito is done with the help of the flask-cognito library (see references at the bottom) Take a look at the ./auth/auth.py file in the API, you will notice a few interesting lines:
