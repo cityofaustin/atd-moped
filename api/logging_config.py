@@ -7,16 +7,13 @@ import os
 from typing import Optional
 
 
-def setup_logging(level: Optional[str] = None) -> logging.Logger:
+def setup_logging(level: Optional[str] = "INFO") -> logging.Logger:
     """
     Set up centralized logging configuration for the API
 
     :param level: Optional log level override (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     :return: Configured logger instance
     """
-    if level is None:
-        level = "INFO"
-
     # Configure root logger
     logging.basicConfig(
         level=getattr(logging, level, logging.INFO),
