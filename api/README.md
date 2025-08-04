@@ -2,8 +2,7 @@
 
 The Mobility Project Database API uses a unique stack consisting of the elements:
 
-- AWS Cognito: It managers our user base. It also federates users and allows for
-  single sign-on with different identity providers such as Google, Microsoft, OpenID, etc.
+- AWS Cognito: It managers our user base. It also federates users and allows for single sign-on with different identity providers such as Google, Microsoft, OpenID, etc.
 - AWS DynamoDB: It serves as a serverless key-value database.
 - AWS S3: It stores all the files that will be needed for the Moped database project.
 - AWS API Gateway: It helps manage the API endpoint and manages some of the security with Cognito.
