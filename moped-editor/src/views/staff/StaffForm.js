@@ -24,15 +24,8 @@ import {
   RadioGroup,
   Select,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import StaffFormErrorModal from "src/views/staff/components/StaffFormErrorModal";
 import StaffFormConfirmModal from "src/views/staff/components/StaffFormConfirmModal";
-
-const useStyles = makeStyles(() => ({
-  formSelect: {
-    minWidth: 195,
-  },
-}));
 
 /**
  * Generates a StaffForm Component
@@ -63,8 +56,6 @@ const StaffForm = ({
   isPasswordFieldDisabled,
   FormButtons,
 }) => {
-  const classes = useStyles();
-
   const initialModalState = {
     open: false,
     title: null,
@@ -242,7 +233,7 @@ const StaffForm = ({
           {workgroupLoading ? (
             <CircularProgress />
           ) : (
-            <FormControl variant="outlined" className={classes.formSelect}>
+            <FormControl variant="outlined" sx={{ minWidth: "195px" }}>
               <InputLabel id="workgroup-label">Workgroup</InputLabel>
               <Controller
                 name="workgroup_id"
