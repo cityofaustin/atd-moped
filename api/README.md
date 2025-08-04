@@ -2,66 +2,48 @@
 
 The Mobility Project Database API uses a unique stack consisting of the elements:
 
-- AWS Cognito: It managers our user base. It also federates users and allows for
-  single sign-on with different identity providers such as Google, Microsoft, OpenID, etc.
+- AWS Cognito: It managers our user base. It also federates users and allows for single sign-on with different identity providers such as Google, Microsoft, OpenID, etc.
 - AWS DynamoDB: It serves as a serverless key-value database.
 - AWS S3: It stores all the files that will be needed for the Moped database project.
 - AWS API Gateway: It helps manage the API endpoint and manages some of the security with Cognito.
-- AWS Lambda: It runs a serverless Flask API.
-- Zappa: It deploys the stack for us with minimal configuration.
-- Pytest: We will be using Pytest for our test-driven development practices.
-- Python: Version 3.8
+- AWS ECS: The webserver runs as a docker container serving up a WSGI app via `gunicorn`
+- Python: Version 3.13
 
 ## Getting Started
-
-#### Requirements
-
-The python requirements are organized in three environments:
-
-```
-requirements/
-├── dev.txt
-├── production.txt
-└── staging.txt
-```
-
-** TO DEVELOP LOCALLY YOU MUST CHOOSE DEV **
 
 Install the requirements in your machine, run these in order:
 
 1.First create a virtual environment in the API root folder:
 
-```
-$ virtualenv venv
+```shell
+virtualenv venv
 ```
 
 2.Then activate the environment
 
-```
-$ source venv/bin/activate
+```shell
+source venv/bin/activate
 ```
 
 3.Now you are ready to install the requirements
 
-```
-$ pip install -r requirements/development.txt
+```shell
+pip install -r requirements.txt
 ```
 
 If you run into problems with installing `cryptography`, see the [cryptography docs on installing on macOS](https://cryptography.io/en/latest/installation/#building-cryptography-on-macos). If you've already run the last command and install of `cryptography` failed, then you may need to:
 
-```
-$ pip uninstall cryptography
-$ brew install openssl@1.1 rust
-$ env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib" CFLAGS="-I$(brew --prefix openssl@1.1)/include" pip install cryptography==3.3.2
+```shell
+pip uninstall cryptography
+brew install openssl@1.1 rust
+env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib" CFLAGS="-I$(brew --prefix openssl@1.1)/include" pip install cryptography==3.3.2
 ```
 
 and then (to install the rest of the requirements):
 
+```shell
+pip install -r requirements.txt
 ```
-$ pip install -r requirements/development.txt
-```
-
-This particular requirements file includes tools such as pytest that make development and unit testing a lot easier, but it also makes the api bulky. Do not bother in installing the production or staging requirement files, those are only meant for cloud deployments.
 
 Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console. Your credentials will need read access to the AWS secret manager. These are the env vars of concern:
 
@@ -78,97 +60,33 @@ Once the installation of the requirements is done, you are ready to launch the a
 
 #### Run Flask in development mode:
 
-```
-$ FLASK_ENV=development flask run --host=0.0.0.0 --port 5001 --debug
+```shell
+FLASK_ENV=development flask run --host=0.0.0.0 --port 5001 --debug
 ```
 
 You may have noticed the FLASK_ENV=development bash variable, this is passed to the flask command and it will initialize the application in app.py and enabled hot-reload, meaning that any changes you make to the code will be automatically reloaded for you (without you having to restart the API for every change).
+
+## Development and testing the API
+
+A configuration file for the VS Code extension [REST Client](https://open-vsx.org/extension/humao/rest-client) is provided here: `api/rest_client/api_usage_examples.rest`. This file includes the exact endpoints and the shape of the JSON payload expected by the API as well as a brief summary of each method's use.
+
+Using the plugin to send requests requires some environment variables to be set. Please add a `.env` file in that same directory with the following key-value pairs. You may have to use the client itself to query the `/users/` endpoint to discover user UUIDs.
+
+```
+API_SERVER=http://localhost:5001/
+AUTH_BEARER_TOKEN = ey...
+USER_ID = <uuid>
+USER_EMAIL = <email>
+USER_PASSWORD = <password>
+```
+
+You may want to additionally test that tokens are correctly rejected by the server. To do this, please take a token, note the time-to-live time for the token as defined in the AWS Cognito system, and using that information, allow a token to expire. If you submit requests with the newly expired token, you should observe a response which rejects it with the correct reason. This same testing methodology can be used to confirm that a malformed token is also rejected with a meaningful error message.
 
 ## Blueprint Architecture
 
 We will adhere to a blueprint architecture as it is stipulated in their documentation: https://flask.palletsprojects.com/en/1.1.x/blueprints/#blueprints
 
 This is going to help scale large amounts of code into our API, it should also help with modularity and code re-use and our testing strategies. Please refer to the architecture notes below for details on how blueprints work.
-
-## Test-driven development
-
-To enable test-driven development patterns in our API I have created a tests folder with a sample test.
-
-In the API root directory, you can use these commands to run your tests:
-
-#### Testing
-
-We use pytest and follow its patters to test our code for the API. To get started with testing make
-sure you install the requirements/dev.txt files and run any of these commands:
-
-```
-# Run all tests
-$ pytest -vs
-
-# Run a specific test file
-$ pytest -vs tests/your_test.py
-
-# Run a specific test in a file:
-$ pytest -v tests/your_tests.py::TestClass::test_method
-```
-
-#### Creating a new test file
-
-You should look at a file called ./tests/test_app.py and copy it into a new file. Inside the test_app.py file you will see this syntax:
-
-First you need to make sure you import the Flask application:
-
-```python
-#!/usr/bin/env python
-import json, pdb
-from unittest.mock import patch
-
-# Imports the Flask application
-from app import app
-```
-
-Then, you create a test class, it must begin with the prefix Test in order to be valid, here we use TestApp but if you were to create a new test file for say the authentication blueprint, you could name the test class TestAuth so on and so forth:
-
-```python
-class TestApp:
-    @classmethod
-    def setup_class(cls):
-        # Gives us access to the app class
-        cls.app = app
-        cls.app.config["TESTING"] = True
-        # Allows us to have a client for every test we make via self
-        cls.client = cls.app.test_client()
-        print("Beginning tests for: TestApp")
-
-    @classmethod
-    def teardown_class(cls):
-        # Discards the app instance we have
-        cls.app = None
-        cls.client = None
-        print("\n\nAll tests finished for: TestApp")
-```
-
-And your first test could be something like this:
-
-```python
-    @staticmethod
-    def parse_response(response: bytes) -> dict:
-        """
-        Parses a response from Flask into a JSON dict
-        :param bytes response: The response bytes string
-        :return dict:
-        """
-        return json.loads(response.decode('utf-8'))
-
-    def test_app_initializes(self):
-        """Start with a blank database."""
-        response = self.client.get('/')
-        response_dict = self.parse_response(response.data)
-
-        assert isinstance(response_dict, dict)
-        assert "message" in response_dict
-        assert "MOPED API Available" in response_dict.get("message", "")
-```
 
 ## Parsing the JWT token within the API
 
