@@ -80,6 +80,8 @@ USER_EMAIL = <email>
 USER_PASSWORD = <password>
 ```
 
+You may want to additionally test that tokens are correctly rejected by the server. To do this, please take a token, note the time-to-live time for the token as defined in the AWS Cognito system, and using that information, allow a token to expire. If you submit requests with the newly expired token, you should observe a response which rejects it with the correct reason. This same testing methodology can be used to confirm that a malformed token is also rejected with a meaningful error message.
+
 ## Blueprint Architecture
 
 We will adhere to a blueprint architecture as it is stipulated in their documentation: https://flask.palletsprojects.com/en/1.1.x/blueprints/#blueprints
