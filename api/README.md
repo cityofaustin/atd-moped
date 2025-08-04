@@ -15,34 +15,34 @@ Install the requirements in your machine, run these in order:
 
 1.First create a virtual environment in the API root folder:
 
-```
-$ virtualenv venv
+```shell
+virtualenv venv
 ```
 
 2.Then activate the environment
 
-```
-$ source venv/bin/activate
+```shell
+source venv/bin/activate
 ```
 
 3.Now you are ready to install the requirements
 
-```
-$ pip install -r requirements.txt
+```shell
+pip install -r requirements.txt
 ```
 
 If you run into problems with installing `cryptography`, see the [cryptography docs on installing on macOS](https://cryptography.io/en/latest/installation/#building-cryptography-on-macos). If you've already run the last command and install of `cryptography` failed, then you may need to:
 
-```
-$ pip uninstall cryptography
-$ brew install openssl@1.1 rust
-$ env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib" CFLAGS="-I$(brew --prefix openssl@1.1)/include" pip install cryptography==3.3.2
+```shell
+pip uninstall cryptography
+brew install openssl@1.1 rust
+env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib" CFLAGS="-I$(brew --prefix openssl@1.1)/include" pip install cryptography==3.3.2
 ```
 
 and then (to install the rest of the requirements):
 
-```
-$ pip install -r requirements.txt
+```shell
+pip install -r requirements.txt
 ```
 
 Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console. Your credentials will need read access to the AWS secret manager. These are the env vars of concern:
@@ -60,8 +60,8 @@ Once the installation of the requirements is done, you are ready to launch the a
 
 #### Run Flask in development mode:
 
-```
-$ FLASK_ENV=development flask run --host=0.0.0.0 --port 5001 --debug
+```shell
+FLASK_ENV=development flask run --host=0.0.0.0 --port 5001 --debug
 ```
 
 You may have noticed the FLASK_ENV=development bash variable, this is passed to the flask command and it will initialize the application in app.py and enabled hot-reload, meaning that any changes you make to the code will be automatically reloaded for you (without you having to restart the API for every change).
