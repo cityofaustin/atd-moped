@@ -66,6 +66,20 @@ FLASK_ENV=development flask run --host=0.0.0.0 --port 5001 --debug
 
 You may have noticed the FLASK_ENV=development bash variable, this is passed to the flask command and it will initialize the application in app.py and enabled hot-reload, meaning that any changes you make to the code will be automatically reloaded for you (without you having to restart the API for every change).
 
+## Development and testing the API
+
+A configuration file for the VS Code extension [REST Client](https://open-vsx.org/extension/humao/rest-client) is provided here: `api/rest_client/api_usage_examples.rest`. This file includes the exact endpoints and the shape of the JSON payload expected by the API as well as a brief summary of each method's use.
+
+Using the plugin to send requests requires some environment variables to be set. Please add a `.env` file in that same directory with the following key-value pairs. You may have to use the client itself to query the `/users/` endpoint to discover user UUIDs.
+
+```
+API_SERVER=http://localhost:5001/
+AUTH_BEARER_TOKEN = ey...
+USER_ID = <uuid>
+USER_EMAIL = <email>
+USER_PASSWORD = <password>
+```
+
 ## Blueprint Architecture
 
 We will adhere to a blueprint architecture as it is stipulated in their documentation: https://flask.palletsprojects.com/en/1.1.x/blueprints/#blueprints

@@ -1,13 +1,4 @@
-# This file contains example HTTP calls and it also the configuration
-# file for the VSCode plugin "REST Client" https://open-vsx.org/extension/humao/rest-client. 
-
-#Add the following to the .env file in this directory:
-
-#API_SERVER=http://localhost:5001/
-#AUTH_BEARER_TOKEN = ey...
-#USER_ID = <uuid>
-#USER_EMAIL = <email>
-#USER_PASSWORD = <password>
+# See the README.md for information and instructions
 
 # Health Check
 {{$dotenv API_SERVER}}
