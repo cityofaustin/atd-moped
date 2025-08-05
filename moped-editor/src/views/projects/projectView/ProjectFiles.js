@@ -4,7 +4,6 @@ import isEqual from "lodash/isEqual";
 
 import { CardContent, CircularProgress, Link, Typography } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
 import {
   DataGridPro,
   GridRowModes,
@@ -35,24 +34,6 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
-const useStyles = makeStyles(() => ({
-  ellipsisOverflow: {
-    cursor: "pointer",
-    overflow: "hidden",
-    display: "block",
-    textOverflow: "ellipsis",
-  },
-  codeStyle: {
-    backgroundColor: "#eee",
-    fontFamily: "monospace",
-    display: "block",
-    wordWrap: "break-word",
-    paddingLeft: "4px",
-    paddingRight: "4px",
-    fontSize: "14px",
-  },
-}));
-
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
   useMemo(
@@ -74,7 +55,6 @@ const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 const requiredFields = ["file_name", "file_type"];
 
 const useColumns = ({
-  classes,
   token,
   rowModesModel,
   handleEditClick,
@@ -93,7 +73,14 @@ const useColumns = ({
         width: 200,
         editable: true,
         renderCell: ({ row }) => (
-          <Typography className={classes.ellipsisOverflow}>
+          <Typography
+            sx={{
+              cursor: "pointer",
+              overflow: "hidden",
+              display: "block",
+              textOverflow: "ellipsis",
+            }}
+          >
             {row?.file_name}
           </Typography>
         ),
@@ -117,7 +104,12 @@ const useColumns = ({
           if (row.file_key) {
             return (
               <Link
-                className={classes.ellipsisOverflow}
+                sx={{
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  display: "block",
+                  textOverflow: "ellipsis",
+                }}
                 onClick={() => downloadFileAttachment(row?.file_key, token)}
               >
                 {cleanUpFileKey(row?.file_key)}
@@ -126,13 +118,30 @@ const useColumns = ({
           }
           return isValidUrl(row?.file_url) ? (
             <ExternalLink
-              linkProps={{ className: classes.ellipsisOverflow }}
+              linkProps={{
+                sx: {
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  display: "block",
+                  textOverflow: "ellipsis",
+                },
+              }}
               url={row?.file_url}
               text={row?.file_url}
             />
           ) : (
             // if the user provided file_url is not a valid url, just render the text
-            <Typography className={classes.codeStyle}>
+            <Typography
+              sx={{
+                backgroundColor: "#eee",
+                fontFamily: "monospace",
+                display: "block",
+                wordWrap: "break-word",
+                paddingLeft: "4px",
+                paddingRight: "4px",
+                fontSize: "14px",
+              }}
+            >
               {row?.file_url}
             </Typography>
           );
@@ -235,7 +244,6 @@ const useColumns = ({
       },
     ];
   }, [
-    classes,
     token,
     rowModesModel,
     handleSaveClick,
@@ -255,7 +263,6 @@ const useColumns = ({
  */
 const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
-  const classes = useStyles();
   const { projectId } = useParams();
   const { user } = useUser();
   const token = getJwt(user);
@@ -446,7 +453,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
   };
 
   const dataGridColumns = useColumns({
-    classes,
     token,
     rowModesModel,
     handleDeleteOpen,
