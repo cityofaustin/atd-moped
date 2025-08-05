@@ -1,7 +1,7 @@
 import React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import FallbackComponent from "./FallbackComponent";
+import FallbackComponent from "src/components/FallbackComponent";
 import theme from "src/theme";
 
 /**

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
-import ExternalLink from "./ExternalLink";
+import ExternalLink from "src/components/ExternalLink";
 import { useUser } from "src/auth/user";
 import theme from "src/theme";
 
