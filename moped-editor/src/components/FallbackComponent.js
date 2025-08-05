@@ -22,6 +22,8 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
       justifyContent="center"
     >
       <Container
+        // Disable container's responsive maxWidth to override maxWidth in sx
+        maxWidth={false}
         sx={{
           paddingY: 3,
           backgroundColor: theme.palette.background.paper,
