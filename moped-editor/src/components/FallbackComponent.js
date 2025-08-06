@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Container, Typography } from "@mui/material";
 import ExternalLink from "src/components/ExternalLink";
 import { useUser } from "src/auth/user";
-import theme from "src/theme";
 
 // includes the error.message as the text in field 400 ("Describe the problem")
 // and the email of the user logged in in field 406
@@ -26,7 +25,7 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
         maxWidth={false}
         sx={{
           paddingY: 3,
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: (theme) => theme.palette.background.paper,
           maxWidth: "525px",
           marginTop: 2,
         }}
@@ -71,7 +70,7 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
           <Typography variant="overline">error</Typography>
           <Typography
             sx={{
-              backgroundColor: theme.palette.background.summaryHover,
+              backgroundColor: (theme) => theme.palette.background.summaryHover,
               fontSize: ".75rem",
               padding: 1,
               fontFamily: "monospace",
