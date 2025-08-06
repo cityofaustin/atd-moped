@@ -6,7 +6,7 @@ import { CanAddProjectButton } from "src/views/projects/projectsListView/Project
 import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdownMenu";
 import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
-import NavLink from "src/components/NavLink";
+import { NavLink } from "react-router-dom";
 import theme from "src/theme";
 
 const getAlertBannerSeverity = (env) => {
@@ -87,13 +87,17 @@ const TopBar = ({ className, ...rest }) => {
                   }}
                   component={NavLink}
                   to={item.href}
-                  activeStyle={{
-                    color: theme.palette.primary.main,
-                    borderColor: theme.palette.primary.main,
-                    borderBottomWidth: "2px",
-                    borderStyle: "solid",
-                    fontWeight: 800,
-                  }}
+                  style={({ isActive }) =>
+                    isActive
+                      ? {
+                          color: theme.palette.primary.main,
+                          borderColor: theme.palette.primary.main,
+                          borderBottomWidth: "2px",
+                          borderStyle: "solid",
+                          fontWeight: 800,
+                        }
+                      : {}
+                  }
                 />
               ))}
             </Tabs>
