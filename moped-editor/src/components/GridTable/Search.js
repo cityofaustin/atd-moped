@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
 import {
   Box,
@@ -18,50 +17,9 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "src/components/GridTable/SearchBar";
-import makeStyles from "@mui/styles/makeStyles";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import { mapSearchParamName } from "src/views/projects/projectsListView/ProjectsListViewTable";
 import theme from "src/theme";
-
-const useStyles = makeStyles((theme) => ({
-  downloadButtonGrid: {
-    // match the existing padding set in gridSearchPadding
-    padding: "12px",
-    [theme.breakpoints.down("md")]: {
-      paddingTop: 0,
-    },
-    alignContent: "top",
-  },
-  searchBarContainer: {
-    padding: "2px",
-    [theme.breakpoints.down("sm")]: {
-      paddingBottom: "12px",
-    },
-  },
-  advancedSearchRoot: {
-    width: `calc(100% - ${theme.spacing(6)})`,
-    [theme.breakpoints.down("sm")]: {
-      width: `calc(100% - ${theme.spacing(4)})`,
-    },
-    // zIndex must be higher than the MUI Drawer used in MapDrawer
-    zIndex: "1201",
-  },
-  advancedSearchPaper: {
-    paddingTop: theme.spacing(1),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-    boxShadow:
-      "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
-  },
-  gridSearchPadding: {
-    padding: "12px",
-  },
-  toggleButtonGroup: {
-    display: "inline",
-    marginRight: theme.spacing(3),
-  },
-}));
 
 /**
  * Renders a table search component with a search bar and search filters
@@ -96,7 +54,6 @@ const Search = ({
   setShowMapView,
   handleSnackbar,
 }) => {
-  const classes = useStyles();
   const divRef = React.useRef();
 
   let [searchParams, setSearchParams] = useSearchParams();
@@ -183,8 +140,23 @@ const Search = ({
       <div>
         <Box mt={3}>
           <Paper ref={divRef}>
-            <Grid container className={classes.searchBarContainer}>
-              <Grid item xs={12} md className={classes.gridSearchPadding}>
+            <Grid
+              container
+              sx={{
+                padding: "2px",
+                [(theme) => theme.breakpoints.down("sm")]: {
+                  paddingBottom: "12px",
+                },
+              }}
+            >
+              <Grid
+                item
+                xs={12}
+                md
+                sx={{
+                  padding: "12px",
+                }}
+              >
                 <SearchBar
                   searchFieldValue={searchFieldValue}
                   setSearchFieldValue={setSearchFieldValue}
@@ -208,7 +180,14 @@ const Search = ({
                 item
                 xs={12}
                 md="auto"
-                className={classes.downloadButtonGrid}
+                sx={{
+                  // downloadButtonGrid styles
+                  padding: "12px",
+                  [(theme) => theme.breakpoints.down("md")]: {
+                    paddingTop: 0,
+                  },
+                  alignContent: "top",
+                }}
               >
                 <div>
                   {queryConfig.showExport && (
@@ -219,13 +198,16 @@ const Search = ({
                           color="primary"
                           startIcon={<Icon>search</Icon>}
                           onClick={handleSearchSubmission}
-                          sx={{ marginRight: theme.spacing(2) }}
+                          sx={{ marginRight: (theme) => theme.spacing(2) }}
                         >
                           Search
                         </Button>
                       </Hidden>
                       <ToggleButtonGroup
-                        className={classes.toggleButtonGroup}
+                        sx={{
+                          display: "inline",
+                          marginRight: (theme) => theme.spacing(3),
+                        }}
                         value={showMapView === true ? "map" : "list"} // Highlight selected button
                         exclusive
                         onChange={handleMapToggle}
@@ -242,13 +224,19 @@ const Search = ({
                           (parentData?.[queryConfig.table] ?? []).length === 0
                         }
                         onClick={handleExportButtonClick}
-                        sx={{
+                        sx={(theme) => ({
                           // Override startIcon margins to center icon when there is no "Download" text smDown
                           "& .MuiButton-startIcon": {
-                            marginLeft: { xs: 0, sm: -theme.spacing(0.5) },
-                            marginRight: { xs: 0, sm: theme.spacing(1) },
+                            marginLeft: {
+                              xs: 0,
+                              sm: -theme.spacing(0.5),
+                            },
+                            marginRight: {
+                              xs: 0,
+                              sm: theme.spacing(1),
+                            },
                           },
-                        }}
+                        })}
                         startIcon={<SaveAltIcon />}
                         variant="outlined"
                         color="primary"
@@ -268,9 +256,24 @@ const Search = ({
           anchorEl={advancedSearchAnchor}
           onClose={handleAdvancedSearchClose}
           placement={"bottom"}
-          className={classes.advancedSearchRoot}
+          sx={(theme) => ({
+            width: `calc(100% - ${theme.spacing(6)})`,
+            [theme.breakpoints.down("sm")]: {
+              width: `calc(100% - ${theme.spacing(4)})`,
+            },
+            zIndex: "1201",
+          })}
         >
-          <Paper className={classes.advancedSearchPaper}>
+          <Paper
+            sx={(theme) => ({
+              paddingTop: theme.spacing(1),
+              paddingRight: theme.spacing(2),
+              paddingBottom: theme.spacing(2),
+              paddingLeft: theme.spacing(2),
+              boxShadow:
+                "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
+            })}
+          >
             <Filters
               setFilters={setFilters}
               handleAdvancedSearchClose={handleAdvancedSearchClose}
@@ -289,10 +292,6 @@ const Search = ({
       </div>
     </ClickAwayListener>
   );
-};
-
-Search.propTypes = {
-  className: PropTypes.string,
 };
 
 export default Search;
