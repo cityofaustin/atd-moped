@@ -2,7 +2,6 @@ import React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import FallbackComponent from "src/components/FallbackComponent";
-import theme from "src/theme";
 
 /**
  * ApolloErrorHandler attempts to be a component that deals with the
@@ -32,7 +31,7 @@ const ApolloErrorHandler = (props) => {
       {jwtError ? (
         <Backdrop
           sx={{
-            zIndex: theme.zIndex.drawer + 1,
+            zIndex: (theme) => theme.zIndex.drawer + 1,
             color: "#fff",
           }}
           open={true}
