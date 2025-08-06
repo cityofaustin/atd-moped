@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import clsx from "clsx";
-import PropTypes from "prop-types";
 import { AppBar, Box, Hidden, Toolbar, Tabs, Tab, Alert } from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
@@ -9,6 +7,7 @@ import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdow
 import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
 import NavLink from "src/components/NavLink";
+import theme from "src/theme";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local
@@ -63,7 +62,6 @@ const TopBar = ({ className, ...rest }) => {
   return (
     <AppBar
       sx={{ backgroundColor: "background.paper" }}
-      className={clsx(className)}
       elevation={2}
       {...rest}
     >
@@ -81,21 +79,21 @@ const TopBar = ({ className, ...rest }) => {
                   label={item.title}
                   sx={{
                     textTransform: "capitalize",
-                    color: "text.secondary",
+                    color: theme.palette.text.secondary,
                     fontSize: "1.2em",
                     minWidth: "75px",
                     height: "64px",
                     opacity: 1,
-                    "&.Mui-selected": {
-                      color: "primary.main",
-                      borderColor: "primary.main",
-                      borderBottomWidth: "2px",
-                      borderStyle: "solid",
-                      fontWeight: 800,
-                    },
                   }}
                   component={NavLink}
                   to={item.href}
+                  activeStyle={{
+                    color: theme.palette.primary.main,
+                    borderColor: theme.palette.primary.main,
+                    borderBottomWidth: "2px",
+                    borderStyle: "solid",
+                    fontWeight: 800,
+                  }}
                 />
               ))}
             </Tabs>
@@ -125,11 +123,6 @@ const TopBar = ({ className, ...rest }) => {
       </Toolbar>
     </AppBar>
   );
-};
-
-TopBar.propTypes = {
-  className: PropTypes.string,
-  onNavOpen: PropTypes.func,
 };
 
 export default TopBar;
