@@ -11,28 +11,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Page from "src/components/Page";
-import { useUser } from "../../auth/user";
-import useAuthentication from "../../auth/useAuthentication";
-import SimpleDialog from "../../components/SimpleDialog";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: theme.palette.background.default,
-  },
-}));
+import { useUser } from "src/auth/user";
+import useAuthentication from "src/auth/useAuthentication";
+import SimpleDialog from "src/components/SimpleDialog";
 
 const LoginView = () => {
-  const classes = useStyles();
-
   const { login, loginLoading } = useUser();
   const { signIn, isLoading } = useAuthentication();
 
@@ -131,14 +116,26 @@ const LoginView = () => {
   };
 
   return (
-    <Page className={classes.root} title="Login">
+    <Page
+      title="Login"
+      sx={{
+        height: "100%",
+        paddingY: 3,
+      }}
+    >
       <Box
         display="flex"
         flexDirection="column"
         height="100%"
         justifyContent="center"
       >
-        <Backdrop className={classes.backdrop} open={isLoading || loginLoading}>
+        <Backdrop
+          sx={(theme) => ({
+            zIndex: theme.zIndex.drawer + 1,
+            color: theme.palette.background.default,
+          })}
+          open={isLoading || loginLoading}
+        >
           <CircularProgress color="inherit" />
         </Backdrop>
         <Container maxWidth="sm">
