@@ -8,7 +8,6 @@ import {
   Typography,
   ListItemIcon,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
@@ -21,7 +20,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { useSessionDatabaseData, useUser } from "src/auth/user";
 import { getInitials } from "src/utils/userNames";
-import emailToInitials from "../../../utils/emailToInitials";
+import emailToInitials from "src/utils/emailToInitials";
 
 /**
  * Configuration for help menu items we iterate to render menu items in DropdownMenu and MobileDropdownMenu
@@ -64,31 +63,6 @@ export const arcGISLink = {
   Icon: <MapOutlinedIcon fontSize="small" />,
 };
 
-const useStyles = makeStyles((theme) => ({
-  dropdownButton: {
-    borderRadius: "50%",
-    height: "64px",
-    color: theme.palette.text.primary,
-  },
-  helpHeader: {
-    paddingLeft: "16px",
-    paddingTop: "6px",
-    alignItems: "center",
-    display: "flex",
-    position: "relative",
-  },
-  dropdownAvatar: {
-    height: "30px",
-    width: "30px",
-  },
-  logoutItem: {
-    paddingTop: "10px",
-  },
-  helpItems: {
-    paddingBottom: "12px",
-  },
-}));
-
 /**
  * Renders Dropdown Menu on screens above Sm breakpoint
  * See https://material-ui.com/components/menus/ and https://material-ui.com/api/popover/
@@ -100,7 +74,6 @@ const DropdownMenu = ({
   handleDropdownClose,
   dropdownAnchorEl,
 }) => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const { user } = useUser();
@@ -112,7 +85,14 @@ const DropdownMenu = ({
 
   return (
     <>
-      <Button className={classes.dropdownButton} onClick={handleDropdownClick}>
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "64px",
+          color: "text.primary",
+        }}
+        onClick={handleDropdownClick}
+      >
         <MenuIcon />
       </Button>
       <Menu
@@ -132,7 +112,7 @@ const DropdownMenu = ({
         >
           <ListItemIcon>
             <CDNAvatar
-              className={classes.dropdownAvatar}
+              size="small"
               src={userDbData?.picture}
               initials={userInitials}
               userColor={user?.userColor}
@@ -140,7 +120,7 @@ const DropdownMenu = ({
           </ListItemIcon>
           Account
         </MenuItem>
-        <Divider />
+        <Divider sx={{ marginY: 1 }} />
         <Link
           href={arcGISLink.link}
           target="_blank"
@@ -153,12 +133,20 @@ const DropdownMenu = ({
             {arcGISLink.title}
           </MenuItem>
         </Link>
-        <Divider />
-        <span className={classes.helpHeader}>
-          <Typography variant="button" color="textSecondary">
-            Support
-          </Typography>
-        </span>
+        <Divider sx={{ marginY: 1 }} />
+        <Typography
+          variant="button"
+          color="textSecondary"
+          sx={{
+            paddingLeft: 2,
+            paddingTop: 1,
+            alignItems: "center",
+            display: "flex",
+            position: "relative",
+          }}
+        >
+          Support
+        </Typography>
         {helpItems.map((item) => {
           if (item.linkType === "external") {
             return (
@@ -183,7 +171,6 @@ const DropdownMenu = ({
             return (
               <MenuItem
                 key={item.link}
-                className={classes.helpItems}
                 onClick={() => {
                   handleDropdownClose();
                   navigate(item.link);
@@ -198,11 +185,8 @@ const DropdownMenu = ({
           }
           return null;
         })}
-        <Divider />
-        <MenuItem
-          className={classes.logoutItem}
-          onClick={() => navigate("/moped/logout")}
-        >
+        <Divider sx={{ marginY: 1 }} />
+        <MenuItem onClick={() => navigate("/moped/logout")}>
           <ListItemIcon>
             <ExitToAppIcon fontSize="small" />
           </ListItemIcon>
