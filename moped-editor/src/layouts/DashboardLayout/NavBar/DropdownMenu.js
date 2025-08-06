@@ -17,8 +17,8 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import CDNAvatar from "src/components/CDN/Avatar";
-import { getSessionDatabaseData, useUser } from "src/auth/user";
+import CDNAvatar from "../../../components/CDN/Avatar";
+import { useSessionDatabaseData, useUser } from "src/auth/user";
 import { getInitials } from "src/utils/userNames";
 import emailToInitials from "src/utils/emailToInitials";
 
@@ -78,7 +78,7 @@ const DropdownMenu = ({
 
   const { user } = useUser();
 
-  const userDbData = getSessionDatabaseData();
+  const userDbData = useSessionDatabaseData();
   const userInitials = userDbData
     ? getInitials(userDbData)
     : emailToInitials(user?.idToken?.payload?.email);

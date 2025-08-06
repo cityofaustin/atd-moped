@@ -38,11 +38,11 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
   let changes = [];
 
   // if the record has been deleted that supersedes any other changes
-  if (newRecord["is_deleted"] === true) {
+  if (newRecord?.["is_deleted"] === true) {
     return {
       changeIcon,
       changeText: [
-        { text: "Deleted the phase ", style: null },
+        { text: "Removed the phase ", style: null },
         phaseText,
         // include subphase name if one exists
         ...(subphase ? [subphaseText] : []),
@@ -52,7 +52,7 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
-    if (newRecord[field] !== oldRecord[field]) {
+    if (newRecord?.[field] !== oldRecord?.[field]) {
       // filter out fields that are not listed in the activity log table maps to prevent
       // automated field updates (created at, updated at, etc.) from entering the array
       if (!!entryMap.fields[field]) {

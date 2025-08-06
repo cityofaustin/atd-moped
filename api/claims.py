@@ -1,6 +1,11 @@
 import json, boto3, datetime
 from functools import wraps
+
 from config import api_config
+from logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 from flask_cognito import _request_ctx_stack, current_cognito_jwt
 from werkzeug.local import LocalProxy
@@ -9,9 +14,12 @@ from cryptography.fernet import Fernet
 from typing import Optional
 from typing import Callable
 
-MOPED_API_CURRENT_ENVIRONMENT = api_config.get("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
+MOPED_API_CURRENT_ENVIRONMENT = api_config.get(
+    "MOPED_API_CURRENT_ENVIRONMENT", "STAGING"
+)
 AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
 AWS_COGNITO_DYNAMO_SECRET_KEY = api_config.get("COGNITO_DYNAMO_SECRET_KEY", None)
+
 
 #
 # LocalProxy is a funny class in werkzeug.local, it seems to be a way
@@ -19,9 +27,11 @@ AWS_COGNITO_DYNAMO_SECRET_KEY = api_config.get("COGNITO_DYNAMO_SECRET_KEY", None
 # safety. A LocalProxy seems to behave as a pointer to global variable.
 #
 current_hasura_claims = LocalProxy(
-    lambda:
-    {} if hasattr(_request_ctx_stack.top, 'hasura_claims') is False
-    else getattr(_request_ctx_stack.top, 'hasura_claims', None)
+    lambda: (
+        {}
+        if hasattr(_request_ctx_stack.top, "hasura_claims") is False
+        else getattr(_request_ctx_stack.top, "hasura_claims", None)
+    )
 )
 
 
@@ -29,7 +39,7 @@ def lower_case_email(user_email: str) -> str:
     """
     Attempts to lower case a user email address
     :param user_email: The user email address in question
-    :return: 
+    :return:
     """
     try:
         return str(user_email).lower()
@@ -56,9 +66,11 @@ def resolve_hasura_claims(func: Callable) -> Callable:
     """
 
     def wrapper(*args, **kwargs):
-        print("resolve_hasura_claims: start")
+        logger.debug("resolve_hasura_claims: start")
         cognito_jwt_dict = current_cognito_jwt._get_current_object()
-        _request_ctx_stack.top.hasura_claims = json.loads(cognito_jwt_dict["https://hasura.io/jwt/claims"])
+        _request_ctx_stack.top.hasura_claims = json.loads(
+            cognito_jwt_dict["https://hasura.io/jwt/claims"]
+        )
         return func(*args, **kwargs)
 
     return wrapper
@@ -74,9 +86,11 @@ def normalize_claims(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        print("resolve_hasura_claims: start")
+        logger.debug("normalize_claims: start")
         claims = current_cognito_jwt._get_current_object()
-        claims["https://hasura.io/jwt/claims"] = json.loads(claims["https://hasura.io/jwt/claims"])
+        claims["https://hasura.io/jwt/claims"] = json.loads(
+            claims["https://hasura.io/jwt/claims"]
+        )
         return func(claims=claims, *args, **kwargs)
 
     return wrapper
@@ -113,7 +127,7 @@ def is_valid_user(current_cognito_jwt: str) -> bool:
     # If not verified, then check it is an azure coa account
     if not is_email_verified:
         if str(cognito_username).startswith("azuread_") and str(
-                cognito_username
+            cognito_username
         ).endswith("@austintexas.gov"):
             user_dict["email_verified"] = True
         else:
@@ -196,13 +210,17 @@ def load_claims(user_email: str) -> dict:
     profile = retrieve_user_profile(user_email=user_email)
     claims_encrypted = profile["claims"]["S"]
     cognito_uuid = profile["cognito_uuid"]["S"]
-    decrypted_claims = decrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_encrypted)
+    decrypted_claims = decrypt(
+        fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_encrypted
+    )
     claims = json.loads(decrypted_claims)
     claims["x-hasura-user-id"] = cognito_uuid
     return claims
 
 
-def format_claims(user_id: str, roles: list, database_id: int = 0, workgroup_id: int = 0) -> dict:
+def format_claims(
+    user_id: str, roles: list, database_id: int = 0, workgroup_id: int = 0
+) -> dict:
     """
     Formats claims to prepare for encrypting and putting in DynamoDB
     :param str user_id: The user id to retrieve the claims for
@@ -216,11 +234,17 @@ def format_claims(user_id: str, roles: list, database_id: int = 0, workgroup_id:
         "x-hasura-default-role": "moped-viewer",
         "x-hasura-allowed-roles": roles,
         "x-hasura-user-db-id": str(database_id),
-        "x-hasura-user-wg-id": str(workgroup_id)
+        "x-hasura-user-wg-id": str(workgroup_id),
     }
 
 
-def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None, database_id: int = 0, workgroup_id: int = 0):
+def put_claims(
+    user_email: str,
+    user_claims: dict,
+    cognito_uuid: str = None,
+    database_id: int = 0,
+    workgroup_id: int = 0,
+):
     """
     Creates new entry or replaces existing entry in DynamoDB Hasura claims table
     :param str user_email: The user email to set the claims for
@@ -230,7 +254,9 @@ def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None, dat
     :param int workgroup_id: The internal workgroup id of the user
     """
     claims_str = json.dumps(user_claims)
-    encrypted_claims = encrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str)
+    encrypted_claims = encrypt(
+        fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str
+    )
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
     user_email = lower_case_email(user_email)
     dynamodb.put_item(
@@ -240,7 +266,7 @@ def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None, dat
             "claims": {"S": encrypted_claims},
             "cognito_uuid": {"S": cognito_uuid},
             "database_id": {"S": database_id},
-            "workgroup_id": {"S": workgroup_id}
+            "workgroup_id": {"S": workgroup_id},
         },
     )
 

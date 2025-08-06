@@ -57,10 +57,25 @@ export const destroyLoggedInProfile = () =>
  * @return {Object}
  */
 export const getSessionDatabaseData = () => {
-  if (localStorage.getItem(atdSessionDatabaseDataKeyName) === "undefined") {
+  const storedData = localStorage.getItem(atdSessionDatabaseDataKeyName);
+  if (storedData === "undefined" || storedData === null) {
     return null;
   }
-  return JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName));
+  try {
+    return JSON.parse(storedData);
+  } catch (error) {
+    console.error("Error parsing session database data:", error);
+    return null;
+  }
+};
+
+/**
+ * Custom hook that memoizes the session database data
+ * This prevents unnecessary re-renders when the data hasn't changed
+ * @return {Object} The memoized session database data
+ */
+export const useSessionDatabaseData = () => {
+  return useMemo(() => getSessionDatabaseData(), []);
 };
 
 /**
@@ -118,7 +133,7 @@ export const initializeUserDBObject = (userObject) => {
 };
 
 // Create a "controller" component that will calculate all the data that we need to give to our
-// components bellow via the `UserContext.Provider` component. This is where the Amplify will be
+// components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
   /**
