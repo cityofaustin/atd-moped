@@ -1,11 +1,10 @@
 import React from "react";
 import { Avatar, Icon, Typography } from "@mui/material";
-import theme from "src/theme";
 
 import config from "src/config";
 
 const defaultAvatarStyle = {
-  small: { height: theme.spacing(4), width: theme.spacing(4) },
+  small: (theme) => ({ height: theme.spacing(4), width: theme.spacing(4) }),
   large: { height: 100, width: 100, marginBottom: 1 },
 };
 

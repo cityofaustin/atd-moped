@@ -16,7 +16,6 @@ import Page from "src/components/Page";
 import { useUser } from "src/auth/user";
 import useAuthentication from "src/auth/useAuthentication";
 import SimpleDialog from "src/components/SimpleDialog";
-import theme from "src/theme";
 
 const LoginView = () => {
   const { login, loginLoading } = useUser();
@@ -131,10 +130,10 @@ const LoginView = () => {
         justifyContent="center"
       >
         <Backdrop
-          sx={{
+          sx={(theme) => ({
             zIndex: theme.zIndex.drawer + 1,
             color: theme.palette.background.default,
-          }}
+          })}
           open={isLoading || loginLoading}
         >
           <CircularProgress color="inherit" />
