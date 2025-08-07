@@ -1,8 +1,8 @@
-boto3==1.26.*
+boto3==1.39.*
 Cerberus==1.3.*
-cryptography==39.0.*
+cryptography==45.0.*
 Flask==2.3.*
 Flask-Cognito==1.18.*
 Flask-Cors==3.0.*
-requests==2.30.*
-zappa==0.56.*
+requests==2.32.*
+gunicorn==23.0.0
