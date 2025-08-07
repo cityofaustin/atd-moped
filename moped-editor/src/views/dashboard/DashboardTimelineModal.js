@@ -9,18 +9,11 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import makeStyles from "@mui/styles/makeStyles";
 import { TIMELINE_QUERY } from "src/queries/project";
 import { useQuery } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
-import ProjectMilestones from "../projects/projectView/ProjectMilestones";
-import ProjectPhases from "../projects/projectView/ProjectPhases";
-
-const useStyles = makeStyles((theme) => ({
-  clickableDiv: {
-    cursor: "pointer",
-  },
-}));
+import ProjectMilestones from "src/views/projects/projectView/ProjectMilestones";
+import ProjectPhases from "src/views/projects/projectView/ProjectPhases";
 
 const DashboardTimelineModal = ({
   table,
@@ -30,7 +23,6 @@ const DashboardTimelineModal = ({
   handleSnackbar,
   children,
 }) => {
-  const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   /**
@@ -52,12 +44,14 @@ const DashboardTimelineModal = ({
 
   return (
     <>
-      <div
-        className={classes.clickableDiv}
+      <Box
+        sx={{
+          cursor: "pointer",
+        }}
         onClick={() => setIsDialogOpen(true)}
       >
         {children}
-      </div>
+      </Box>
       <Dialog
         open={isDialogOpen}
         onClose={handleDialogClose}
