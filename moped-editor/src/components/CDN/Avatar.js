@@ -1,25 +1,16 @@
 import React from "react";
 import { Avatar, Icon, Typography } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
-
 import config from "src/config";
 
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    height: 100,
-    width: 100,
-    marginBottom: 8,
-    backgroundColor: theme.palette.grey["300"],
-  },
-  userInitials: {
-    fontSize: "2rem",
-  },
-}));
+const defaultAvatarStyle = {
+  small: (theme) => ({ height: theme.spacing(4), width: theme.spacing(4) }),
+  large: { height: 100, width: 100, marginBottom: 1 },
+};
 
 /**
  * A wrapper for Material's Avatar component.
- * @param {Object} className - The class name override
+ * @param {string} size - The size of the avatar (small, large).
  * @param {String} src - The image in the CDN
  * @param {String} initials - The initials to render within the avatar (when no image is present).
  * @param {boolean} largeInitials - If true, it makes the initials a little larger.
@@ -29,15 +20,13 @@ const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const CDNAvatar = ({
-  className,
+  size = "large",
   src,
   initials,
   largeInitials,
   userColor,
   useGenericAvatar,
 }) => {
-  const classes = useStyles();
-
   /**
    * The image source from CloudFront CDN
    * @type {string|null}
@@ -57,12 +46,12 @@ const CDNAvatar = ({
   return (
     <Avatar
       alt={initials}
-      className={className ? className : classes.avatar}
+      sx={defaultAvatarStyle[size]}
       src={imageSource}
       style={imageStyleOverride}
     >
       {!!!useGenericAvatar && initials && initials.length > 0 ? (
-        <Typography className={largeInitials ? classes.userInitials : null}>
+        <Typography sx={largeInitials ? { fontSize: "2rem" } : null}>
           {initials}
         </Typography>
       ) : (
