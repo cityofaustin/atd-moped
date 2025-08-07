@@ -19,7 +19,6 @@ import Filters from "src/components/GridTable/Filters";
 import SearchBar from "src/components/GridTable/SearchBar";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import { mapSearchParamName } from "src/views/projects/projectsListView/ProjectsListViewTable";
-import theme from "src/theme";
 
 /**
  * Renders a table search component with a search bar and search filters
