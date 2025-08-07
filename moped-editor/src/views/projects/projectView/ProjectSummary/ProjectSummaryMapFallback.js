@@ -28,16 +28,16 @@ const ProjectSummaryMapFallback = () => {
             marginBottom: "2%",
           }}
         />
-        <div
-          style={{
-            color: "text.secondary",
+        <Box
+          sx={{
+            color: (theme) => theme.palette.text.secondary,
             fontFamily: "Roboto",
             fontWeight: 500,
             fontSize: "18px",
           }}
         >
           Define and map the assets and features included in this project.
-        </div>
+        </Box>
         <Link to="?tab=map">
           <Button
             sx={{
