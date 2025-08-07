@@ -3,7 +3,6 @@ import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
 import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
@@ -25,20 +24,6 @@ import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import { mopedUserAutocompleteProps } from "./utils";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
-
-const useStyles = makeStyles((theme) => ({
-  infoIcon: {
-    fontSize: "1rem",
-    verticalAlign: "sub",
-    color: theme.palette.text.primary,
-    "&:hover": {
-      color: theme.palette.primary.main,
-    },
-  },
-  roleHeader: {
-    fontWeight: 500,
-  },
-}));
 
 const useWorkgroupLookup = (data) =>
   useMemo(() => {
@@ -68,7 +53,6 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleDeleteOpen,
-  classes,
   usingShiftKey,
   workgroupLookup,
   existingTeamMembers,
@@ -153,16 +137,27 @@ const useColumns = ({
         editable: true,
         sortable: false,
         renderHeader: () => (
-          <div className={classes.roleHeader}>
+          <Box sx={{ fontWeight: 500 }}>
             Role{" "}
             <Link
               href="dev/lookups#moped-project_roles"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Icon className={classes.infoIcon}>info_outline</Icon>
+              <Icon
+                sx={{
+                  fontSize: "1rem !important",
+                  verticalAlign: "sub",
+                  color: "text.primary",
+                  "&:hover": {
+                    color: "primary.main",
+                  },
+                }}
+              >
+                info_outline
+              </Icon>
             </Link>
-          </div>
+          </Box>
         ),
         renderCell: (params) => {
           // Filter out deleted roles and map to Typography components
@@ -231,7 +226,6 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleDeleteOpen,
-    classes,
     usingShiftKey,
     workgroupLookup,
     existingTeamMembers,
@@ -310,7 +304,6 @@ const getEditRolesPayload = (newData, oldData) => {
 
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const apiRef = useGridApiRef();
-  const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
@@ -542,7 +535,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     handleSaveClick,
     handleCancelClick,
     handleDeleteOpen,
-    classes,
     usingShiftKey,
     workgroupLookup,
     existingTeamMembers,
@@ -596,7 +588,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         slotProps={{
           toolbar: {
             addAction: onClickAddTeamMember,
-            classes: classes,
           },
         }}
       />
