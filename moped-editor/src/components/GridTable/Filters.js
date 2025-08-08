@@ -148,7 +148,7 @@ const Filters = ({
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
 
-  /* Some features like all/any radios require more than one filter to appear */
+  /* Some features like all/any radios require more than one filter to become enabled */
   const areMoreThanOneFilters = filterParameters.length > 1;
 
   const autocompleteOptionsMap = useCreateAutocompleteOptions(
@@ -344,32 +344,30 @@ const Filters = ({
           display="flex"
           justifyContent="flex-start"
         >
-          {areMoreThanOneFilters ? (
-            <RadioGroup
-              row
-              value={isOrToggleValue ? "any" : "all"}
-              onChange={handleAndOrToggleChange}
-            >
-              <FormControlLabel
-                value="all"
-                control={<Radio />}
-                label={
-                  <span>
-                    Match <strong>all</strong> filters
-                  </span>
-                }
-              />
-              <FormControlLabel
-                value="any"
-                control={<Radio />}
-                label={
-                  <span>
-                    Match <strong>any</strong> filters
-                  </span>
-                }
-              />
-            </RadioGroup>
-          ) : null}
+          <RadioGroup
+            row
+            value={isOrToggleValue ? "any" : "all"}
+            onChange={handleAndOrToggleChange}
+          >
+            <FormControlLabel
+              value="all"
+              control={<Radio disabled={!areMoreThanOneFilters} />}
+              label={
+                <span>
+                  Match <strong>all</strong> filters
+                </span>
+              }
+            />
+            <FormControlLabel
+              value="any"
+              control={<Radio disabled={!areMoreThanOneFilters} />}
+              label={
+                <span>
+                  Match <strong>any</strong> filters
+                </span>
+              }
+            />
+          </RadioGroup>
         </Grid>
         <Grid
           item
