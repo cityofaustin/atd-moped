@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import clsx from "clsx";
-import PropTypes from "prop-types";
-import { AppBar, Box, Hidden, Toolbar, Tabs, Tab } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import { Alert } from "@mui/material";
+import { AppBar, Box, Hidden, Toolbar, Tabs, Tab, Alert } from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdownMenu";
 import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
-import NavLink from "src/components/NavLink";
+import { NavLink } from "react-router-dom";
+import theme from "src/theme";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local
@@ -36,33 +33,6 @@ const EnvAlertBanner = () => {
   );
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  tabs: {
-    marginLeft: "12px",
-  },
-  tab: {
-    textTransform: "capitalize",
-    color: theme.palette.text.secondary,
-    fontSize: "1.2em",
-    minWidth: "75px",
-    height: "64px",
-    opacity: 1,
-  },
-  active: {
-    color: theme.palette.primary.main,
-    borderColor: theme.palette.primary.main,
-    borderBottomWidth: "2px",
-    borderStyle: "solid",
-    fontWeight: 800,
-  },
-  newProject: {
-    marginRight: 8,
-  },
-}));
-
 export const navigationItems = [
   {
     href: "/moped/dashboard",
@@ -79,8 +49,6 @@ export const navigationItems = [
 ];
 
 const TopBar = ({ className, ...rest }) => {
-  const classes = useStyles();
-
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
 
   const handleDropdownClick = (event) => {
@@ -92,30 +60,51 @@ const TopBar = ({ className, ...rest }) => {
   };
 
   return (
-    <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
+    <AppBar
+      sx={{ backgroundColor: "background.paper" }}
+      elevation={2}
+      {...rest}
+    >
       <EnvAlertBanner />
-      <Toolbar className={classes.root}>
+      <Toolbar sx={{ backgroundColor: "background.paper" }}>
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
         <Hidden mdDown>
           <Box>
-            <Tabs className={classes.tabs} value={false}>
+            <Tabs sx={{ marginLeft: "12px" }} value={false}>
               {navigationItems.map((item) => (
                 <Tab
                   key={item.href}
                   label={item.title}
-                  className={classes.tab}
+                  sx={{
+                    textTransform: "capitalize",
+                    color: theme.palette.text.secondary,
+                    fontSize: "1.2em",
+                    minWidth: "75px",
+                    height: "64px",
+                    opacity: 1,
+                  }}
                   component={NavLink}
-                  activeClassName={classes.active}
                   to={item.href}
+                  style={({ isActive }) =>
+                    isActive
+                      ? {
+                          color: theme.palette.primary.main,
+                          borderColor: theme.palette.primary.main,
+                          borderBottomWidth: "2px",
+                          borderStyle: "solid",
+                          fontWeight: 800,
+                        }
+                      : {}
+                  }
                 />
               ))}
             </Tabs>
           </Box>
           <Box flexGrow={1} />
           <NavigationSearchInput />
-          <Box className={classes.newProject}>
+          <Box sx={{ marginRight: 2 }}>
             <CanAddProjectButton />
           </Box>
         </Hidden>
@@ -138,11 +127,6 @@ const TopBar = ({ className, ...rest }) => {
       </Toolbar>
     </AppBar>
   );
-};
-
-TopBar.propTypes = {
-  className: PropTypes.string,
-  onNavOpen: PropTypes.func,
 };
 
 export default TopBar;
