@@ -98,7 +98,7 @@ const checkLink = (selection) => {
   return isLink;
 };
 
-const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
+const ToolbarPlugin = ({ noteAddSuccess }) => {
   const [editor] = useLexicalComposerContext();
 
   const [selectionMap, setSelectionMap] = useState({});
@@ -144,7 +144,12 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   const getSelectedButtonProps = (isSelected) =>
     isSelected
       ? {
-          className: classes.toolbarButtons,
+          sx: {
+            backgroundColor: (theme) => theme.palette.primary.main,
+            "&:hover, &.Mui-focusVisible": {
+              backgroundColor: (theme) => theme.palette.primary.main,
+            },
+          },
         }
       : {};
 
@@ -222,11 +227,15 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
           ) : (
             <Button
               key={key}
-              classes={{ startIcon: classes.startIcon }}
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}
-              {...getSelectedButtonProps(selectionMap[id])}
+              sx={{
+                "& .MuiButton-startIcon": {
+                  margin: 0,
+                },
+                ...getSelectedButtonProps(selectionMap[id]).sx,
+              }}
             />
           )
         )}
