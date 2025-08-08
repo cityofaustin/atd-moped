@@ -116,10 +116,10 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
       <Paper
         elevation={2}
         sx={{
-          padding: "8px",
+          padding: "12px",
         }}
       >
-        <Toolbar sx={{ paddingLeft: "16px" }}>
+        <Toolbar sx={{ paddingRight: "2px" }} disableGutters={true}>
           <Typography variant="h2" color="primary" sx={{ flexGrow: 1 }}>
             Tags
           </Typography>
@@ -139,7 +139,14 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
             justifyContent: "left",
             flexWrap: "wrap",
             listStyle: "none",
-            padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+            padding: (theme) => {
+              {
+                theme.spacing(1);
+              }
+              {
+                theme.spacing(2);
+              }
+            },
             paddingRight: 0,
             margin: 0,
           }}
