@@ -145,7 +145,6 @@ const initialConfig = {
  * @param {Array|objects} noteTypes - Array of moped_note_type objects containing id, name and slug
  * @param {function} validator - Function to validate the note using Yup schema and validate()-generated errors
  * @returns JSX.Element
- * @constructor
  */
 const NoteInput = ({
   noteText,
