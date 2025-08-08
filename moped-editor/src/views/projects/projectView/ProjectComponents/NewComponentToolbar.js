@@ -1,4 +1,3 @@
-import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import ListItemText from "@mui/material/ListItemText";
@@ -12,19 +11,6 @@ import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TuneIcon from "@mui/icons-material/Tune";
 
-const useStyles = makeStyles((theme) => ({
-  buttonTextLeft: {
-    justifyContent: "flex-start",
-  },
-  listItem: {
-    paddingLeft: theme.spacing(1),
-    paddingTop: 0,
-  },
-  listItemText: {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
 const NewComponentToolbar = ({
   createState,
   editState,
@@ -34,7 +20,6 @@ const NewComponentToolbar = ({
   areSettingsOpen,
   setAreSettingsOpen,
 }) => {
-  const classes = useStyles();
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
@@ -43,7 +28,7 @@ const NewComponentToolbar = ({
       <>
         <ListItem dense>
           <Button
-            className={classes.buttonTextLeft}
+            sx={{ justifyContent: "flex-start" }}
             size="small"
             color="primary"
             fullWidth
@@ -62,10 +47,15 @@ const NewComponentToolbar = ({
         </ListItem>
         <Collapse in={areSettingsOpen}>
           <Box borderLeft={7} borderColor="white">
-            <ListItem className={classes.listItem}>
+            <ListItem
+              sx={{
+                paddingLeft: (theme) => theme.spacing(1),
+                paddingTop: 0,
+              }}
+            >
               <Icon />
               <ListItemText
-                className={classes.listItemText}
+                sx={{ marginLeft: (theme) => theme.spacing(1) }}
                 secondary="Show related projects"
               />
               <ListItemSecondaryAction>

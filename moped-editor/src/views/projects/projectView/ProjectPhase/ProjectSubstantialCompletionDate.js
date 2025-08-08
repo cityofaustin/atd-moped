@@ -1,39 +1,34 @@
 import { Box, Typography, Tooltip } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { formatDateType } from "src/utils/dateAndTime";
 import { substantialCompletionDateTooltipText } from "src/constants/projects";
 
-const useStyles = makeStyles((theme) => ({
-  fieldLabel: {
-    width: "100%",
-    color: theme.palette.text.secondary,
-    fontSize: ".8rem",
-  },
-  fieldBox: {
-    maxWidth: "10rem",
-  },
-  fieldLabelText: {
-    width: "calc(100% - 2rem)",
-  },
-}));
-
 const ProjectSubstantialCompletionDate = ({ completionDate }) => {
-  const classes = useStyles();
   return (
     <>
-      <Typography className={classes.fieldLabel}>
+      <Typography
+        sx={{
+          width: "100%",
+          color: "text.secondary",
+          fontSize: ".8rem",
+        }}
+      >
         Substantial completion date
       </Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
-        className={classes.fieldBox}
+        sx={{ maxWidth: "10rem" }}
       >
         <Tooltip
           placement="bottom-start"
           title={substantialCompletionDateTooltipText}
         >
-          <Typography className={classes.fieldLabelText} component="span">
+          <Typography
+            sx={{
+              width: "calc(100% - 2rem)",
+            }}
+            component="span"
+          >
             {
               // If there is no input, render a "-"
               completionDate ? formatDateType(completionDate) : "-"

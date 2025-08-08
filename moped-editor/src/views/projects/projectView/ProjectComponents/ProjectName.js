@@ -1,30 +1,21 @@
-import makeStyles from "@mui/styles/makeStyles";
-import { Typography } from "@mui/material";
-
-const useStyles = makeStyles(() => ({
-  titleDisplayField: {
-    display: "flex",
-  },
-  titleText: {
-    textOverflow: "ellipsis",
-    textWrap: "nowrap",
-    maxWidth: "calc(100vw - 450px)", // visible width minus space for project id, status and close map
-    overflow: "hidden",
-  },
-  titleId: {
-    alignSelf: "center",
-  },
-}));
+import { Typography, Box } from "@mui/material";
 
 const ProjectName = ({ name, id }) => {
-  const classes = useStyles();
-
   return (
-    <span className={classes.titleDisplayField}>
+    <Box
+      sx={{
+        display: "flex",
+      }}
+    >
       <Typography
         color="textPrimary"
         variant="h2"
-        className={classes.titleText}
+        sx={{
+          textOverflow: "ellipsis",
+          textWrap: "nowrap",
+          maxWidth: "calc(100vw - 450px)", // visible width minus space for project id, status and close map
+          overflow: "hidden",
+        }}
         title={name}
       >
         {name}
@@ -32,11 +23,13 @@ const ProjectName = ({ name, id }) => {
       <Typography
         color="textSecondary"
         variant="h2"
-        className={classes.titleId}
+        sx={{
+          alignSelf: "center",
+        }}
       >
         &nbsp;#{id}
       </Typography>
-    </span>
+    </Box>
   );
 };
 

@@ -1,4 +1,3 @@
-import makeStyles from "@mui/styles/makeStyles";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -19,33 +18,6 @@ import {
   getIsComponentMapped,
 } from "./utils/componentList";
 
-const useStyles = makeStyles((theme) => ({
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
-  listItem: {
-    paddingLeft: theme.spacing(1),
-  },
-  listItemText: {
-    marginLeft: theme.spacing(1),
-    flexGrow: 1,
-    marginRight: theme.spacing(6),
-  },
-  additionalListItemText: {
-    display: "block",
-  },
-  workTypeChip: {
-    "& .MuiChip-label": {
-      display: "block",
-      whiteSpace: "normal",
-    },
-    fontWeight: "500",
-    fontSize: "12px",
-    borderRadius: "2rem",
-    height: "1.75rem",
-  },
-}));
-
 export default function ComponentListItem({
   component,
   isExpanded,
@@ -56,8 +28,6 @@ export default function ComponentListItem({
   additionalListItemText,
   additionalCollapseListItems,
 }) {
-  const classes = useStyles();
-
   const { primary, secondary } = useComponentListItemText(component);
   const isComponentMapped = getIsComponentMapped(component);
 
@@ -71,21 +41,29 @@ export default function ComponentListItem({
       <ListItemButton
         dense
         onClick={onListItemClick}
-        className={classes.listItem}
+        sx={{ paddingLeft: (theme) => theme.spacing(1) }}
         ref={component._ref}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
         <Box>
           <Box display="flex" alignItems="center" width="100%">
             <ListItemText
-              className={classes.listItemText}
+              sx={{
+                marginLeft: (theme) => theme.spacing(1),
+                flexGrow: 1,
+                marginRight: (theme) => theme.spacing(6),
+              }}
               primary={primary}
               secondary={
                 <>
                   <>{secondary}</>
-                  <span className={classes.additionalListItemText}>
+                  <Box
+                    sx={{
+                      display: "block",
+                    }}
+                  >
                     {additionalListItemText}
-                  </span>
+                  </Box>
                 </>
               }
             />
@@ -110,7 +88,7 @@ export default function ComponentListItem({
         {isExpanded ? (
           <List component="div" disablePadding dense>
             {!isComponentMapped && (
-              <ListItem dense className={classes.listItem}>
+              <ListItem dense sx={{ paddingLeft: (theme) => theme.spacing(1) }}>
                 <ListItemText
                   primary={
                     <Alert severity="error">Component is not mapped</Alert>
@@ -119,13 +97,22 @@ export default function ComponentListItem({
               </ListItem>
             )}
             {component.moped_proj_component_work_types.length > 0 && (
-              <ListItem className={classes.nested}>
+              <ListItem sx={{ paddingLeft: (theme) => theme.spacing(4) }}>
                 <Grid container spacing={0.5}>
                   {component.moped_proj_component_work_types.map((element) => (
                     <Grid item key={element.moped_work_type.id}>
                       <Chip
                         label={element.moped_work_type.name}
-                        className={classes.workTypeChip}
+                        sx={{
+                          "& .MuiChip-label": {
+                            display: "block",
+                            whiteSpace: "normal",
+                          },
+                          fontWeight: "500",
+                          fontSize: "12px",
+                          borderRadius: "2rem",
+                          height: "1.75rem",
+                        }}
                       />
                     </Grid>
                   ))}
@@ -133,7 +120,7 @@ export default function ComponentListItem({
               </ListItem>
             )}
             {component.description && (
-              <ListItem className={classes.nested}>
+              <ListItem sx={{ paddingLeft: (theme) => theme.spacing(4) }}>
                 <ListItemText secondary={component.description} />
               </ListItem>
             )}
