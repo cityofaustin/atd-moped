@@ -115,10 +115,10 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
     <ApolloErrorHandler errors={error}>
       <Paper
         elevation={2}
-        sx={{
-          padding: "12px",
-          paddingTop: 0,
-        }}
+        sx={(theme) => ({
+          padding: theme.spacing(1.5),
+          paddingTop: theme.spacing(0.5),
+        })}
       >
         <Toolbar sx={{ paddingRight: "2px" }} disableGutters={true}>
           <Typography variant="h2" color="primary" sx={{ flexGrow: 1 }}>
