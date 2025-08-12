@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 // Internal functions
 import config from "../../config";
-import { useUser, getJwt } from "../../auth/user";
 
 // File Pond Library
 import { FilePond, registerPlugin } from "react-filepond";
@@ -13,9 +12,10 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Alert } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import { Grid } from "@mui/material";
+import useAuthentication from "src/auth/useAuthentication";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -23,19 +23,18 @@ registerPlugin(
   FilePondPluginFileValidateSize
 );
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   errorMessage: {
     margin: "1rem 0",
   },
 }));
 
-const FileUpload = props => {
+const FileUpload = (props) => {
   /**
    * Constants
    */
   const classes = useStyles();
-  const { user } = useUser();
-  const token = getJwt(user);
+  const { getToken } = useAuthentication();
   const maxFiles = props?.limit ?? 1;
 
   /**
@@ -60,8 +59,8 @@ const FileUpload = props => {
    */
   const withQuery = (url, params) => {
     const query = Object.keys(params)
-      .filter(k => params[k] !== undefined)
-      .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+      .filter((k) => params[k] !== undefined)
+      .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
       .join("&");
     url += (url.indexOf("?") === -1 ? "?" : "&") + query;
     return url;
@@ -73,10 +72,13 @@ const FileUpload = props => {
    * @param {Object} item - The file object as provided by FilePond
    * @return {Promise<boolean>}
    */
-  const handleBeforeAdd = item => {
+  const handleBeforeAdd = async (item) => {
     // strip out & because of file upload bug
     // https://github.com/cityofaustin/atd-data-tech/issues/11900#issuecomment-1505701452
-    const filteredFilename = item.filename.replace("&", "_")
+    const filteredFilename = item.filename.replace("&", "_");
+
+    const token = await getToken();
+
     return fetch(
       withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {
         file: filteredFilename,
@@ -91,7 +93,7 @@ const FileUpload = props => {
       }
     )
       .then(
-        response => {
+        (response) => {
           if (response.status !== 200) {
             setErrors([
               `Cannot retrieve file signature for file '${item.filename}'. Please reload your page and try again or contact the Data & Technology Services department. Feedback message: ${response.status} - ${response.statusText}`,
@@ -100,7 +102,7 @@ const FileUpload = props => {
           } else {
             response
               .json()
-              .then(data => {
+              .then((data) => {
                 setErrors([]);
                 if (data?.credentials) {
                   const newFileSignatureState = { ...fileSignatures };
@@ -108,7 +110,7 @@ const FileUpload = props => {
                   setFileSignatures(newFileSignatureState);
                 }
               })
-              .catch(err => {
+              .catch((err) => {
                 // eslint-disable-next-line
                 throw "Error: " + JSON.stringify(err);
               });
@@ -116,7 +118,7 @@ const FileUpload = props => {
             return true;
           }
         },
-        rejection => {
+        (rejection) => {
           setErrors([
             `Cannot retrieve file signature for file '${item.filename}'. Please reload your page and try again or contact the Data & Technology Services department.`,
           ]);
@@ -128,7 +130,7 @@ const FileUpload = props => {
           return false;
         }
       )
-      .catch(error => {
+      .catch((error) => {
         setErrors([
           `Cannot retrieve file signature for file '${item.filename}'. Please reload your page and try again or contact the Data & Technology Services department. Feedback: ${error}`,
         ]);
@@ -211,14 +213,14 @@ const FileUpload = props => {
 
     // Should call the progress method to update the progress to 100% before calling load
     // Setting computable to false switches the loading indicator to infinite mode
-    request.upload.onprogress = e => {
+    request.upload.onprogress = (e) => {
       progress(e.lengthComputable, e.loaded, e.total);
     };
 
     // Should call the load method when done and pass the returned server file id
     // this server file id is then used later on when reverting or restoring a file
     // so your server knows which file to return without exposing that info to the client
-    request.onload = function() {
+    request.onload = function () {
       if (request.status >= 200 && request.status < 300) {
         if (props?.onFileProcessed) {
           props.onFileProcessed(fileSignature.fields.key);
@@ -248,7 +250,7 @@ const FileUpload = props => {
   return (
     <Grid>
       {errors.length > 0 &&
-        errors.map(err => {
+        errors.map((err) => {
           return (
             <Alert className={classes.errorMessage} severity="error">
               <b>Error:</b> {err}

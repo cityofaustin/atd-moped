@@ -3,6 +3,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import makeStyles from "@mui/styles/makeStyles";
 import FallbackComponent from "./FallbackComponent";
+import useAuthentication from "src/auth/useAuthentication";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -25,21 +26,11 @@ const ApolloErrorHandler = (props) => {
 
   // Error Variables
   const error = props?.error ?? null;
-  const errorString = error
-    ? JSON.stringify(error, Object.getOwnPropertyNames(error))
-    : "";
-  const jwtError = errorString.includes("JWT") || errorString.includes("token");
-
-  // if (jwtError) {
-  //   setTimeout(() => {
-  //     window.location.reload();
-  //   }, 5000);
-  // }
+  const { isLoading: isLoadingToken } = useAuthentication();
 
   return (
     <>
-      {props.children}
-      {/* {jwtError ? (
+      {isLoadingToken ? (
         <Backdrop className={classes.backdrop} open={true} onClick={null}>
           <CircularProgress color="inherit" />
         </Backdrop>
@@ -47,7 +38,7 @@ const ApolloErrorHandler = (props) => {
         <FallbackComponent error={error} />
       ) : (
         props.children
-      )} */}
+      )}
     </>
   );
 };
