@@ -117,7 +117,7 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
         elevation={2}
         sx={(theme) => ({
           padding: theme.spacing(1.5),
-          paddingTop: theme.spacing(0.5),
+          paddingTop: 0,
         })}
       >
         <Toolbar sx={{ paddingRight: "3px" }} disableGutters={true}>
