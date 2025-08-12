@@ -7,7 +7,6 @@ import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdow
 import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
 import { NavLink } from "react-router-dom";
-import theme from "src/theme";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local
@@ -79,7 +78,7 @@ const TopBar = ({ className, ...rest }) => {
                   label={item.title}
                   sx={{
                     textTransform: "capitalize",
-                    color: theme.palette.text.secondary,
+                    color: (theme) => theme.palette.text.secondary,
                     fontSize: "1.2em",
                     minWidth: "75px",
                     height: "64px",
@@ -88,10 +87,12 @@ const TopBar = ({ className, ...rest }) => {
                   component={NavLink}
                   to={item.href}
                   style={({ isActive }) =>
+                    // react-router-dom is removing support for "activeClassName" in favor of this isActive prop
+                    // see: https://reactrouter.com/docs/en/v6/upgrading/v5#remove-activeclassname-and-activestyle-props-from-navlink-
                     isActive
                       ? {
-                          color: theme.palette.primary.main,
-                          borderColor: theme.palette.primary.main,
+                          color: (theme) => theme.palette.primary.main,
+                          borderColor: (theme) => theme.palette.primary.main,
                           borderBottomWidth: "2px",
                           borderStyle: "solid",
                           fontWeight: 800,
@@ -104,7 +105,7 @@ const TopBar = ({ className, ...rest }) => {
           </Box>
           <Box flexGrow={1} />
           <NavigationSearchInput />
-          <Box sx={{ marginRight: 2 }}>
+          <Box sx={{ marginRight: (theme) => theme.spacing(1) }}>
             <CanAddProjectButton />
           </Box>
         </Hidden>

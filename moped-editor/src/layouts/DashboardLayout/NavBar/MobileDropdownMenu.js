@@ -84,7 +84,7 @@ const MobileDropdownMenu = () => {
         {subMenu && (
           <div
             sx={{
-              marginLeft: "1em",
+              marginLeft: (theme) => theme.spacing(2),
             }}
           >
             {helpItems.map((item) => {

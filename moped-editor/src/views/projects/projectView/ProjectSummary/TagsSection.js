@@ -18,7 +18,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import Grid from "@mui/material/Grid";
-import theme from "src/theme";
 
 import {
   TAGS_QUERY,
@@ -160,7 +159,7 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
                     onDelete={() => handleDeleteOpen(tag)}
                     sx={{
                       height: "auto",
-                      minHeight: theme.spacing(4),
+                      minHeight: (theme) => theme.spacing(4),
                       "& .MuiChip-label": {
                         display: "block",
                         whiteSpace: "normal",
@@ -176,12 +175,12 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
               display="flex"
               justifyContent="flex-start"
               sx={{
-                padding: theme.spacing(1),
+                padding: (theme) => theme.spacing(1),
               }}
             >
               <Autocomplete
                 multiple
-                sx={{ minWidth: "250px" }}
+                sx={{ minWidth: (theme) => theme.spacing(31.25) }} // 250px / 8 = 31.25
                 id="tag-autocomplete"
                 getOptionLabel={(option) => option.name}
                 onChange={(e, value) => setNewTagList(value)}
@@ -197,16 +196,16 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
                 )}
               />
               <Box
-                sx={{
-                  minWidth: "8rem",
-                  marginLeft: "8px",
-                }}
+                sx={(theme) => ({
+                  minWidth: theme.spacing(8),
+                  marginLeft: theme.spacing(1),
+                })}
               >
                 <IconButton
-                  sx={{
-                    margin: "8px 0",
-                    padding: "8px",
-                  }}
+                  sx={(theme) => ({
+                    margin: `${theme.spacing(1)} 0`,
+                    padding: theme.spacing(1),
+                  })}
                   aria-label="Add"
                   onClick={handleTagAdd}
                   size="large"
@@ -214,10 +213,10 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
                   <Icon fontSize={"small"}>check</Icon>
                 </IconButton>
                 <IconButton
-                  sx={{
-                    margin: "8px 0",
-                    padding: "8px",
-                  }}
+                  sx={(theme) => ({
+                    margin: `${theme.spacing(1)} 0`,
+                    padding: theme.spacing(1),
+                  })}
                   aria-label="Cancel"
                   onClick={handleNewTagCancel}
                   size="large"

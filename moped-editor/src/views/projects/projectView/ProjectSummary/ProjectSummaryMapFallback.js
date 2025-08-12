@@ -41,7 +41,7 @@ const ProjectSummaryMapFallback = () => {
         <Link to="?tab=map">
           <Button
             sx={{
-              margin: "1rem",
+              margin: (theme) => theme.spacing(2),
             }}
             variant="contained"
             color="primary"
