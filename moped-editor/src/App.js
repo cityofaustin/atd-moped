@@ -21,21 +21,27 @@ import {
   createHttpLink,
 } from "@apollo/client";
 
-import { LicenseInfo } from '@mui/x-license';
+import { LicenseInfo } from "@mui/x-license";
+import useAuthentication from "src/auth/useAuthentication";
 
 const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
-const useClient = (user) =>
-  useMemo(() => {
+const useClient = (user) => {
+  const { getToken } = useAuthentication();
+
+  const apolloClient = useMemo(() => {
     // see: https://www.apollographql.com/docs/react/networking/authentication/#header
     const httpLink = createHttpLink({ uri: HASURA_ENDPOINT });
 
-    const authLink = setContext((_, { headers }) => {
+    const authLink = setContext(async (_, { headers }) => {
+      const token = await getToken();
+
       // Get the authentication token and role from user if it exists
-      const token = getJwt(user);
+      // const token = getJwt(user);
+      console.log("Using token:", token);
       const role = getHighestRole(user);
 
       // Return the headers and role to the context so httpLink can read them
@@ -69,9 +75,12 @@ const useClient = (user) =>
         },
       }),
     });
-  }, [user]);
+  }, [user, getToken]);
 
-  LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
+  return apolloClient;
+};
+
+LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
 
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);

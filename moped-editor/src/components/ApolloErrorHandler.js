@@ -30,15 +30,16 @@ const ApolloErrorHandler = (props) => {
     : "";
   const jwtError = errorString.includes("JWT") || errorString.includes("token");
 
-  if (jwtError) {
-    setTimeout(() => {
-      window.location.reload();
-    }, 5000);
-  }
+  // if (jwtError) {
+  //   setTimeout(() => {
+  //     window.location.reload();
+  //   }, 5000);
+  // }
 
   return (
     <>
-      {jwtError ? (
+      {props.children}
+      {/* {jwtError ? (
         <Backdrop className={classes.backdrop} open={true} onClick={null}>
           <CircularProgress color="inherit" />
         </Backdrop>
@@ -46,7 +47,7 @@ const ApolloErrorHandler = (props) => {
         <FallbackComponent error={error} />
       ) : (
         props.children
-      )}
+      )} */}
     </>
   );
 };
