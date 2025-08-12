@@ -48,6 +48,10 @@ const useAuthentication = () => {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Checks the current Cognito session and updates the user state. A loading
+   * state is set while the session is being checked.
+   */
   const refreshState = useCallback(async () => {
     setIsLoading(true);
 
@@ -121,6 +125,10 @@ const useAuthentication = () => {
     }
   }, [refreshState]);
 
+  /**
+   * Returns a valid JWT token to use against the GraphQL endpoint or the
+   * Moped API.
+   */
   const getToken = useCallback(async () => {
     const currentUser = await refreshState();
     console.log("User session refreshed:", currentUser);

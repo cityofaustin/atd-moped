@@ -13,19 +13,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * ApolloErrorHandler attempts to be a component that deals with the
- * JWT Token Expired error in a sensible way. Initially, it only displays
- * a spinner and forces the browser to refresh, allowing AWS Amplify
- * to refresh the token.
- * @param {Object} props - Props.error is the only prop needed at the moment
- * @return {JSX.Element}
+ * ApolloErrorHandler renders a loading backdrop when the token is being refreshed
+ * when the token loading state is updated when getToken is called.
+ * It also renders a FallbackComponent when an unexpected Apollo error occurs.
+ * @param {Object} error - Apollo error returned by useQuery hook
+ * @param {React.ReactNode} children - Children components to render when no error occurs
+ * @returns {JSX.Element} - A loading backdrop or the children components or an error fallback component
  * @constructor
  */
-const ApolloErrorHandler = (props) => {
+const ApolloErrorHandler = ({ error, children }) => {
   const classes = useStyles();
-
-  // Error Variables
-  const error = props?.error ?? null;
   const { isLoading: isLoadingToken } = useAuthentication();
 
   return (
@@ -35,9 +32,9 @@ const ApolloErrorHandler = (props) => {
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : error ? (
-        <FallbackComponent error={error} />
+        <FallbackComponent error={error ?? null} />
       ) : (
-        props.children
+        children
       )}
     </>
   );
