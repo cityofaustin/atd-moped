@@ -140,14 +140,7 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
             justifyContent: "left",
             flexWrap: "wrap",
             listStyle: "none",
-            padding: (theme) => {
-              {
-                theme.spacing(1);
-              }
-              {
-                theme.spacing(2);
-              }
-            },
+            padding: (theme) => `${theme.spacing(1)} ${theme.spacing(2)}`,
             paddingRight: 0,
             margin: 0,
           }}
