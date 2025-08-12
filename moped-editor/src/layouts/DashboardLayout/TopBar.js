@@ -71,19 +71,22 @@ const TopBar = ({ className, ...rest }) => {
         </RouterLink>
         <Hidden mdDown>
           <Box>
-            <Tabs sx={{ marginLeft: "12px" }} value={false}>
+            <Tabs
+              sx={{ marginLeft: (theme) => theme.spacing(1.5) }}
+              value={false}
+            >
               {navigationItems.map((item) => (
                 <Tab
                   key={item.href}
                   label={item.title}
-                  sx={{
+                  sx={(theme) => ({
                     textTransform: "capitalize",
-                    color: (theme) => theme.palette.text.secondary,
+                    color: theme.palette.text.secondary,
                     fontSize: "1.2em",
-                    minWidth: "75px",
-                    height: "64px",
+                    minWidth: theme.spacing(9.375), // 75px / 8
+                    height: theme.spacing(8), // 64px / 8
                     opacity: 1,
-                  }}
+                  })}
                   component={NavLink}
                   to={item.href}
                   style={({ isActive }) =>
@@ -93,7 +96,7 @@ const TopBar = ({ className, ...rest }) => {
                       ? {
                           color: (theme) => theme.palette.primary.main,
                           borderColor: (theme) => theme.palette.primary.main,
-                          borderBottomWidth: "2px",
+                          borderBottomWidth: (theme) => theme.spacing(0.25), // 2px / 8
                           borderStyle: "solid",
                           fontWeight: 800,
                         }
