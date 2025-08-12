@@ -135,15 +135,15 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
           </Button>
         </Toolbar>
         <Box
-          sx={{
+          sx={(theme) => ({
             display: "flex",
             justifyContent: "left",
             flexWrap: "wrap",
             listStyle: "none",
-            padding: (theme) => `${theme.spacing(1)} ${theme.spacing(2)}`,
-            paddingRight: 0,
+            paddingTop: theme.spacing(1),
+            paddingBottom: theme.spacing(0.5),
             margin: 0,
-          }}
+          })}
         >
           <DeleteConfirmationModal
             type="tag"
