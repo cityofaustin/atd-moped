@@ -120,7 +120,7 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
           paddingTop: theme.spacing(0.5),
         })}
       >
-        <Toolbar sx={{ paddingRight: "2px" }} disableGutters={true}>
+        <Toolbar sx={{ paddingRight: "3px" }} disableGutters={true}>
           <Typography variant="h2" color="primary" sx={{ flexGrow: 1 }}>
             Tags
           </Typography>
