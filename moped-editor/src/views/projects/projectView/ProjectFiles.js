@@ -24,7 +24,6 @@ import {
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "src/queries/project";
-import { getJwt, useUser } from "src/auth/user";
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
@@ -34,6 +33,7 @@ import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesT
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import useAuthentication from "src/auth/useAuthentication";
 
 const useStyles = makeStyles(() => ({
   ellipsisOverflow: {
@@ -75,7 +75,7 @@ const requiredFields = ["file_name", "file_type"];
 
 const useColumns = ({
   classes,
-  token,
+  getToken,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -118,7 +118,7 @@ const useColumns = ({
             return (
               <Link
                 className={classes.ellipsisOverflow}
-                onClick={() => downloadFileAttachment(row?.file_key, token)}
+                onClick={() => downloadFileAttachment(row?.file_key, getToken)}
               >
                 {cleanUpFileKey(row?.file_key)}
               </Link>
@@ -236,7 +236,7 @@ const useColumns = ({
     ];
   }, [
     classes,
-    token,
+    getToken,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -257,8 +257,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
-  const { user } = useUser();
-  const token = getJwt(user);
+  const { getToken } = useAuthentication();
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -447,7 +446,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   const dataGridColumns = useColumns({
     classes,
-    token,
+    getToken,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

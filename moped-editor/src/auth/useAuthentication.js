@@ -126,7 +126,7 @@ const useAuthentication = () => {
     console.log("User session refreshed:", currentUser);
     console.log(
       "Expires:",
-      epochToCentralTime(currentUser.idToken.payload.exp)
+      epochToCentralTime(currentUser?.idToken?.payload.exp)
     );
     return currentUser?.idToken?.getJwtToken();
   }, [refreshState]);
