@@ -4,7 +4,8 @@ import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import GlobalStyles from "src/components/GlobalStyles";
 import theme from "src/theme";
 import { restrictedRoutes } from "src/routes";
-import { useUser, getJwt, getHighestRole } from "./auth/user";
+import { useUser, getHighestRole } from "./auth/user";
+import useAuthentication from "src/auth/useAuthentication";
 import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -22,7 +23,6 @@ import {
 } from "@apollo/client";
 
 import { LicenseInfo } from "@mui/x-license";
-import useAuthentication from "src/auth/useAuthentication";
 
 const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
@@ -40,8 +40,6 @@ const useClient = (user) => {
       const token = await getToken();
 
       // Get the authentication token and role from user if it exists
-      // const token = getJwt(user);
-      console.log("Using token:", token);
       const role = getHighestRole(user);
 
       // Return the headers and role to the context so httpLink can read them

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser, getJwt } from "../../auth/user";
+import useAuthentication from "src/auth/useAuthentication";
 import axios from "axios";
 
 /**
@@ -15,7 +15,7 @@ export function useUserApi() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { user } = useUser();
+  const { getToken } = useAuthentication();
 
   /**
    * Call the User route of the Moped API
@@ -24,10 +24,13 @@ export function useUserApi() {
    * @param {Object} payload - Data sent to Moped API
    * @param {Function} callback - Callback that fires on request success
    */
-  const requestApi = ({ method, path, payload, callback }) => {
+  const requestApi = async ({ method, path, payload, callback }) => {
+    setError(null); // Clear errors from previous attempts
+
     const url = process.env.REACT_APP_API_ENDPOINT + path;
 
-    const jwt = getJwt(user);
+    const jwt = await getToken();
+    console.log("Using JWT:", jwt);
 
     let config = {
       url,
@@ -46,7 +49,6 @@ export function useUserApi() {
     axios(config)
       .then((res) => {
         setResult(res.data);
-        setError(null); // Clear errors from previous attempts
         setLoading(false);
         !!callback && callback();
       })
@@ -59,6 +61,7 @@ export function useUserApi() {
             }
           : null;
         setError(err?.response?.data?.error ?? otherError);
+        setLoading(false);
       });
   };
 

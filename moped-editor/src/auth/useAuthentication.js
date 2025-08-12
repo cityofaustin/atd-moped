@@ -68,12 +68,17 @@ const useAuthentication = () => {
         setError(err);
       }
       setIsLoading(false);
+
+      return null;
     }
   }, []);
 
   // Make sure our state is loaded before first render
-  useLayoutEffect(async () => {
-    await refreshState();
+  useLayoutEffect(() => {
+    const refreshUserState = async () => {
+      await refreshState();
+    };
+    refreshUserState();
   }, [refreshState]);
 
   // Subscribe to auth events
