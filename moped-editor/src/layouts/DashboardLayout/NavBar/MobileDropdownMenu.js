@@ -7,7 +7,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   helpItems,
-  arcGISLink,
+  analysisItems,
 } from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import { navigationItems } from "src/layouts/DashboardLayout/TopBar";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
@@ -68,23 +68,25 @@ const MobileDropdownMenu = () => {
             {item.title}
           </MenuItem>
         ))}
-        {/* ArcGIS Map link */}
-        <Link
-          href={arcGISLink.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="inherit"
-          underline="none"
-        >
-          <MenuItem
-            key={arcGISLink.link}
-            onClick={() => {
-              handleMobileClose();
-            }}
+        {analysisItems.map((item) => (
+          <Link
+            key={item.link}
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            underline="none"
           >
-            {arcGISLink.title}
-          </MenuItem>
-        </Link>
+            <MenuItem
+              key={item.link}
+              onClick={() => {
+                handleMobileClose();
+              }}
+            >
+              {item.title}
+            </MenuItem>
+          </Link>
+        ))}
         <MenuItem key="help" onClick={setShowSubMenu}>
           Help
           {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
