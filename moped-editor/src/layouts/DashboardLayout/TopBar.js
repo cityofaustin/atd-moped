@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { AppBar, Box, Hidden, Toolbar, Tabs, Tab, Alert } from "@mui/material";
+import { AppBar, Box, Hidden, Toolbar, Tabs, Tab, Alert, useTheme } from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdownMenu";
 import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
 import { NavLink } from "react-router-dom";
-import theme from "src/theme";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local
@@ -49,6 +48,7 @@ export const navigationItems = [
 ];
 
 const TopBar = ({ className, ...rest }) => {
+  const theme = useTheme();
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
 
   const handleDropdownClick = (event) => {
@@ -95,7 +95,7 @@ const TopBar = ({ className, ...rest }) => {
                     // see: https://reactrouter.com/docs/en/v6/upgrading/v5#remove-activeclassname-and-activestyle-props-from-navlink-
                     isActive
                       ? {
-                        // unfortunately, theme cannot be passed as a callback through the style prop, so we must import it directly
+                        // theme cannot be passed as a callback through the style prop, so we use useTheme
                           color: theme.palette.primary.main,
                           borderColor: theme.palette.primary.main,
                           borderBottomWidth: theme.spacing(0.25), // 2px / 8
