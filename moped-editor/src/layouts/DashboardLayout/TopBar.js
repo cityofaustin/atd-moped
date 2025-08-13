@@ -7,6 +7,7 @@ import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdow
 import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
 import { NavLink } from "react-router-dom";
+import theme from "src/theme";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local
@@ -94,9 +95,10 @@ const TopBar = ({ className, ...rest }) => {
                     // see: https://reactrouter.com/docs/en/v6/upgrading/v5#remove-activeclassname-and-activestyle-props-from-navlink-
                     isActive
                       ? {
-                          color: (theme) => theme.palette.primary.main,
-                          borderColor: (theme) => theme.palette.primary.main,
-                          borderBottomWidth: (theme) => theme.spacing(0.25), // 2px / 8
+                        // unfortunately, theme cannot be passed as a callback through the style prop, so we must import it directly
+                          color: theme.palette.primary.main,
+                          borderColor: theme.palette.primary.main,
+                          borderBottomWidth: theme.spacing(0.25), // 2px / 8
                           borderStyle: "solid",
                           fontWeight: 800,
                         }
