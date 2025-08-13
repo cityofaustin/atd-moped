@@ -13,7 +13,7 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert } from "@mui/material";
+import { Alert, useTheme } from "@mui/material";
 import { Grid } from "@mui/material";
 
 registerPlugin(
@@ -23,6 +23,8 @@ registerPlugin(
 );
 
 const FileUpload = (props) => {
+  const theme = useTheme();
+
   /**
    * Constants
    */
@@ -242,7 +244,7 @@ const FileUpload = (props) => {
       {errors.length > 0 &&
         errors.map((err) => {
           return (
-            <Alert sx={{ margin: "1rem 0" }} severity="error">
+            <Alert sx={{ margin: `${theme.spacing(2)} 0` }} severity="error">
               <b>Error:</b> {err}
             </Alert>
           );
