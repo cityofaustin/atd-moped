@@ -252,9 +252,8 @@ const NoteInput = ({
             {isEditingNote && (
               <Box
                 sx={{
-                  margin: (theme) => theme.spacing(1),
+                  margin: 1,
                   position: "relative",
-                  color: (theme) => theme.palette.secondary.dark,
                 }}
               >
                 <Button variant="text" onClick={cancelNoteEdit}>
