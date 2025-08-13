@@ -141,18 +141,6 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
     }
   }, []);
 
-  const getSelectedButtonProps = (isSelected) =>
-    isSelected
-      ? {
-          sx: {
-            backgroundColor: (theme) => theme.palette.primary.main,
-            "&:hover, &.Mui-focusVisible": {
-              backgroundColor: (theme) => theme.palette.primary.main,
-            },
-          },
-        }
-      : {};
-
   const onAction = useCallback(
     (id) => {
       switch (id) {
@@ -230,12 +218,15 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}
-              sx={{
-                "& .MuiButton-startIcon": {
-                  margin: 0,
-                },
-                ...getSelectedButtonProps(selectionMap[id]).sx,
-              }}
+              sx={(theme) => ({
+                "& .MuiButton-startIcon": { margin: 0 },
+                ...(selectionMap[id] && {
+                  backgroundColor: theme.palette.primary.main,
+                  "&:hover, &.Mui-focusVisible": {
+                    backgroundColor: theme.palette.primary.main,
+                  },
+                }),
+              })}
             />
           )
         )}
