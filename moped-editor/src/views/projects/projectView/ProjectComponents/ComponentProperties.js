@@ -2,14 +2,14 @@ import React from "react";
 import { Divider, Typography, Box, Grid } from "@mui/material";
 
 const dividerSx = {
-  marginTop: (theme) => theme.spacing(2),
-  marginBottom: (theme) => theme.spacing(2),
+  marginTop: 2,
+  marginBottom: 2,
 };
 
 const propertyItemSx = {
-  marginBottom: (theme) => theme.spacing(2),
+  marginBottom: 2,
   display: "inline-block",
-  marginRight: (theme) => theme.spacing(4),
+  marginRight: 4,
 };
 
 const propertyLabelSx = {
