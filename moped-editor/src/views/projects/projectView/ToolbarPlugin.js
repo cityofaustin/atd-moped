@@ -220,6 +220,8 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
               onClick={() => onAction(id)}
               sx={(theme) => ({
                 "& .MuiButton-startIcon": { margin: 0 },
+                // selectionMap[id] is true if the button is selected which
+                // applies conditional styling with this conditional object spread
                 ...(selectionMap[id] && {
                   backgroundColor: theme.palette.primary.main,
                   "&:hover, &.Mui-focusVisible": {
