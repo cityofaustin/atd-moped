@@ -13,8 +13,7 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Alert, useTheme } from "@mui/material";
 import { Grid } from "@mui/material";
 
 registerPlugin(
@@ -23,17 +22,12 @@ registerPlugin(
   FilePondPluginFileValidateSize
 );
 
-const useStyles = makeStyles(theme => ({
-  errorMessage: {
-    margin: "1rem 0",
-  },
-}));
+const FileUpload = (props) => {
+  const theme = useTheme();
 
-const FileUpload = props => {
   /**
    * Constants
    */
-  const classes = useStyles();
   const { user } = useUser();
   const token = getJwt(user);
   const maxFiles = props?.limit ?? 1;
@@ -248,9 +242,9 @@ const FileUpload = props => {
   return (
     <Grid>
       {errors.length > 0 &&
-        errors.map(err => {
+        errors.map((err) => {
           return (
-            <Alert className={classes.errorMessage} severity="error">
+            <Alert sx={{ margin: `${theme.spacing(2)} 0` }} severity="error">
               <b>Error:</b> {err}
             </Alert>
           );

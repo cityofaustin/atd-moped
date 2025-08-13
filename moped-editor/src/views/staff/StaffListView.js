@@ -1,7 +1,6 @@
 import React from "react";
 
-import { Box, Card, Container, CircularProgress } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { Box, Card, CircularProgress } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { DataGridPro, GridToolbar } from "@mui/x-data-grid-pro";
 
@@ -13,22 +12,6 @@ import {
   CopyMugUsersButton,
 } from "./StaffListViewCustomComponents";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    minHeight: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-  },
-  container: {
-    maxWidth: "100%",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "24px",
-  },
-}));
 
 const staffColumns = [
   {
@@ -99,8 +82,6 @@ const staffColumns = [
 ];
 
 const StaffListView = () => {
-  const classes = useStyles();
-
   const { data, loading, error } = useQuery(GET_ALL_USERS, {
     fetchPolicy: "cache-and-network",
   });
@@ -110,12 +91,24 @@ const StaffListView = () => {
   }
 
   return (
-    <Page className={classes.root} title="Staff">
+    <Page title="Staff" sx={{ maxWidth: "100%" }}>
       {loading ? (
         <CircularProgress />
       ) : (
-        <Container className={classes.container}>
-          <Box className={classes.buttonContainer}>
+        <Box
+          sx={{
+            maxWidth: "100%",
+            minHeight: "100%",
+            padding: 3,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: 3,
+            }}
+          >
             <CopyMugUsersButton users={data?.moped_users} />
             <AddUserButton />
           </Box>
@@ -131,13 +124,15 @@ const StaffListView = () => {
               initialState={{
                 filter: {
                   filterModel: {
-                    items: [{ field: 'is_deleted', operator: 'equals', value: 'Yes' }],
+                    items: [
+                      { field: "is_deleted", operator: "equals", value: "Yes" },
+                    ],
                   },
                 },
               }}
             />
           </Card>
-        </Container>
+        </Box>
       )}
     </Page>
   );
