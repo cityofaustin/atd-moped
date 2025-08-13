@@ -54,6 +54,14 @@ const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
 const requiredFields = ["file_name", "file_type"];
 
+// Reusable styles for clickable text elements with ellipsis
+const clickableTextStyles = {
+  cursor: "pointer",
+  overflow: "hidden",
+  display: "block",
+  textOverflow: "ellipsis",
+};
+
 const useColumns = ({
   token,
   rowModesModel,
@@ -73,16 +81,7 @@ const useColumns = ({
         width: 200,
         editable: true,
         renderCell: ({ row }) => (
-          <Typography
-            sx={{
-              cursor: "pointer",
-              overflow: "hidden",
-              display: "block",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {row?.file_name}
-          </Typography>
+          <Typography sx={clickableTextStyles}>{row?.file_name}</Typography>
         ),
         // validate input
         preProcessEditCellProps: (params) => {
@@ -104,12 +103,7 @@ const useColumns = ({
           if (row.file_key) {
             return (
               <Link
-                sx={{
-                  cursor: "pointer",
-                  overflow: "hidden",
-                  display: "block",
-                  textOverflow: "ellipsis",
-                }}
+                sx={clickableTextStyles}
                 onClick={() => downloadFileAttachment(row?.file_key, token)}
               >
                 {cleanUpFileKey(row?.file_key)}
@@ -119,12 +113,7 @@ const useColumns = ({
           return isValidUrl(row?.file_url) ? (
             <ExternalLink
               linkProps={{
-                sx: {
-                  cursor: "pointer",
-                  overflow: "hidden",
-                  display: "block",
-                  textOverflow: "ellipsis",
-                },
+                sx: clickableTextStyles,
               }}
               url={row?.file_url}
               text={row?.file_url}
