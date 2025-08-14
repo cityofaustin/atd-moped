@@ -133,6 +133,47 @@ const Search = ({
     });
   };
 
+  const downloadButtonGrid = {
+    padding: theme.spacing(1.5),
+    [theme.breakpoints.down("md")]: {
+      paddingTop: 0,
+    },
+    alignContent: "top",
+  };
+
+  const searchBarContainer = {
+    padding: theme.spacing(0.25),
+    [theme.breakpoints.down("sm")]: {
+      paddingBottom: theme.spacing(1.5),
+    },
+  };
+
+  const advancedSearchRoot = {
+    width: `calc(100% - ${theme.spacing(6)})`,
+    [theme.breakpoints.down("sm")]: {
+      width: `calc(100% - ${theme.spacing(4)})`,
+    },
+    zIndex: 1201,
+  };
+
+  const advancedSearchPaper = {
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+    boxShadow:
+      "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
+  };
+
+  const gridSearchPadding = {
+    padding: theme.spacing(1.5),
+  };
+
+  const toggleButtonGroup = {
+    display: "inline",
+    marginRight: theme.spacing(3),
+  };
+
   return (
     <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
       {/* FYI: you cannot use a Select component inside the click away listener
@@ -143,20 +184,13 @@ const Search = ({
           <Paper ref={divRef}>
             <Grid
               container
-              sx={{
-                padding: theme.spacing(0.25),
-                [theme.breakpoints.down("sm")]: {
-                  paddingBottom: theme.spacing(1.5),
-                },
-              }}
+              sx={searchBarContainer}
             >
               <Grid
                 item
                 xs={12}
                 md
-                sx={{
-                  padding: theme.spacing(1.5),
-                }}
+                sx={gridSearchPadding}
               >
                 <SearchBar
                   searchFieldValue={searchFieldValue}
@@ -181,13 +215,7 @@ const Search = ({
                 item
                 xs={12}
                 md="auto"
-                sx={{
-                  padding: theme.spacing(1.5),
-                  [theme.breakpoints.down("md")]: {
-                    paddingTop: 0,
-                  },
-                  alignContent: "top",
-                }}
+                sx={downloadButtonGrid}
               >
                 <div>
                   {queryConfig.showExport && (
@@ -204,10 +232,7 @@ const Search = ({
                         </Button>
                       </Hidden>
                       <ToggleButtonGroup
-                        sx={{
-                          display: "inline",
-                          marginRight: theme.spacing(3),
-                        }}
+                        sx={toggleButtonGroup}
                         value={showMapView === true ? "map" : "list"} // Highlight selected button
                         exclusive
                         onChange={handleMapToggle}
@@ -256,24 +281,9 @@ const Search = ({
           anchorEl={advancedSearchAnchor}
           onClose={handleAdvancedSearchClose}
           placement={"bottom"}
-          sx={{
-            width: `calc(100% - ${theme.spacing(6)})`,
-            [theme.breakpoints.down("sm")]: {
-              width: `calc(100% - ${theme.spacing(4)})`,
-            },
-            zIndex: theme.zIndex.drawer + 1,
-          }}
+          sx={advancedSearchRoot}
         >
-          <Paper
-            sx={{
-              paddingTop: theme.spacing(1),
-              paddingRight: theme.spacing(2),
-              paddingBottom: theme.spacing(2),
-              paddingLeft: theme.spacing(2),
-              boxShadow:
-                "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
-            }}
-          >
+          <Paper sx={advancedSearchPaper}>
             <Filters
               setFilters={setFilters}
               handleAdvancedSearchClose={handleAdvancedSearchClose}

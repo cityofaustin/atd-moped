@@ -310,6 +310,10 @@ const Filters = ({
   const closeButtonStyle = {
     padding: theme.spacing(1.125), // 9px
   };
+  const applyButtonStyle = {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  };
 
   return (
     <Grid>
@@ -558,10 +562,7 @@ const Filters = ({
         <Grid item xs={12} md={2}>
           <Button
             fullWidth
-            sx={{
-              marginTop: theme.spacing(1),
-              marginBottom: theme.spacing(1),
-            }}
+            sx={applyButtonStyle}
             variant="contained"
             color="primary"
             startIcon={<Search />}
