@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Link, Menu, MenuItem } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -12,12 +11,6 @@ import {
 import { navigationItems } from "src/layouts/DashboardLayout/TopBar";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 
-const useStyles = makeStyles(() => ({
-  subMenu: {
-    marginLeft: "1em",
-  },
-}));
-
 /**
  * Renders dropdown menu visible on small screens
  * See https://material-ui.com/components/menus/ and https://material-ui.com/api/popover/
@@ -25,7 +18,6 @@ const useStyles = makeStyles(() => ({
  * @constructor
  */
 const MobileDropdownMenu = () => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   // anchor element for menu to "attach" to
@@ -90,7 +82,11 @@ const MobileDropdownMenu = () => {
           {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </MenuItem>
         {subMenu && (
-          <div className={classes.subMenu}>
+          <div
+            sx={{
+              marginLeft: (theme) => theme.spacing(2),
+            }}
+          >
             {helpItems.map((item) => {
               if (item.linkType === "external") {
                 return (
