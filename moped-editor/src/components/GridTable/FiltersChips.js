@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Chip, Grid, Button, Tooltip } from "@mui/material";
+import { Box, Chip, Grid, Button, Tooltip, useTheme } from "@mui/material";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -29,6 +29,7 @@ const FiltersChips = ({
 }) => {
   const [isViewSaved, setIsViewSaved] = useState(false);
   const [isSaveViewModalOpen, setIsSaveViewModalOpen] = useState(false);
+  const theme = useTheme();
 
   const filtersCount = Object.keys(filters).length;
 
@@ -112,7 +113,7 @@ const FiltersChips = ({
   }, [searchTerm]);
 
   const filtersListStyle = {
-    paddingTop: (theme) => theme.spacing(1),
+    paddingTop: theme.spacing(1),
     display: "flex",
     alignItems: "start",
   };

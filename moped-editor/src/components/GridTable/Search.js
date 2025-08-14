@@ -182,16 +182,8 @@ const Search = ({
       <div>
         <Box mt={3}>
           <Paper ref={divRef}>
-            <Grid
-              container
-              sx={searchBarContainer}
-            >
-              <Grid
-                item
-                xs={12}
-                md
-                sx={gridSearchPadding}
-              >
+            <Grid container sx={searchBarContainer}>
+              <Grid item xs={12} md sx={gridSearchPadding}>
                 <SearchBar
                   searchFieldValue={searchFieldValue}
                   setSearchFieldValue={setSearchFieldValue}
@@ -211,12 +203,7 @@ const Search = ({
                   handleSnackbar={handleSnackbar}
                 />
               </Grid>
-              <Grid
-                item
-                xs={12}
-                md="auto"
-                sx={downloadButtonGrid}
-              >
+              <Grid item xs={12} md="auto" sx={downloadButtonGrid}>
                 <div>
                   {queryConfig.showExport && (
                     <>
