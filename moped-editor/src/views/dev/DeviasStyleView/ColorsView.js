@@ -1,210 +1,92 @@
 import React from "react";
-import clsx from "clsx";
 import { Paper, Box, Avatar } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 
-const useStyles = makeStyles((theme) => ({
-  colorCircles: {
-    width: "60px",
-    height: "60px",
-    marginRight: "10px",
+const avatarBaseSx = {
+  width: "3.75rem",
+  height: "3.75rem",
+  marginRight: "0.625rem",
+  boxShadow: (theme) => theme.shadows[3],
+  color: "transparent",
+};
+
+// Configuration array for all color swatches
+const colorConfig = [
+  {
+    number: 1,
+    backgroundColor: "primary.main",
+    label: "Primary Main",
   },
-  color1: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.main,
+  {
+    number: 2,
+    backgroundColor: "primary.dark",
+    label: "Primary Dark",
   },
-  color2: {
-    backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.primary.dark,
+  {
+    number: 3,
+    backgroundColor: "primary.light",
+    label: "Primary Light",
   },
-  color3: {
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.primary.light,
+  {
+    number: 4,
+    backgroundColor: "secondary.main",
+    label: "Secondary Main",
   },
-  color4: {
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.secondary.main,
+  {
+    number: 5,
+    backgroundColor: "background.dark",
+    label: "Background Dark",
   },
-  color5: {
-    backgroundColor: theme.palette.background.dark,
-    color: theme.palette.background.dark,
+  {
+    number: 6,
+    backgroundColor: "background.default",
+    label: "Background Default",
   },
-  color6: {
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.background.default,
+  {
+    number: 7,
+    backgroundColor: "background.paper",
+    label: "Background Paper",
   },
-  color7: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.background.paper,
+  {
+    number: 8,
+    backgroundColor: "text.primary",
+    label: "Text Primary",
   },
-  color8: {
-    backgroundColor: theme.palette.text.primary,
-    color: theme.palette.text.primary,
+  {
+    number: 9,
+    backgroundColor: "text.secondary",
+    label: "Text Secondary",
   },
-  color9: {
-    backgroundColor: theme.palette.text.secondary,
-    color: theme.palette.text.secondary,
+  {
+    number: 10,
+    backgroundColor: "background.mapControlsHover",
+    label: "Map Controls Hover",
   },
-  color10: {
-    backgroundColor: theme.palette.background.mapControlsHover,
-    color: theme.palette.background.mapControlsHover,
-  },
-  avatar: {
-    boxShadow: theme.shadows[3],
-  },
-}));
+];
 
 const TypographyView = () => {
-  const classes = useStyles();
-
   return (
     <Paper>
       <Box p={3}>
         <List>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color1,
-                  classes.avatar
-                )}
-              >
-                1
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Primary Main" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color2,
-                  classes.avatar
-                )}
-              >
-                2
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Primary Dark" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color3,
-                  classes.avatar
-                )}
-              >
-                3
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Primary Light" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color4,
-                  classes.avatar
-                )}
-              >
-                4
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Secondary Main" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color5,
-                  classes.avatar
-                )}
-              >
-                {" "}
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Background Dark" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color6,
-                  classes.avatar
-                )}
-              >
-                6
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Background Default" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color7,
-                  classes.avatar
-                )}
-              >
-                7
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Background Paper" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color8,
-                  classes.avatar
-                )}
-              >
-                8
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Text Primary" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color9,
-                  classes.avatar
-                )}
-              >
-                9
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Text Secondary" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar
-                className={clsx(
-                  classes.colorCircles,
-                  classes.color10,
-                  classes.avatar
-                )}
-              >
-                10
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Map Control Hover Color" />
-          </ListItem>
+          {colorConfig.map((color) => (
+            <ListItem key={color.number}>
+              <ListItemAvatar>
+                <Avatar
+                  sx={{
+                    ...avatarBaseSx,
+                    backgroundColor: color.backgroundColor,
+                  }}
+                >
+                  {color.number}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={color.label} />
+            </ListItem>
+          ))}
         </List>
       </Box>
     </Paper>
