@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-
 import {
   Button,
   TextField,
@@ -10,12 +9,12 @@ import {
   IconButton,
   Grow,
   Typography,
+  useTheme,
 } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { DeleteOutline, Close, Search, PlaylistAdd } from "@mui/icons-material";
-
 import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "src/queries/project";
@@ -64,6 +63,7 @@ const Filters = ({
   setSearchFieldValue,
   setSearchTerm,
 }) => {
+  const theme = useTheme();
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
   if (error) console.error(error);
@@ -275,27 +275,49 @@ const Filters = ({
     setIsOrToggleValue(isOr);
   };
 
+  // Shared style classes
+  const filtersContainerStyle = {
+    paddingLeft: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: 0,
+    },
+  };
+  const gridItemPaddingStyle = {
+    paddingTop: theme.spacing(0.25),
+    paddingBottom: theme.spacing(0.25),
+    paddingRight: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: 0,
+    },
+  };
+  const formControlStyle = {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  };
+  const deleteButtonStyle = {
+    marginTop: theme.spacing(1),
+    color: theme.palette.text.primary,
+  };
+  const filterButtonStyle = {
+    margin: theme.spacing(1),
+    [theme.breakpoints.down("md")]: {
+      margin: 0,
+    },
+    minWidth: "100px",
+  };
+  const closeButtonStyle = {
+    padding: theme.spacing(1.125), // 9px
+  };
+
   return (
     <Grid>
-      <Grid container sx={{
-        paddingTop: "2px",
-        paddingBottom: "2px",
-        paddingRight: "16px",
-        paddingLeft: "16px",
-        '@media (max-width:900px)': {
-          paddingLeft: 0,
-        },
-      }}>
+      <Grid container sx={{ gridItemPaddingStyle }}>
         <Grid
           item
           xs={6}
-          sx={{
-            paddingLeft: "8px",
-            marginBottom: "8px",
-            '@media (max-width:900px)': {
-              paddingLeft: 0,
-            },
-          }}
+          sx={{ filtersContainerStyle }}
           display="flex"
           justifyContent="flex-start"
         >
@@ -327,42 +349,22 @@ const Filters = ({
         <Grid
           item
           xs={6}
-          sx={{
-            paddingLeft: "8px",
-            marginBottom: "8px",
-            '@media (max-width:900px)': {
-              paddingLeft: 0,
-            },
-          }}
+          sx={{ filtersContainerStyle }}
           display="flex"
           justifyContent="flex-end"
         >
           <IconButton
             onClick={handleAdvancedSearchClose}
-            sx={{ padding: "9px" }}
+            sx={closeButtonStyle}
             size="large"
           >
-            <Close fontSize="small" />
+            <Close/>
           </IconButton>
         </Grid>
       </Grid>
       {filterParameters.length === 0 ? (
-        <Grid container sx={{
-          paddingLeft: "8px",
-          marginBottom: "8px",
-          '@media (max-width:900px)': {
-            paddingLeft: 0,
-          },
-        }}>
-          <Grid item xs={12} md={4} sx={{
-            paddingTop: "2px",
-            paddingBottom: "2px",
-            paddingRight: "16px",
-            paddingLeft: "16px",
-            '@media (max-width:900px)': {
-              paddingLeft: 0,
-            },
-          }}>
+        <Grid container sx={filtersContainerStyle}>
+          <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
             <Typography>No filters applied</Typography>
           </Grid>
         </Grid>
@@ -388,32 +390,11 @@ const Filters = ({
               container
               id={`filter-${filterIndex}`}
               key={`filter-${filterIndex}`}
-              sx={{
-                paddingLeft: "8px",
-                marginBottom: "8px",
-                '@media (max-width:900px)': {
-                  paddingLeft: 0,
-                },
-              }}
+              sx={filtersContainerStyle}
             >
               {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={12} md={4} sx={{
-                paddingTop: "2px",
-                paddingBottom: "2px",
-                paddingRight: "16px",
-                paddingLeft: "16px",
-                '@media (max-width:900px)': {
-                  paddingLeft: 0,
-                },
-              }}>
-                <FormControl
-                  variant="standard"
-                  fullWidth
-                  sx={{
-                    margin: (theme) => theme.spacing(1),
-                    minWidth: 120,
-                  }}
-                >
+              <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
+                <FormControl variant="standard" fullWidth sx={formControlStyle}>
                   <Autocomplete
                     value={label || null}
                     id={`filter-field-select-${filterIndex}`}
@@ -443,23 +424,8 @@ const Filters = ({
               </Grid>
 
               {/*Select the operator from drop-down menu*/}
-              <Grid item xs={12} md={3} sx={{
-                paddingTop: "2px",
-                paddingBottom: "2px",
-                paddingRight: "16px",
-                paddingLeft: "16px",
-                '@media (max-width:900px)': {
-                  paddingLeft: 0,
-                },
-              }}>
-                <FormControl
-                  variant="standard"
-                  fullWidth
-                  sx={{
-                    margin: (theme) => theme.spacing(1),
-                    minWidth: 120,
-                  }}
-                >
+              <Grid item xs={12} md={3} sx={gridItemPaddingStyle}>
+                <FormControl variant="standard" fullWidth sx={formControlStyle}>
                   <Autocomplete
                     value={operator || null}
                     id={`filter-operator-select-${filterIndex}`}
@@ -488,23 +454,8 @@ const Filters = ({
               </Grid>
 
               {/* Select or enter value */}
-              <Grid item xs={12} md={4} sx={{
-                paddingTop: "2px",
-                paddingBottom: "2px",
-                paddingRight: "16px",
-                paddingLeft: "16px",
-                '@media (max-width:900px)': {
-                  paddingLeft: 0,
-                },
-              }}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  sx={{
-                    margin: (theme) => theme.spacing(1),
-                    minWidth: 120,
-                  }}
-                >
+              <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
+                <FormControl fullWidth variant="outlined" sx={formControlStyle}>
                   {isFilterNullType(operator) !== true &&
                     (shouldRenderAutocompleteInput(
                       lookupTable,
@@ -548,10 +499,7 @@ const Filters = ({
                 <Hidden mdDown>
                   <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                     <IconButton
-                      sx={(theme) => ({
-                        marginTop: theme.spacing(1),
-                        color: theme.palette.text.primary,
-                      })}
+                      sx={deleteButtonStyle}
                       onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                       size="large"
                     >
@@ -563,10 +511,7 @@ const Filters = ({
                   <Grid item xs={12}>
                     <Button
                       fullWidth
-                      sx={(theme) => ({
-                        marginTop: theme.spacing(1),
-                        color: theme.palette.text.primary,
-                      })}
+                      sx={deleteButtonStyle}
                       variant="outlined"
                       onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                     >
@@ -582,14 +527,9 @@ const Filters = ({
       <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
         <Grid item xs={12} md={2}>
           <Button
+            // Disable button until the user has added a complete filter
             disabled={!areAllFiltersComplete(filterParameters)}
-            sx={{
-              margin: (theme) => theme.spacing(1),
-              '@media (max-width:900px)': {
-                margin: 0,
-              },
-              minWidth: "100px",
-            }}
+            sx={filterButtonStyle}
             fullWidth
             variant="outlined"
             color="primary"
@@ -601,13 +541,7 @@ const Filters = ({
         </Grid>
         <Grid item xs={12} md={1}>
           <Button
-            sx={{
-              margin: (theme) => theme.spacing(1),
-              '@media (max-width:900px)': {
-                margin: 0,
-              },
-              minWidth: "100px",
-            }}
+            sx={filterButtonStyle}
             fullWidth
             variant="outlined"
             startIcon={<BackspaceOutlinedIcon />}
@@ -624,10 +558,10 @@ const Filters = ({
         <Grid item xs={12} md={2}>
           <Button
             fullWidth
-            sx={(theme) => ({
+            sx={{
               marginTop: theme.spacing(1),
               marginBottom: theme.spacing(1),
-            })}
+            }}
             variant="contained"
             color="primary"
             startIcon={<Search />}

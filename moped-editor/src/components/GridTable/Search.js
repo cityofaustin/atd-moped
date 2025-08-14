@@ -9,6 +9,7 @@ import {
   ClickAwayListener,
   ToggleButton,
   ToggleButtonGroup,
+  useTheme,
 } from "@mui/material";
 import Hidden from "@mui/material/Hidden";
 import Icon from "@mui/material/Icon";
@@ -54,6 +55,7 @@ const Search = ({
   handleSnackbar,
 }) => {
   const divRef = React.useRef();
+  const theme = useTheme();
 
   let [searchParams, setSearchParams] = useSearchParams();
 
@@ -142,9 +144,9 @@ const Search = ({
             <Grid
               container
               sx={{
-                padding: "2px",
-                [(theme) => theme.breakpoints.down("sm")]: {
-                  paddingBottom: "12px",
+                padding: theme.spacing(0.25),
+                [theme.breakpoints.down("sm")]: {
+                  paddingBottom: theme.spacing(1.5),
                 },
               }}
             >
@@ -153,7 +155,7 @@ const Search = ({
                 xs={12}
                 md
                 sx={{
-                  padding: "12px",
+                  padding: theme.spacing(1.5),
                 }}
               >
                 <SearchBar
@@ -180,9 +182,8 @@ const Search = ({
                 xs={12}
                 md="auto"
                 sx={{
-                  // downloadButtonGrid styles
-                  padding: "12px",
-                  [(theme) => theme.breakpoints.down("md")]: {
+                  padding: theme.spacing(1.5),
+                  [theme.breakpoints.down("md")]: {
                     paddingTop: 0,
                   },
                   alignContent: "top",
@@ -197,7 +198,7 @@ const Search = ({
                           color="primary"
                           startIcon={<Icon>search</Icon>}
                           onClick={handleSearchSubmission}
-                          sx={{ marginRight: (theme) => theme.spacing(2) }}
+                          sx={{ marginRight: theme.spacing(2) }}
                         >
                           Search
                         </Button>
@@ -205,7 +206,7 @@ const Search = ({
                       <ToggleButtonGroup
                         sx={{
                           display: "inline",
-                          marginRight: (theme) => theme.spacing(3),
+                          marginRight: theme.spacing(3),
                         }}
                         value={showMapView === true ? "map" : "list"} // Highlight selected button
                         exclusive
@@ -223,7 +224,7 @@ const Search = ({
                           (parentData?.[queryConfig.table] ?? []).length === 0
                         }
                         onClick={handleExportButtonClick}
-                        sx={(theme) => ({
+                        sx={{
                           // Override startIcon margins to center icon when there is no "Download" text smDown
                           "& .MuiButton-startIcon": {
                             marginLeft: {
@@ -235,7 +236,7 @@ const Search = ({
                               sm: theme.spacing(1),
                             },
                           },
-                        })}
+                        }}
                         startIcon={<SaveAltIcon />}
                         variant="outlined"
                         color="primary"
@@ -255,23 +256,23 @@ const Search = ({
           anchorEl={advancedSearchAnchor}
           onClose={handleAdvancedSearchClose}
           placement={"bottom"}
-          sx={(theme) => ({
+          sx={{
             width: `calc(100% - ${theme.spacing(6)})`,
             [theme.breakpoints.down("sm")]: {
               width: `calc(100% - ${theme.spacing(4)})`,
             },
-            zIndex: "1201",
-          })}
+            zIndex: theme.zIndex.drawer + 1,
+          }}
         >
           <Paper
-            sx={(theme) => ({
+            sx={{
               paddingTop: theme.spacing(1),
               paddingRight: theme.spacing(2),
               paddingBottom: theme.spacing(2),
               paddingLeft: theme.spacing(2),
               boxShadow:
                 "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
-            })}
+            }}
           >
             <Filters
               setFilters={setFilters}

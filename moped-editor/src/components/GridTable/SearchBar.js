@@ -6,6 +6,7 @@ import {
   Icon,
   IconButton,
   CircularProgress,
+  useTheme,
 } from "@mui/material";
 import { Search as SearchIcon } from "react-feather";
 import FiltersChips from "./FiltersChips";
@@ -44,6 +45,8 @@ const SearchBar = ({
   handleSnackbar,
   searchTerm,
 }) => {
+  const theme = useTheme();
+
   /**
    * Attempts to retrieve the default placeholder for the search input field
    * @return {string}
@@ -91,11 +94,11 @@ const SearchBar = ({
   const filterStateActive = filters.length > 0;
 
   // Inline sx logic for advanced search icon button
-  const getAdvancedSearchSx = () => {
+  const getAdvancedSearchSx = React.useCallback(() => {
     if (filterStateActive) {
       return {
-        backgroundColor: (theme) => theme.palette.primary.main,
-        color: (theme) => theme.palette.background.paper,
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.background.paper,
         height: "33px",
         width: "33px",
       };
@@ -113,7 +116,7 @@ const SearchBar = ({
       width: "33px",
       color: "rgba(0, 0, 0, 0.54)",
     };
-  };
+  }, [filterStateActive, advancedSearchAnchor, theme]);
 
   return (
     <>
