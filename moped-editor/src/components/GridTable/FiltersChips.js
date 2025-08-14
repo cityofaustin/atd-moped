@@ -111,14 +111,14 @@ const FiltersChips = ({
     setIsViewSaved(false);
   }, [searchTerm]);
 
+  const filtersListStyle = {
+    paddingTop: (theme) => theme.spacing(1),
+    display: "flex",
+    alignItems: "start",
+  };
+
   return (
-    <Box
-      sx={{
-        paddingTop: (theme) => theme.spacing(1),
-        display: "flex",
-        alignItems: "start",
-      }}
-    >
+    <Box sx={filtersListStyle}>
       <Grid container justifyContent="flex-start" spacing={0.5}>
         <Grid item>
           <Tooltip
