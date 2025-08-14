@@ -276,12 +276,16 @@ const Filters = ({
   };
 
   // Shared style classes
-  const filtersContainerStyle = {
-    paddingLeft: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    [theme.breakpoints.down("md")]: {
-      paddingLeft: 0,
-    },
+  const formControlStyle = {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  };
+  const deleteButtonStyle = {
+    marginTop: theme.spacing(1),
+    color: theme.palette.text.primary,
+  };
+  const deleteIconStyle = {
+    fontSize: "1em",
   };
   const gridItemPaddingStyle = {
     paddingTop: theme.spacing(0.25),
@@ -292,27 +296,26 @@ const Filters = ({
       paddingLeft: 0,
     },
   };
-  const formControlStyle = {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  };
-  const deleteButtonStyle = {
-    marginTop: theme.spacing(1),
-    color: theme.palette.text.primary,
-  };
-  const filterButtonStyle = {
+  const bottomButtonStyle = {
     margin: theme.spacing(1),
     [theme.breakpoints.down("md")]: {
       margin: 0,
     },
     minWidth: "100px",
   };
-  const closeButtonStyle = {
-    padding: theme.spacing(1.125), // 9px
-  };
   const applyButtonStyle = {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
+  };
+  const closeButtonStyle = {
+    padding: theme.spacing(1.125), // 9px
+  };
+  const filtersContainerStyle = {
+    paddingLeft: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: 0,
+    },
   };
 
   return (
@@ -362,7 +365,7 @@ const Filters = ({
             sx={closeButtonStyle}
             size="large"
           >
-            <Close/>
+            <Close />
           </IconButton>
         </Grid>
       </Grid>
@@ -507,7 +510,7 @@ const Filters = ({
                       onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                       size="large"
                     >
-                      <DeleteOutline sx={{ fontSize: "1em" }} />
+                      <DeleteOutline sx={deleteIconStyle} />
                     </IconButton>
                   </Grid>
                 </Hidden>
@@ -533,7 +536,7 @@ const Filters = ({
           <Button
             // Disable button until the user has added a complete filter
             disabled={!areAllFiltersComplete(filterParameters)}
-            sx={filterButtonStyle}
+            sx={bottomButtonStyle}
             fullWidth
             variant="outlined"
             color="primary"
@@ -545,7 +548,7 @@ const Filters = ({
         </Grid>
         <Grid item xs={12} md={1}>
           <Button
-            sx={filterButtonStyle}
+            sx={bottomButtonStyle}
             fullWidth
             variant="outlined"
             startIcon={<BackspaceOutlinedIcon />}
