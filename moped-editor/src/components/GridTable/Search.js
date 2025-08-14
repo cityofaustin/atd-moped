@@ -153,7 +153,7 @@ const Search = ({
     [theme.breakpoints.down("sm")]: {
       width: `calc(100% - ${theme.spacing(4)})`,
     },
-    zIndex: 1201,
+    zIndex: theme.zIndex.drawer + 1,
   };
 
   const advancedSearchPaper = {
