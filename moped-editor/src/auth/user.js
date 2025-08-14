@@ -5,7 +5,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import useAuthentication from "src/auth/useAuthentication";
 
 import Amplify, { Auth } from "aws-amplify";
 
@@ -98,10 +97,10 @@ export const deleteSessionDatabaseData = () =>
 /**
  * Retrieves the user database data from Hasura
  * @param {Object} userObject - The user object as provided by AWS
- * @param {Function} getToken - A function that returns a valid JWT token to use against the API
  */
-export const initializeUserDBObject = async (userObject, getToken) => {
-  const token = await getToken();
+export const initializeUserDBObject = async (userObject) => {
+  const session = await Auth.currentSession();
+  const token = session?.idToken?.getJwtToken();
 
   // Retrieve the data (if any)
   const sessionData = getSessionDatabaseData();
@@ -140,8 +139,6 @@ export const initializeUserDBObject = async (userObject, getToken) => {
 // components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
-  const { getToken } = useAuthentication();
-
   /**
    * Retrieves persisted user context object
    * @return {object}
@@ -175,6 +172,8 @@ export const UserProvider = ({ children }) => {
 
     Auth.currentSession()
       .then((user) => {
+        console.log("User session found: ", user);
+        // Shouldn't we do this when the user is first logged in?
         setPersistedContext(user);
         setUser(user);
       })
@@ -185,8 +184,8 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    initializeUserDBObject(user, getToken);
-  }, [user, getToken]);
+    initializeUserDBObject(user);
+  }, [user]);
 
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
