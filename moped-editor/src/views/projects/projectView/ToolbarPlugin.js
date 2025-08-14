@@ -98,7 +98,7 @@ const checkLink = (selection) => {
   return isLink;
 };
 
-const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
+const ToolbarPlugin = ({ noteAddSuccess }) => {
   const [editor] = useLexicalComposerContext();
 
   const [selectionMap, setSelectionMap] = useState({});
@@ -140,13 +140,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       setSelectionMap(newSelectionMap);
     }
   }, []);
-
-  const getSelectedButtonProps = (isSelected) =>
-    isSelected
-      ? {
-          className: classes.toolbarButtons,
-        }
-      : {};
 
   const onAction = useCallback(
     (id) => {
@@ -222,11 +215,20 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
           ) : (
             <Button
               key={key}
-              classes={{ startIcon: classes.startIcon }}
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}
-              {...getSelectedButtonProps(selectionMap[id])}
+              sx={(theme) => ({
+                "& .MuiButton-startIcon": { margin: 0 },
+                // selectionMap[id] is true if the button is selected which
+                // applies conditional styling with this conditional object spread
+                ...(selectionMap[id] && {
+                  backgroundColor: theme.palette.primary.main,
+                  "&:hover, &.Mui-focusVisible": {
+                    backgroundColor: theme.palette.primary.main,
+                  },
+                }),
+              })}
             />
           )
         )}
