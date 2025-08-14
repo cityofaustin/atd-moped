@@ -1,32 +1,17 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
-import NavigationSearchInput from "../../layouts/DashboardLayout/NavBar/NavigationSearchInput";
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    height: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-  },
-  image: {
-    marginTop: 50,
-    display: "inline-block",
-    maxWidth: "100%",
-    width: 300,
-  },
-  subheading: {
-    marginTop: 50,
-    marginBottom: 50,
-  }
-}));
+import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
 
 const NotFoundView = () => {
-  const classes = useStyles();
-
   return (
-    <Page className={classes.root} title="404">
+    <Page
+      sx={{
+        height: "100%",
+        paddingY: 3,
+      }}
+      title="404"
+    >
       <Box
         display="flex"
         flexDirection="column"
@@ -37,17 +22,31 @@ const NotFoundView = () => {
           <Typography align="center" color="textPrimary" variant="h2">
             404: The page you are looking for doesn't exist.
           </Typography>
+
           <Box textAlign="center">
-            <img
+            <Box
+              component="img"
               alt="Under development"
-              className={classes.image}
               src={`${process.env.PUBLIC_URL}/static/images/moped-flat.svg`}
+              sx={{
+                marginTop: 6,
+                display: "inline-block",
+                maxWidth: "100%",
+                width: 300,
+              }}
             />
           </Box>
-          <Typography align="center" color="textPrimary" variant="h1" className={classes.subheading}>
+          <Typography
+            align="center"
+            color="textPrimary"
+            variant="h1"
+            sx={{
+              marginY: 6,
+            }}
+          >
             Let's get you back on the road. What are you looking for?
           </Typography>
-          <NavigationSearchInput input404Class={true}/>
+          <NavigationSearchInput input404Class={true} />
         </Container>
       </Box>
     </Page>

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   TextField,
   InputAdornment,
@@ -7,36 +6,10 @@ import {
   Icon,
   IconButton,
   CircularProgress,
+  useTheme,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
 import FiltersChips from "./FiltersChips";
-import clsx from "clsx";
-
-/**
- * The styling for the search bar components
- * @type {Object}
- * @constant
- */
-const useStyles = makeStyles((theme) => ({
-  advancedSearchSelected: {
-    backgroundColor: "rgba(0, 0, 0, 0.04)",
-    height: "33px",
-    width: "33px",
-    color: "rgba(0, 0, 0, 0.54)",
-  },
-  advancedSearchActive: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.background.paper,
-    height: "33px",
-    width: "33px",
-  },
-  tuneIcon: {
-    height: "33px",
-    width: "33px",
-    color: "rgba(0, 0, 0, 0.54)",
-  },
-}));
 
 /**
  * Renders a search bar with optional filters
@@ -72,7 +45,7 @@ const SearchBar = ({
   handleSnackbar,
   searchTerm,
 }) => {
-  const classes = useStyles();
+  const theme = useTheme();
 
   /**
    * Attempts to retrieve the default placeholder for the search input field
@@ -120,6 +93,31 @@ const SearchBar = ({
 
   const filterStateActive = filters.length > 0;
 
+  // Inline sx logic for advanced search icon button
+  const getAdvancedSearchSx = React.useCallback(() => {
+    if (filterStateActive) {
+      return {
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.background.paper,
+        height: "33px",
+        width: "33px",
+      };
+    }
+    if (advancedSearchAnchor) {
+      return {
+        backgroundColor: "rgba(0, 0, 0, 0.04)",
+        color: "rgba(0, 0, 0, 0.54)",
+        height: "33px",
+        width: "33px",
+      };
+    }
+    return {
+      height: "33px",
+      width: "33px",
+      color: "rgba(0, 0, 0, 0.54)",
+    };
+  }, [filterStateActive, advancedSearchAnchor, theme]);
+
   return (
     <>
       <TextField
@@ -150,11 +148,7 @@ const SearchBar = ({
               )}
               <IconButton
                 onClick={toggleAdvancedSearch}
-                className={clsx({
-                  [classes.tuneIcon]: !filterStateActive,
-                  [classes.advancedSearchSelected]: advancedSearchAnchor,
-                  [classes.advancedSearchActive]: filterStateActive,
-                })}
+                sx={getAdvancedSearchSx()}
                 size="large"
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
@@ -180,10 +174,6 @@ const SearchBar = ({
       )}
     </>
   );
-};
-
-SearchBar.propTypes = {
-  className: PropTypes.string,
 };
 
 export default SearchBar;

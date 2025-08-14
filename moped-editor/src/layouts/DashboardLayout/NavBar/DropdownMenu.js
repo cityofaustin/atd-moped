@@ -8,7 +8,6 @@ import {
   Typography,
   ListItemIcon,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
@@ -18,10 +17,11 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import BarChart from "@mui/icons-material/BarChart";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { useSessionDatabaseData, useUser } from "src/auth/user";
 import { getInitials } from "src/utils/userNames";
-import emailToInitials from "../../../utils/emailToInitials";
+import emailToInitials from "src/utils/emailToInitials";
 
 /**
  * Configuration for help menu items we iterate to render menu items in DropdownMenu and MobileDropdownMenu
@@ -57,37 +57,20 @@ export const helpItems = [
   },
 ];
 
-export const arcGISLink = {
-  linkType: "external",
-  link: "https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee",
-  title: "Moped map",
-  Icon: <MapOutlinedIcon fontSize="small" />,
-};
-
-const useStyles = makeStyles((theme) => ({
-  dropdownButton: {
-    borderRadius: "50%",
-    height: "64px",
-    color: theme.palette.text.primary,
+export const analysisItems = [
+  {
+    linkType: "external",
+    link: "https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee",
+    title: "Analyze in AGOL",
+    Icon: <MapOutlinedIcon fontSize="small" />,
   },
-  helpHeader: {
-    paddingLeft: "16px",
-    paddingTop: "6px",
-    alignItems: "center",
-    display: "flex",
-    position: "relative",
+  {
+    linkType: "external",
+    link: "https://atd-dts.gitbook.io/moped-documentation/product-management/integrations/power-bi",
+    title: "Analyze in Power BI",
+    Icon: <BarChart fontSize="small" />,
   },
-  dropdownAvatar: {
-    height: "30px",
-    width: "30px",
-  },
-  logoutItem: {
-    paddingTop: "10px",
-  },
-  helpItems: {
-    paddingBottom: "12px",
-  },
-}));
+];
 
 /**
  * Renders Dropdown Menu on screens above Sm breakpoint
@@ -100,7 +83,6 @@ const DropdownMenu = ({
   handleDropdownClose,
   dropdownAnchorEl,
 }) => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const { user } = useUser();
@@ -112,7 +94,14 @@ const DropdownMenu = ({
 
   return (
     <>
-      <Button className={classes.dropdownButton} onClick={handleDropdownClick}>
+      <Button
+        sx={{
+          borderRadius: "50%",
+          height: "64px",
+          color: "text.primary",
+        }}
+        onClick={handleDropdownClick}
+      >
         <MenuIcon />
       </Button>
       <Menu
@@ -132,7 +121,7 @@ const DropdownMenu = ({
         >
           <ListItemIcon>
             <CDNAvatar
-              className={classes.dropdownAvatar}
+              size="small"
               src={userDbData?.picture}
               initials={userInitials}
               userColor={user?.userColor}
@@ -140,25 +129,38 @@ const DropdownMenu = ({
           </ListItemIcon>
           Account
         </MenuItem>
-        <Divider />
-        <Link
-          href={arcGISLink.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="inherit"
-          underline="none"
+        <Divider sx={{ marginY: 1 }} />
+        {analysisItems.map((item) => (
+          <Link
+            key={item.link}
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            underline="none"
+          >
+            <MenuItem onClick={handleDropdownClose}>
+              <ListItemIcon>
+                {item.Icon || <OpenInNewIcon fontSize="small" />}
+              </ListItemIcon>
+              {item.title}
+            </MenuItem>
+          </Link>
+        ))}
+        <Divider sx={{ marginY: 1 }} />
+        <Typography
+          variant="button"
+          color="textSecondary"
+          sx={{
+            paddingLeft: 2,
+            paddingTop: 1,
+            alignItems: "center",
+            display: "flex",
+            position: "relative",
+          }}
         >
-          <MenuItem onClick={handleDropdownClose}>
-            <ListItemIcon>{arcGISLink.Icon}</ListItemIcon>
-            {arcGISLink.title}
-          </MenuItem>
-        </Link>
-        <Divider />
-        <span className={classes.helpHeader}>
-          <Typography variant="button" color="textSecondary">
-            Support
-          </Typography>
-        </span>
+          Support
+        </Typography>
         {helpItems.map((item) => {
           if (item.linkType === "external") {
             return (
@@ -183,7 +185,6 @@ const DropdownMenu = ({
             return (
               <MenuItem
                 key={item.link}
-                className={classes.helpItems}
                 onClick={() => {
                   handleDropdownClose();
                   navigate(item.link);
@@ -198,11 +199,8 @@ const DropdownMenu = ({
           }
           return null;
         })}
-        <Divider />
-        <MenuItem
-          className={classes.logoutItem}
-          onClick={() => navigate("/moped/logout")}
-        >
+        <Divider sx={{ marginY: 1 }} />
+        <MenuItem onClick={() => navigate("/moped/logout")}>
           <ListItemIcon>
             <ExitToAppIcon fontSize="small" />
           </ListItemIcon>

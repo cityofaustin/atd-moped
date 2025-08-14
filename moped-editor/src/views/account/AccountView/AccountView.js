@@ -1,22 +1,17 @@
 import React from "react";
 import { Container, Grid } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 import Profile from "./Profile";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    minHeight: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-  },
-}));
-
 const Account = () => {
-  const classes = useStyles();
-
   return (
-    <Page className={classes.root} title="Account">
+    <Page
+      sx={{
+        minHeight: "100%",
+        paddingY: 3,
+      }}
+      title="Account"
+    >
       <Container maxWidth="lg">
         <Grid container spacing={3}>
           <Grid item lg={4} md={6} xs={12}>

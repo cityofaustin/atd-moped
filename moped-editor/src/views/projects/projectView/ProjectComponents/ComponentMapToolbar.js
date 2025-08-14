@@ -1,4 +1,3 @@
-import makeStyles from "@mui/styles/makeStyles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,15 +9,6 @@ import ProjectName from "./ProjectName";
 import MapAlert from "./MapAlert";
 import { useParams } from "react-router";
 
-const useStyles = makeStyles((theme) => ({
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  toolbarContainer: {
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
-
 export default function ComponentMapToolbar({
   isFetchingFeatures,
   projectName,
@@ -27,13 +17,21 @@ export default function ComponentMapToolbar({
   errorMessageState,
   onCloseTab,
 }) {
-  const classes = useStyles();
   const { projectId } = useParams();
   const { message, severity, isOpen, onClose } = errorMessageState;
 
   return (
-    <AppBar position="fixed" className={classes.appBar}>
-      <Toolbar className={classes.toolbarContainer}>
+    <AppBar
+      position="fixed"
+      sx={{
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
+    >
+      <Toolbar
+        sx={{
+          backgroundColor: (theme) => theme.palette.background.paper,
+        }}
+      >
         <Box mr={2}>
           <ProjectName name={projectName} id={projectId} />
         </Box>
