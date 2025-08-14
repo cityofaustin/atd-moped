@@ -9,7 +9,6 @@ import {
   ClickAwayListener,
   ToggleButton,
   ToggleButtonGroup,
-  useTheme,
 } from "@mui/material";
 import Hidden from "@mui/material/Hidden";
 import Icon from "@mui/material/Icon";
@@ -20,6 +19,64 @@ import Filters from "src/components/GridTable/Filters";
 import SearchBar from "src/components/GridTable/SearchBar";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import { mapSearchParamName } from "src/views/projects/projectsListView/ProjectsListViewTable";
+
+// Style classes
+const downloadButtonGridStyle = (theme) => ({
+  padding: theme.spacing(1.5),
+  [theme.breakpoints.down("md")]: {
+    paddingTop: 0,
+  },
+  alignContent: "top",
+});
+
+const searchBarContainerStyle = (theme) => ({
+  padding: theme.spacing(0.25),
+  [theme.breakpoints.down("sm")]: {
+    paddingBottom: theme.spacing(1.5),
+  },
+});
+
+const advancedSearchRootStyle = (theme) => ({
+  width: `calc(100% - ${theme.spacing(6)})`,
+  [theme.breakpoints.down("sm")]: {
+    width: `calc(100% - ${theme.spacing(4)})`,
+  },
+  zIndex: theme.zIndex.drawer + 1,
+});
+
+const advancedSearchPaperStyle = (theme) => ({
+  paddingTop: theme.spacing(1),
+  paddingRight: theme.spacing(2),
+  paddingBottom: theme.spacing(2),
+  paddingLeft: theme.spacing(2),
+  boxShadow:
+    "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
+});
+
+const gridSearchPaddingStyle = (theme) => ({
+  padding: theme.spacing(1.5),
+});
+
+const toggleButtonGroup = (theme) => ({
+  display: "inline",
+  marginRight: theme.spacing(3),
+});
+
+const searchButtonStyle = (theme) => ({ marginRight: theme.spacing(2) });
+
+const downloadButtonStyle = (theme) => ({
+  // Override startIcon margins to center icon when there is no "Download" text smDown
+  "& .MuiButton-startIcon": {
+    marginLeft: {
+      xs: 0,
+      sm: -theme.spacing(0.5),
+    },
+    marginRight: {
+      xs: 0,
+      sm: theme.spacing(1),
+    },
+  },
+});
 
 /**
  * Renders a table search component with a search bar and search filters
@@ -55,7 +112,6 @@ const Search = ({
   handleSnackbar,
 }) => {
   const divRef = React.useRef();
-  const theme = useTheme();
 
   let [searchParams, setSearchParams] = useSearchParams();
 
@@ -133,47 +189,6 @@ const Search = ({
     });
   };
 
-  const downloadButtonGrid = {
-    padding: theme.spacing(1.5),
-    [theme.breakpoints.down("md")]: {
-      paddingTop: 0,
-    },
-    alignContent: "top",
-  };
-
-  const searchBarContainer = {
-    padding: theme.spacing(0.25),
-    [theme.breakpoints.down("sm")]: {
-      paddingBottom: theme.spacing(1.5),
-    },
-  };
-
-  const advancedSearchRoot = {
-    width: `calc(100% - ${theme.spacing(6)})`,
-    [theme.breakpoints.down("sm")]: {
-      width: `calc(100% - ${theme.spacing(4)})`,
-    },
-    zIndex: theme.zIndex.drawer + 1,
-  };
-
-  const advancedSearchPaper = {
-    paddingTop: theme.spacing(1),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-    boxShadow:
-      "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
-  };
-
-  const gridSearchPadding = {
-    padding: theme.spacing(1.5),
-  };
-
-  const toggleButtonGroup = {
-    display: "inline",
-    marginRight: theme.spacing(3),
-  };
-
   return (
     <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
       {/* FYI: you cannot use a Select component inside the click away listener
@@ -182,8 +197,8 @@ const Search = ({
       <div>
         <Box mt={3}>
           <Paper ref={divRef}>
-            <Grid container sx={searchBarContainer}>
-              <Grid item xs={12} md sx={gridSearchPadding}>
+            <Grid container sx={searchBarContainerStyle}>
+              <Grid item xs={12} md sx={gridSearchPaddingStyle}>
                 <SearchBar
                   searchFieldValue={searchFieldValue}
                   setSearchFieldValue={setSearchFieldValue}
@@ -203,7 +218,7 @@ const Search = ({
                   handleSnackbar={handleSnackbar}
                 />
               </Grid>
-              <Grid item xs={12} md="auto" sx={downloadButtonGrid}>
+              <Grid item xs={12} md="auto" sx={downloadButtonGridStyle}>
                 <div>
                   {queryConfig.showExport && (
                     <>
@@ -213,7 +228,7 @@ const Search = ({
                           color="primary"
                           startIcon={<Icon>search</Icon>}
                           onClick={handleSearchSubmission}
-                          sx={{ marginRight: theme.spacing(2) }}
+                          sx={searchButtonStyle}
                         >
                           Search
                         </Button>
@@ -236,19 +251,7 @@ const Search = ({
                           (parentData?.[queryConfig.table] ?? []).length === 0
                         }
                         onClick={handleExportButtonClick}
-                        sx={{
-                          // Override startIcon margins to center icon when there is no "Download" text smDown
-                          "& .MuiButton-startIcon": {
-                            marginLeft: {
-                              xs: 0,
-                              sm: -theme.spacing(0.5),
-                            },
-                            marginRight: {
-                              xs: 0,
-                              sm: theme.spacing(1),
-                            },
-                          },
-                        }}
+                        sx={downloadButtonStyle}
                         startIcon={<SaveAltIcon />}
                         variant="outlined"
                         color="primary"
@@ -268,9 +271,9 @@ const Search = ({
           anchorEl={advancedSearchAnchor}
           onClose={handleAdvancedSearchClose}
           placement={"bottom"}
-          sx={advancedSearchRoot}
+          sx={advancedSearchRootStyle}
         >
-          <Paper sx={advancedSearchPaper}>
+          <Paper sx={advancedSearchPaperStyle}>
             <Filters
               setFilters={setFilters}
               handleAdvancedSearchClose={handleAdvancedSearchClose}

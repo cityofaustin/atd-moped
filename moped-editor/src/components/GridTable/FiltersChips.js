@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Chip, Grid, Button, Tooltip, useTheme } from "@mui/material";
+import { Box, Chip, Grid, Button, Tooltip } from "@mui/material";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -8,6 +8,12 @@ import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
 import SaveUserViewModal from "src/views/projects/projectsListView/components/SaveUserViewModal";
 import { BookmarkBorder } from "@mui/icons-material";
+
+const filtersListStyle = (theme) => ({
+  paddingTop: theme.spacing(1),
+  display: "flex",
+  alignItems: "start",
+});
 
 /**
  * Renders filters applied in advanced search
@@ -29,7 +35,6 @@ const FiltersChips = ({
 }) => {
   const [isViewSaved, setIsViewSaved] = useState(false);
   const [isSaveViewModalOpen, setIsSaveViewModalOpen] = useState(false);
-  const theme = useTheme();
 
   const filtersCount = Object.keys(filters).length;
 
@@ -111,12 +116,6 @@ const FiltersChips = ({
   useEffect(() => {
     setIsViewSaved(false);
   }, [searchTerm]);
-
-  const filtersListStyle = {
-    paddingTop: theme.spacing(1),
-    display: "flex",
-    alignItems: "start",
-  };
 
   return (
     <Box sx={filtersListStyle}>

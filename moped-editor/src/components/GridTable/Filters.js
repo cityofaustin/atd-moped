@@ -9,7 +9,6 @@ import {
   IconButton,
   Grow,
   Typography,
-  useTheme,
 } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
@@ -35,6 +34,49 @@ import {
   useCreateAutocompleteOptions,
 } from "./helpers";
 import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommonOperators";
+
+// Style classes
+const formControlStyle = (theme) => ({
+  margin: theme.spacing(1),
+  minWidth: 120,
+});
+const deleteButtonStyle = (theme) => ({
+  marginTop: theme.spacing(1),
+  color: theme.palette.text.primary,
+});
+const deleteIconStyle = {
+  fontSize: "1em",
+};
+const gridItemPaddingStyle = (theme) => ({
+  paddingTop: theme.spacing(0.25),
+  paddingBottom: theme.spacing(0.25),
+  paddingRight: theme.spacing(2),
+  paddingLeft: theme.spacing(2),
+  [theme.breakpoints.down("md")]: {
+    paddingLeft: 0,
+  },
+});
+const bottomButtonStyle = (theme) => ({
+  margin: theme.spacing(1),
+  [theme.breakpoints.down("md")]: {
+    margin: 0,
+  },
+  minWidth: "100px",
+});
+const applyButtonStyle = (theme) => ({
+  marginTop: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+});
+const closeButtonStyle = (theme) => ({
+  padding: theme.spacing(1.125), // 9px
+});
+const filtersContainerStyle = (theme) => ({
+  paddingLeft: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+  [theme.breakpoints.down("md")]: {
+    paddingLeft: 0,
+  },
+});
 
 /**
  * Filter Search Component aka Advanced Search
@@ -63,7 +105,6 @@ const Filters = ({
   setSearchFieldValue,
   setSearchTerm,
 }) => {
-  const theme = useTheme();
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
   if (error) console.error(error);
@@ -275,56 +316,13 @@ const Filters = ({
     setIsOrToggleValue(isOr);
   };
 
-  // Shared style classes
-  const formControlStyle = {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  };
-  const deleteButtonStyle = {
-    marginTop: theme.spacing(1),
-    color: theme.palette.text.primary,
-  };
-  const deleteIconStyle = {
-    fontSize: "1em",
-  };
-  const gridItemPaddingStyle = {
-    paddingTop: theme.spacing(0.25),
-    paddingBottom: theme.spacing(0.25),
-    paddingRight: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-    [theme.breakpoints.down("md")]: {
-      paddingLeft: 0,
-    },
-  };
-  const bottomButtonStyle = {
-    margin: theme.spacing(1),
-    [theme.breakpoints.down("md")]: {
-      margin: 0,
-    },
-    minWidth: "100px",
-  };
-  const applyButtonStyle = {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  };
-  const closeButtonStyle = {
-    padding: theme.spacing(1.125), // 9px
-  };
-  const filtersContainerStyle = {
-    paddingLeft: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    [theme.breakpoints.down("md")]: {
-      paddingLeft: 0,
-    },
-  };
-
   return (
     <Grid>
-      <Grid container sx={{ gridItemPaddingStyle }}>
+      <Grid container sx={gridItemPaddingStyle}>
         <Grid
           item
           xs={6}
-          sx={{ filtersContainerStyle }}
+          sx={filtersContainerStyle}
           display="flex"
           justifyContent="flex-start"
         >
@@ -356,7 +354,7 @@ const Filters = ({
         <Grid
           item
           xs={6}
-          sx={{ filtersContainerStyle }}
+          sx={filtersContainerStyle}
           display="flex"
           justifyContent="flex-end"
         >
