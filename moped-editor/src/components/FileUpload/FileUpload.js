@@ -15,7 +15,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { Alert } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Grid } from "@mui/material";
-import useAuthentication from "src/auth/useAuthentication";
+import useAuthentication, { getCognitoIdJwt } from "src/auth/useAuthentication";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -34,7 +34,8 @@ const FileUpload = (props) => {
    * Constants
    */
   const classes = useStyles();
-  const { getToken } = useAuthentication();
+  const { getCognitoSession } = useAuthentication();
+
   const maxFiles = props?.limit ?? 1;
 
   /**
@@ -77,7 +78,8 @@ const FileUpload = (props) => {
     // https://github.com/cityofaustin/atd-data-tech/issues/11900#issuecomment-1505701452
     const filteredFilename = item.filename.replace("&", "_");
 
-    const token = await getToken();
+    const session = await getCognitoSession();
+    const token = getCognitoIdJwt(session);
 
     return fetch(
       withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {

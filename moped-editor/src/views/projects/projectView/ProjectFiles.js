@@ -75,7 +75,7 @@ const requiredFields = ["file_name", "file_type"];
 
 const useColumns = ({
   classes,
-  getToken,
+  getCognitoSession,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -118,7 +118,9 @@ const useColumns = ({
             return (
               <Link
                 className={classes.ellipsisOverflow}
-                onClick={() => downloadFileAttachment(row?.file_key, getToken)}
+                onClick={() =>
+                  downloadFileAttachment(row?.file_key, getCognitoSession)
+                }
               >
                 {cleanUpFileKey(row?.file_key)}
               </Link>
@@ -236,7 +238,7 @@ const useColumns = ({
     ];
   }, [
     classes,
-    getToken,
+    getCognitoSession,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -257,7 +259,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
-  const { getToken } = useAuthentication();
+  const { getCognitoSession } = useAuthentication();
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -446,7 +448,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   const dataGridColumns = useColumns({
     classes,
-    getToken,
+    getCognitoSession,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

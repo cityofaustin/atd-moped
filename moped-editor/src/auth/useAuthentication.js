@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { Auth } from "aws-amplify";
 
 function epochToCentralTime(epochTimestamp) {
@@ -79,7 +79,7 @@ const useAuthentication = () => {
    *
    * @returns {Promise<void>}
    */
-  const signIn = useCallback(async () => {
+  const signInSSO = useCallback(async () => {
     setIsLoading(true);
     await Auth.federatedSignIn({ provider: "AzureAD" }).catch((err) => {
       setError(err);
@@ -90,7 +90,7 @@ const useAuthentication = () => {
   return {
     isLoading,
     error,
-    signIn,
+    signInSSO,
     getCognitoSession,
   };
 };

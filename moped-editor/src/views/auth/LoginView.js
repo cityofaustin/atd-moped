@@ -19,7 +19,7 @@ import SimpleDialog from "src/components/SimpleDialog";
 
 const LoginView = () => {
   const { login, loginLoading } = useUser();
-  const { signIn, isLoading } = useAuthentication();
+  const { signInSSO, isLoading } = useAuthentication();
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -165,7 +165,7 @@ const LoginView = () => {
               color="primary"
               fullWidth
               startIcon={<AccountCircleIcon />}
-              onClick={signIn}
+              onClick={signInSSO}
               size="large"
               variant="contained"
               disabled={

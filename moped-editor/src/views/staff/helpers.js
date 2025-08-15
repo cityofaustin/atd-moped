@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useAuthentication from "src/auth/useAuthentication";
+import useAuthentication, { getCognitoIdJwt } from "src/auth/useAuthentication";
 import axios from "axios";
 
 /**
@@ -15,7 +15,7 @@ export function useUserApi() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { getToken } = useAuthentication();
+  const { getCognitoSession } = useAuthentication();
 
   /**
    * Call the User route of the Moped API
@@ -29,14 +29,14 @@ export function useUserApi() {
 
     const url = process.env.REACT_APP_API_ENDPOINT + path;
 
-    const jwt = await getToken();
-    console.log("Using JWT:", jwt);
+    const session = await getCognitoSession();
+    const token = getCognitoIdJwt(session);
 
     let config = {
       url,
       method,
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${token}`,
       },
     };
 
