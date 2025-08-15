@@ -179,7 +179,7 @@ const setPersistedContext = (context) => {
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(getPersistedContext());
-  const [loginLoading, setLoginLoading] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
 
   useEffect(() => {
     // Configure the keys needed for the Auth module. Essentially this is
@@ -220,13 +220,13 @@ export const UserProvider = ({ children }) => {
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
   // a message that our React components can use.
   const login = useCallback(async (usernameOrEmail, password) => {
-    setLoginLoading(true);
+    setIsLoginLoading(true);
 
     return Auth.signIn(usernameOrEmail, password)
       .then((user) => {
         console.log("User logged in: ", user);
         setUser(user.signInUserSession);
-        setLoginLoading(false);
+        setIsLoginLoading(false);
         return user.signInUserSession;
       })
       .catch((err) => {
@@ -235,7 +235,7 @@ export const UserProvider = ({ children }) => {
         }
 
         // ... (other checks)
-        setLoginLoading(false);
+        setIsLoginLoading(false);
         throw err;
       });
   }, []);
@@ -246,14 +246,14 @@ export const UserProvider = ({ children }) => {
    * @returns {Promise<void>}
    */
   const loginSSO = useCallback(async () => {
-    setLoginLoading(true);
+    setIsLoginLoading(true);
 
     try {
       await Auth.federatedSignIn({ provider: "AzureAD" });
-      setLoginLoading(false);
+      setIsLoginLoading(false);
     } catch (error) {
       console.error("Error getting user session on sign in: ", error);
-      setLoginLoading(false);
+      setIsLoginLoading(false);
     }
   }, []);
 
@@ -280,7 +280,7 @@ export const UserProvider = ({ children }) => {
   const getCognitoSession = useCallback(async () => {
     try {
       const session = await Auth.currentSession();
-      setLoginLoading(false);
+      setIsLoginLoading(false);
 
       console.log("User session refreshed:", session);
       console.log(
@@ -291,7 +291,7 @@ export const UserProvider = ({ children }) => {
       return session;
     } catch (err) {
       console.error("Error getting Cognito session: ", err);
-      setLoginLoading(false);
+      setIsLoginLoading(false);
 
       return null;
     }
@@ -309,10 +309,10 @@ export const UserProvider = ({ children }) => {
       login,
       loginSSO,
       logout,
-      loginLoading,
+      isLoginLoading,
       getCognitoSession,
     }),
-    [user, loginLoading, getCognitoSession, login, loginSSO, logout]
+    [user, isLoginLoading, getCognitoSession, login, loginSSO, logout]
   );
 
   // Finally, return the interface that we want to expose to our other components

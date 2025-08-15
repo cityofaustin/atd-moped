@@ -33,7 +33,7 @@ import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesT
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
-import useAuthentication from "src/auth/useAuthentication";
+import { useUser } from "src/auth/user";
 
 const useStyles = makeStyles(() => ({
   ellipsisOverflow: {
@@ -259,7 +259,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
-  const { getCognitoSession } = useAuthentication();
+  const { getCognitoSession } = useUser();
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});

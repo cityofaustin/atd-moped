@@ -5,7 +5,7 @@ import GlobalStyles from "src/components/GlobalStyles";
 import theme from "src/theme";
 import { restrictedRoutes } from "src/routes";
 import { getHighestRole } from "./auth/user";
-import useAuthentication, { getCognitoIdJwt } from "src/auth/useAuthentication";
+import { useUser, getCognitoIdJwt } from "src/auth/user";
 import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -30,7 +30,7 @@ var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
 const useClient = () => {
-  const { getCognitoSession } = useAuthentication();
+  const { getCognitoSession } = useUser();
 
   const apolloClient = useMemo(() => {
     // see: https://www.apollographql.com/docs/react/networking/authentication/#header

@@ -15,7 +15,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { Alert } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Grid } from "@mui/material";
-import useAuthentication, { getCognitoIdJwt } from "src/auth/useAuthentication";
+import { useUser, getCognitoIdJwt } from "src/auth/user";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -34,7 +34,7 @@ const FileUpload = (props) => {
    * Constants
    */
   const classes = useStyles();
-  const { getCognitoSession } = useAuthentication();
+  const { getCognitoSession } = useUser();
 
   const maxFiles = props?.limit ?? 1;
 

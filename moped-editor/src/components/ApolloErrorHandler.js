@@ -3,7 +3,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import makeStyles from "@mui/styles/makeStyles";
 import FallbackComponent from "./FallbackComponent";
-import useAuthentication from "src/auth/useAuthentication";
+import { useUser } from "src/auth/user";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -23,11 +23,11 @@ const useStyles = makeStyles((theme) => ({
  */
 const ApolloErrorHandler = ({ error, children }) => {
   const classes = useStyles();
-  const { isLoading: isLoadingToken } = useAuthentication();
+  const { isLoginLoading } = useUser();
 
   return (
     <>
-      {isLoadingToken ? (
+      {isLoginLoading ? (
         <Backdrop className={classes.backdrop} open={true} onClick={null}>
           <CircularProgress color="inherit" />
         </Backdrop>
