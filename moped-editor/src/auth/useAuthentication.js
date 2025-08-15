@@ -1,12 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
-
-import { Auth, Hub } from "aws-amplify";
-import { signInButton, signInButtonContent } from "@aws-amplify/ui";
+import React, { useCallback, useState } from "react";
+import { Auth } from "aws-amplify";
 
 function epochToCentralTime(epochTimestamp) {
   const date = new Date(epochTimestamp * 1000);
@@ -21,6 +14,14 @@ function epochToCentralTime(epochTimestamp) {
     hour12: true,
   });
 }
+
+/** * Get the Cognito ID JWT from a Cognito session.
+ *
+ * @param {CognitoUserSession} session - The Cognito user session.
+ * @returns {string} The ID JWT token.
+ */
+export const getCognitoIdJwt = (session) =>
+  session?.idToken ? session.idToken.getJwtToken() : null;
 
 /**
  * For reference, see @0xdevalias's post:
@@ -43,140 +44,55 @@ function epochToCentralTime(epochTimestamp) {
  * @see https://github.com/aws-amplify/amplify-js/blob/master/packages/amazon-cognito-identity-js/src/CognitoUser.js
  */
 const useAuthentication = () => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * Checks the current Cognito session and updates the user state. A loading
-   * state is set while the session is being checked.
+   * Returns a valid Cognito session to provide valid roles and id JWT to
+   * Apollo Client GraphQL requests and Moped API requests.
+   *
+   * @returns {Promise<CognitoUserSession|null>} A valid Cognito session or null
    */
-  const refreshState = useCallback(async () => {
-    setIsLoading(true);
-
+  const getCognitoSession = useCallback(async () => {
     try {
-      const user = await Auth.currentSession();
-      setUser(user);
-      setIsAuthenticated(_isAuthenticated(user));
+      const session = await Auth.currentSession();
       setError(null);
       setIsLoading(false);
 
-      return user;
+      console.log("User session refreshed:", session);
+      console.log(
+        "Token expires:",
+        epochToCentralTime(session?.idToken?.payload.exp)
+      );
+
+      return session;
     } catch (err) {
-      setUser(null);
-      setIsAuthenticated(false);
-      if (err === "not authenticated") {
-        setError(null);
-      } else {
-        setError(err);
-      }
+      setError(err);
       setIsLoading(false);
 
       return null;
     }
   }, []);
 
-  // Make sure our state is loaded before first render
-  useLayoutEffect(() => {
-    const refreshUserState = async () => {
-      await refreshState();
-    };
-    refreshUserState();
-  }, [refreshState]);
-
-  // Subscribe to auth events
-  useEffect(() => {
-    const handler = async ({ payload }) => {
-      console.log("Auth event payload: ", payload);
-      switch (payload.event) {
-        case "configured":
-        case "signIn":
-        case "signIn_failure":
-        case "signOut":
-          await refreshState();
-          break;
-
-        default:
-          break;
-      }
-    };
-
-    Hub.listen("auth", handler);
-
-    return () => {
-      Hub.remove("auth", handler);
-    };
-  }, [refreshState]);
-
-  const signIn = useCallback(() => {
+  /**
+   * Sign in the user using Azure AD.
+   *
+   * @returns {Promise<void>}
+   */
+  const signIn = useCallback(async () => {
     setIsLoading(true);
-    Auth.federatedSignIn({ provider: "AzureAD" }).catch((err) => {
+    await Auth.federatedSignIn({ provider: "AzureAD" }).catch((err) => {
       setError(err);
     });
+    setIsLoading(false);
   }, []);
 
-  const signOut = useCallback(async () => {
-    try {
-      await Auth.signOut();
-      await refreshState();
-    } catch (err) {
-      setError(err);
-    }
-  }, [refreshState]);
-
-  /**
-   * Returns a valid JWT token to use against the GraphQL endpoint or the
-   * Moped API.
-   */
-  const getToken = useCallback(async () => {
-    const currentUser = await refreshState();
-    console.log("User session refreshed:", currentUser);
-    console.log(
-      "Expires:",
-      epochToCentralTime(currentUser?.idToken?.payload.exp)
-    );
-    return currentUser?.idToken?.getJwtToken();
-  }, [refreshState]);
-
-  const CognitoSignInButton = useCallback(
-    ({ label = "Sign In" }) => (
-      <button className={signInButton} onClick={signIn}>
-        <span className={signInButtonContent}>{label}</span>
-      </button>
-    ),
-    [signIn]
-  );
-
   return {
-    isAuthenticated,
     isLoading,
-    user,
     error,
     signIn,
-    signOut,
-    SignInButton: CognitoSignInButton,
-    getToken,
+    getCognitoSession,
   };
-};
-
-const _isAuthenticated = (user) => {
-  if (
-    !user ||
-    !user.idToken ||
-    !user.idToken.payload ||
-    !user.idToken.payload["https://hasura.io/jwt/claims"] ||
-    !user.accessToken ||
-    !user.refreshToken
-  ) {
-    return false;
-  }
-  const isValid = user?.isValid() ?? false;
-
-  const isExpired =
-    Math.round(new Date().getTime() / 1000) > user.idToken.getExpiration();
-
-  return isValid && !isExpired;
 };
 
 export default useAuthentication;

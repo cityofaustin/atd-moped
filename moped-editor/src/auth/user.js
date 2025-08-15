@@ -184,7 +184,12 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    initializeUserDBObject(user);
+    if (!user) {
+      // If there is no user, we remove the persisted context
+      destroyLoggedInProfile();
+    } else {
+      initializeUserDBObject(user);
+    }
   }, [user]);
 
   // We make sure to handle the user update here, but return the resolve value in order for our components to be

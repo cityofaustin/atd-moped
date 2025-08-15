@@ -165,7 +165,7 @@ const LoginView = () => {
               color="primary"
               fullWidth
               startIcon={<AccountCircleIcon />}
-              onClick={() => signIn()}
+              onClick={signIn}
               size="large"
               variant="contained"
               disabled={

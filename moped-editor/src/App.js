@@ -5,7 +5,7 @@ import GlobalStyles from "src/components/GlobalStyles";
 import theme from "src/theme";
 import { restrictedRoutes } from "src/routes";
 import { useUser, getHighestRole } from "./auth/user";
-import useAuthentication from "src/auth/useAuthentication";
+import useAuthentication, { getCognitoIdJwt } from "src/auth/useAuthentication";
 import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -30,17 +30,16 @@ var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
 const useClient = (user) => {
-  const { getToken } = useAuthentication();
+  const { getCognitoSession } = useAuthentication();
 
   const apolloClient = useMemo(() => {
     // see: https://www.apollographql.com/docs/react/networking/authentication/#header
     const httpLink = createHttpLink({ uri: HASURA_ENDPOINT });
 
     const authLink = setContext(async (_, { headers }) => {
-      const token = await getToken();
-
-      // Get the authentication token and role from user if it exists
-      const role = getHighestRole(user);
+      const session = await getCognitoSession();
+      const token = getCognitoIdJwt(session);
+      const role = getHighestRole(session);
 
       // Return the headers and role to the context so httpLink can read them
       return {
@@ -73,7 +72,7 @@ const useClient = (user) => {
         },
       }),
     });
-  }, [user, getToken]);
+  }, [user, getCognitoSession]);
 
   return apolloClient;
 };
