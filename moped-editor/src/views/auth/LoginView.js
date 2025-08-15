@@ -14,12 +14,10 @@ import {
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Page from "src/components/Page";
 import { useUser } from "src/auth/user";
-import useAuthentication from "src/auth/useAuthentication";
 import SimpleDialog from "src/components/SimpleDialog";
 
 const LoginView = () => {
-  const { login, loginLoading } = useUser();
-  const { signInSSO, isLoading } = useAuthentication();
+  const { login, loginSSO, loginLoading } = useUser();
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -134,7 +132,7 @@ const LoginView = () => {
             zIndex: theme.zIndex.drawer + 1,
             color: theme.palette.background.default,
           })}
-          open={isLoading || loginLoading}
+          open={loginLoading}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
@@ -165,7 +163,7 @@ const LoginView = () => {
               color="primary"
               fullWidth
               startIcon={<AccountCircleIcon />}
-              onClick={signInSSO}
+              onClick={loginSSO}
               size="large"
               variant="contained"
               disabled={
