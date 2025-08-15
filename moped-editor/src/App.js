@@ -4,7 +4,7 @@ import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import GlobalStyles from "src/components/GlobalStyles";
 import theme from "src/theme";
 import { restrictedRoutes } from "src/routes";
-import { useUser, getHighestRole } from "./auth/user";
+import { getHighestRole } from "./auth/user";
 import useAuthentication, { getCognitoIdJwt } from "src/auth/useAuthentication";
 import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -29,7 +29,7 @@ const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
-const useClient = (user) => {
+const useClient = () => {
   const { getCognitoSession } = useAuthentication();
 
   const apolloClient = useMemo(() => {
@@ -72,7 +72,7 @@ const useClient = (user) => {
         },
       }),
     });
-  }, [user, getCognitoSession]);
+  }, [getCognitoSession]);
 
   return apolloClient;
 };
@@ -82,8 +82,7 @@ LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
   const routing = useRoutes(restrictedRoutes);
-  const { user } = useUser();
-  const client = useClient(user);
+  const client = useClient();
 
   return (
     <ApolloProvider client={client}>
