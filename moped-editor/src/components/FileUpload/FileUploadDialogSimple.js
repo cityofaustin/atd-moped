@@ -10,18 +10,8 @@ import {
 } from "@mui/material";
 import FileUpload from "src/components/FileUpload/FileUpload";
 
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles(() => ({
-  fileUpload: {
-    minWidth: "320px",
-  },
-}));
-
 // FileUploadDialogSimple is wrapper around the FileUpload component
 const FileUploadDialogSimple = (props) => {
-  const classes = useStyles();
-
   /**
    * @constant {string} fileKey - The location of the file in S3
    * @constant {Object} fileObject - Contains the file object, including metadata.
@@ -129,7 +119,7 @@ const FileUploadDialogSimple = (props) => {
       </DialogTitle>
       <DialogContent>
         <Grid container>
-          <Grid xs={12} md={12} className={classes.fileUpload}>
+          <Grid xs={12} md={12} sx={{ minWidth: "320px" }}>
             <FileUpload
               limit={1}
               sizeLimit={"1024MB"}

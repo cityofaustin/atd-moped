@@ -1,16 +1,8 @@
 import React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import makeStyles from "@mui/styles/makeStyles";
-import FallbackComponent from "./FallbackComponent";
+import FallbackComponent from "src/components/FallbackComponent";
 import { useUser } from "src/auth/user";
-
-const useStyles = makeStyles((theme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
 
 /**
  * ApolloErrorHandler renders a loading backdrop when the token is being refreshed
@@ -22,13 +14,19 @@ const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const ApolloErrorHandler = ({ error, children }) => {
-  const classes = useStyles();
   const { isLoginLoading } = useUser();
 
   return (
     <>
       {isLoginLoading ? (
-        <Backdrop className={classes.backdrop} open={true} onClick={null}>
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            color: "#fff",
+          }}
+          open={true}
+          onClick={null}
+        >
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : error ? (

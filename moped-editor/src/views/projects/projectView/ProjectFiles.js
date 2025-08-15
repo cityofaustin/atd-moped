@@ -4,7 +4,6 @@ import isEqual from "lodash/isEqual";
 
 import { CardContent, CircularProgress, Link, Typography } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
 import {
   DataGridPro,
   GridRowModes,
@@ -35,24 +34,6 @@ import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 import { useUser } from "src/auth/user";
 
-const useStyles = makeStyles(() => ({
-  ellipsisOverflow: {
-    cursor: "pointer",
-    overflow: "hidden",
-    display: "block",
-    textOverflow: "ellipsis",
-  },
-  codeStyle: {
-    backgroundColor: "#eee",
-    fontFamily: "monospace",
-    display: "block",
-    wordWrap: "break-word",
-    paddingLeft: "4px",
-    paddingRight: "4px",
-    fontSize: "14px",
-  },
-}));
-
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
   useMemo(
@@ -73,8 +54,15 @@ const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
 const requiredFields = ["file_name", "file_type"];
 
+// Reusable styles for clickable text elements with ellipsis
+const clickableTextStyles = {
+  cursor: "pointer",
+  overflow: "hidden",
+  display: "block",
+  textOverflow: "ellipsis",
+};
+
 const useColumns = ({
-  classes,
   getCognitoSession,
   rowModesModel,
   handleEditClick,
@@ -93,9 +81,7 @@ const useColumns = ({
         width: 200,
         editable: true,
         renderCell: ({ row }) => (
-          <Typography className={classes.ellipsisOverflow}>
-            {row?.file_name}
-          </Typography>
+          <Typography sx={clickableTextStyles}>{row?.file_name}</Typography>
         ),
         // validate input
         preProcessEditCellProps: (params) => {
@@ -117,10 +103,10 @@ const useColumns = ({
           if (row.file_key) {
             return (
               <Link
-                className={classes.ellipsisOverflow}
                 onClick={() =>
                   downloadFileAttachment(row?.file_key, getCognitoSession)
                 }
+                sx={clickableTextStyles}
               >
                 {cleanUpFileKey(row?.file_key)}
               </Link>
@@ -128,13 +114,25 @@ const useColumns = ({
           }
           return isValidUrl(row?.file_url) ? (
             <ExternalLink
-              linkProps={{ className: classes.ellipsisOverflow }}
+              linkProps={{
+                sx: clickableTextStyles,
+              }}
               url={row?.file_url}
               text={row?.file_url}
             />
           ) : (
             // if the user provided file_url is not a valid url, just render the text
-            <Typography className={classes.codeStyle}>
+            <Typography
+              sx={{
+                backgroundColor: "#eee",
+                fontFamily: "monospace",
+                display: "block",
+                wordWrap: "break-word",
+                paddingLeft: "4px",
+                paddingRight: "4px",
+                fontSize: "14px",
+              }}
+            >
               {row?.file_url}
             </Typography>
           );
@@ -237,7 +235,6 @@ const useColumns = ({
       },
     ];
   }, [
-    classes,
     getCognitoSession,
     rowModesModel,
     handleSaveClick,
@@ -257,7 +254,6 @@ const useColumns = ({
  */
 const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
-  const classes = useStyles();
   const { projectId } = useParams();
   const { getCognitoSession } = useUser();
   // rows and rowModesModel used in DataGrid
@@ -447,7 +443,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
   };
 
   const dataGridColumns = useColumns({
-    classes,
     getCognitoSession,
     rowModesModel,
     handleDeleteOpen,

@@ -1,54 +1,44 @@
 import React from "react";
 import { Divider, Typography, Box, Grid } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles((theme) => ({
-  dividerSpacing: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
-  propertyItem: {
-    marginBottom: theme.spacing(2),
-    display: "inline-block",
-    marginRight: theme.spacing(4),
-  },
-  propertyLabel: {
-    width: "100%",
-    color: theme.palette.text.secondary,
-    fontSize: ".8rem",
-  },
-  propertyLabelText: {},
-}));
+const dividerSx = {
+  marginTop: 2,
+  marginBottom: 2,
+};
+
+const propertyItemSx = {
+  marginBottom: 2,
+  display: "inline-block",
+  marginRight: 4,
+};
+
+const propertyLabelSx = {
+  width: "100%",
+  color: (theme) => theme.palette.text.secondary,
+  fontSize: ".8rem",
+};
 
 const ComponentProperties = ({ component }) => {
-  const classes = useStyles();
-
   return (
     <>
-      <Divider className={classes.dividerSpacing} />
-      <Grid item xs={12} className={classes.propertyItem}>
-        <Typography className={classes.propertyLabel}>Component ID</Typography>
-        <Box className={classes.fieldBox}>
-          <Typography className={classes.propertyLabelText}>
-            {component.projectComponentId}
-          </Typography>
+      <Divider sx={dividerSx} />
+      <Grid item xs={12} sx={propertyItemSx}>
+        <Typography sx={propertyLabelSx}>Component ID</Typography>
+        <Box>
+          <Typography>{component.projectComponentId}</Typography>
         </Box>
       </Grid>
-      <Grid item xs={12} className={classes.propertyItem}>
-        <Typography className={classes.propertyLabel}>
-          Council district(s)
-        </Typography>
-        <Box className={classes.fieldBox}>
-          <Typography className={classes.propertyLabelText}>
-            {component.councilDistrict}
-          </Typography>
+      <Grid item xs={12} sx={propertyItemSx}>
+        <Typography sx={propertyLabelSx}>Council district(s)</Typography>
+        <Box>
+          <Typography>{component.councilDistrict}</Typography>
         </Box>
       </Grid>
       {component.componentLength > 0 && (
-        <Grid item xs={12} className={classes.propertyItem}>
-          <Typography className={classes.propertyLabel}>Length</Typography>
-          <Box className={classes.fieldBox}>
-            <Typography className={classes.propertyLabelText}>
+        <Grid item xs={12} sx={propertyItemSx}>
+          <Typography sx={propertyLabelSx}>Length</Typography>
+          <Box>
+            <Typography>
               {component.componentLength.toLocaleString()}'
             </Typography>
           </Box>

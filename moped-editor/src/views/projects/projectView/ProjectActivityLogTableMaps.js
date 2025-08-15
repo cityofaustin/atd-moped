@@ -620,9 +620,6 @@ export const ProjectActivityLogTableMaps = {
       interim_work_activity_id: {
         label: "interim work activity ID",
       },
-      implementation_workgroup: {
-        label: "implementation workgroup",
-      },
       task_orders: {
         label: "task orders",
       },

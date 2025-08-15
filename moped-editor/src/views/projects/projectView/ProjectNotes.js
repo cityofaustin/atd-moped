@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import {
   Alert,
+  Box,
   Card,
   CardContent,
   CircularProgress,
@@ -429,21 +430,23 @@ const ProjectNotes = ({
                     : null
                 }
               >
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={shouldSyncFromECAPRIS}
-                      disabled={!hasECaprisId}
-                      onChange={handleECaprisSwitch}
-                    />
-                  }
-                  label="Sync from eCAPRIS"
-                />
-                {hasECaprisId ? (
-                  <FormHelperText>
-                    Statuses are synced every 30 minutes
-                  </FormHelperText>
-                ) : null}
+                <Box>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={shouldSyncFromECAPRIS}
+                        disabled={!hasECaprisId}
+                        onChange={handleECaprisSwitch}
+                      />
+                    }
+                    label="Sync from eCAPRIS"
+                  />
+                  {hasECaprisId ? (
+                    <FormHelperText>
+                      Statuses are synced every 30 minutes
+                    </FormHelperText>
+                  ) : null}
+                </Box>
               </Tooltip>
             </Grid>
           </Grid>

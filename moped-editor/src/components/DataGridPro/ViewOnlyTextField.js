@@ -1,15 +1,6 @@
 import React from "react";
 import { TextField } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-
-const useStyles = makeStyles((theme) => ({
-  readOnlyInput: {
-    width: "90%",
-    paddingTop: "inherit",
-    paddingLeft: theme.spacing(1),
-  },
-}));
 
 /**
  * @param {String} field - name of field
@@ -36,7 +27,6 @@ const ViewOnlyTextField = ({
 }) => {
   const ref = React.useRef(null);
   const apiRef = useGridApiContext();
-  const classes = useStyles();
 
   // Because this field not editable, it cannot be focused and if a user is tabbing across the cells
   // the focus should be forwarded to the next one in the row
@@ -62,7 +52,11 @@ const ViewOnlyTextField = ({
   return (
     <TextField
       variant="standard"
-      className={classes.readOnlyInput}
+      sx={{
+        width: "90%",
+        paddingTop: "inherit",
+        paddingLeft: 1,
+      }}
       id={field}
       inputRef={ref}
       name={field}

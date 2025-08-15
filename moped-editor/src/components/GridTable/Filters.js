@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
-
 import {
   Button,
   TextField,
   FormControl,
   Grid,
   Hidden,
-  Icon,
   IconButton,
   Grow,
   Typography,
@@ -16,9 +13,7 @@ import {
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
-import makeStyles from "@mui/styles/makeStyles";
-
+import { DeleteOutline, Close, Search, PlaylistAdd } from "@mui/icons-material";
 import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "src/queries/project";
@@ -40,54 +35,48 @@ import {
 } from "./helpers";
 import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommonOperators";
 
-/**
- * The styling for the filter components
- * @type {Object}
- * @constant
- */
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+// Style classes
+const formControlStyle = (theme) => ({
+  margin: theme.spacing(1),
+  minWidth: 120,
+});
+const deleteButtonStyle = (theme) => ({
+  marginTop: theme.spacing(1),
+  color: theme.palette.text.primary,
+});
+const deleteIconStyle = {
+  fontSize: "1em",
+};
+const gridItemPaddingStyle = (theme) => ({
+  paddingTop: theme.spacing(0.25),
+  paddingBottom: theme.spacing(0.25),
+  paddingRight: theme.spacing(2),
+  paddingLeft: theme.spacing(2),
+  [theme.breakpoints.down("md")]: {
+    paddingLeft: 0,
   },
-  deleteButton: {
-    marginTop: theme.spacing(1),
-    color: theme.palette.text.primary,
+});
+const bottomButtonStyle = (theme) => ({
+  margin: theme.spacing(1),
+  [theme.breakpoints.down("md")]: {
+    margin: 0,
   },
-  deleteIcon: {
-    fontSize: "1em",
+  minWidth: "100px",
+});
+const applyButtonStyle = (theme) => ({
+  marginTop: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+});
+const closeButtonStyle = (theme) => ({
+  padding: theme.spacing(1.125), // 9px
+});
+const filtersContainerStyle = (theme) => ({
+  paddingLeft: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+  [theme.breakpoints.down("md")]: {
+    paddingLeft: 0,
   },
-  gridItemPadding: {
-    paddingTop: "2px",
-    paddingBottom: "2px",
-    paddingRight: "16px",
-    paddingLeft: "16px",
-    [theme.breakpoints.down("md")]: {
-      paddingLeft: 0,
-    },
-  },
-  bottomButton: {
-    margin: theme.spacing(1),
-    [theme.breakpoints.down("md")]: {
-      margin: 0,
-    },
-    minWidth: "100px",
-  },
-  applyButton: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-  closeButton: {
-    padding: "9px",
-  },
-  filtersContainer: {
-    paddingLeft: "8px",
-    marginBottom: "8px",
-    [theme.breakpoints.down("md")]: {
-      paddingLeft: 0,
-    },
-  },
-}));
+});
 
 /**
  * Filter Search Component aka Advanced Search
@@ -116,13 +105,6 @@ const Filters = ({
   setSearchFieldValue,
   setSearchTerm,
 }) => {
-  /**
-   * The styling of the search bar
-   * @constant
-   * @default
-   */
-  const classes = useStyles();
-
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
   if (error) console.error(error);
@@ -336,11 +318,11 @@ const Filters = ({
 
   return (
     <Grid>
-      <Grid container className={classes.gridItemPadding}>
+      <Grid container sx={gridItemPaddingStyle}>
         <Grid
           item
           xs={6}
-          className={classes.filtersContainer}
+          sx={filtersContainerStyle}
           display="flex"
           justifyContent="flex-start"
         >
@@ -372,22 +354,22 @@ const Filters = ({
         <Grid
           item
           xs={6}
-          className={classes.filtersContainer}
+          sx={filtersContainerStyle}
           display="flex"
           justifyContent="flex-end"
         >
           <IconButton
             onClick={handleAdvancedSearchClose}
-            className={classes.closeButton}
+            sx={closeButtonStyle}
             size="large"
           >
-            <Icon fontSize={"small"}>close</Icon>
+            <Close />
           </IconButton>
         </Grid>
       </Grid>
       {filterParameters.length === 0 ? (
-        <Grid container className={classes.filtersContainer}>
-          <Grid item xs={12} md={4} className={classes.gridItemPadding}>
+        <Grid container sx={filtersContainerStyle}>
+          <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
             <Typography>No filters applied</Typography>
           </Grid>
         </Grid>
@@ -413,15 +395,11 @@ const Filters = ({
               container
               id={`filter-${filterIndex}`}
               key={`filter-${filterIndex}`}
-              className={classes.filtersContainer}
+              sx={filtersContainerStyle}
             >
               {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={12} md={4} className={classes.gridItemPadding}>
-                <FormControl
-                  variant="standard"
-                  fullWidth
-                  className={classes.formControl}
-                >
+              <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
+                <FormControl variant="standard" fullWidth sx={formControlStyle}>
                   <Autocomplete
                     value={label || null}
                     id={`filter-field-select-${filterIndex}`}
@@ -451,12 +429,8 @@ const Filters = ({
               </Grid>
 
               {/*Select the operator from drop-down menu*/}
-              <Grid item xs={12} md={3} className={classes.gridItemPadding}>
-                <FormControl
-                  variant="standard"
-                  fullWidth
-                  className={classes.formControl}
-                >
+              <Grid item xs={12} md={3} sx={gridItemPaddingStyle}>
+                <FormControl variant="standard" fullWidth sx={formControlStyle}>
                   <Autocomplete
                     value={operator || null}
                     id={`filter-operator-select-${filterIndex}`}
@@ -485,12 +459,8 @@ const Filters = ({
               </Grid>
 
               {/* Select or enter value */}
-              <Grid item xs={12} md={4} className={classes.gridItemPadding}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                >
+              <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
+                <FormControl fullWidth variant="outlined" sx={formControlStyle}>
                   {isFilterNullType(operator) !== true &&
                     (shouldRenderAutocompleteInput(
                       lookupTable,
@@ -534,11 +504,11 @@ const Filters = ({
                 <Hidden mdDown>
                   <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                     <IconButton
-                      className={classes.deleteButton}
+                      sx={deleteButtonStyle}
                       onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                       size="large"
                     >
-                      <Icon className={classes.deleteIcon}>delete_outline</Icon>
+                      <DeleteOutline sx={deleteIconStyle} />
                     </IconButton>
                   </Grid>
                 </Hidden>
@@ -546,11 +516,11 @@ const Filters = ({
                   <Grid item xs={12}>
                     <Button
                       fullWidth
-                      className={classes.deleteButton}
+                      sx={deleteButtonStyle}
                       variant="outlined"
                       onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                     >
-                      <Icon>delete_outline</Icon>
+                      <DeleteOutline />
                     </Button>
                   </Grid>
                 </Hidden>
@@ -564,11 +534,11 @@ const Filters = ({
           <Button
             // Disable button until the user has added a complete filter
             disabled={!areAllFiltersComplete(filterParameters)}
-            className={classes.bottomButton}
+            sx={bottomButtonStyle}
             fullWidth
             variant="outlined"
             color="primary"
-            startIcon={<Icon>playlist_add</Icon>}
+            startIcon={<PlaylistAdd />}
             onClick={handleAddFilterButtonClick}
           >
             Add Filter
@@ -576,7 +546,7 @@ const Filters = ({
         </Grid>
         <Grid item xs={12} md={1}>
           <Button
-            className={classes.bottomButton}
+            sx={bottomButtonStyle}
             fullWidth
             variant="outlined"
             startIcon={<BackspaceOutlinedIcon />}
@@ -593,10 +563,10 @@ const Filters = ({
         <Grid item xs={12} md={2}>
           <Button
             fullWidth
-            className={classes.applyButton}
+            sx={applyButtonStyle}
             variant="contained"
             color="primary"
-            startIcon={<Icon>search</Icon>}
+            startIcon={<Search />}
             onClick={handleApplyButtonClick}
             disabled={
               handleApplyValidation(filterParameters, filtersConfig) !== null
@@ -608,10 +578,6 @@ const Filters = ({
       </Grid>
     </Grid>
   );
-};
-
-Filters.propTypes = {
-  className: PropTypes.string,
 };
 
 export default Filters;
