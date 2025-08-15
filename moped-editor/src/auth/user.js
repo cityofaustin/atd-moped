@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -69,6 +70,28 @@ export const getSessionDatabaseData = () => {
   }
 };
 
+function epochToCentralTime(epochTimestamp) {
+  const date = new Date(epochTimestamp * 1000);
+  return date.toLocaleString("en-US", {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+}
+
+/** * Get the Cognito ID JWT from a Cognito session.
+ *
+ * @param {CognitoUserSession} session - The Cognito user session.
+ * @returns {string} The ID JWT token.
+ */
+export const getCognitoIdJwt = (session) =>
+  session?.idToken ? session.idToken.getJwtToken() : null;
+
 /**
  * Custom hook that memoizes the session database data
  * This prevents unnecessary re-renders when the data hasn't changed
@@ -98,7 +121,10 @@ export const deleteSessionDatabaseData = () =>
  * Retrieves the user database data from Hasura
  * @param {Object} userObject - The user object as provided by AWS
  */
-export const initializeUserDBObject = (userObject) => {
+export const initializeUserDBObject = async (userObject) => {
+  const session = await Auth.currentSession();
+  const token = session?.idToken?.getJwtToken();
+
   // Retrieve the data (if any)
   const sessionData = getSessionDatabaseData();
 
@@ -109,7 +135,7 @@ export const initializeUserDBObject = (userObject) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getJwt(userObject)}`,
+        Authorization: `Bearer ${token}`,
         "X-Hasura-Role": `${getHighestRole(userObject)}`,
       },
       body: JSON.stringify({
@@ -132,28 +158,28 @@ export const initializeUserDBObject = (userObject) => {
   }
 };
 
+/**
+ * Retrieves persisted user context object
+ * @return {object}
+ */
+const getPersistedContext = () => {
+  return JSON.parse(localStorage.getItem(atdSessionKeyName)) || null;
+};
+
+/**
+ * Persists user context object into localstorage
+ * @param {str} context - The user context object
+ */
+const setPersistedContext = (context) => {
+  localStorage.setItem(atdSessionKeyName, JSON.stringify(context));
+};
+
 // Create a "controller" component that will calculate all the data that we need to give to our
 // components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
-  /**
-   * Retrieves persisted user context object
-   * @return {object}
-   */
-  const getPersistedContext = () => {
-    return JSON.parse(localStorage.getItem(atdSessionKeyName)) || null;
-  };
-
-  /**
-   * Persists user context object into localstorage
-   * @param {str} context - The user context object
-   */
-  const setPersistedContext = (context) => {
-    localStorage.setItem(atdSessionKeyName, JSON.stringify(context));
-  };
-
   const [user, setUser] = useState(getPersistedContext());
-  const [loginLoading, setLoginLoading] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
 
   useEffect(() => {
     // Configure the keys needed for the Auth module. Essentially this is
@@ -169,29 +195,38 @@ export const UserProvider = ({ children }) => {
 
     Auth.currentSession()
       .then((user) => {
+        console.log("User session found: ", user);
+        // Shouldn't we do this when the user is first logged in?
         setPersistedContext(user);
         setUser(user);
       })
       .catch((error) => {
         setPersistedContext(null);
         setUser(null);
+        console.error("Error getting user session on sign in: ", error);
       });
   }, []);
 
   useEffect(() => {
-    initializeUserDBObject(user);
+    if (!user) {
+      // If there is no user, we remove the persisted context
+      destroyLoggedInProfile();
+    } else {
+      initializeUserDBObject(user);
+    }
   }, [user]);
 
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
   // a message that our React components can use.
-  const login = (usernameOrEmail, password) => {
-    setLoginLoading(true);
+  const login = useCallback(async (usernameOrEmail, password) => {
+    setIsLoginLoading(true);
 
     return Auth.signIn(usernameOrEmail, password)
       .then((user) => {
+        console.log("User logged in: ", user);
         setUser(user.signInUserSession);
-        setLoginLoading(false);
+        setIsLoginLoading(false);
         return user.signInUserSession;
       })
       .catch((err) => {
@@ -200,22 +235,67 @@ export const UserProvider = ({ children }) => {
         }
 
         // ... (other checks)
-        setLoginLoading(false);
+        setIsLoginLoading(false);
         throw err;
       });
-  };
+  }, []);
+
+  /**
+   * Sign in the user using Azure AD.
+   *
+   * @returns {Promise<void>}
+   */
+  const loginSSO = useCallback(async () => {
+    setIsLoginLoading(true);
+
+    try {
+      await Auth.federatedSignIn({ provider: "AzureAD" });
+      setIsLoginLoading(false);
+    } catch (error) {
+      console.error("Error getting user session on sign in: ", error);
+      setIsLoginLoading(false);
+    }
+  }, []);
 
   // same thing here
-  const logout = () => {
+  const logout = useCallback(async () => {
     destroyProfileColor();
     destroyLoggedInProfile();
     deleteSessionDatabaseData();
-    return Auth.signOut().then((data) => {
-      // Remove the current color
+
+    try {
+      await Auth.signOut();
       setUser(null);
-      return data;
-    });
-  };
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
+  }, []);
+
+  /**
+   * Returns a valid Cognito session to provide valid roles and id JWT to
+   * Apollo Client GraphQL requests and Moped API requests.
+   *
+   * @returns {Promise<CognitoUserSession|null>} A valid Cognito session or null
+   */
+  const getCognitoSession = useCallback(async () => {
+    try {
+      const session = await Auth.currentSession();
+      setIsLoginLoading(false);
+
+      console.log("User session refreshed:", session);
+      console.log(
+        "Token expires:",
+        epochToCentralTime(session?.idToken?.payload.exp)
+      );
+
+      return session;
+    } catch (err) {
+      console.error("Error getting Cognito session: ", err);
+      setIsLoginLoading(false);
+
+      return null;
+    }
+  }, []);
 
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimization that is mostly needed in cases
@@ -224,8 +304,15 @@ export const UserProvider = ({ children }) => {
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
   const values = useMemo(
-    () => ({ user, login, logout, loginLoading }),
-    [user, loginLoading]
+    () => ({
+      user,
+      login,
+      loginSSO,
+      logout,
+      isLoginLoading,
+      getCognitoSession,
+    }),
+    [user, isLoginLoading, getCognitoSession, login, loginSSO, logout]
   );
 
   // Finally, return the interface that we want to expose to our other components
@@ -267,8 +354,6 @@ export const useUser = () => {
   }
   return context;
 };
-
-export const getJwt = (user) => user.idToken.jwtToken;
 
 export const getHasuraClaims = (user) => {
   try {
