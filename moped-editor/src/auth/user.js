@@ -159,7 +159,10 @@ export const initializeUserDBObject = async (userObject) => {
 };
 
 /**
- * Retrieves persisted user context object
+ * Retrieves persisted user context object from localstorage so users remain logged in
+ * between app loads and so the refresh token can be used to get a valid Cognito session
+ * when needed.
+ * @param {string} atdSessionKeyName - The key name for the user context in localStorage
  * @return {object}
  */
 const getPersistedContext = () => {
@@ -167,7 +170,7 @@ const getPersistedContext = () => {
 };
 
 /**
- * Persists user context object into localstorage
+ * Persists user context object in local storage after successful login.
  * @param {str} context - The user context object
  */
 const setPersistedContext = (context) => {
