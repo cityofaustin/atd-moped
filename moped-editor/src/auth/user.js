@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 
-import Amplify, { Auth } from "aws-amplify";
+import { Auth, Amplify } from "aws-amplify";
 
 import { colors } from "@mui/material";
 
@@ -181,30 +181,10 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(getPersistedContext());
   const [isLoginLoading, setIsLoginLoading] = useState(false);
 
+  // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
+  // so we would need to turn this back to DEBUG if we're actively debugging authentication.
   useEffect(() => {
-    // Configure the keys needed for the Auth module. Essentially this is
-    // like calling `Amplify.configure` but only for `Auth`.
-    /**
-     * AWS Amplify
-     * @see https://github.com/aws-amplify/amplify-js
-     */
-
-    // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
-    // so we would need to turn this back to DEBUG if we're actively debugging authentication.
     Amplify.Logger.LOG_LEVEL = "INFO";
-
-    Auth.currentSession()
-      .then((user) => {
-        console.log("User session found: ", user);
-        // Shouldn't we do this when the user is first logged in?
-        setPersistedContext(user);
-        setUser(user);
-      })
-      .catch((error) => {
-        setPersistedContext(null);
-        setUser(null);
-        console.error("Error getting user session on sign in: ", error);
-      });
   }, []);
 
   useEffect(() => {
@@ -226,13 +206,20 @@ export const UserProvider = ({ children }) => {
       .then((user) => {
         console.log("User logged in: ", user);
         setUser(user.signInUserSession);
+        setPersistedContext(user.signInUserSession);
+        setUser(user.signInUserSession);
+
         setIsLoginLoading(false);
+
         return user.signInUserSession;
       })
       .catch((err) => {
         if (err.code === "UserNotFoundException") {
           err.message = "Invalid username or password";
         }
+
+        setPersistedContext(null);
+        setUser(null);
 
         // ... (other checks)
         setIsLoginLoading(false);
