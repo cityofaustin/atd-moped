@@ -181,6 +181,9 @@ const setPersistedContext = (context) => {
 // components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
+  /* TODO: We may be able to retrieve user details with Auth.currentAuthenticatedUser() or other
+   * instead of storing this in state.
+   */
   const [user, setUser] = useState(getPersistedContext());
   const [isLoginLoading, setIsLoginLoading] = useState(false);
 
@@ -217,8 +220,6 @@ export const UserProvider = ({ children }) => {
         setPersistedContext(user.signInUserSession);
 
         setIsLoginLoading(false);
-
-        return user.signInUserSession;
       })
       .catch((err) => {
         if (err.code === "UserNotFoundException") {
@@ -244,9 +245,19 @@ export const UserProvider = ({ children }) => {
 
     try {
       await Auth.federatedSignIn({ provider: "AzureAD" });
+
+      // Federated sign-in does not return a user object, so we need to get the session
+      // and set the user context manually unlike when using username and password.
+      const session = await Auth.currentSession();
+      setUser(session);
+      setPersistedContext(session);
+
       setIsLoginLoading(false);
     } catch (error) {
       console.error("Error getting user session on sign in: ", error);
+      setPersistedContext(null);
+      setUser(null);
+
       setIsLoginLoading(false);
     }
   }, []);
