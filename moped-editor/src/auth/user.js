@@ -196,9 +196,15 @@ export const UserProvider = ({ children }) => {
     }
   }, [user]);
 
-  // We make sure to handle the user update here, but return the resolve value in order for our components to be
-  // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
-  // a message that our React components can use.
+  /**
+   * Handles user login when using username and password.
+   * We make sure to handle the user update here, but return the resolve value in order for our components to be
+   * able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
+   * a message that our React components can use.
+   * @param {string} usernameOrEmail - The username or email of the user.
+   * @param {string} password - The password of the user.
+   * @returns {Promise<void>}
+   */
   const login = useCallback(async (usernameOrEmail, password) => {
     setIsLoginLoading(true);
 
@@ -244,7 +250,11 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
-  // same thing here
+  /**
+   * Logs out the user and clears the user context.
+   * This function also destroys the profile color and logged-in profile from localStorage.
+   * @returns {Promise<void>}
+   */
   const logout = useCallback(async () => {
     destroyProfileColor();
     destroyLoggedInProfile();
@@ -342,6 +352,10 @@ export const useUser = () => {
   return context;
 };
 
+/** Retrieves the Hasura claims from the user object.
+ * @param {Object} user - The id token payload object containing ID token and claims.
+ * @returns {Object|null} The Hasura claims or null if not found.
+ */
 export const getHasuraClaims = (user) => {
   try {
     return JSON.parse(user.idToken.payload["https://hasura.io/jwt/claims"]);
@@ -350,6 +364,11 @@ export const getHasuraClaims = (user) => {
   }
 };
 
+/**
+ * Retrieves the database ID from the user object.
+ * @param {*} user - The user object containing ID token and claims.
+ * @returns {string|null} The database ID or null if not found.
+ */
 export const getDatabaseId = (user) => {
   try {
     const claims = getHasuraClaims(user);
@@ -359,9 +378,6 @@ export const getDatabaseId = (user) => {
     return null;
   }
 };
-
-export const isUserSSO = (user) =>
-  user.idToken.payload["cognito:username"].startsWith("azuread_");
 
 /**
  * Find the highest role in user roles for UI permissions
