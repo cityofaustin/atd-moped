@@ -213,10 +213,8 @@ export const UserProvider = ({ children }) => {
 
     return Auth.signIn(usernameOrEmail, password)
       .then((user) => {
-        console.log("User logged in: ", user);
         setUser(user.signInUserSession);
         setPersistedContext(user.signInUserSession);
-        setUser(user.signInUserSession);
 
         setIsLoginLoading(false);
 
@@ -287,6 +285,8 @@ export const UserProvider = ({ children }) => {
         "Token expires:",
         epochToCentralTime(session?.idToken?.payload.exp)
       );
+      // Update the user context with the new session for next app reload
+      setPersistedContext(session);
 
       return session;
     } catch (err) {
