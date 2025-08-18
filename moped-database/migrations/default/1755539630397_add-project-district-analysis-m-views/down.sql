@@ -1,1 +1,1 @@
-DROP MATERIALIZED VIEW IF EXISTS council_district_project_distribution_analytics;
+DROP VIEW IF EXISTS council_district_project_distribution_analytics;

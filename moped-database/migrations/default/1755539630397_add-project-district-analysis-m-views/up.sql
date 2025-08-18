@@ -1,4 +1,4 @@
-CREATE MATERIALIZED VIEW council_district_project_distribution_analytics
+CREATE VIEW council_district_project_distribution_analytics
 AS
 WITH point_line_intersections AS (
     SELECT
@@ -146,5 +146,4 @@ INNER JOIN
     project_totals AS pt ON c.project_id = pt.project_id
 ORDER BY
     c.project_id,
-    c.council_district_id
-WITH NO DATA;
+    c.council_district_id;
