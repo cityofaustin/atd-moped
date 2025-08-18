@@ -131,15 +131,8 @@ project_totals AS (
 
 SELECT
     c.project_id,
-    c.council_district_id,
-    NULLIF(c.point_count, 0) AS point_count,
-    ROUND(NULLIF(c.total_line_distance_feet, 0)::numeric, 2) AS total_line_distance_feet,
-    ROUND(c.total_area_in_district_sq_ft::numeric, 2) AS area_in_district_sq_ft,
-    ROUND(pt.total_area::numeric, 2) AS total_project_area_sq_ft,
-    ROUND((pt.total_area / (5280 * 5280))::numeric, 4) AS total_project_area_sq_mi,
-    ROUND((c.point_count * 100.0 / NULLIF(pt.total_points, 0))::numeric, 2) AS point_percentage,
-    ROUND((c.total_line_distance_feet * 100.0 / NULLIF(pt.total_line_distance, 0))::numeric, 2) AS line_percentage,
-    ROUND((c.total_area_in_district_sq_ft * 100 / NULLIF(pt.total_area, 0))::numeric, 2) AS percentage_of_total_area
+    c.council_district_id AS district_id,
+    ROUND((c.total_area_in_district_sq_ft * 100 / NULLIF(pt.total_area, 0))::numeric, 2) AS percentage_of_total
 FROM
     combined_district_aggregates AS c
 INNER JOIN
