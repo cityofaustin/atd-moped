@@ -1,5 +1,5 @@
 export const fieldGridItem = (theme) => ({
-  marginBottom: theme.spacing(3),
+  marginBottom: theme.spacing(1),
 });
 
 export const fieldLabel = (theme) => ({

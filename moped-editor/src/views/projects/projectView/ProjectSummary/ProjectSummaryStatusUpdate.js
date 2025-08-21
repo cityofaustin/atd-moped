@@ -63,7 +63,6 @@ const ProjectSummaryStatusUpdate = ({
                   width: "100%",
                   color: theme.palette.text.secondary,
                   fontSize: ".7rem",
-                  paddingLeft: theme.spacing(0.5),
                 })}
               >
                 {author} - {dateCreated}
