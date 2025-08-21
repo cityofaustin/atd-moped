@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import {
   fieldBox,
-  fieldGridItem,
   fieldLabel,
   fieldLabelTextNoHover,
 } from "src/styles/reusableStyles";
@@ -42,7 +41,7 @@ const ProjectSummaryCouncilDistricts = ({
   childProjectGeography,
 }) => {
   return (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid item xs={12}>
       <Typography sx={fieldLabel}>Council district(s)</Typography>
       <Box sx={fieldBox}>
         <Typography sx={fieldLabelTextNoHover}>
