@@ -5,13 +5,13 @@ import parse from "html-react-parser";
 
 import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 import { formatRelativeDate } from "src/utils/dateAndTime";
+import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 /**
  * ProjectSummaryStatusUpdate Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
- * @param {Object} classes - The shared style settings
  * @returns {JSX.Element}
  * @constructor
  */
@@ -20,7 +20,6 @@ const ProjectSummaryStatusUpdate = ({
   data,
   refetch,
   handleSnackbar,
-  classes,
 }) => {
   const statusUpdate =
     data.moped_project[0]?.project_list_view?.project_status_update;
@@ -36,12 +35,12 @@ const ProjectSummaryStatusUpdate = ({
   const eCaprisSubprojectId = data.moped_project[0]?.ecapris_subproject_id;
 
   return (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Status update</Typography>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>Status update</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
-        className={classes.fieldBox}
+        sx={fieldBox}
         flexWrap="nowrap"
         alignItems="center"
       >
@@ -54,16 +53,21 @@ const ProjectSummaryStatusUpdate = ({
           statusUpdate={statusUpdate}
           queryRefetch={refetch}
           handleSnackbar={handleSnackbar}
-          classes={classes}
           data={data}
         >
           {!!statusUpdate && (
-            <div>
-              <div>{parse(String(statusUpdate))}</div>
-              <span className={classes.fieldLabelSmall}>
+            <Box>
+              <Box>{parse(String(statusUpdate))}</Box>
+              <Box
+                sx={(theme) => ({
+                  width: "100%",
+                  color: theme.palette.text.secondary,
+                  fontSize: ".7rem",
+                })}
+              >
                 {author} - {dateCreated}
-              </span>
-            </div>
+              </Box>
+            </Box>
           )}
         </DashboardStatusModal>
       </Box>

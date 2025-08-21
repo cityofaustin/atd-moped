@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import * as yup from "yup";
 import { agolValidation } from "src/constants/projects";
+import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 const validationSchema = yup.object().shape({
   description: agolValidation.description,
@@ -19,7 +20,6 @@ const validationSchema = yup.object().shape({
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
- * @param {Object} classes - The shared style settings
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
@@ -28,7 +28,6 @@ const ProjectSummaryProjectDescription = ({
   projectId,
   data,
   refetch,
-  classes,
   handleSnackbar,
   listViewQuery,
 }) => {
@@ -97,13 +96,13 @@ const ProjectSummaryProjectDescription = ({
   };
 
   return (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Description</Typography>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>Description</Typography>
 
       <Box
         display="flex"
         justifyContent="flex-start"
-        className={classes.fieldBox}
+        sx={fieldBox}
         flexWrap="nowrap"
         alignItems="center"
         component="form"
@@ -146,7 +145,6 @@ const ProjectSummaryProjectDescription = ({
                 ? originalDescription
                 : " - "
             }
-            classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
         )}

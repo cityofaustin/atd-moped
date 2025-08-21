@@ -1,5 +1,10 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
+import {
+  fieldBox,
+  fieldLabel,
+  fieldLabelTextNoHover,
+} from "src/styles/reusableStyles";
 
 // reduce the array of project_geography objects into an array of city council districts
 const reduceDistricts = (data) => {
@@ -28,22 +33,18 @@ const getAllCouncilDistricts = (projectGeography, childProjectGeography) => {
 /**
  * ProjectSummaryCouncilDistricts Component
  * @param {Object} data - The project geography from the graphql query's data object
- * @param {Object} classes - The shared style settings
  * @returns {JSX.Element}
  * @constructor
  */
 const ProjectSummaryCouncilDistricts = ({
   projectGeography,
-  classes,
   childProjectGeography,
 }) => {
   return (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>
-        Council district(s)
-      </Typography>
-      <Box className={classes.fieldBox}>
-        <Typography className={classes.fieldLabelTextNoHover}>
+    <Grid item xs={12}>
+      <Typography sx={fieldLabel}>Council district(s)</Typography>
+      <Box sx={fieldBox}>
+        <Typography sx={fieldLabelTextNoHover}>
           {getAllCouncilDistricts(projectGeography, childProjectGeography).join(
             ", "
           )}

@@ -10,26 +10,26 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
+import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 /**
  * Custom wrapper for the eCapris edit field
  * @param {JSX.Element} children - Any children
  * @param {boolean} noWrapper - If false, it provides a null wrapper
- * @param {Object} classes - Class object containing styles
  * @returns {JSX.Element}
  * @constructor
  */
-const WrapperComponent = ({ children, noWrapper, classes }) =>
+const WrapperComponent = ({ children, noWrapper }) =>
   noWrapper ? (
     <>
-      <Typography className={classes.fieldLabel}>
+      <Typography sx={fieldLabel}>
         eCAPRIS Subproject ID
       </Typography>
       {children}
     </>
   ) : (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>
         eCAPRIS Subproject ID
       </Typography>
       {children}
@@ -41,7 +41,6 @@ const WrapperComponent = ({ children, noWrapper, classes }) =>
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
- * @param {Object} classes - The shared style settings
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
@@ -51,7 +50,6 @@ const ProjectSummaryProjectECapris = ({
   loading,
   data,
   refetch,
-  classes,
   handleSnackbar,
   noWrapper,
 }) => {
@@ -135,11 +133,11 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <WrapperComponent classes={classes} noWrapper={noWrapper}>
+    <WrapperComponent noWrapper={noWrapper}>
       <Box
         display="flex"
         justifyContent="flex-start"
-        className={classes.fieldBox}
+        sx={fieldBox}
       >
         {editMode && (
           <>
@@ -180,7 +178,6 @@ const ProjectSummaryProjectECapris = ({
               )) ||
               ""
             }
-            classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
         )}

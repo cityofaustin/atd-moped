@@ -14,13 +14,13 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { useMutation } from "@apollo/client";
 import { PROJECT_UPDATE_PARTNERS } from "../../../../queries/project";
+import { fieldBox, fieldGridItem, fieldLabel, fieldSelectItem } from "src/styles/reusableStyles";
 
 /**
  * ProjectSummaryProjectPartners Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
- * @param {Object} classes - The shared style settings
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
@@ -30,7 +30,6 @@ const ProjectSummaryProjectPartners = ({
   loading,
   data,
   refetch,
-  classes,
   handleSnackbar,
   tooltipText,
 }) => {
@@ -120,12 +119,12 @@ const ProjectSummaryProjectPartners = ({
   };
 
   return (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Partners</Typography>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>Partners</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
-        className={classes.fieldBox}
+        sx={fieldBox}
       >
         {editMode && (
           <>
@@ -145,7 +144,7 @@ const ProjectSummaryProjectPartners = ({
                   width: 450,
                 },
               }}
-              className={classes.fieldSelectItem}
+              sx={fieldSelectItem}
             >
               {entityList.map((entity) => (
                 <MenuItem key={entity.entity_id} value={entity.entity_id}>
@@ -171,7 +170,6 @@ const ProjectSummaryProjectPartners = ({
         {!editMode && (
           <ProjectSummaryLabel
             text={selectedEntities.map((e) => entityDict[e])}
-            classes={classes}
             onClickEdit={() => setEditMode(true)}
             tooltipText={tooltipText}
           />

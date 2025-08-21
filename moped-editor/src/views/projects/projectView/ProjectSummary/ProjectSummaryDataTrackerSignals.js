@@ -2,6 +2,12 @@ import React, { useMemo } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import RenderSignalLink from "../../../../components/RenderSignalLink";
+import {
+  fieldGridItem,
+  fieldLabel,
+  fieldLabelDataTrackerLink,
+  fieldLabelTextSpanNoBorder,
+} from "src/styles/reusableStyles";
 
 /**
  * Function to map the signal IDs from a project object into an array and return the array length.
@@ -17,21 +23,20 @@ const useProjectSignals = (project) =>
     [project]
   );
 
-const ProjectSummaryDataTrackerSignals = ({ classes, project }) => {
+const ProjectSummaryDataTrackerSignals = ({ project }) => {
   const signals = useProjectSignals(project);
 
   return (
     <>
-      <Grid item xs={12} className={classes.fieldGridItem}>
-        <Typography className={classes.fieldLabel}>Signal IDs</Typography>
+      <Grid item xs={12} sx={fieldGridItem}>
+        <Typography sx={fieldLabel}>Signal IDs</Typography>
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
-            className={classes.fieldLabelDataTrackerLink}
+            sxProp={fieldLabelDataTrackerLink}
+            spanSxProp={fieldLabelTextSpanNoBorder}
             text={
               signals.length > 0 ? <RenderSignalLink signals={signals} /> : "-"
             }
-            classes={classes}
-            spanClassName={classes.fieldLabelTextSpanNoBorder}
           />
         </Box>
       </Grid>

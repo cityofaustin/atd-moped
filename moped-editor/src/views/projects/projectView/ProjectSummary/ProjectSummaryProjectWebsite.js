@@ -8,13 +8,13 @@ import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { PROJECT_UPDATE_WEBSITE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 import { isValidUrl, makeUrlValid } from "src/utils/urls";
+import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 /**
  * ProjectSummaryProjectWebsite Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
- * @param {Object} classes - The shared style settings
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
@@ -24,7 +24,6 @@ const ProjectSummaryProjectWebsite = ({
   loading,
   data,
   refetch,
-  classes,
   handleSnackbar,
 }) => {
   const originalWebsite = data?.moped_project?.[0]?.project_website ?? null;
@@ -83,12 +82,12 @@ const ProjectSummaryProjectWebsite = ({
   };
 
   return (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Website</Typography>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>Website</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
-        className={classes.fieldBox}
+        sx={fieldBox}
       >
         {editMode && (
           <>
@@ -119,7 +118,6 @@ const ProjectSummaryProjectWebsite = ({
               )) ||
               ""
             }
-            classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
         )}
