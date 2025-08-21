@@ -71,7 +71,7 @@ function epochToCentralTime(epochTimestamp) {
   });
 }
 
-/** * Get the Cognito ID JWT from a Cognito session.
+/** Get the Cognito ID JWT from a Cognito session.
  *
  * @param {CognitoUserSession} session - The Cognito user session.
  * @returns {string} The ID JWT token.
@@ -149,11 +149,10 @@ export const initializeUserDBObject = async (userObject) => {
 // components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
-  /* TODO: We may be able to retrieve user details with Auth.currentAuthenticatedUser() or other
-   * instead of storing this in state.
-   */
+  /* User state is set on sign in and log out and allows us to synchronously access the user details
+  without calling async Auth.currentSession() where an up-to-date session is not critical. */
+  // TODO: It would be better to use Amplify Auth calls to get the user data but need to refactor user state access.
   const [user, setUser] = useState(null);
-  console.log(user);
   const [isLoginLoading, setIsLoginLoading] = useState(false);
 
   // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
@@ -174,26 +173,23 @@ export const UserProvider = ({ children }) => {
   const login = useCallback(async (usernameOrEmail, password) => {
     setIsLoginLoading(true);
 
-    return Auth.signIn(usernameOrEmail, password)
-      .then((user) => {
-        const session = user.signInUserSession;
+    try {
+      // Sign in the user with the provided credentials
+      await Auth.signIn(usernameOrEmail, password);
+      const session = await Auth.currentSession();
+      await initializeUserDBObject(session);
+      setUser(session);
 
-        setUser(session);
-        initializeUserDBObject(session);
+      setIsLoginLoading(false);
+    } catch (err) {
+      if (err.code === "UserNotFoundException") {
+        err.message = "Invalid username or password";
+      }
 
-        setIsLoginLoading(false);
-      })
-      .catch((err) => {
-        if (err.code === "UserNotFoundException") {
-          err.message = "Invalid username or password";
-        }
-
-        setUser(null);
-
-        // ... (other checks)
-        setIsLoginLoading(false);
-        throw err;
-      });
+      setUser(null);
+      setIsLoginLoading(false);
+      throw err;
+    }
   }, []);
 
   /**
@@ -207,11 +203,11 @@ export const UserProvider = ({ children }) => {
     try {
       await Auth.federatedSignIn({ provider: "AzureAD" });
 
-      // Federated sign-in does not return a user object, so we need to get the session
-      // and set the user context manually unlike when using username and password.
+      /* Federated sign-in does not return a user object, so we need to get the session
+         and set the user context manually unlike when using username and password. */
       const session = await Auth.currentSession();
+      await initializeUserDBObject(session);
       setUser(session);
-      initializeUserDBObject(session);
 
       setIsLoginLoading(false);
     } catch (error) {
@@ -264,19 +260,23 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   /**
-   * This effect runs once when the component mounts and checks if Cognito has a valid session.
-   * If there is no user, it retrieves the current session aand sets the user state to prevent logout
+   * This effect runs when the component mounts and checks if Cognito has a valid session.
+   * If there is no user state, it retrieves the current session and sets it to prevent logout
    * when browser is refreshed. If there is no current session, getCognitoSession will return null.
    */
   useEffect(() => {
-    if (!user) {
+    if (user === null) {
       setIsLoginLoading(true);
 
       getCognitoSession()
         .then((session) => {
-          console.log("app reloaded", session);
           setUser(session);
           setIsLoginLoading(false);
+
+          if (session === null) {
+            destroyProfileColor();
+            deleteSessionDatabaseData();
+          }
         })
         .catch((error) => {
           console.error("Error getting Cognito session on app reload: ", error);
