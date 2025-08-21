@@ -17,7 +17,7 @@ import { useUser } from "src/auth/user";
 import SimpleDialog from "src/components/SimpleDialog";
 
 const LoginView = () => {
-  const { login, loginSSO, loginLoading } = useUser();
+  const { login, loginSSO, isLoginLoading } = useUser();
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -129,10 +129,10 @@ const LoginView = () => {
       >
         <Backdrop
           sx={(theme) => ({
-            zIndex: theme.zIndex.drawer + 1,
+            zIndex: theme.zIndex.modal + 1,
             color: theme.palette.background.default,
           })}
-          open={loginLoading}
+          open={isLoginLoading}
         >
           <CircularProgress color="inherit" />
         </Backdrop>

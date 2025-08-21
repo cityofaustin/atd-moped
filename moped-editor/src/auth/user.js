@@ -32,13 +32,6 @@ export const atdColorKeyName = "atd_moped_user_color";
  * @type {string}
  * @constant
  */
-export const atdSessionKeyName = "atd_moped_user_context";
-
-/**
- * This is a constant string key that holds the profile for a user.
- * @type {string}
- * @constant
- */
 export const atdSessionDatabaseDataKeyName = "atd_moped_user_db_data";
 
 /**
@@ -46,12 +39,6 @@ export const atdSessionDatabaseDataKeyName = "atd_moped_user_db_data";
  */
 export const destroyProfileColor = () =>
   localStorage.removeItem(atdColorKeyName);
-
-/**
- * Removes the current profile
- */
-export const destroyLoggedInProfile = () =>
-  localStorage.removeItem(atdSessionKeyName);
 
 /**
  * Parses the user database data from localStorage
@@ -158,25 +145,6 @@ export const initializeUserDBObject = async (userObject) => {
   }
 };
 
-/**
- * Retrieves persisted user context object from localstorage so users remain logged in
- * between app loads and so the refresh token can be used to get a valid Cognito session
- * when needed.
- * @param {string} atdSessionKeyName - The key name for the user context in localStorage
- * @return {object}
- */
-const getPersistedContext = () => {
-  return JSON.parse(localStorage.getItem(atdSessionKeyName)) || null;
-};
-
-/**
- * Persists user context object in local storage after successful login.
- * @param {str} context - The user context object
- */
-const setPersistedContext = (context) => {
-  localStorage.setItem(atdSessionKeyName, JSON.stringify(context));
-};
-
 // Create a "controller" component that will calculate all the data that we need to give to our
 // components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
@@ -184,7 +152,8 @@ export const UserProvider = ({ children }) => {
   /* TODO: We may be able to retrieve user details with Auth.currentAuthenticatedUser() or other
    * instead of storing this in state.
    */
-  const [user, setUser] = useState(getPersistedContext());
+  const [user, setUser] = useState(null);
+  console.log(user);
   const [isLoginLoading, setIsLoginLoading] = useState(false);
 
   // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
@@ -192,15 +161,6 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     Amplify.Logger.LOG_LEVEL = "INFO";
   }, []);
-
-  useEffect(() => {
-    if (!user) {
-      // If there is no user, we remove the persisted context
-      destroyLoggedInProfile();
-    } else {
-      initializeUserDBObject(user);
-    }
-  }, [user]);
 
   /**
    * Handles user login when using username and password.
@@ -216,8 +176,10 @@ export const UserProvider = ({ children }) => {
 
     return Auth.signIn(usernameOrEmail, password)
       .then((user) => {
-        setUser(user.signInUserSession);
-        setPersistedContext(user.signInUserSession);
+        const session = user.signInUserSession;
+
+        setUser(session);
+        initializeUserDBObject(session);
 
         setIsLoginLoading(false);
       })
@@ -226,7 +188,6 @@ export const UserProvider = ({ children }) => {
           err.message = "Invalid username or password";
         }
 
-        setPersistedContext(null);
         setUser(null);
 
         // ... (other checks)
@@ -250,12 +211,11 @@ export const UserProvider = ({ children }) => {
       // and set the user context manually unlike when using username and password.
       const session = await Auth.currentSession();
       setUser(session);
-      setPersistedContext(session);
+      initializeUserDBObject(session);
 
       setIsLoginLoading(false);
     } catch (error) {
       console.error("Error getting user session on sign in: ", error);
-      setPersistedContext(null);
       setUser(null);
 
       setIsLoginLoading(false);
@@ -269,7 +229,6 @@ export const UserProvider = ({ children }) => {
    */
   const logout = useCallback(async () => {
     destroyProfileColor();
-    destroyLoggedInProfile();
     deleteSessionDatabaseData();
 
     try {
@@ -289,24 +248,42 @@ export const UserProvider = ({ children }) => {
   const getCognitoSession = useCallback(async () => {
     try {
       const session = await Auth.currentSession();
-      setIsLoginLoading(false);
 
       console.log("User session refreshed:", session);
       console.log(
         "Token expires:",
         epochToCentralTime(session?.idToken?.payload.exp)
       );
-      // Update the user context with the new session for next app reload
-      setPersistedContext(session);
 
       return session;
     } catch (err) {
       console.error("Error getting Cognito session: ", err);
-      setIsLoginLoading(false);
 
       return null;
     }
   }, []);
+
+  /**
+   * This effect runs once when the component mounts and checks if Cognito has a valid session.
+   * If there is no user, it retrieves the current session aand sets the user state to prevent logout
+   * when browser is refreshed. If there is no current session, getCognitoSession will return null.
+   */
+  useEffect(() => {
+    if (!user) {
+      setIsLoginLoading(true);
+
+      getCognitoSession()
+        .then((session) => {
+          console.log("app reloaded", session);
+          setUser(session);
+          setIsLoginLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error getting Cognito session on app reload: ", error);
+          setIsLoginLoading(false);
+        });
+    }
+  }, [user, getCognitoSession]);
 
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimization that is mostly needed in cases
