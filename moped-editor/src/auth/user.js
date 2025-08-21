@@ -106,29 +106,27 @@ export const deleteSessionDatabaseData = () =>
 
 /**
  * Retrieves the user database data from Hasura
- * @param {Object} userObject - The user object as provided by AWS
+ * @param {Object} session - The Cognito user session.
  */
-export const initializeUserDBObject = async (userObject) => {
-  const session = await Auth.currentSession();
+export const initializeUserDBObject = async (session) => {
   const token = session?.idToken?.getJwtToken();
-
-  // Retrieve the data (if any)
+  // Retrieve the data from local storage (if any)
   const sessionData = getSessionDatabaseData();
 
   // If the user object is valid and there is no existing data...
-  if (userObject && sessionData === null) {
+  if (session && sessionData === null) {
     // Fetch the data from Hasura
     fetch(config.env.APP_HASURA_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        "X-Hasura-Role": `${getHighestRole(userObject)}`,
+        "X-Hasura-Role": `${getHighestRole(session)}`,
       },
       body: JSON.stringify({
         query: ACCOUNT_USER_PROFILE_GET_PLAIN,
         variables: {
-          userId: getDatabaseId(userObject),
+          userId: getDatabaseId(session),
         },
       }),
     }).then((res) => {
@@ -151,7 +149,8 @@ export const initializeUserDBObject = async (userObject) => {
 export const UserProvider = ({ children }) => {
   /* User state is set on sign in and log out and allows us to synchronously access the user details
   without calling async Auth.currentSession() where an up-to-date session is not critical. */
-  // TODO: It would be better to use Amplify Auth calls to get the user data but need to refactor user state access.
+  // TODO: It would be better to use Amplify Auth calls to get the user data but need to refactor user state access
+  // in other components using const { user } = useUser().
   const [user, setUser] = useState(null);
   const [isLoginLoading, setIsLoginLoading] = useState(false);
 
@@ -163,19 +162,15 @@ export const UserProvider = ({ children }) => {
 
   /**
    * Handles user login when using username and password.
-   * We make sure to handle the user update here, but return the resolve value in order for our components to be
-   * able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
-   * a message that our React components can use.
    * @param {string} usernameOrEmail - The username or email of the user.
    * @param {string} password - The password of the user.
-   * @returns {Promise<void>}
    */
   const login = useCallback(async (usernameOrEmail, password) => {
     setIsLoginLoading(true);
 
     try {
-      // Sign in the user with the provided credentials
       await Auth.signIn(usernameOrEmail, password);
+
       const session = await Auth.currentSession();
       await initializeUserDBObject(session);
       setUser(session);
@@ -194,8 +189,6 @@ export const UserProvider = ({ children }) => {
 
   /**
    * Sign in the user using Azure AD.
-   *
-   * @returns {Promise<void>}
    */
   const loginSSO = useCallback(async () => {
     setIsLoginLoading(true);
@@ -203,8 +196,6 @@ export const UserProvider = ({ children }) => {
     try {
       await Auth.federatedSignIn({ provider: "AzureAD" });
 
-      /* Federated sign-in does not return a user object, so we need to get the session
-         and set the user context manually unlike when using username and password. */
       const session = await Auth.currentSession();
       await initializeUserDBObject(session);
       setUser(session);
@@ -219,9 +210,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   /**
-   * Logs out the user and clears the user context.
-   * This function also destroys the profile color and logged-in profile from localStorage.
-   * @returns {Promise<void>}
+   * Logs out the user and clears the profile color and user DB data from localStorage.
    */
   const logout = useCallback(async () => {
     destroyProfileColor();
@@ -236,10 +225,8 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   /**
-   * Returns a valid Cognito session to provide valid roles and id JWT to
+   * Returns a valid Cognito session to provide roles and id token to
    * Apollo Client GraphQL requests and Moped API requests.
-   *
-   * @returns {Promise<CognitoUserSession|null>} A valid Cognito session or null
    */
   const getCognitoSession = useCallback(async () => {
     try {
