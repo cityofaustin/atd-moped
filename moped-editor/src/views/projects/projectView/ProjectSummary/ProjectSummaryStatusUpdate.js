@@ -5,11 +5,7 @@ import parse from "html-react-parser";
 
 import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 import { formatRelativeDate } from "src/utils/dateAndTime";
-import {
-  fieldBox,
-  fieldGridItem,
-  fieldLabel,
-} from "src/styles/reusableStyles";
+import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -60,9 +56,9 @@ const ProjectSummaryStatusUpdate = ({
           data={data}
         >
           {!!statusUpdate && (
-            <div>
-              <div>{parse(String(statusUpdate))}</div>
-              <span
+            <Box>
+              <Box>{parse(String(statusUpdate))}</Box>
+              <Box
                 sx={(theme) => ({
                   width: "100%",
                   color: theme.palette.text.secondary,
@@ -71,8 +67,8 @@ const ProjectSummaryStatusUpdate = ({
                 })}
               >
                 {author} - {dateCreated}
-              </span>
-            </div>
+              </Box>
+            </Box>
           )}
         </DashboardStatusModal>
       </Box>
