@@ -14,7 +14,7 @@ import { colors } from "@mui/material";
 import config from "../config";
 import { nonLoginUserRole } from "src/views/staff/helpers";
 
-import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "../queries/account";
+import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "src/queries/account";
 
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overridden by the component below
@@ -41,7 +41,7 @@ export const destroyProfileColor = () =>
   localStorage.removeItem(atdColorKeyName);
 
 /**
- * Parses the user database data from localStorage
+ * Parses the user Postgres database row from localStorage
  * @return {Object}
  */
 export const getSessionDatabaseData = () => {
@@ -89,7 +89,7 @@ export const useSessionDatabaseData = () => {
 };
 
 /**
- * Persists the user database data into localStorage
+ * Persists the user Postgres database row into localStorage
  * @param userObject
  */
 export const setSessionDatabaseData = (userObject) =>
@@ -99,22 +99,22 @@ export const setSessionDatabaseData = (userObject) =>
   );
 
 /**
- * Deletes the user database data from localStorage
+ * Deletes the user Postgres database row from localStorage
  */
 export const deleteSessionDatabaseData = () =>
   localStorage.removeItem(atdSessionDatabaseDataKeyName);
 
 /**
- * Retrieves the user database data from Hasura
+ * Retrieves the user Postgres database row from Hasura
  * @param {Object} session - The Cognito user session.
  */
 export const initializeUserDBObject = async (session) => {
-  const token = session?.idToken?.getJwtToken();
+  const token = getCognitoIdJwt(session);
   // Retrieve the data from local storage (if any)
-  const sessionData = getSessionDatabaseData();
+  const sessionDataFromLocalStorage = getSessionDatabaseData();
 
-  // If the user object is valid and there is no existing data...
-  if (session && sessionData === null) {
+  // If the session is valid and there is no existing data...
+  if (session && sessionDataFromLocalStorage === null) {
     // Fetch the data from Hasura
     fetch(config.env.APP_HASURA_ENDPOINT, {
       method: "POST",
@@ -213,11 +213,10 @@ export const UserProvider = ({ children }) => {
    * Logs out the user and clears the profile color and user DB data from localStorage.
    */
   const logout = useCallback(async () => {
-    destroyProfileColor();
-    deleteSessionDatabaseData();
-
     try {
       await Auth.signOut();
+      destroyProfileColor();
+      deleteSessionDatabaseData();
       setUser(null);
     } catch (error) {
       console.error("Error logging out: ", error);
@@ -250,6 +249,7 @@ export const UserProvider = ({ children }) => {
    * This effect runs when the component mounts and checks if Cognito has a valid session.
    * If there is no user state, it retrieves the current session and sets it to prevent logout
    * when browser is refreshed. If there is no current session, getCognitoSession will return null.
+   * Current route is preserved in MainLayout.js and DashboardLayout.js by React Router.
    */
   useEffect(() => {
     if (user === null) {
@@ -330,8 +330,8 @@ export const useUser = () => {
   return context;
 };
 
-/** Retrieves the Hasura claims from the user object.
- * @param {Object} user - The id token payload object containing ID token and claims.
+/** Retrieves the Hasura claims from the Cognito user session.
+ * @param {Object} user - The id token payload containing ID token and claims.
  * @returns {Object|null} The Hasura claims or null if not found.
  */
 export const getHasuraClaims = (user) => {
@@ -343,8 +343,8 @@ export const getHasuraClaims = (user) => {
 };
 
 /**
- * Retrieves the database ID from the user object.
- * @param {*} user - The user object containing ID token and claims.
+ * Retrieves the database ID from the Cognito user session.
+ * @param {object} user - The Cognito user session containing ID token and claims.
  * @returns {string|null} The database ID or null if not found.
  */
 export const getDatabaseId = (user) => {
@@ -381,8 +381,8 @@ export const findHighestRole = (roles) => {
 };
 
 /**
- * Get the role with the highest permissions level from CognitoUser Object
- * @param {object} user - Cognito User object containing roles in the token
+ * Get the role with the highest permissions level from Cognito user session.
+ * @param {object} user - Cognito User session containing roles in the token
  * @return {string} Highest user role
  */
 export const getHighestRole = (user) => {
