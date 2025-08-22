@@ -2,21 +2,6 @@ import React from "react";
 import { Box, Typography, Link } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles(() => ({
-  entryText: {
-    padding: "0 0 0 .5rem",
-  },
-  boldText: {
-    fontWeight: 600,
-  },
-  indentText: {
-    paddingLeft: "16px",
-    display: "block",
-  },
-}));
-
 /**
  * One row/entry in the project activity log
  * @param {changeIcon} Material UI icon component
@@ -24,29 +9,49 @@ const useStyles = makeStyles(() => ({
  *  {text: String to display, style: String name of style or null}
  */
 const ProjectActivityEntry = ({ changeIcon, changeText }) => {
-  const classes = useStyles();
+  const getStyleSx = (style) => {
+    const baseSx = {};
+
+    if (style === "boldText") {
+      baseSx.fontWeight = 600;
+    } else if (style === "indentText") {
+      baseSx.paddingLeft = "16px";
+      baseSx.display = "block";
+    }
+
+    return baseSx;
+  };
+
   return (
     <Box display="flex" p={0}>
       <Box p={0}>{changeIcon}</Box>
       <Box p={0} flexGrow={1}>
         <Typography
           variant="body2"
-          className={classes.entryText}
+          sx={{ padding: "0 0 0 .5rem" }}
           component="span"
         >
           {
             // maps through the array of objects and applies specified style to the text
             changeText.map((changeObject, index) =>
               changeObject.link ? (
-                <span className={classes[changeObject.style]} key={index}>
+                <Box
+                  key={index}
+                  component="span"
+                  sx={getStyleSx(changeObject.style)}
+                >
                   <Link component={RouterLink} to={changeObject.link}>
                     {changeObject.text}
                   </Link>
-                </span>
+                </Box>
               ) : (
-                <span className={classes[changeObject.style]} key={index}>
+                <Box
+                  key={index}
+                  component="span"
+                  sx={getStyleSx(changeObject.style)}
+                >
                   {changeObject.text}
-                </span>
+                </Box>
               )
             )
           }
