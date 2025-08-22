@@ -13,6 +13,7 @@ import ProjectListViewQueryContext from "./components/QueryContextProvider";
 import ActivityMetrics from "./components/ActivityMetrics";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackComponent from "src/components/FallbackComponent";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
 // Apollo GraphQL Client
 import {
@@ -31,7 +32,7 @@ const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
-const useClient = () => {
+const useApolloClient = () => {
   const [error, setError] = useState(null);
   const { getCognitoSession } = useUser();
 
@@ -55,14 +56,23 @@ const useClient = () => {
     });
 
     const errorLink = onError(({ graphQLErrors, networkError }) => {
-      console.log("Apollo Client Error:", { graphQLErrors, networkError });
-      if (graphQLErrors)
-        graphQLErrors.forEach(({ message, locations, path }) =>
-          console.log(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-          )
-        );
-      if (networkError) console.log(`[Network error]: ${networkError}`);
+      if (graphQLErrors) {
+        // Concatenate all error messages to create a single error and message
+        const concatenatedMessage = graphQLErrors
+          .map(({ message }) => message)
+          .join("; ");
+
+        const combinedError = new Error(concatenatedMessage);
+        setError(combinedError);
+      }
+      graphQLErrors.forEach(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+        )
+      );
+      if (networkError) {
+        setError(networkError);
+      }
     });
 
     return new ApolloClient({
@@ -96,26 +106,28 @@ LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
   const routing = useRoutes(restrictedRoutes);
-  const { apolloClient: client, error } = useClient();
+  const { apolloClient: client, error } = useApolloClient();
 
   return (
     <ApolloProvider client={client}>
-      <StyledEngineProvider injectFirst>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <ThemeProvider theme={theme}>
-            <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <GlobalStyles />
-              <ActivityMetrics eventName="app_load">
-                <ProjectListViewQueryContext.Provider
-                  value={{ listViewQuery, setListViewQuery }}
-                >
-                  {routing}
-                </ProjectListViewQueryContext.Provider>
-              </ActivityMetrics>
-            </ErrorBoundary>
-          </ThemeProvider>
-        </LocalizationProvider>
-      </StyledEngineProvider>
+      <ApolloErrorHandler error={error}>
+        <StyledEngineProvider injectFirst>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <ThemeProvider theme={theme}>
+              <ErrorBoundary FallbackComponent={FallbackComponent}>
+                <GlobalStyles />
+                <ActivityMetrics eventName="app_load">
+                  <ProjectListViewQueryContext.Provider
+                    value={{ listViewQuery, setListViewQuery }}
+                  >
+                    {routing}
+                  </ProjectListViewQueryContext.Provider>
+                </ActivityMetrics>
+              </ErrorBoundary>
+            </ThemeProvider>
+          </LocalizationProvider>
+        </StyledEngineProvider>
+      </ApolloErrorHandler>
     </ApolloProvider>
   );
 };
