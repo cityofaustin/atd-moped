@@ -90,7 +90,7 @@ const DropdownMenu = ({
   const userDbData = useSessionDatabaseData();
   const userInitials = userDbData
     ? getInitials(userDbData)
-    : emailToInitials(user?.idToken?.payload?.email);
+    : emailToInitials(userDbData?.email);
 
   return (
     <>

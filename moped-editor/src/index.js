@@ -5,8 +5,7 @@ import { UserProvider } from "./auth/user";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 
-import Amplify, { Hub } from "aws-amplify";
-
+import { Amplify, Hub } from "aws-amplify";
 
 import config from "./config";
 
@@ -47,7 +46,6 @@ Amplify.configure({
       : {}),
   },
 });
-
 
 ReactDOM.render(
   <BrowserRouter>

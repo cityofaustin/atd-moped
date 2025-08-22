@@ -1,15 +1,19 @@
-import config from "../config";
+import config from "src/config";
+import { getCognitoIdJwt } from "src/auth/user";
 
 /**
  * Downloads a file from S3 using the API.
  * @param {string} file_key - The full to the file in the bucket
- * @param {string} token - The JWT token to use against the API
+ * @param {function} getCognitoSession - Function to retrieve valid session and token to use against the API
  */
-const downloadFileAttachment = (file_key, token) => {
+const downloadFileAttachment = async (file_key, getCognitoSession) => {
   if (file_key) {
     // Remove forward slash if present
     if (file_key[0] === "/") file_key = file_key.substring(1);
     const url = `${config.env.APP_API_ENDPOINT}/files/download/${file_key}`;
+
+    const session = await getCognitoSession();
+    const token = getCognitoIdJwt(session);
 
     fetch(url, {
       headers: {
