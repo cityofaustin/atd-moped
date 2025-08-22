@@ -1,9 +1,9 @@
 import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
+import { Outlet, Navigate, useLocation } from "react-router-dom";
+import makeStyles from "@mui/styles/makeStyles";
 import { useUser } from "../../auth/user";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.default,
     display: "flex",
@@ -30,12 +30,29 @@ const useStyles = makeStyles(theme => ({
 
 const MainLayout = () => {
   const classes = useStyles();
-
+  const location = useLocation();
   const { user } = useUser();
 
-  return user ? (
-    <Navigate to="/moped" />
-  ) : (
+  /* If user is authenticated, redirect to the intended route
+   * after login or if a browser refresh occurs.
+   * If no intended route is preserved, redirect to the default route.
+   * See DashboardLayout.js for how the React Router state is passed.
+   */
+  if (user) {
+    // Get the intended route from location state
+    const from = location.state?.from;
+
+    if (from) {
+      // Reconstruct the full URL with pathname, search, and hash
+      const redirectTo =
+        from.pathname + (from.search || "") + (from.hash || "");
+      return <Navigate to={redirectTo} replace />;
+    }
+    // Default redirect if no preserved route
+    return <Navigate to="/moped" replace />;
+  }
+
+  return (
     <div className={classes.root}>
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
