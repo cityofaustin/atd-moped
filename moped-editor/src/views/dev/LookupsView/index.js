@@ -12,20 +12,10 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import LinkIcon from "@mui/icons-material/Link";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import { makeStyles } from "@mui/styles";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
 import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
-
-const useStyles = makeStyles((theme) => ({
-  topMargin: {
-    marginTop: theme.spacing(3),
-  },
-  bottomMargin: {
-    marginBottom: theme.spacing(3),
-  },
-}));
 
 /**
  * Converts a record key (e.g. moped_phases) into a URL hash, (e.g. #moped-phases)
@@ -50,7 +40,6 @@ const scrollToTable = (recordKey, refs) => {
  * @returns { JSX } a page component
  */
 const LookupsView = () => {
-  const classes = useStyles();
   const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
     fetchPolicy: "no-cache",
   });
@@ -94,7 +83,7 @@ const LookupsView = () => {
     <ApolloErrorHandler error={error}>
       <Page title="Moped Data Dictionary">
         <Container maxWidth="xl">
-          <Grid container spacing={3} className={classes.topMargin}>
+          <Grid container spacing={3} sx={{ marginTop: 3 }}>
             <Grid item xs={12}>
               <Typography variant="h1">Moped Data Dictionary</Typography>
             </Grid>
@@ -102,12 +91,12 @@ const LookupsView = () => {
           <Grid
             container
             spacing={3}
-            className={classes.topMargin}
+            sx={{ marginTop: 3 }}
             component={Paper}
             ref={refs._scroll_to_top}
           >
             {SETTINGS.map((recordType) => (
-              <Grid item key={recordType.key} className={classes.bottomMargin}>
+              <Grid item key={recordType.key} sx={{ marginBottom: 3 }}>
                 <Button
                   color="primary"
                   variant="outlined"
@@ -128,7 +117,7 @@ const LookupsView = () => {
             <Grid
               container
               spacing={3}
-              className={classes.topMargin}
+              sx={{ marginTop: 3 }}
               component={Paper}
               key={recordType.key}
               ref={refs[recordType.key]}
