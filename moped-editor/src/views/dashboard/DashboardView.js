@@ -65,7 +65,7 @@ const UserGreeting = ({ userName }) => {
       <Typography sx={{ color: "text.secondary", fontWeight: "bold" }}>
         Good {timeOfDay}, {userName}!
       </Typography>
-      <Typography variant="h1" sx={{ paddingTop: "4px" }}>
+      <Typography variant="h1" sx={{ paddingTop: "0.25rem" }}>
         {getCalendarDate(date)}
       </Typography>
     </Grid>
@@ -296,9 +296,7 @@ const DashboardView = () => {
                   >
                     <Tabs
                       sx={{
-                        "& .MuiTabs-indicator": {
-                          backgroundColor: "primary.light",
-                        },
+                        backgroundColor: "primary.light",
                       }}
                       value={activeTab}
                       onChange={handleChange}
