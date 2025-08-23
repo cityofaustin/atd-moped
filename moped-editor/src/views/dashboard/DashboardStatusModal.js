@@ -51,6 +51,15 @@ const DashboardStatusModal = ({
         component="span"
         sx={{
           cursor: "pointer",
+          ...(modalParent === "summary" && {
+            width: "calc(100% - 2rem)",
+            paddingLeft: (theme) => theme.spacing(0.5),
+            "&:hover": {
+              backgroundColor: (theme) => theme.palette.background.summaryHover,
+              borderRadius: (theme) => theme.spacing(0.5),
+              cursor: "pointer",
+            },
+          }),
         }}
         onClick={() => setIsDialogOpen(true)}
       >
