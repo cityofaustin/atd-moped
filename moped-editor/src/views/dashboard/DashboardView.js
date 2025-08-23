@@ -15,7 +15,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import theme from "src/theme";
 
 import Page from "src/components/Page";
 import ActivityMetrics from "src/components/ActivityMetrics";
@@ -37,46 +37,6 @@ import { useSessionDatabaseData } from "src/auth/user";
 
 import parse from "html-react-parser";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  appBar: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.secondary,
-  },
-  cardWrapper: {
-    marginTop: theme.spacing(3),
-  },
-  selectedTab: {
-    "&.Mui-selected": {
-      color: theme.palette.text.primary,
-    },
-  },
-  indicatorColor: {
-    backgroundColor: theme.palette.primary.light,
-  },
-  greeting: {
-    display: "block",
-  },
-  greetingText: {
-    color: theme.palette.text.secondary,
-  },
-  date: {
-    paddingTop: "4px",
-  },
-  statusUpdateText: {
-    cursor: "pointer",
-  },
-  tableRowDiv: {
-    display: "flex",
-    alignItems: "center",
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-  },
-}));
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -96,33 +56,48 @@ const TABS = [
   },
 ];
 
-const UserGreeting = ({ classes, userName }) => {
+const UserGreeting = ({ userName }) => {
   const date = new Date();
+  const timeOfDay = getTimeOfDay(date);
 
-  /** Build custom user greeting
-   */
   return (
-    <Grid className={classes.greeting}>
-      <Typography className={classes.greetingText}>
-        <strong>{`Good ${getTimeOfDay(date)}, ${userName}!`}</strong>
+    <Grid sx={{ display: "block" }}>
+      <Typography sx={{ color: "text.secondary", fontWeight: "bold" }}>
+        Good {timeOfDay}, {userName}!
       </Typography>
-      <Typography variant="h1" className={classes.date}>
+      <Typography variant="h1" sx={{ paddingTop: "4px" }}>
         {getCalendarDate(date)}
       </Typography>
     </Grid>
   );
 };
 
-/** Hook that provides memoized column settings */
-const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
-  useMemo(() => {
+// Reusable styles for table cells
+const tableCellStyles = {
+  display: "flex",
+  alignItems: "center",
+  paddingTop: theme.spacing(2),
+  paddingBottom: theme.spacing(2),
+};
+
+// Helper function to calculate milestone completion percentage
+const calculateMilestonePercentage = (milestones) => {
+  if (!milestones || milestones.length === 0) return 0;
+  const completedCount = milestones.filter(
+    (milestone) => milestone.completed === true
+  ).length;
+  return (completedCount / milestones.length) * 100;
+};
+
+const useColumns = ({ data, refetch, handleSnackbar }) => {
+  return useMemo(() => {
     return [
       {
         headerName: "ID",
         field: "project_id",
         editable: false,
         renderCell: ({ row }) => (
-          <div className={classes.tableRowDiv}>{row.project_id}</div>
+          <div style={tableCellStyles}>{row.project_id}</div>
         ),
         flex: 0.5,
       },
@@ -132,7 +107,7 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
         editable: false,
         valueGetter: (value) => value.trim(),
         renderCell: ({ row }) => (
-          <div className={classes.tableRowDiv}>
+          <div style={tableCellStyles}>
             <Link
               component={RouterLink}
               to={`/moped/projects/${row.project_id}`}
@@ -155,7 +130,7 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
         editable: false,
         valueGetter: (value) => value[0]?.moped_phase.phase_name || "Unknown",
         renderCell: ({ row }) => (
-          <div className={classes.tableRowDiv}>
+          <div style={tableCellStyles}>
             <DashboardTimelineModal
               table="phases"
               projectId={row.project_id}
@@ -185,7 +160,7 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
             row.project_list_view?.project_status_update ?? "";
 
           return (
-            <div className={classes.tableRowDiv}>
+            <div style={tableCellStyles}>
               <DashboardStatusModal
                 projectId={row.project_id}
                 eCaprisSubprojectId={row.ecapris_subproject_id}
@@ -197,7 +172,6 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
                 statusUpdate={statusUpdate}
                 queryRefetch={refetch}
                 handleSnackbar={handleSnackbar}
-                classes={classes}
                 // ProjectNotes will expect data to be passed in this shape with note type lookups
                 data={{
                   moped_project: [row],
@@ -214,45 +188,38 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
       {
         headerName: "Milestones",
         field: "moped_proj_milestones",
-        valueGetter: (value) =>
-          value.length
-            ? (value.filter((milestone) => milestone.completed === true)
-                .length /
-                value.length) *
-              100
-            : 0,
-        renderCell: ({ row }) => (
+        valueGetter: (value) => {
+          return calculateMilestonePercentage(value);
+        },
+        renderCell: ({ row }) => {
+          const percentage = calculateMilestonePercentage(
+            row.moped_proj_milestones
+          );
+
           // Display percentage of milestone completed, or 0 if no milestones saved
-          <div className={classes.tableRowDiv}>
-            <DashboardTimelineModal
-              table="milestones"
-              projectId={row.project_id}
-              projectName={row.project_name_full}
-              handleSnackbar={handleSnackbar}
-              dashboardRefetch={refetch}
-            >
-              <MilestoneProgressMeter
-                completedMilestonesPercentage={
-                  row.moped_proj_milestones.length
-                    ? (row.moped_proj_milestones.filter(
-                        (milestone) => milestone.completed === true
-                      ).length /
-                        row.moped_proj_milestones.length) *
-                      100
-                    : 0
-                }
-              />
-            </DashboardTimelineModal>
-          </div>
-        ),
+          return (
+            <div style={tableCellStyles}>
+              <DashboardTimelineModal
+                table="milestones"
+                projectId={row.project_id}
+                projectName={row.project_name_full}
+                handleSnackbar={handleSnackbar}
+                dashboardRefetch={refetch}
+              >
+                <MilestoneProgressMeter
+                  completedMilestonesPercentage={percentage}
+                />
+              </DashboardTimelineModal>
+            </div>
+          );
+        },
         flex: 1,
       },
     ];
-  }, [data, refetch, handleSnackbar, classes]);
+  }, [data, refetch, handleSnackbar]);
+};
 
 const DashboardView = () => {
-  const classes = useStyles();
-
   const userSessionData = useSessionDatabaseData();
   const userId = userSessionData?.user_id;
   const userName = userSessionData?.first_name;
@@ -300,7 +267,6 @@ const DashboardView = () => {
     rowModesModel,
     refetch,
     handleSnackbar,
-    classes,
   });
 
   if (loading || !data) return <CircularProgress />;
@@ -309,23 +275,42 @@ const DashboardView = () => {
     <ActivityMetrics eventName="dashboard_load">
       <Page title={"Dashboard"}>
         <Container maxWidth="xl">
-          <Card className={classes.cardWrapper}>
-            <Grid className={classes.root}>
+          <Card sx={{ marginTop: 3 }}>
+            <Grid
+              sx={{
+                flexGrow: 1,
+                backgroundColor: "background.paper",
+              }}
+            >
               <Box pl={3} pt={3}>
-                <UserGreeting classes={classes} userName={userName} />
+                <UserGreeting userName={userName} />
               </Box>
               <Box px={3} py={3}>
                 <Grid>
-                  <AppBar className={classes.appBar} position="static">
+                  <AppBar
+                    sx={{
+                      backgroundColor: "background.paper",
+                      color: "text.secondary",
+                    }}
+                    position="static"
+                  >
                     <Tabs
-                      classes={{ indicator: classes.indicatorColor }}
+                      sx={{
+                        "& .MuiTabs-indicator": {
+                          backgroundColor: "primary.light",
+                        },
+                      }}
                       value={activeTab}
                       onChange={handleChange}
                     >
                       {TABS.map((tab, i) => {
                         return (
                           <Tab
-                            className={classes.selectedTab}
+                            sx={{
+                              "&.Mui-selected": {
+                                color: "text.primary",
+                              },
+                            }}
                             key={tab.label}
                             label={tab.label}
                             {...a11yProps(i)}
