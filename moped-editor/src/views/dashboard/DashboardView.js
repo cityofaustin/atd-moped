@@ -296,7 +296,9 @@ const DashboardView = () => {
                   >
                     <Tabs
                       sx={{
-                        backgroundColor: "primary.light",
+                        "& .MuiTabs-indicator": {
+                          backgroundColor: "primary.light",
+                        },
                       }}
                       value={activeTab}
                       onChange={handleChange}
