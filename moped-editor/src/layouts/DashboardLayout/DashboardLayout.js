@@ -1,53 +1,42 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import makeStyles from "@mui/styles/makeStyles";
-import TopBar from "./TopBar";
-import { useUser } from "../../auth/user";
-import Footer from "./Footer";
+import TopBar from "src/layouts/DashboardLayout/TopBar";
+import { useUser } from "src/auth/user";
+import Footer from "src/layouts/DashboardLayout/Footer";
+import Box from "@mui/material/Box";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    height: "100%",
-    overflow: "hidden",
-    width: "100%",
-  },
-  wrapper: {
-    display: "flex",
-    flex: "1 1 auto",
-    overflow: "hidden",
-    // If in staging environment, add extra padding
-    // to make room for staging environment info alert
-    paddingTop: process.env.REACT_APP_HASURA_ENV !== "production" ? 114 : 64,
-  },
-  contentContainer: {
-    display: "flex",
-    flex: "1 1 auto",
-    overflow: "hidden",
-  },
-  content: {
-    flex: "1 1 auto",
-    height: "100%",
-    overflow: "auto",
-  },
-}));
-
+/**
+ * Dashboard layout component for the application when users are signed in.
+ * @returns {JSX.Element} The dashboard layout.
+ */
 const DashboardLayout = () => {
-  const classes = useStyles();
   const { user } = useUser();
 
   return user ? (
-    <div className={classes.root}>
-      <TopBar />
-      <div className={classes.wrapper}>
-        <div className={classes.contentContainer}>
-          <div className={classes.content}>
-            <Outlet />
-            <Footer />
-          </div>
-        </div>
-      </div>
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        overflow: "hidden",
+        width: "100%",
+      }}
+    >
+      <Box>
+        <TopBar />
+      </Box>
+      <Box
+        sx={{
+          flex: "1 1 auto", // Take remaining space after static AppBar in TopBar
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Outlet />
+        <Footer />
+      </Box>
+    </Box>
   ) : (
     <Navigate to="/moped/session/signin" />
   );

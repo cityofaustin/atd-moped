@@ -1,9 +1,12 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import makeStyles from "@mui/styles/makeStyles";
 import { useUser } from "src/auth/user";
 import Box from "@mui/material/Box";
 
+/**
+ * Main layout component for the application when not logged in (sign in page).
+ * @returns {JSX.Element} The main layout.
+ */
 const MainLayout = () => {
   const { user } = useUser();
 
