@@ -4,8 +4,8 @@ import { useUser } from "src/auth/user";
 import Box from "@mui/material/Box";
 
 /**
- * Main layout component for the application when not logged in (sign in page).
- * @returns {JSX.Element} The main layout.
+ * Main layout component for the app when not logged in (sign in page).
+ * @returns {JSX.Element}
  */
 const MainLayout = () => {
   const { user } = useUser();

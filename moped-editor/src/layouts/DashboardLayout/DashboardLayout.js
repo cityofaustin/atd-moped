@@ -6,8 +6,8 @@ import Footer from "src/layouts/DashboardLayout/Footer";
 import Box from "@mui/material/Box";
 
 /**
- * Dashboard layout component for the application when users are signed in.
- * @returns {JSX.Element} The dashboard layout.
+ * Dashboard layout component for the app when users are signed in.
+ * @returns {JSX.Element}
  */
 const DashboardLayout = () => {
   const { user } = useUser();
