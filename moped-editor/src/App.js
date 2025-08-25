@@ -55,10 +55,10 @@ const useApolloClient = () => {
       };
     });
 
-    const errorLink = onError(({ graphqlErrors, networkError }) => {
-      if (graphqlErrors) {
+    const errorLink = onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors) {
         // Concatenate all error messages to create a single error and message
-        const concatenatedMessage = graphqlErrors
+        const concatenatedMessage = graphQLErrors
           .map(({ message }) => message)
           .join("; ");
 
