@@ -55,21 +55,17 @@ const useApolloClient = () => {
       };
     });
 
-    const errorLink = onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors) {
+    const errorLink = onError(({ graphqlErrors, networkError }) => {
+      if (graphqlErrors) {
         // Concatenate all error messages to create a single error and message
-        const concatenatedMessage = graphQLErrors
+        const concatenatedMessage = graphqlErrors
           .map(({ message }) => message)
           .join("; ");
 
         const combinedError = new Error(concatenatedMessage);
         setError(combinedError);
       }
-      graphQLErrors.forEach(({ message, locations, path }) =>
-        console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-        )
-      );
+
       if (networkError) {
         setError(networkError);
       }
@@ -110,10 +106,10 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
-      <ApolloErrorHandler error={error}>
-        <StyledEngineProvider injectFirst>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <ThemeProvider theme={theme}>
+      <StyledEngineProvider injectFirst>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <ThemeProvider theme={theme}>
+            <ApolloErrorHandler error={error}>
               <ErrorBoundary FallbackComponent={FallbackComponent}>
                 <GlobalStyles />
                 <ActivityMetrics eventName="app_load">
@@ -124,10 +120,10 @@ const App = () => {
                   </ProjectListViewQueryContext.Provider>
                 </ActivityMetrics>
               </ErrorBoundary>
-            </ThemeProvider>
-          </LocalizationProvider>
-        </StyledEngineProvider>
-      </ApolloErrorHandler>
+            </ApolloErrorHandler>
+          </ThemeProvider>
+        </LocalizationProvider>
+      </StyledEngineProvider>
     </ApolloProvider>
   );
 };
