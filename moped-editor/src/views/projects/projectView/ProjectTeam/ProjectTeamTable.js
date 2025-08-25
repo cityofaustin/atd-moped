@@ -6,7 +6,6 @@ import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
 
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
 import {
   TEAM_QUERY,
@@ -305,7 +304,7 @@ const getEditRolesPayload = (newData, oldData) => {
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const apiRef = useGridApiRef();
 
-  const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
+  const { loading, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
@@ -555,7 +554,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   };
 
   return (
-    <ApolloErrorHandler errors={error}>
+    <>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         apiRef={apiRef}
@@ -614,7 +613,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-    </ApolloErrorHandler>
+    </>
   );
 };
 

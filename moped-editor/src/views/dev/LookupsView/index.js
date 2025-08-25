@@ -1,5 +1,4 @@
 import React, { createRef, useMemo, useEffect } from "react";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useQuery } from "@apollo/client";
 import { useLocation, Link } from "react-router-dom";
 import { createBrowserHistory } from "history";
@@ -51,7 +50,7 @@ const scrollToTable = (recordKey, refs) => {
  */
 const LookupsView = () => {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
+  const { loading, data } = useQuery(TABLE_LOOKUPS_QUERY, {
     fetchPolicy: "no-cache",
   });
 
@@ -91,100 +90,98 @@ const LookupsView = () => {
   }, [recordKeyHash, loading, refs]);
 
   return (
-    <ApolloErrorHandler error={error}>
-      <Page title="Moped Data Dictionary">
-        <Container maxWidth="xl">
-          <Grid container spacing={3} className={classes.topMargin}>
-            <Grid item xs={12}>
-              <Typography variant="h1">Moped Data Dictionary</Typography>
-            </Grid>
+    <Page title="Moped Data Dictionary">
+      <Container maxWidth="xl">
+        <Grid container spacing={3} className={classes.topMargin}>
+          <Grid item xs={12}>
+            <Typography variant="h1">Moped Data Dictionary</Typography>
           </Grid>
+        </Grid>
+        <Grid
+          container
+          spacing={3}
+          className={classes.topMargin}
+          component={Paper}
+          ref={refs._scroll_to_top}
+        >
+          {SETTINGS.map((recordType) => (
+            <Grid item key={recordType.key} className={classes.bottomMargin}>
+              <Button
+                color="primary"
+                variant="outlined"
+                component={Link}
+                to={createRecordKeyHash(recordType.key)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToTable(recordType.key, refs);
+                  history.replace(createRecordKeyHash(recordType.key));
+                }}
+              >
+                {recordType.label}
+              </Button>
+            </Grid>
+          ))}
+        </Grid>
+        {SETTINGS.map((recordType) => (
           <Grid
             container
             spacing={3}
             className={classes.topMargin}
             component={Paper}
-            ref={refs._scroll_to_top}
+            key={recordType.key}
+            ref={refs[recordType.key]}
           >
-            {SETTINGS.map((recordType) => (
-              <Grid item key={recordType.key} className={classes.bottomMargin}>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  component={Link}
-                  to={createRecordKeyHash(recordType.key)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToTable(recordType.key, refs);
-                    history.replace(createRecordKeyHash(recordType.key));
-                  }}
-                >
-                  {recordType.label}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-          {SETTINGS.map((recordType) => (
-            <Grid
-              container
-              spacing={3}
-              className={classes.topMargin}
-              component={Paper}
-              key={recordType.key}
-              ref={refs[recordType.key]}
-            >
-              <Grid item xs={12}>
-                <Grid container direction="row" alignItems="center">
-                  <Grid item>
-                    <Typography variant="h2">{recordType.label}</Typography>
-                  </Grid>
+            <Grid item xs={12}>
+              <Grid container direction="row" alignItems="center">
+                <Grid item>
+                  <Typography variant="h2">{recordType.label}</Typography>
+                </Grid>
 
-                  <Grid item>
-                    <Tooltip title="Link to this table">
-                      <IconButton
-                        component={Link}
-                        to={createRecordKeyHash(recordType.key)}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToTable(recordType.key, refs);
-                          history.replace(createRecordKeyHash(recordType.key));
-                        }}
-                        size="large"
-                      >
-                        <LinkIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
-                  <Grid item>
-                    <Tooltip title="Return to top of page">
-                      <IconButton
-                        component={Link}
-                        to={"#"}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToTable("_scroll_to_top", refs);
-                          history.replace("");
-                        }}
-                        size="large"
-                      >
-                        <ArrowUpwardIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <RecordTable
-                      rows={data?.[recordType.key]}
-                      columns={recordType.columns}
-                      loading={loading}
-                    />
-                  </Grid>
+                <Grid item>
+                  <Tooltip title="Link to this table">
+                    <IconButton
+                      component={Link}
+                      to={createRecordKeyHash(recordType.key)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToTable(recordType.key, refs);
+                        history.replace(createRecordKeyHash(recordType.key));
+                      }}
+                      size="large"
+                    >
+                      <LinkIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid item>
+                  <Tooltip title="Return to top of page">
+                    <IconButton
+                      component={Link}
+                      to={"#"}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToTable("_scroll_to_top", refs);
+                        history.replace("");
+                      }}
+                      size="large"
+                    >
+                      <ArrowUpwardIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid item xs={12}>
+                  <RecordTable
+                    rows={data?.[recordType.key]}
+                    columns={recordType.columns}
+                    loading={loading}
+                  />
                 </Grid>
               </Grid>
             </Grid>
-          ))}
-        </Container>
-      </Page>
-    </ApolloErrorHandler>
+          </Grid>
+        ))}
+      </Container>
+    </Page>
   );
 };
 

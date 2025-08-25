@@ -6,7 +6,6 @@ import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import Link from "@mui/material/Link";
 
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import {
   USER_SAVED_VIEWS_QUERY,
   UPDATE_USER_SAVED_VIEW,
@@ -116,7 +115,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
   const userSessionData = useSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
-  const { loading, error, data, refetch } = useQuery(USER_SAVED_VIEWS_QUERY, {
+  const { loading, data, refetch } = useQuery(USER_SAVED_VIEWS_QUERY, {
     variables: {
       userId: userId,
     },
@@ -240,7 +239,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
   if (loading || !data) return <CircularProgress />;
 
   return (
-    <ApolloErrorHandler errors={error}>
+    <>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         columns={dataGridColumns}
@@ -264,7 +263,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-    </ApolloErrorHandler>
+    </>
   );
 };
 

@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import AddCircle from "@mui/icons-material/AddCircle";
 import Autocomplete from "@mui/material/Autocomplete";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import Grid from "@mui/material/Grid";
 
@@ -111,124 +110,122 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
   };
 
   return (
-    <ApolloErrorHandler errors={error}>
-      <Paper
-        elevation={2}
+    <Paper
+      elevation={2}
+      sx={(theme) => ({
+        padding: theme.spacing(1.5),
+        paddingTop: 0,
+      })}
+    >
+      <Toolbar sx={{ paddingRight: "3px" }} disableGutters={true}>
+        <Typography variant="h2" color="primary" sx={{ flexGrow: 1 }}>
+          Tags
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          size="medium"
+          startIcon={<AddCircle />}
+          onClick={() => setAddTagMode(true)}
+        >
+          Add tag
+        </Button>
+      </Toolbar>
+      <Box
         sx={(theme) => ({
-          padding: theme.spacing(1.5),
-          paddingTop: 0,
+          display: "flex",
+          justifyContent: "left",
+          flexWrap: "wrap",
+          listStyle: "none",
+          paddingTop: theme.spacing(1),
+          paddingBottom: theme.spacing(0.5),
+          margin: 0,
         })}
       >
-        <Toolbar sx={{ paddingRight: "3px" }} disableGutters={true}>
-          <Typography variant="h2" color="primary" sx={{ flexGrow: 1 }}>
-            Tags
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            startIcon={<AddCircle />}
-            onClick={() => setAddTagMode(true)}
-          >
-            Add tag
-          </Button>
-        </Toolbar>
-        <Box
-          sx={(theme) => ({
-            display: "flex",
-            justifyContent: "left",
-            flexWrap: "wrap",
-            listStyle: "none",
-            paddingTop: theme.spacing(1),
-            paddingBottom: theme.spacing(0.5),
-            margin: 0,
-          })}
+        <DeleteConfirmationModal
+          type="tag"
+          submitDelete={() => handleTagDelete(deleteConfirmationId)}
+          isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+          setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         >
-          <DeleteConfirmationModal
-            type="tag"
-            submitDelete={() => handleTagDelete(deleteConfirmationId)}
-            isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-            setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+          <Grid container spacing={1}>
+            {data.moped_proj_tags.map((tag) => (
+              <Grid item key={tag.id}>
+                <Chip
+                  key={tag.id}
+                  label={tag.moped_tag.name}
+                  onDelete={() => handleDeleteOpen(tag)}
+                  sx={{
+                    height: "auto",
+                    minHeight: (theme) => theme.spacing(4),
+                    "& .MuiChip-label": {
+                      display: "block",
+                      whiteSpace: "normal",
+                    },
+                  }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </DeleteConfirmationModal>
+        {addTagMode && (
+          <Box
+            display="flex"
+            justifyContent="flex-start"
+            sx={{
+              padding: (theme) => theme.spacing(1),
+            }}
           >
-            <Grid container spacing={1}>
-              {data.moped_proj_tags.map((tag) => (
-                <Grid item key={tag.id}>
-                  <Chip
-                    key={tag.id}
-                    label={tag.moped_tag.name}
-                    onDelete={() => handleDeleteOpen(tag)}
-                    sx={{
-                      height: "auto",
-                      minHeight: (theme) => theme.spacing(4),
-                      "& .MuiChip-label": {
-                        display: "block",
-                        whiteSpace: "normal",
-                      },
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </DeleteConfirmationModal>
-          {addTagMode && (
+            <Autocomplete
+              multiple
+              sx={{ minWidth: (theme) => theme.spacing(31.25) }} // 250px / 8 = 31.25
+              id="tag-autocomplete"
+              getOptionLabel={(option) => option.name}
+              onChange={(e, value) => setNewTagList(value)}
+              options={availableTags()}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={error}
+                  InputLabelProps={{ required: false }}
+                  label="Tag"
+                  variant="outlined"
+                />
+              )}
+            />
             <Box
-              display="flex"
-              justifyContent="flex-start"
-              sx={{
-                padding: (theme) => theme.spacing(1),
-              }}
+              sx={(theme) => ({
+                minWidth: theme.spacing(8),
+                marginLeft: theme.spacing(1),
+              })}
             >
-              <Autocomplete
-                multiple
-                sx={{ minWidth: (theme) => theme.spacing(31.25) }} // 250px / 8 = 31.25
-                id="tag-autocomplete"
-                getOptionLabel={(option) => option.name}
-                onChange={(e, value) => setNewTagList(value)}
-                options={availableTags()}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    error={error}
-                    InputLabelProps={{ required: false }}
-                    label="Tag"
-                    variant="outlined"
-                  />
-                )}
-              />
-              <Box
+              <IconButton
                 sx={(theme) => ({
-                  minWidth: theme.spacing(8),
-                  marginLeft: theme.spacing(1),
+                  margin: `${theme.spacing(1)} 0`,
+                  padding: theme.spacing(1),
                 })}
+                aria-label="Add"
+                onClick={handleTagAdd}
+                size="large"
               >
-                <IconButton
-                  sx={(theme) => ({
-                    margin: `${theme.spacing(1)} 0`,
-                    padding: theme.spacing(1),
-                  })}
-                  aria-label="Add"
-                  onClick={handleTagAdd}
-                  size="large"
-                >
-                  <Icon fontSize={"small"}>check</Icon>
-                </IconButton>
-                <IconButton
-                  sx={(theme) => ({
-                    margin: `${theme.spacing(1)} 0`,
-                    padding: theme.spacing(1),
-                  })}
-                  aria-label="Cancel"
-                  onClick={handleNewTagCancel}
-                  size="large"
-                >
-                  <Icon fontSize={"small"}>close</Icon>
-                </IconButton>
-              </Box>
+                <Icon fontSize={"small"}>check</Icon>
+              </IconButton>
+              <IconButton
+                sx={(theme) => ({
+                  margin: `${theme.spacing(1)} 0`,
+                  padding: theme.spacing(1),
+                })}
+                aria-label="Cancel"
+                onClick={handleNewTagCancel}
+                size="large"
+              >
+                <Icon fontSize={"small"}>close</Icon>
+              </IconButton>
             </Box>
-          )}
-        </Box>
-      </Paper>
-    </ApolloErrorHandler>
+          </Box>
+        )}
+      </Box>
+    </Paper>
   );
 };
 

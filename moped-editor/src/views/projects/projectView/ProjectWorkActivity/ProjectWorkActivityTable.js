@@ -8,7 +8,6 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import WorkActivityToolbar from "./ProjectWorkActivityToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
@@ -173,7 +172,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     useState(false);
   const [activityToDelete, setActivityToDelete] = useState(null);
 
-  const { loading, error, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
+  const { loading, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
       projectId: projectId,
     },
@@ -251,7 +250,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
   if (loading || !data) return <CircularProgress />;
 
   return (
-    <ApolloErrorHandler errors={error}>
+    <>
       <Box sx={{ width: "100%", overflow: "auto", minHeight: "700px" }}>
         <DataGridPro
           sx={dataGridProStyleOverrides}
@@ -292,7 +291,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-    </ApolloErrorHandler>
+    </>
   );
 };
 
