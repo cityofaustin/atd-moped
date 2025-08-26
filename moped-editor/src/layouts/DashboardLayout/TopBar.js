@@ -72,7 +72,7 @@ const TopBar = ({ className, ...rest }) => {
     <AppBar
       sx={{ backgroundColor: "background.paper" }}
       elevation={2}
-      position="static" // Set static so DashboardLayout works with flex in DashboardLayout
+      position="static" // Set static this component works with flex set in DashboardLayout
       {...rest}
     >
       <EnvAlertBanner />
