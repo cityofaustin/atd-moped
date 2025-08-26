@@ -273,10 +273,10 @@ export const UserProvider = ({ children }) => {
       getCognitoSession()
         .then(async (session) => {
           if (session) {
-            // Initialize user data on app reload/session resume.
-            // Some mutations rely on user database data like user id for following projects.
-            // We must populate userDatabaseData if it's null otherwise the mutation will fail
-            // when they are redirected to their last route after forced logout
+            // Initialize user data on app reload/session resume before proceeding to navigation.
+            // Some queries rely on user database data like user id for followed projects.
+            // We must populate userDatabaseData if it's null otherwise the query will fail
+            // when users are redirected to their last route after a forced logout
             // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
             await initializeUserDBObject(session);
           }
