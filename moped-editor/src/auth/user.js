@@ -114,32 +114,44 @@ export const initializeUserDBObject = async (session) => {
   const sessionDataFromLocalStorage = getSessionDatabaseData();
 
   // If the session is valid and there is no existing data...
-  if (session && sessionDataFromLocalStorage === null) {
+  if (sessionDataFromLocalStorage === null) {
     // Fetch the data from Hasura
-    fetch(config.env.APP_HASURA_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "X-Hasura-Role": `${getHighestRole(session)}`,
-      },
-      body: JSON.stringify({
-        query: ACCOUNT_USER_PROFILE_GET_PLAIN,
-        variables: {
-          userId: getDatabaseId(session),
+    try {
+      const res = await fetch(config.env.APP_HASURA_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "X-Hasura-Role": `${getHighestRole(session)}`,
         },
-      }),
-    }).then((res) => {
-      // Then we parse the response
-      res.json().then((resData) => {
-        if (resData?.errors) {
-          console.error(resData.errors);
-        }
-        if (resData?.data?.moped_users) {
-          setSessionDatabaseData(resData.data.moped_users[0]);
-        }
+        body: JSON.stringify({
+          query: ACCOUNT_USER_PROFILE_GET_PLAIN,
+          variables: {
+            userId: getDatabaseId(session),
+          },
+        }),
       });
-    });
+
+      const resData = await res.json();
+
+      if (resData?.errors) {
+        console.error(resData.errors);
+        throw new Error("GraphQL errors occurred");
+      }
+
+      if (resData?.data?.moped_users) {
+        const userData = resData.data.moped_users[0];
+        setSessionDatabaseData(userData);
+        return userData;
+      }
+
+      throw new Error("No user data found");
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      throw error;
+    }
+  } else {
+    return Promise.resolve();
   }
 };
 
@@ -239,11 +251,14 @@ export const UserProvider = ({ children }) => {
 
       return session;
     } catch (err) {
+      // Log out user if a Cognito session cannot be retrieved to force a fresh login.
+      // This can happen when a refresh token is expired or invalid for example.
+      await logout();
       console.error("Error getting Cognito session: ", err);
 
       return null;
     }
-  }, []);
+  }, [logout]);
 
   /**
    * This effect runs when the component mounts and checks if Cognito has a valid session.
@@ -256,7 +271,16 @@ export const UserProvider = ({ children }) => {
       setIsLoginLoading(true);
 
       getCognitoSession()
-        .then((session) => {
+        .then(async (session) => {
+          if (session) {
+            // Initialize user data on app reload/session resume.
+            // Some mutations rely on user database data like user id for following projects.
+            // We must populate userDatabaseData if it's null otherwise the mutation will fail
+            // when they are redirected to their last route after forced logout
+            // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
+            await initializeUserDBObject(session);
+          }
+
           setUser(session);
           setIsLoginLoading(false);
 
