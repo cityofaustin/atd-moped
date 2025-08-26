@@ -135,8 +135,8 @@ export const initializeUserDBObject = async (session) => {
       const resData = await res.json();
 
       if (resData?.errors) {
-        console.error(resData.errors);
-        throw new Error("GraphQL errors occurred");
+        // Show error feedback in sign in form
+        throw new Error("Error fetching user data");
       }
 
       if (resData?.data?.moped_users) {
