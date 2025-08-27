@@ -2,6 +2,18 @@ import React from "react";
 import { Box, Typography, Link } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 
+const getStyleSx = (style) => {
+  const baseSx = {};
+
+  if (style === "boldText") {
+    baseSx.fontWeight = 600;
+  } else if (style === "indentText") {
+    baseSx.paddingLeft = "16px";
+    baseSx.display = "block";
+  }
+
+  return baseSx;
+};
 /**
  * One row/entry in the project activity log
  * @param {changeIcon} Material UI icon component
@@ -9,19 +21,6 @@ import { NavLink as RouterLink } from "react-router-dom";
  *  {text: String to display, style: String name of style or null}
  */
 const ProjectActivityEntry = ({ changeIcon, changeText }) => {
-  const getStyleSx = (style) => {
-    const baseSx = {};
-
-    if (style === "boldText") {
-      baseSx.fontWeight = 600;
-    } else if (style === "indentText") {
-      baseSx.paddingLeft = "16px";
-      baseSx.display = "block";
-    }
-
-    return baseSx;
-  };
-
   return (
     <Box display="flex" p={0}>
       <Box p={0}>{changeIcon}</Box>

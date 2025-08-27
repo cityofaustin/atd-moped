@@ -54,8 +54,8 @@ export default function ProjectSaveButton({
             position: "absolute",
             top: "50%",
             left: "50%",
-            marginTop: -12,
-            marginLeft: -12,
+            marginTop: "-12px",
+            marginLeft: "-12px",
           }}
         />
       )}

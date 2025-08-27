@@ -64,7 +64,7 @@ const UserGreeting = ({ userName }) => {
       <Typography sx={{ color: "text.secondary", fontWeight: "bold" }}>
         Good {timeOfDay}, {userName}!
       </Typography>
-      <Typography variant="h1" sx={{ paddingTop: "0.25rem" }}>
+      <Typography variant="h1" sx={{ paddingTop: theme.spacing(0.5) }}>
         {getCalendarDate(date)}
       </Typography>
     </Grid>

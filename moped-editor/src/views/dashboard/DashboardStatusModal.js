@@ -7,7 +7,6 @@ import {
   IconButton,
   Tooltip,
   Typography,
-  Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
@@ -51,18 +50,9 @@ const DashboardStatusModal = ({
     <>
       <Typography
         component="span"
-        sx={{
-          cursor: "pointer",
-          ...(modalParent === "summary" && {
-            width: "calc(100% - 2rem)",
-            paddingLeft: (theme) => theme.spacing(0.5),
-            "&:hover": {
-              backgroundColor: (theme) => theme.palette.background.summaryHover,
-              borderRadius: (theme) => theme.spacing(0.5),
-              cursor: "pointer",
-            },
-          }),
-        }}
+        // if the parent is the summary page, use the fieldLabelText style,
+        // otherwise set the cursor to pointer (applies to dashboard)
+        sx={modalParent === "summary" ? fieldLabelText : { cursor: "pointer" }}
         onClick={() => setIsDialogOpen(true)}
       >
         {/* if there is no status update, render the add status icon */}
@@ -85,7 +75,9 @@ const DashboardStatusModal = ({
                 placement="bottom-start"
                 title="Create new status update"
               >
-                <ControlPointIcon sx={{ fontSize: "1.5rem" }} />
+                <ControlPointIcon
+                  sx={{ fontSize: (theme) => theme.spacing(2.5) }}
+                />
               </Tooltip>
             </Box>
           </Box>
