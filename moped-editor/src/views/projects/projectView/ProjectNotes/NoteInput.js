@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
@@ -8,7 +9,6 @@ import {
   Paper,
   FormHelperText,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import ProjectSaveButton from "src/views/projects/newProjectView/ProjectSaveButton";
 import ToolbarPlugin from "src/views/projects/projectView/ToolbarPlugin";
 
@@ -29,35 +29,14 @@ import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "src/views/projects/projectView/EditorTheme";
 import NoteTypeRadioButtons from "src/views/projects/projectView/ProjectNotes/NoteTypeRadioButtons";
 
-const useStyles = makeStyles((theme) => ({
-  cancelButton: {
-    margin: theme.spacing(1),
-    position: "relative",
-    color: theme.palette.secondary.dark,
-  },
-  contentEditable: {
-    minHeight: "150px",
-    width: "100%",
-    padding: theme.spacing(2),
-    fontSize: "1rem",
-    fontFamily: theme.typography.fontFamily,
-    color: theme.palette.text.primary,
-  },
-  editorWrapper: {
-    position: "relative",
-  },
-  showButtonItem: {
-    margin: theme.spacing(2),
-  },
-  toolbarButtons: {
-    backgroundColor: theme.palette.primary.main,
-    "&:hover, &.Mui-focusVisible": {
-      backgroundColor: theme.palette.primary.main,
-    },
-  },
-  startIcon: {
-    margin: 0,
-  },
+// Styled ContentEditable component that can access theme
+const StyledContentEditable = styled(ContentEditable)(({ theme }) => ({
+  minHeight: "150px",
+  width: "100%",
+  padding: theme.spacing(2),
+  fontSize: "1rem",
+  fontFamily: theme.typography.fontFamily,
+  color: theme.palette.text.primary,
 }));
 
 // Catch any errors that occur during Lexical updates and log them
@@ -184,8 +163,6 @@ const NoteInput = ({
   noteTypes,
   validator = null,
 }) => {
-  const classes = useStyles();
-
   const [validationErrors, setValidationErrors] = useState(null);
 
   // Validate content when the note text or note type changes
@@ -210,12 +187,12 @@ const NoteInput = ({
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
           <LexicalComposer initialConfig={initialConfig}>
-            <ToolbarPlugin noteAddSuccess={noteAddSuccess} classes={classes} />
-            <Box className={classes.editorWrapper} pt={2}>
+            <ToolbarPlugin noteAddSuccess={noteAddSuccess} />
+            <Box sx={{ position: "relative" }} pt={2}>
               <RichTextPlugin
                 contentEditable={
                   <Paper elevation={2}>
-                    <ContentEditable className={classes.contentEditable} />
+                    <StyledContentEditable />
                   </Paper>
                 }
                 placeholder={null}
@@ -273,11 +250,16 @@ const NoteInput = ({
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
             {isEditingNote && (
-              <div className={classes.cancelButton}>
+              <Box
+                sx={{
+                  margin: 1,
+                  position: "relative",
+                }}
+              >
                 <Button variant="text" onClick={cancelNoteEdit}>
                   Cancel
                 </Button>
-              </div>
+              </Box>
             )}
             <ProjectSaveButton
               // disable save button if no text

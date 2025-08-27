@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Link, Menu, MenuItem } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   helpItems,
-  arcGISLink,
+  analysisItems,
 } from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import { navigationItems } from "src/layouts/DashboardLayout/TopBar";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
-
-const useStyles = makeStyles(() => ({
-  subMenu: {
-    marginLeft: "1em",
-  },
-}));
 
 /**
  * Renders dropdown menu visible on small screens
@@ -25,7 +18,6 @@ const useStyles = makeStyles(() => ({
  * @constructor
  */
 const MobileDropdownMenu = () => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   // anchor element for menu to "attach" to
@@ -68,29 +60,35 @@ const MobileDropdownMenu = () => {
             {item.title}
           </MenuItem>
         ))}
-        {/* ArcGIS Map link */}
-        <Link
-          href={arcGISLink.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="inherit"
-          underline="none"
-        >
-          <MenuItem
-            key={arcGISLink.link}
-            onClick={() => {
-              handleMobileClose();
-            }}
+        {analysisItems.map((item) => (
+          <Link
+            key={item.link}
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            underline="none"
           >
-            {arcGISLink.title}
-          </MenuItem>
-        </Link>
+            <MenuItem
+              key={item.link}
+              onClick={() => {
+                handleMobileClose();
+              }}
+            >
+              {item.title}
+            </MenuItem>
+          </Link>
+        ))}
         <MenuItem key="help" onClick={setShowSubMenu}>
           Help
           {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </MenuItem>
         {subMenu && (
-          <div className={classes.subMenu}>
+          <div
+            sx={{
+              marginLeft: (theme) => theme.spacing(2),
+            }}
+          >
             {helpItems.map((item) => {
               if (item.linkType === "external") {
                 return (

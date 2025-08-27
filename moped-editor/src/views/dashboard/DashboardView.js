@@ -36,7 +36,6 @@ import { DASHBOARD_QUERY } from "src/queries/dashboard";
 import { useSessionDatabaseData } from "src/auth/user";
 
 import parse from "html-react-parser";
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,

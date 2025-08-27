@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -11,6 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ProjectNotes from "../projects/projectView/ProjectNotes";
+import { fieldLabelText } from "src/styles/reusableStyles";
 
 /**
  * Dashboard status modal component
@@ -71,11 +73,21 @@ const DashboardStatusModal = ({
               alignItems: "center",
             }}
           >
-            {/* if the parent is the summary page, also render the status label */}
-            {modalParent === "summary" && children}
-            <Tooltip placement="bottom-start" title="Create new status update">
-              <ControlPointIcon sx={{ fontSize: "1.5rem" }} />
-            </Tooltip>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {/* if the parent is the summary page, also render the status label */}
+              {modalParent === "summary" && children}
+              <Tooltip
+                placement="bottom-start"
+                title="Create new status update"
+              >
+                <ControlPointIcon sx={{ fontSize: "1.5rem" }} />
+              </Tooltip>
+            </Box>
           </Box>
         )}
         {/* if there is a status update, render the content */}

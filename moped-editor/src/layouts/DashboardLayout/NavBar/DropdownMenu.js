@@ -17,6 +17,7 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import BarChart from "@mui/icons-material/BarChart";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { useSessionDatabaseData, useUser } from "src/auth/user";
 import { getInitials } from "src/utils/userNames";
@@ -56,12 +57,20 @@ export const helpItems = [
   },
 ];
 
-export const arcGISLink = {
-  linkType: "external",
-  link: "https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee",
-  title: "Moped map",
-  Icon: <MapOutlinedIcon fontSize="small" />,
-};
+export const analysisItems = [
+  {
+    linkType: "external",
+    link: "https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee",
+    title: "Analyze in AGOL",
+    Icon: <MapOutlinedIcon fontSize="small" />,
+  },
+  {
+    linkType: "external",
+    link: "https://atd-dts.gitbook.io/moped-documentation/product-management/integrations/power-bi",
+    title: "Analyze in Power BI",
+    Icon: <BarChart fontSize="small" />,
+  },
+];
 
 /**
  * Renders Dropdown Menu on screens above Sm breakpoint
@@ -121,18 +130,23 @@ const DropdownMenu = ({
           Account
         </MenuItem>
         <Divider sx={{ marginY: 1 }} />
-        <Link
-          href={arcGISLink.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="inherit"
-          underline="none"
-        >
-          <MenuItem onClick={handleDropdownClose}>
-            <ListItemIcon>{arcGISLink.Icon}</ListItemIcon>
-            {arcGISLink.title}
-          </MenuItem>
-        </Link>
+        {analysisItems.map((item) => (
+          <Link
+            key={item.link}
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            underline="none"
+          >
+            <MenuItem onClick={handleDropdownClose}>
+              <ListItemIcon>
+                {item.Icon || <OpenInNewIcon fontSize="small" />}
+              </ListItemIcon>
+              {item.title}
+            </MenuItem>
+          </Link>
+        ))}
         <Divider sx={{ marginY: 1 }} />
         <Typography
           variant="button"
