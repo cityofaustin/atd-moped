@@ -136,9 +136,9 @@ export const initializeUserDBObject = async (session) => {
       console.error("Failed to fetch user data:", error);
       throw error;
     }
+  } else {
+    return sessionDataFromLocalStorage;
   }
-
-  return sessionDataFromLocalStorage;
 };
 
 // Create a "controller" component that will calculate all the data that we need to give to our
