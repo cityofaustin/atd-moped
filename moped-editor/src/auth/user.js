@@ -141,7 +141,6 @@ export const initializeUserDBObject = async (session) => {
 
       if (resData?.data?.moped_users) {
         const userData = resData.data.moped_users[0];
-        setSessionDatabaseData(userData);
         return userData;
       }
 
@@ -150,8 +149,6 @@ export const initializeUserDBObject = async (session) => {
       console.error("Failed to fetch user data:", error);
       throw error;
     }
-  } else {
-    return Promise.resolve();
   }
 };
 
@@ -184,12 +181,13 @@ export const UserProvider = ({ children }) => {
       await Auth.signIn(usernameOrEmail, password);
 
       const session = await Auth.currentSession();
-      await initializeUserDBObject(session);
+      const userDBData = await initializeUserDBObject(session);
+      setSessionDatabaseData(userDBData);
       setUser(session);
 
       setIsLoginLoading(false);
     } catch (err) {
-      if (err.code === "UserNotFoundException") {
+      if (err?.code === "UserNotFoundException") {
         err.message = "Invalid username or password";
       }
 
@@ -209,7 +207,8 @@ export const UserProvider = ({ children }) => {
       await Auth.federatedSignIn({ provider: "AzureAD" });
 
       const session = await Auth.currentSession();
-      await initializeUserDBObject(session);
+      const userDBData = await initializeUserDBObject(session);
+      setSessionDatabaseData(userDBData);
       setUser(session);
 
       setIsLoginLoading(false);
