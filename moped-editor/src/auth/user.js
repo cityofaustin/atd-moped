@@ -260,7 +260,8 @@ export const UserProvider = ({ children }) => {
             // We must populate userDatabaseData if it's null otherwise the query will fail
             // when users are redirected to their last route after a forced logout
             // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
-            await initializeUserDBObject(session);
+            const userDBData = await initializeUserDBObject(session);
+            setSessionDatabaseData(userDBData);
           }
 
           setUser(session);
