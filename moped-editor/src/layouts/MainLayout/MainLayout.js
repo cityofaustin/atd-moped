@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { useUser } from "src/auth/user";
 import Box from "@mui/material/Box";
+import { useLocation } from "react-router-dom";
 
 /**
  * Main layout component for the app when not logged in (sign in page).
