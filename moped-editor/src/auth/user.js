@@ -190,10 +190,13 @@ export const UserProvider = ({ children }) => {
     setIsLoginLoading(true);
 
     try {
+      console.log("Loggin in with SSO...");
       await Auth.federatedSignIn({ provider: "AzureAD" });
 
       const session = await Auth.currentSession();
+      console.log("Logged in with SSO:", session);
       const userDBData = await initializeUserDBObject(session);
+      console.log("User DB Data:", userDBData);
       setSessionDatabaseData(userDBData);
       setUser(session);
 
