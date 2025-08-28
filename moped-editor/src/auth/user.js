@@ -259,11 +259,11 @@ export const UserProvider = ({ children }) => {
             setSessionDatabaseData(userDBData);
 
             setUser(session);
-            setIsLoginLoading(false);
           } else {
             destroyProfileColor();
             deleteSessionDatabaseData();
           }
+          setIsLoginLoading(false);
         })
         .catch((error) => {
           console.error("Error getting Cognito session on app reload: ", error);
