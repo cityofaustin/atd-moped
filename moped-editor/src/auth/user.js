@@ -57,20 +57,6 @@ export const getSessionDatabaseData = () => {
   }
 };
 
-function epochToCentralTime(epochTimestamp) {
-  const date = new Date(epochTimestamp * 1000);
-  return date.toLocaleString("en-US", {
-    timeZone: "America/Chicago",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-}
-
 /** Get the Cognito ID JWT from a Cognito session.
  *
  * @param {CognitoUserSession} session - The Cognito user session.
@@ -241,12 +227,6 @@ export const UserProvider = ({ children }) => {
   const getCognitoSession = useCallback(async () => {
     try {
       const session = await Auth.currentSession();
-
-      console.log("User session refreshed:", session);
-      console.log(
-        "Token expires:",
-        epochToCentralTime(session?.idToken?.payload.exp)
-      );
 
       return session;
     } catch (err) {
