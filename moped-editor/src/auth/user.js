@@ -191,7 +191,7 @@ export const UserProvider = ({ children }) => {
 
     try {
       // Auth.federatedSignIn redirects the user so we set user state and local storage DB data after the redirect
-      // happens in the useEffect below that handles route restoration (initializeUserDBObject and setSessionDatabaseData).
+      // in the useEffect below that handles route restoration (initializeUserDBObject and setSessionDatabaseData).
       await Auth.federatedSignIn({ provider: "AzureAD" });
     } catch (error) {
       console.error("Error getting user session on sign in: ", error);
