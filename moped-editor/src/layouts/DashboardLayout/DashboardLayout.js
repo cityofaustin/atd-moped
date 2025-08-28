@@ -3,6 +3,7 @@ import { Outlet, Navigate, useLocation } from "react-router-dom";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 import Footer from "./Footer";
+import Box from "@mui/material/Box";
 
 /**
  * Dashboard layout component for the app when users are signed in.
