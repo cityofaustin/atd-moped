@@ -23,7 +23,6 @@ import {
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "src/queries/project";
-import { getJwt, useUser } from "src/auth/user";
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
@@ -33,6 +32,7 @@ import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesT
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import { useUser } from "src/auth/user";
 
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
@@ -63,7 +63,7 @@ const clickableTextStyles = {
 };
 
 const useColumns = ({
-  token,
+  getCognitoSession,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -103,8 +103,10 @@ const useColumns = ({
           if (row.file_key) {
             return (
               <Link
+                onClick={() =>
+                  downloadFileAttachment(row?.file_key, getCognitoSession)
+                }
                 sx={clickableTextStyles}
-                onClick={() => downloadFileAttachment(row?.file_key, token)}
               >
                 {cleanUpFileKey(row?.file_key)}
               </Link>
@@ -233,7 +235,7 @@ const useColumns = ({
       },
     ];
   }, [
-    token,
+    getCognitoSession,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -253,8 +255,7 @@ const useColumns = ({
 const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const { projectId } = useParams();
-  const { user } = useUser();
-  const token = getJwt(user);
+  const { getCognitoSession } = useUser();
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -442,7 +443,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   };
 
   const dataGridColumns = useColumns({
-    token,
+    getCognitoSession,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

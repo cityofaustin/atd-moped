@@ -1,19 +1,20 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 
-import Amplify, { Auth } from "aws-amplify";
+import { Auth, Amplify } from "aws-amplify";
 
 import { colors } from "@mui/material";
 
 import config from "../config";
 import { nonLoginUserRole } from "src/views/staff/helpers";
 
-import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "../queries/account";
+import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "src/queries/account";
 
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overridden by the component below
@@ -31,13 +32,6 @@ export const atdColorKeyName = "atd_moped_user_color";
  * @type {string}
  * @constant
  */
-export const atdSessionKeyName = "atd_moped_user_context";
-
-/**
- * This is a constant string key that holds the profile for a user.
- * @type {string}
- * @constant
- */
 export const atdSessionDatabaseDataKeyName = "atd_moped_user_db_data";
 
 /**
@@ -47,13 +41,7 @@ export const destroyProfileColor = () =>
   localStorage.removeItem(atdColorKeyName);
 
 /**
- * Removes the current profile
- */
-export const destroyLoggedInProfile = () =>
-  localStorage.removeItem(atdSessionKeyName);
-
-/**
- * Parses the user database data from localStorage
+ * Parses the user Postgres database row from localStorage
  * @return {Object}
  */
 export const getSessionDatabaseData = () => {
@@ -69,6 +57,14 @@ export const getSessionDatabaseData = () => {
   }
 };
 
+/** Get the Cognito ID JWT from a Cognito session.
+ *
+ * @param {CognitoUserSession} session - The Cognito user session.
+ * @returns {string} The ID JWT token.
+ */
+export const getCognitoIdJwt = (session) =>
+  session?.idToken ? session.idToken.getJwtToken() : null;
+
 /**
  * Custom hook that memoizes the session database data
  * This prevents unnecessary re-renders when the data hasn't changed
@@ -79,7 +75,7 @@ export const useSessionDatabaseData = () => {
 };
 
 /**
- * Persists the user database data into localStorage
+ * Persists the user Postgres database row into localStorage
  * @param userObject
  */
 export const setSessionDatabaseData = (userObject) =>
@@ -89,46 +85,56 @@ export const setSessionDatabaseData = (userObject) =>
   );
 
 /**
- * Deletes the user database data from localStorage
+ * Deletes the user Postgres database row from localStorage
  */
 export const deleteSessionDatabaseData = () =>
   localStorage.removeItem(atdSessionDatabaseDataKeyName);
 
 /**
- * Retrieves the user database data from Hasura
- * @param {Object} userObject - The user object as provided by AWS
+ * Retrieves the user Postgres database row from Hasura
+ * @param {Object} session - The Cognito user session.
  */
-export const initializeUserDBObject = (userObject) => {
-  // Retrieve the data (if any)
-  const sessionData = getSessionDatabaseData();
+export const initializeUserDBObject = async (session) => {
+  const token = getCognitoIdJwt(session);
+  // Retrieve the data from local storage (if any)
+  const sessionDataFromLocalStorage = getSessionDatabaseData();
 
-  // If the user object is valid and there is no existing data...
-  if (userObject && sessionData === null) {
+  // If the session is valid and there is no existing data...
+  if (sessionDataFromLocalStorage === null) {
     // Fetch the data from Hasura
-    fetch(config.env.APP_HASURA_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getJwt(userObject)}`,
-        "X-Hasura-Role": `${getHighestRole(userObject)}`,
-      },
-      body: JSON.stringify({
-        query: ACCOUNT_USER_PROFILE_GET_PLAIN,
-        variables: {
-          userId: getDatabaseId(userObject),
+    try {
+      const res = await fetch(config.env.APP_HASURA_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "X-Hasura-Role": `${getHighestRole(session)}`,
         },
-      }),
-    }).then((res) => {
-      // Then we parse the response
-      res.json().then((resData) => {
-        if (resData?.errors) {
-          console.error(resData.errors);
-        }
-        if (resData?.data?.moped_users) {
-          setSessionDatabaseData(resData.data.moped_users[0]);
-        }
+        body: JSON.stringify({
+          query: ACCOUNT_USER_PROFILE_GET_PLAIN,
+          variables: {
+            userId: getDatabaseId(session),
+          },
+        }),
       });
-    });
+
+      const resData = await res.json();
+
+      if (resData?.errors) {
+        // Show error feedback in sign in form
+        throw new Error("Error fetching user data");
+      }
+
+      if (resData?.data?.moped_users) {
+        const userData = resData.data.moped_users[0];
+        return userData;
+      }
+
+      throw new Error("No user data found");
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      throw error;
+    }
   }
 };
 
@@ -136,86 +142,138 @@ export const initializeUserDBObject = (userObject) => {
 // components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
-  /**
-   * Retrieves persisted user context object
-   * @return {object}
-   */
-  const getPersistedContext = () => {
-    return JSON.parse(localStorage.getItem(atdSessionKeyName)) || null;
-  };
+  /* User state is set on sign in and log out and allows us to synchronously access the user details
+  without calling async Auth.currentSession() where an up-to-date session is not critical. */
+  // TODO: It would be better to use Amplify Auth calls to get the user data but need to refactor user state access
+  // in other components using const { user } = useUser().
+  const [user, setUser] = useState(null);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
 
-  /**
-   * Persists user context object into localstorage
-   * @param {str} context - The user context object
-   */
-  const setPersistedContext = (context) => {
-    localStorage.setItem(atdSessionKeyName, JSON.stringify(context));
-  };
-
-  const [user, setUser] = useState(getPersistedContext());
-  const [loginLoading, setLoginLoading] = useState(false);
-
+  // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
+  // so we would need to turn this back to DEBUG if we're actively debugging authentication.
   useEffect(() => {
-    // Configure the keys needed for the Auth module. Essentially this is
-    // like calling `Amplify.configure` but only for `Auth`.
-    /**
-     * AWS Amplify
-     * @see https://github.com/aws-amplify/amplify-js
-     */
-
-    // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
-    // so we would need to turn this back to DEBUG if we're actively debugging authentication.
     Amplify.Logger.LOG_LEVEL = "INFO";
-
-    Auth.currentSession()
-      .then((user) => {
-        setPersistedContext(user);
-        setUser(user);
-      })
-      .catch((error) => {
-        setPersistedContext(null);
-        setUser(null);
-      });
   }, []);
 
-  useEffect(() => {
-    initializeUserDBObject(user);
-  }, [user]);
+  /**
+   * Handles user login when using username and password.
+   * @param {string} usernameOrEmail - The username or email of the user.
+   * @param {string} password - The password of the user.
+   */
+  const login = useCallback(async (usernameOrEmail, password) => {
+    setIsLoginLoading(true);
 
-  // We make sure to handle the user update here, but return the resolve value in order for our components to be
-  // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
-  // a message that our React components can use.
-  const login = (usernameOrEmail, password) => {
-    setLoginLoading(true);
+    try {
+      await Auth.signIn(usernameOrEmail, password);
 
-    return Auth.signIn(usernameOrEmail, password)
-      .then((user) => {
-        setUser(user.signInUserSession);
-        setLoginLoading(false);
-        return user.signInUserSession;
-      })
-      .catch((err) => {
-        if (err.code === "UserNotFoundException") {
-          err.message = "Invalid username or password";
-        }
+      const session = await Auth.currentSession();
+      const userDBData = await initializeUserDBObject(session);
+      setSessionDatabaseData(userDBData);
+      setUser(session);
 
-        // ... (other checks)
-        setLoginLoading(false);
-        throw err;
-      });
-  };
+      setIsLoginLoading(false);
+    } catch (err) {
+      if (err?.code === "UserNotFoundException") {
+        err.message = "Invalid username or password";
+      }
 
-  // same thing here
-  const logout = () => {
-    destroyProfileColor();
-    destroyLoggedInProfile();
-    deleteSessionDatabaseData();
-    return Auth.signOut().then((data) => {
-      // Remove the current color
       setUser(null);
-      return data;
-    });
-  };
+      setIsLoginLoading(false);
+      throw err;
+    }
+  }, []);
+
+  /**
+   * Sign in the user using Azure AD.
+   */
+  const loginSSO = useCallback(async () => {
+    setIsLoginLoading(true);
+
+    try {
+      await Auth.federatedSignIn({ provider: "AzureAD" });
+
+      const session = await Auth.currentSession();
+      const userDBData = await initializeUserDBObject(session);
+      setSessionDatabaseData(userDBData);
+      setUser(session);
+
+      setIsLoginLoading(false);
+    } catch (error) {
+      console.error("Error getting user session on sign in: ", error);
+      setUser(null);
+
+      setIsLoginLoading(false);
+    }
+  }, []);
+
+  /**
+   * Logs out the user and clears the profile color and user DB data from localStorage.
+   */
+  const logout = useCallback(async () => {
+    try {
+      await Auth.signOut();
+      destroyProfileColor();
+      deleteSessionDatabaseData();
+      setUser(null);
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
+  }, []);
+
+  /**
+   * Returns a valid Cognito session to provide roles and id token to
+   * Apollo Client GraphQL requests and Moped API requests.
+   */
+  const getCognitoSession = useCallback(async () => {
+    try {
+      const session = await Auth.currentSession();
+
+      return session;
+    } catch (err) {
+      // Log out user if a Cognito session cannot be retrieved to force a fresh login.
+      // This can happen when a refresh token is expired or invalid for example.
+      await logout();
+      console.error("Error getting Cognito session: ", err);
+
+      return null;
+    }
+  }, [logout]);
+
+  /**
+   * This effect runs when the component mounts and checks if Cognito has a valid session.
+   * If there is no user state, it retrieves the current session and sets it to prevent logout
+   * when browser is refreshed. If there is no current session, getCognitoSession will return null.
+   * Current route is preserved in MainLayout.js and DashboardLayout.js by React Router.
+   */
+  useEffect(() => {
+    if (user === null) {
+      setIsLoginLoading(true);
+
+      getCognitoSession()
+        .then(async (session) => {
+          if (session) {
+            // Initialize user data on app reload/session resume before proceeding to navigation.
+            // Some queries rely on user database data like user id for followed projects.
+            // We must populate userDatabaseData if it's null otherwise the query will fail
+            // when users are redirected to their last route after a forced logout
+            // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
+            await initializeUserDBObject(session);
+          }
+
+          setUser(session);
+          setIsLoginLoading(false);
+
+          if (session === null) {
+            destroyProfileColor();
+            deleteSessionDatabaseData();
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting Cognito session on app reload: ", error);
+          setIsLoginLoading(false);
+        });
+    }
+  }, [user, getCognitoSession]);
 
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimization that is mostly needed in cases
@@ -224,8 +282,15 @@ export const UserProvider = ({ children }) => {
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
   const values = useMemo(
-    () => ({ user, login, logout, loginLoading }),
-    [user, loginLoading]
+    () => ({
+      user,
+      login,
+      loginSSO,
+      logout,
+      isLoginLoading,
+      getCognitoSession,
+    }),
+    [user, isLoginLoading, getCognitoSession, login, loginSSO, logout]
   );
 
   // Finally, return the interface that we want to expose to our other components
@@ -268,8 +333,10 @@ export const useUser = () => {
   return context;
 };
 
-export const getJwt = (user) => user.idToken.jwtToken;
-
+/** Retrieves the Hasura claims from the Cognito user session.
+ * @param {Object} user - The id token payload containing ID token and claims.
+ * @returns {Object|null} The Hasura claims or null if not found.
+ */
 export const getHasuraClaims = (user) => {
   try {
     return JSON.parse(user.idToken.payload["https://hasura.io/jwt/claims"]);
@@ -278,6 +345,11 @@ export const getHasuraClaims = (user) => {
   }
 };
 
+/**
+ * Retrieves the database ID from the Cognito user session.
+ * @param {object} user - The Cognito user session containing ID token and claims.
+ * @returns {string|null} The database ID or null if not found.
+ */
 export const getDatabaseId = (user) => {
   try {
     const claims = getHasuraClaims(user);
@@ -287,9 +359,6 @@ export const getDatabaseId = (user) => {
     return null;
   }
 };
-
-export const isUserSSO = (user) =>
-  user.idToken.payload["cognito:username"].startsWith("azuread_");
 
 /**
  * Find the highest role in user roles for UI permissions
@@ -315,8 +384,8 @@ export const findHighestRole = (roles) => {
 };
 
 /**
- * Get the role with the highest permissions level from CognitoUser Object
- * @param {object} user - Cognito User object containing roles in the token
+ * Get the role with the highest permissions level from Cognito user session.
+ * @param {object} user - Cognito User session containing roles in the token
  * @return {string} Highest user role
  */
 export const getHighestRole = (user) => {

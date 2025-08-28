@@ -1,8 +1,8 @@
 import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import TopBar from "src/layouts/DashboardLayout/TopBar";
-import { useUser } from "src/auth/user";
-import Footer from "src/layouts/DashboardLayout/Footer";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
+import TopBar from "./TopBar";
+import { useUser } from "../../auth/user";
+import Footer from "./Footer";
 import Box from "@mui/material/Box";
 
 /**
@@ -11,7 +11,13 @@ import Box from "@mui/material/Box";
  */
 const DashboardLayout = () => {
   const { user } = useUser();
+  const location = useLocation();
 
+  /* If user is not authenticated, redirect to sign-in page
+   * and preserve the current location so they can be redirected back
+   * after successful login or if a browser refresh occurs. See MainLayout.js
+   * for how this is handled.
+   */
   return user ? (
     <Box
       sx={{
@@ -38,7 +44,7 @@ const DashboardLayout = () => {
       </Box>
     </Box>
   ) : (
-    <Navigate to="/moped/session/signin" />
+    <Navigate to="/moped/session/signin" state={{ from: location }} replace />
   );
 };
 
