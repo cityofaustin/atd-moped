@@ -49,7 +49,7 @@ const DashboardStatusModal = ({
   return (
     <>
       <Typography
-        component={"span"}
+        component="span"
         // if the parent is the summary page, use the fieldLabelText style,
         // otherwise set the cursor to pointer (applies to dashboard)
         sx={modalParent === "summary" ? fieldLabelText : { cursor: "pointer" }}
@@ -63,13 +63,23 @@ const DashboardStatusModal = ({
               alignItems: "center",
             }}
           >
-            {/* if the parent is the summary page, also render the status label */}
-            {modalParent === "summary" && children}
-            <Tooltip placement="bottom-start" title="Create new status update">
-              <ControlPointIcon
-                sx={{ fontSize: (theme) => theme.spacing(2.5) }}
-              />
-            </Tooltip>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {/* if the parent is the summary page, also render the status label */}
+              {modalParent === "summary" && children}
+              <Tooltip
+                placement="bottom-start"
+                title="Create new status update"
+              >
+                <ControlPointIcon
+                  sx={{ fontSize: (theme) => theme.spacing(2.5) }}
+                />
+              </Tooltip>
+            </Box>
           </Box>
         )}
         {/* if there is a status update, render the content */}
@@ -79,7 +89,7 @@ const DashboardStatusModal = ({
         open={isDialogOpen}
         onClose={handleDialogClose}
         fullWidth
-        maxWidth={"md"}
+        maxWidth="md"
       >
         <DialogTitle
           sx={{
