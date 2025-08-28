@@ -3,6 +3,7 @@ import { Grid, Box, Typography, TextField } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { Autocomplete } from "@mui/material";
+import { fieldBox, fieldGridItem, fieldLabel, fieldSelectItem } from "src/styles/reusableStyles";
 
 import { useMutation } from "@apollo/client";
 
@@ -18,7 +19,6 @@ import { useMutation } from "@apollo/client";
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
- * @param {Object} classes - The shared style settings
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
@@ -34,7 +34,6 @@ const ProjectSummaryAutocomplete = ({
   projectId,
   loading,
   refetch,
-  classes,
   handleSnackbar,
 }) => {
   const [editMode, setEditMode] = useState(false);
@@ -73,18 +72,18 @@ const ProjectSummaryAutocomplete = ({
   };
 
   return (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>{field}</Typography>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>{field}</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
-        className={classes.fieldBox}
+        sx={fieldBox}
       >
         {editMode && (
           <>
             <Autocomplete
               value={fieldValue}
-              className={classes.fieldSelectItem}
+              sx={fieldSelectItem}
               id={`moped-project-summary-autocomplete-${projectId}`}
               options={optionList}
               getOptionLabel={(e) => e[nameColumn]}
@@ -115,7 +114,6 @@ const ProjectSummaryAutocomplete = ({
         {!editMode && (
           <ProjectSummaryLabel
             text={fieldValue?.[nameColumn] || ""}
-            classes={classes}
             onClickEdit={() => setEditMode(true)}
             tooltipText={tooltipText}
           />
