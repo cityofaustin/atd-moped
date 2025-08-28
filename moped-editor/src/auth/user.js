@@ -190,17 +190,9 @@ export const UserProvider = ({ children }) => {
     setIsLoginLoading(true);
 
     try {
-      console.log("Loggin in with SSO...");
+      // Auth.federatedSignIn redirects the user so we set user state and local storage DB data after the redirect
+      // in the useEffect below that handles route restoration (initializeUserDBObject and setSessionDatabaseData).
       await Auth.federatedSignIn({ provider: "AzureAD" });
-
-      const session = await Auth.currentSession();
-      console.log("Logged in with SSO:", session);
-      const userDBData = await initializeUserDBObject(session);
-      console.log("User DB Data:", userDBData);
-      setSessionDatabaseData(userDBData);
-      setUser(session);
-
-      setIsLoginLoading(false);
     } catch (error) {
       console.error("Error getting user session on sign in: ", error);
       setUser(null);
@@ -260,7 +252,8 @@ export const UserProvider = ({ children }) => {
             // We must populate userDatabaseData if it's null otherwise the query will fail
             // when users are redirected to their last route after a forced logout
             // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
-            await initializeUserDBObject(session);
+            const userDBData = await initializeUserDBObject(session);
+            setSessionDatabaseData(userDBData);
           }
 
           setUser(session);
