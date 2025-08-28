@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -7,10 +8,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import clsx from "clsx";
 import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ProjectNotes from "../projects/projectView/ProjectNotes";
+import { fieldLabelText } from "src/styles/reusableStyles";
 
 /**
  * Dashboard status modal component
@@ -23,7 +24,6 @@ import ProjectNotes from "../projects/projectView/ProjectNotes";
  * @param {Function} queryRefetch - The refetch function to fire on modal close
  * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
  * @param {JSX.Element} children - The content to render inside the modal
- * @param {Object} classes - The shared style settings
  * @param {Object} data - The project data object from the GraphQL query
  * @returns {JSX.Element}
  */
@@ -37,7 +37,6 @@ const DashboardStatusModal = ({
   queryRefetch,
   handleSnackbar,
   children,
-  classes,
   data,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -50,22 +49,38 @@ const DashboardStatusModal = ({
   return (
     <>
       <Typography
-        component={"span"}
-        className={clsx({
-          [classes.fieldLabelText]: modalParent === "summary",
-          [classes.statusUpdateText]: modalParent !== "summary",
-        })}
+        component="span"
+        // if the parent is the summary page, use the fieldLabelText style,
+        // otherwise set the cursor to pointer (applies to dashboard)
+        sx={modalParent === "summary" ? fieldLabelText : { cursor: "pointer" }}
         onClick={() => setIsDialogOpen(true)}
       >
         {/* if there is no status update, render the add status icon */}
         {!statusUpdate && (
-          <div className={classes.newStatusIconDiv}>
-            {/* if the parent is the summary page, also render the status label */}
-            {modalParent === "summary" && children}
-            <Tooltip placement="bottom-start" title="Create new status update">
-              <ControlPointIcon className={classes.tooltipIcon} />
-            </Tooltip>
-          </div>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {/* if the parent is the summary page, also render the status label */}
+              {modalParent === "summary" && children}
+              <Tooltip
+                placement="bottom-start"
+                title="Create new status update"
+              >
+                <ControlPointIcon
+                  sx={{ fontSize: (theme) => theme.spacing(2.5) }}
+                />
+              </Tooltip>
+            </Box>
+          </Box>
         )}
         {/* if there is a status update, render the content */}
         {!!statusUpdate && children}
@@ -74,7 +89,7 @@ const DashboardStatusModal = ({
         open={isDialogOpen}
         onClose={handleDialogClose}
         fullWidth
-        maxWidth={"md"}
+        maxWidth="md"
       >
         <DialogTitle
           sx={{

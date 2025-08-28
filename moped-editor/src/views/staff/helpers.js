@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser, getJwt } from "../../auth/user";
+import { useUser, getCognitoIdJwt } from "src/auth/user";
 import axios from "axios";
 
 /**
@@ -15,7 +15,7 @@ export function useUserApi() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { user } = useUser();
+  const { getCognitoSession } = useUser();
 
   /**
    * Call the User route of the Moped API
@@ -24,16 +24,19 @@ export function useUserApi() {
    * @param {Object} payload - Data sent to Moped API
    * @param {Function} callback - Callback that fires on request success
    */
-  const requestApi = ({ method, path, payload, callback }) => {
+  const requestApi = async ({ method, path, payload, callback }) => {
+    setError(null); // Clear errors from previous attempts
+
     const url = process.env.REACT_APP_API_ENDPOINT + path;
 
-    const jwt = getJwt(user);
+    const session = await getCognitoSession();
+    const token = getCognitoIdJwt(session);
 
     let config = {
       url,
       method,
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${token}`,
       },
     };
 
@@ -46,7 +49,6 @@ export function useUserApi() {
     axios(config)
       .then((res) => {
         setResult(res.data);
-        setError(null); // Clear errors from previous attempts
         setLoading(false);
         !!callback && callback();
       })
@@ -59,6 +61,7 @@ export function useUserApi() {
             }
           : null;
         setError(err?.response?.data?.error ?? otherError);
+        setLoading(false);
       });
   };
 

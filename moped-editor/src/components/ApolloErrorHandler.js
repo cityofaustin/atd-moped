@@ -1,51 +1,15 @@
 import React from "react";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 import FallbackComponent from "src/components/FallbackComponent";
 
 /**
- * ApolloErrorHandler attempts to be a component that deals with the
- * JWT Token Expired error in a sensible way. Initially, it only displays
- * a spinner and forces the browser to refresh, allowing AWS Amplify
- * to refresh the token.
- * @param {Object} props - Props.error is the only prop needed at the moment
- * @return {JSX.Element}
+ * ApolloErrorHandler renders a FallbackComponent when an unexpected Apollo error occurs.
+ * @param {Object} error - Apollo error returned by useQuery hook
+ * @param {React.ReactNode} children - Children components to render when no error occurs
+ * @returns {JSX.Element} - A loading backdrop or the children components or an error fallback component
  * @constructor
  */
-const ApolloErrorHandler = (props) => {
-  // Error Variables
-  const error = props?.error ?? null;
-  const errorString = error
-    ? JSON.stringify(error, Object.getOwnPropertyNames(error))
-    : "";
-  const jwtError = errorString.includes("JWT") || errorString.includes("token");
-
-  if (jwtError) {
-    setTimeout(() => {
-      window.location.reload();
-    }, 5000);
-  }
-
-  return (
-    <>
-      {jwtError ? (
-        <Backdrop
-          sx={{
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-            color: "#fff",
-          }}
-          open={true}
-          onClick={null}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      ) : error ? (
-        <FallbackComponent error={error} />
-      ) : (
-        props.children
-      )}
-    </>
-  );
+const ApolloErrorHandler = ({ error, children }) => {
+  return <>{error ? <FallbackComponent error={error ?? null} /> : children}</>;
 };
 
 export default ApolloErrorHandler;

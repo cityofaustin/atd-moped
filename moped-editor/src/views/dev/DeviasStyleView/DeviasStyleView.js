@@ -1,23 +1,19 @@
 import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 import TypographyView from "./TypographyView";
 import ColorsView from "./ColorsView";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    minHeight: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-  },
-}));
-
 const DeviasStyleView = () => {
-  const classes = useStyles();
-
   return (
-    <Page className={classes.root} title="Moped Styles">
+    <Page
+      sx={{
+        minHeight: "100%",
+        paddingBottom: 3,
+        paddingTop: 3,
+      }}
+      title="Moped Styles"
+    >
       <Container maxWidth={"lg"}>
         <Grid container spacing={3}>
           <Grid item lg={12}>

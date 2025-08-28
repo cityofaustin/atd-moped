@@ -2,7 +2,7 @@
   "name": "atd-moped-editor",
   "author": "ATD Data & Technology Services",
   "license": "CC0-1.0",
-  "version": "2.41.0",
+  "version": "2.42.0",
   "homepage": "/moped",
   "private": false,
   "repository": {
@@ -63,7 +63,7 @@
     "@turf/center": "^6.5.0",
     "@turf/circle": "^6.5.0",
     "apollo-boost": "^0.4.9",
-    "aws-amplify": "^4.3.46",
+    "aws-amplify": "^5.3.27",
     "axios": "^0.28.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
