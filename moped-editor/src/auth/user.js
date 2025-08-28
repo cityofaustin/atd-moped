@@ -93,6 +93,7 @@ export const deleteSessionDatabaseData = () =>
 /**
  * Retrieves the user Postgres database row from Hasura
  * @param {Object} session - The Cognito user session.
+ * @return {Object} The user database row
  */
 export const initializeUserDBObject = async (session) => {
   const token = getCognitoIdJwt(session);
@@ -100,7 +101,7 @@ export const initializeUserDBObject = async (session) => {
   const sessionDataFromLocalStorage = getSessionDatabaseData();
 
   // If the session is valid and there is no existing data...
-  if (sessionDataFromLocalStorage === null) {
+  if (!sessionDataFromLocalStorage) {
     // Fetch the data from Hasura
     try {
       const res = await fetch(config.env.APP_HASURA_ENDPOINT, {
@@ -136,6 +137,8 @@ export const initializeUserDBObject = async (session) => {
       throw error;
     }
   }
+
+  return sessionDataFromLocalStorage;
 };
 
 // Create a "controller" component that will calculate all the data that we need to give to our
@@ -246,15 +249,14 @@ export const UserProvider = ({ children }) => {
 
       getCognitoSession()
         .then(async (session) => {
-          if (session) {
-            // Initialize user data on app reload/session resume before proceeding to navigation.
-            // Some queries rely on user database data like user id for followed projects.
-            // We must populate userDatabaseData if it's null otherwise the query will fail
-            // when users are redirected to their last route after a forced logout
-            // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
-            const userDBData = await initializeUserDBObject(session);
-            setSessionDatabaseData(userDBData);
-          }
+          // Initialize user data on app reload/session resume before proceeding to navigation.
+          // Some queries rely on user database data like user id for followed projects.
+          // We must populate userDatabaseData if it's null otherwise the query will fail
+          // when users are redirected to their last route after a forced logout
+          // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
+          const userDBData = await initializeUserDBObject(session);
+          console.log(userDBData);
+          setSessionDatabaseData(userDBData);
 
           setUser(session);
           setIsLoginLoading(false);
