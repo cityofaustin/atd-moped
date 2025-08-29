@@ -275,7 +275,7 @@ const NavigationSearchInput = ({ input404Class }) => {
             // inherit the position from the modifiers and dont reset to 0
             style={{ position: "fixed", top: "unset", left: "unset" }}
             // disablePortal=true ensures the popper wont slip behind the material tables
-            disablePortal
+            // disablePortal
             modifiers={[]}
             className={clsx(
               input404Class ? classes.searchPopper404 : classes.searchPopper,
