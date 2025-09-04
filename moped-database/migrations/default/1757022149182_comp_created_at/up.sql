@@ -160,7 +160,6 @@ SELECT
     mc.component_name,
     mc.component_subtype,
     mc.component_name_full,
-    'placeholder text'::text AS component_categories,
     CASE
         WHEN mc.line_representation = true THEN 'Line'::text
         ELSE 'Point'::text
