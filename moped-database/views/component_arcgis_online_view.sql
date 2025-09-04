@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1748534889273_add_author_to_plv/up.sql
+-- Most recent migration: moped-database/migrations/default/1757022149182_comp_created_at/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -159,7 +159,6 @@ SELECT
     mc.component_name,
     mc.component_subtype,
     mc.component_name_full,
-    'placeholder text'::text AS component_categories,
     CASE
         WHEN mc.line_representation = true THEN 'Line'::text
         ELSE 'Point'::text
@@ -188,6 +187,7 @@ SELECT
     plv.ecapris_subproject_id,
     plv.project_website,
     plv.updated_at AS project_updated_at,
+    plv.date_added AS project_created_at,
     mpc.phase_id AS component_phase_id,
     mph.phase_name AS component_phase_name,
     mph.phase_name_simple AS component_phase_name_simple,
