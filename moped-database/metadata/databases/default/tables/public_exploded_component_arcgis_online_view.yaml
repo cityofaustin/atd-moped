@@ -1,3 +1,29 @@
 table:
   name: exploded_component_arcgis_online_view
   schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - project_component_id
+        - exploded_geometry
+        - project_updated_at
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - project_component_id
+        - exploded_geometry
+        - project_updated_at
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: moped-viewer
+    permission:
+      columns:
+        - project_component_id
+        - exploded_geometry
+        - project_updated_at
+      filter: {}
+    comment: ""
