@@ -1,35 +1,6 @@
 import React from "react";
-import clsx from "clsx";
-import makeStyles from "@mui/styles/makeStyles";
 import { green } from "@mui/material/colors";
-import { Icon, Button, CircularProgress } from "@mui/material";
-
-/**
- * Styles
- */
-const useStyles = makeStyles((theme) => ({
-  wrapper: {
-    margin: theme.spacing(1),
-    position: "relative",
-    marginRight: 0,
-  },
-  buttonSuccess: {
-    backgroundColor: green[500],
-    "&:hover": {
-      backgroundColor: green[500],
-    },
-    disabled: true,
-    cursor: "default",
-  },
-  buttonProgress: {
-    color: green[500],
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -12,
-    marginLeft: -12,
-  },
-}));
+import { Icon, Button, CircularProgress, Box } from "@mui/material";
 
 /**
  * ProjectSaveButton - A button that shows an animated status when saving.
@@ -39,7 +10,6 @@ const useStyles = makeStyles((theme) => ({
  * @param {bool} success - Then true, it forces the button to show green status with checkmark.
  * @param {function} handleButtonClick - The onClick handler
  * @return {JSX.Element}
- * @constructor
  */
 export default function ProjectSaveButton({
   label,
@@ -49,27 +19,46 @@ export default function ProjectSaveButton({
   disabled,
   buttonOptions = {},
 }) {
-  const classes = useStyles();
-
-  const buttonClassname = clsx({
-    [classes.buttonSuccess]: success,
-  });
-
   return (
-    <div className={classes.wrapper}>
+    <Box
+      sx={{
+        margin: 1,
+        position: "relative",
+        marginRight: 0,
+      }}
+    >
       <Button
         variant="contained"
         color="primary"
-        className={buttonClassname}
         disabled={(loading && !success) || disabled}
         onClick={success ? null : handleButtonClick}
+        sx={{
+          ...(success && {
+            backgroundColor: green[500],
+            "&:hover": {
+              backgroundColor: green[500],
+            },
+            disabled: true,
+            cursor: "default",
+          }),
+        }}
         {...buttonOptions}
       >
         {success ? <Icon>check</Icon> : label}
       </Button>
       {loading && (
-        <CircularProgress size={24} className={classes.buttonProgress} />
+        <CircularProgress
+          size={24}
+          sx={{
+            color: green[500],
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            marginTop: "-12px",
+            marginLeft: "-12px",
+          }}
+        />
       )}
-    </div>
+    </Box>
   );
 }

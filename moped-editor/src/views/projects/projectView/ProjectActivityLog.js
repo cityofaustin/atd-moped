@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 
 import { PROJECT_ACTIVITY_LOG } from "src/queries/project";
-import makeStyles from "@mui/styles/makeStyles";
 import { Alert } from "@mui/material";
 import CDNAvatar from "src/components/CDN/Avatar";
 import { FormattedDateString } from "src/utils/dateAndTime";
@@ -24,18 +23,6 @@ import { getUserFullName, getInitials } from "src/utils/userNames";
 import ProjectActivityEntry from "src/views/projects/projectView/ProjectActivityEntry";
 
 import { formatActivityLogEntry } from "src/utils/activityLogHelpers";
-
-const useStyles = makeStyles((theme) => ({
-  table: {
-    minWidth: 650,
-  },
-  tableCell: {
-    verticalAlign: "top",
-  },
-  avatarName: {
-    margin: "0.3rem 0 0 .5rem",
-  },
-}));
 
 /**
  * Memoized object containing lookup tables
@@ -222,7 +209,6 @@ const getTotalItems = (data) => {
 
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
-  const classes = useStyles();
 
   const { loading, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
@@ -241,7 +227,7 @@ const ProjectActivityLog = () => {
         </Alert>
       ) : (
         <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableBody>
               {activityLogData.map((change) => {
                 const { changeIcon, changeText } = formatActivityLogEntry(
@@ -259,9 +245,11 @@ const ProjectActivityLog = () => {
                     <TableCell
                       align="left"
                       width="15%"
-                      className={classes.tableCell}
+                      sx={{
+                        verticalAlign: "top",
+                      }}
                     >
-                      <Box display="flex" p={0}>
+                      <Box p={0} display="flex">
                         <Box p={0}>
                           <CDNAvatar
                             size="small"
@@ -271,7 +259,11 @@ const ProjectActivityLog = () => {
                             userColor={null}
                           />
                         </Box>
-                        <Box p={0} flexGrow={1} className={classes.avatarName}>
+                        <Box
+                          p={0}
+                          flexGrow={1}
+                          sx={{ margin: "0.3rem 0 0 .5rem" }}
+                        >
                           {getUserFullName(change?.updated_by_user)}
                         </Box>
                       </Box>
@@ -279,7 +271,7 @@ const ProjectActivityLog = () => {
                     <TableCell
                       align="left"
                       width="80%"
-                      className={classes.tableCell}
+                      sx={{ verticalAlign: "top" }}
                     >
                       <ProjectActivityEntry
                         changeIcon={changeIcon}
@@ -291,8 +283,7 @@ const ProjectActivityLog = () => {
                       component="th"
                       scope="row"
                       width="5%"
-                      className={classes.tableCell}
-                      style={{ whiteSpace: "nowrap" }}
+                      sx={{ verticalAlign: "top", whiteSpace: "nowrap" }}
                     >
                       <FormattedDateString
                         date={change.created_at}

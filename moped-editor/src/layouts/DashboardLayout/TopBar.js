@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { AppBar, Box, Hidden, Toolbar, Tabs, Tab, Alert, useTheme } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Hidden,
+  Toolbar,
+  Tabs,
+  Tab,
+  Alert,
+  useTheme,
+} from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdownMenu";
@@ -63,6 +72,7 @@ const TopBar = ({ className, ...rest }) => {
     <AppBar
       sx={{ backgroundColor: "background.paper" }}
       elevation={2}
+      position="static" // Set static this component works with flex set in DashboardLayout
       {...rest}
     >
       <EnvAlertBanner />
@@ -95,7 +105,7 @@ const TopBar = ({ className, ...rest }) => {
                     // see: https://reactrouter.com/docs/en/v6/upgrading/v5#remove-activeclassname-and-activestyle-props-from-navlink-
                     isActive
                       ? {
-                        // theme cannot be passed as a callback through the style prop, so we use useTheme
+                          // theme cannot be passed as a callback through the style prop, so we use useTheme
                           color: theme.palette.primary.main,
                           borderColor: theme.palette.primary.main,
                           borderBottomWidth: theme.spacing(0.25), // 2px / 8

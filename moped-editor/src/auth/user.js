@@ -57,20 +57,6 @@ export const getSessionDatabaseData = () => {
   }
 };
 
-function epochToCentralTime(epochTimestamp) {
-  const date = new Date(epochTimestamp * 1000);
-  return date.toLocaleString("en-US", {
-    timeZone: "America/Chicago",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-}
-
 /** Get the Cognito ID JWT from a Cognito session.
  *
  * @param {CognitoUserSession} session - The Cognito user session.
@@ -107,6 +93,7 @@ export const deleteSessionDatabaseData = () =>
 /**
  * Retrieves the user Postgres database row from Hasura
  * @param {Object} session - The Cognito user session.
+ * @return {Object} The user database row
  */
 export const initializeUserDBObject = async (session) => {
   const token = getCognitoIdJwt(session);
@@ -114,32 +101,43 @@ export const initializeUserDBObject = async (session) => {
   const sessionDataFromLocalStorage = getSessionDatabaseData();
 
   // If the session is valid and there is no existing data...
-  if (session && sessionDataFromLocalStorage === null) {
+  if (!sessionDataFromLocalStorage) {
     // Fetch the data from Hasura
-    fetch(config.env.APP_HASURA_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "X-Hasura-Role": `${getHighestRole(session)}`,
-      },
-      body: JSON.stringify({
-        query: ACCOUNT_USER_PROFILE_GET_PLAIN,
-        variables: {
-          userId: getDatabaseId(session),
+    try {
+      const res = await fetch(config.env.APP_HASURA_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "X-Hasura-Role": `${getHighestRole(session)}`,
         },
-      }),
-    }).then((res) => {
-      // Then we parse the response
-      res.json().then((resData) => {
-        if (resData?.errors) {
-          console.error(resData.errors);
-        }
-        if (resData?.data?.moped_users) {
-          setSessionDatabaseData(resData.data.moped_users[0]);
-        }
+        body: JSON.stringify({
+          query: ACCOUNT_USER_PROFILE_GET_PLAIN,
+          variables: {
+            userId: getDatabaseId(session),
+          },
+        }),
       });
-    });
+
+      const resData = await res.json();
+
+      if (resData?.errors) {
+        // Show error feedback in sign in form
+        throw new Error("Error fetching user data");
+      }
+
+      if (resData?.data?.moped_users) {
+        const userData = resData.data.moped_users[0];
+        return userData;
+      }
+
+      throw new Error("No user data found");
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      throw error;
+    }
+  } else {
+    return sessionDataFromLocalStorage;
   }
 };
 
@@ -172,12 +170,13 @@ export const UserProvider = ({ children }) => {
       await Auth.signIn(usernameOrEmail, password);
 
       const session = await Auth.currentSession();
-      await initializeUserDBObject(session);
+      const userDBData = await initializeUserDBObject(session);
+      setSessionDatabaseData(userDBData);
       setUser(session);
 
       setIsLoginLoading(false);
     } catch (err) {
-      if (err.code === "UserNotFoundException") {
+      if (err?.code === "UserNotFoundException") {
         err.message = "Invalid username or password";
       }
 
@@ -194,13 +193,9 @@ export const UserProvider = ({ children }) => {
     setIsLoginLoading(true);
 
     try {
+      // Auth.federatedSignIn redirects the user so we set user state and local storage DB data after the redirect
+      // in the useEffect below that handles route restoration (initializeUserDBObject and setSessionDatabaseData).
       await Auth.federatedSignIn({ provider: "AzureAD" });
-
-      const session = await Auth.currentSession();
-      await initializeUserDBObject(session);
-      setUser(session);
-
-      setIsLoginLoading(false);
     } catch (error) {
       console.error("Error getting user session on sign in: ", error);
       setUser(null);
@@ -231,19 +226,16 @@ export const UserProvider = ({ children }) => {
     try {
       const session = await Auth.currentSession();
 
-      console.log("User session refreshed:", session);
-      console.log(
-        "Token expires:",
-        epochToCentralTime(session?.idToken?.payload.exp)
-      );
-
       return session;
     } catch (err) {
+      // Log out user if a Cognito session cannot be retrieved to force a fresh login.
+      // This can happen when a refresh token is expired or invalid for example.
+      await logout();
       console.error("Error getting Cognito session: ", err);
 
       return null;
     }
-  }, []);
+  }, [logout]);
 
   /**
    * This effect runs when the component mounts and checks if Cognito has a valid session.
@@ -256,14 +248,22 @@ export const UserProvider = ({ children }) => {
       setIsLoginLoading(true);
 
       getCognitoSession()
-        .then((session) => {
-          setUser(session);
-          setIsLoginLoading(false);
+        .then(async (session) => {
+          // Initialize user data on app reload/session resume before proceeding to navigation.
+          // Some queries rely on user database data like user id for followed projects.
+          // We must populate userDatabaseData if it's null otherwise the query will fail
+          // when users are redirected to their last route after a forced logout
+          // (see MainLayout.js and DashboardLayout.js for previous route restoration handling).
+          if (session) {
+            const userDBData = await initializeUserDBObject(session);
+            setSessionDatabaseData(userDBData);
 
-          if (session === null) {
+            setUser(session);
+          } else {
             destroyProfileColor();
             deleteSessionDatabaseData();
           }
+          setIsLoginLoading(false);
         })
         .catch((error) => {
           console.error("Error getting Cognito session on app reload: ", error);

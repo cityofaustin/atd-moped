@@ -6,7 +6,6 @@ import ProjectSummaryStatusUpdate from "src/views/projects/projectView/ProjectSu
 
 import { Grid, CardContent, CircularProgress } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
 import ProjectSummaryProjectWebsite from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectDescription";
 import ProjectSummaryParentProjectLink from "src/views/projects/projectView/ProjectSummary/ProjectSummaryParentProjectLink";
@@ -28,59 +27,6 @@ import {
   PROJECT_UPDATE_PUBLIC_PROCESS,
 } from "../../../../queries/project";
 
-const useStyles = makeStyles((theme) => ({
-  fieldGridItem: {
-    marginBottom: theme.spacing(3),
-  },
-  fieldLabel: {
-    width: "100%",
-    color: theme.palette.text.secondary,
-    fontSize: ".8rem",
-    paddingLeft: theme.spacing(0.5),
-  },
-  fieldLabelSmall: {
-    width: "100%",
-    color: theme.palette.text.secondary,
-    fontSize: ".7rem",
-    paddingLeft: theme.spacing(0.5),
-  },
-  fieldLabelText: {
-    width: "calc(100% - 2rem)",
-    paddingLeft: theme.spacing(0.5),
-    "&:hover": {
-      backgroundColor: theme.palette.background.summaryHover,
-      borderRadius: theme.spacing(0.5),
-      cursor: "pointer",
-    },
-    overflowWrap: "break-word",
-  },
-  fieldLabelTextNoHover: {
-    width: "calc(100% - 2rem)",
-    paddingLeft: theme.spacing(0.5),
-    overflowWrap: "break-word",
-  },
-  fieldLabelTextSpanNoBorder: {
-    borderBottom: "inherit",
-  },
-  fieldBox: {
-    width: "100%",
-  },
-  fieldSelectItem: {
-    width: "calc(100% - 3rem)",
-  },
-  newStatusIconDiv: {
-    display: "flex",
-    alignItems: "center",
-  },
-  fieldLabelDataTrackerLink: {
-    width: "calc(100% - 2rem)",
-    paddingLeft: theme.spacing(0.5),
-  },
-  tooltipIcon: {
-    fontSize: "20px",
-  },
-}));
-
 /**
  * Project Summary Component
  * @param {boolean} loading - True if it is loading
@@ -99,7 +45,6 @@ const ProjectSummary = ({
   handleSnackbar,
 }) => {
   const { projectId } = useParams();
-  const classes = useStyles();
 
   /* Not all child components have components and geography data */
   const childProjectGeography = data?.childProjects
@@ -118,7 +63,6 @@ const ProjectSummary = ({
               projectId={projectId}
               data={data}
               refetch={refetch}
-              classes={classes}
               handleSnackbar={handleSnackbar}
               listViewQuery={listViewQuery}
             />
@@ -127,7 +71,6 @@ const ProjectSummary = ({
                 projectId={projectId}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
               />
             )}
@@ -137,7 +80,6 @@ const ProjectSummary = ({
               data={data}
               refetch={refetch}
               handleSnackbar={handleSnackbar}
-              classes={classes}
             />
             <Grid item xs={12}>
               <ProjectSummaryAutocomplete
@@ -152,7 +94,6 @@ const ProjectSummary = ({
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
               />
             </Grid>
@@ -169,7 +110,6 @@ const ProjectSummary = ({
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
               />
             </Grid>
@@ -179,13 +119,12 @@ const ProjectSummary = ({
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
                 tooltipText="Other internal or external workgroups participating in the project"
               />
             </Grid>
             <Grid item xs={12}>
-              <ProjectSummaryComponentWorkTypes data={data} classes={classes} />
+              <ProjectSummaryComponentWorkTypes data={data} />
             </Grid>
             <Grid item xs={12}>
               <ProjectSummaryAutocomplete
@@ -202,7 +141,6 @@ const ProjectSummary = ({
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
               />
             </Grid>
@@ -212,7 +150,6 @@ const ProjectSummary = ({
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
               />
             </Grid>
@@ -222,7 +159,6 @@ const ProjectSummary = ({
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
               />
             </Grid>
@@ -232,21 +168,16 @@ const ProjectSummary = ({
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                classes={classes}
                 handleSnackbar={handleSnackbar}
               />
             </Grid>
             <Grid item xs={12}>
               <ProjectSummaryDataTrackerSignals
-                classes={classes}
                 project={data?.moped_project?.[0]}
               />
             </Grid>
             <Grid item xs={12}>
-              <ProjectSummaryWorkOrders
-                classes={classes}
-                project={data?.moped_project?.[0]}
-              />
+              <ProjectSummaryWorkOrders project={data?.moped_project?.[0]} />
             </Grid>
           </Grid>
         </Grid>
@@ -257,7 +188,6 @@ const ProjectSummary = ({
             </Grid>
             <Grid item xs={12}>
               <ProjectSummaryCouncilDistricts
-                classes={classes}
                 projectGeography={data.project_geography}
                 childProjectGeography={childProjectGeography}
               />

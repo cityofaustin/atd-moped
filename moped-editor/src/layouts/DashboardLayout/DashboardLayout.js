@@ -1,41 +1,17 @@
 import React, { useEffect } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
-import makeStyles from "@mui/styles/makeStyles";
-import TopBar from "./TopBar";
-import { useUser } from "../../auth/user";
-import Footer from "./Footer";
+import Box from "@mui/material/Box";
+import TopBar from "src/layouts/DashboardLayout/TopBar";
+import { useUser } from "src/auth/user";
+import Footer from "src/layouts/DashboardLayout/Footer";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useApolloErrorContext } from "src/utils/errorHandling";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    height: "100%",
-    overflow: "hidden",
-    width: "100%",
-  },
-  wrapper: {
-    display: "flex",
-    flex: "1 1 auto",
-    overflow: "hidden",
-    // If in staging environment, add extra padding
-    // to make room for staging environment info alert
-    paddingTop: process.env.REACT_APP_HASURA_ENV !== "production" ? 114 : 64,
-  },
-  contentContainer: {
-    display: "flex",
-    flex: "1 1 auto",
-    overflow: "hidden",
-  },
-  content: {
-    flex: "1 1 auto",
-    height: "100%",
-    overflow: "auto",
-  },
-}));
-
+/**
+ * Dashboard layout component for the app when users are signed in.
+ * @returns {JSX.Element}
+ */
 const DashboardLayout = () => {
-  const classes = useStyles();
   const { user } = useUser();
   const location = useLocation();
   const { apolloError, setApolloError } = useApolloErrorContext();
@@ -51,19 +27,32 @@ const DashboardLayout = () => {
    * for how this is handled.
    */
   return user ? (
-    <div className={classes.root}>
-      <TopBar />
-      <div className={classes.wrapper}>
-        <div className={classes.contentContainer}>
-          <div className={classes.content}>
-            <ApolloErrorHandler error={apolloError}>
-              <Outlet context={{ apolloError }} />
-            </ApolloErrorHandler>
-            <Footer />
-          </div>
-        </div>
-      </div>
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        overflow: "hidden",
+        width: "100%",
+      }}
+    >
+      <Box>
+        <TopBar />
+      </Box>
+      <Box
+        sx={{
+          flex: "1 1 auto", // Take remaining space after static AppBar in TopBar
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <ApolloErrorHandler error={apolloError}>
+          <Outlet />
+        </ApolloErrorHandler>
+        <Footer />
+      </Box>
+    </Box>
   ) : (
     <Navigate to="/moped/session/signin" state={{ from: location }} replace />
   );
