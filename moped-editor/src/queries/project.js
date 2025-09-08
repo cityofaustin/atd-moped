@@ -29,6 +29,7 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       knack_project_id
       project_sponsor
+      testing_pizza
       project_lead_id
       project_website
       parent_project_id

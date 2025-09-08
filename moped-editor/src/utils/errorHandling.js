@@ -26,7 +26,10 @@ export const useApolloErrorContext = () => {
       "useApolloErrorContext must be used within an ApolloErrorProvider"
     );
   }
-  return context;
+  return {
+    apolloError: context.apolloError,
+    setApolloError: context.setApolloError,
+  };
 };
 
 export default ApolloErrorContext;

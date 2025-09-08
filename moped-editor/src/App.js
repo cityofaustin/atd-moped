@@ -94,7 +94,7 @@ const useApolloClient = () => {
     });
   }, [getCognitoSession]);
 
-  return { apolloClient, error };
+  return { apolloClient, error, setError };
 };
 
 LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
@@ -102,14 +102,16 @@ LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
   const routing = useRoutes(restrictedRoutes);
-  const { apolloClient: client, error } = useApolloClient();
+  const { apolloClient: client, error, setError } = useApolloClient();
 
   return (
     <ApolloProvider client={client}>
       <StyledEngineProvider injectFirst>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
-            <ApolloErrorContext.Provider value={{ apolloError: error }}>
+            <ApolloErrorContext.Provider
+              value={{ apolloError: error, setApolloError: setError }}
+            >
               <ErrorBoundary FallbackComponent={FallbackComponent}>
                 <GlobalStyles />
                 <ActivityMetrics eventName="app_load">

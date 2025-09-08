@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import makeStyles from "@mui/styles/makeStyles";
 import TopBar from "./TopBar";
@@ -38,7 +38,12 @@ const DashboardLayout = () => {
   const classes = useStyles();
   const { user } = useUser();
   const location = useLocation();
-  const { apolloError } = useApolloErrorContext();
+  const { apolloError, setApolloError } = useApolloErrorContext();
+
+  // Clear Apollo error when navigating to a new page
+  useEffect(() => {
+    setApolloError(null);
+  }, [location, setApolloError]);
 
   /* If user is not authenticated, redirect to sign-in page
    * and preserve the current location so they can be redirected back
@@ -52,7 +57,7 @@ const DashboardLayout = () => {
         <div className={classes.contentContainer}>
           <div className={classes.content}>
             <ApolloErrorHandler error={apolloError}>
-              <Outlet />
+              <Outlet context={{ apolloError }} />
             </ApolloErrorHandler>
             <Footer />
           </div>
