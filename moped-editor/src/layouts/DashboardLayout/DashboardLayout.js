@@ -4,6 +4,8 @@ import makeStyles from "@mui/styles/makeStyles";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 import Footer from "./Footer";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import { useApolloErrorContext } from "src/utils/errorHandling";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +38,7 @@ const DashboardLayout = () => {
   const classes = useStyles();
   const { user } = useUser();
   const location = useLocation();
+  const { apolloError } = useApolloErrorContext();
 
   /* If user is not authenticated, redirect to sign-in page
    * and preserve the current location so they can be redirected back
@@ -48,7 +51,9 @@ const DashboardLayout = () => {
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
-            <Outlet />
+            <ApolloErrorHandler error={apolloError}>
+              <Outlet />
+            </ApolloErrorHandler>
             <Footer />
           </div>
         </div>

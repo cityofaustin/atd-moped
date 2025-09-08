@@ -13,7 +13,7 @@ import ProjectListViewQueryContext from "./components/QueryContextProvider";
 import ActivityMetrics from "./components/ActivityMetrics";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackComponent from "src/components/FallbackComponent";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import ApolloErrorContext from "src/utils/errorHandling";
 
 // Apollo GraphQL Client
 import {
@@ -109,7 +109,7 @@ const App = () => {
       <StyledEngineProvider injectFirst>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
-            <ApolloErrorHandler error={error}>
+            <ApolloErrorContext.Provider value={{ apolloError: error }}>
               <ErrorBoundary FallbackComponent={FallbackComponent}>
                 <GlobalStyles />
                 <ActivityMetrics eventName="app_load">
@@ -120,7 +120,7 @@ const App = () => {
                   </ProjectListViewQueryContext.Provider>
                 </ActivityMetrics>
               </ErrorBoundary>
-            </ApolloErrorHandler>
+            </ApolloErrorContext.Provider>
           </ThemeProvider>
         </LocalizationProvider>
       </StyledEngineProvider>
