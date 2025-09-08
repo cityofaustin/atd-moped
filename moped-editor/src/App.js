@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import GlobalStyles from "@mui/material/GlobalStyles";
-import theme from "src/theme";
+import theme, { globalStyles } from "src/theme";
 import { restrictedRoutes } from "src/routes";
 import { getHighestRole } from "./auth/user";
 import { useUser, getCognitoIdJwt } from "src/auth/user";
@@ -13,7 +13,6 @@ import ProjectListViewQueryContext from "./components/QueryContextProvider";
 import ActivityMetrics from "./components/ActivityMetrics";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackComponent from "src/components/FallbackComponent";
-import { globalStyles } from "src/components/GlobalStyles";
 
 // Apollo GraphQL Client
 import {
