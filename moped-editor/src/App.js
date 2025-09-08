@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
-import GlobalStyles from "src/components/GlobalStyles";
+import GlobalStyles from "@mui/material/GlobalStyles";
 import theme from "src/theme";
 import { restrictedRoutes } from "src/routes";
 import { getHighestRole } from "./auth/user";
@@ -13,6 +13,7 @@ import ProjectListViewQueryContext from "./components/QueryContextProvider";
 import ActivityMetrics from "./components/ActivityMetrics";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackComponent from "src/components/FallbackComponent";
+import { globalStyles } from "src/components/GlobalStyles";
 
 // Apollo GraphQL Client
 import {
@@ -90,7 +91,7 @@ const App = () => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
             <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <GlobalStyles />
+              <GlobalStyles styles={globalStyles} />
               <ActivityMetrics eventName="app_load">
                 <ProjectListViewQueryContext.Provider
                   value={{ listViewQuery, setListViewQuery }}
