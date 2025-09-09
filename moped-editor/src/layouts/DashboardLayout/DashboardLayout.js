@@ -16,10 +16,10 @@ const DashboardLayout = () => {
   const location = useLocation();
   const { apolloError, setApolloError } = useApolloErrorContext();
 
-  // Clear Apollo error when navigating to a new page
+  // Clear Apollo error when navigating to a new route so ApolloErrorHandler doesn't block UI
   useEffect(() => {
     setApolloError(null);
-  }, [location, setApolloError]);
+  }, [location.pathname, setApolloError]);
 
   /* If user is not authenticated, redirect to sign-in page
    * and preserve the current location so they can be redirected back

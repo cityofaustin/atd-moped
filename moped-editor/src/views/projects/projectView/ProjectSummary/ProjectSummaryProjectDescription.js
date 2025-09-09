@@ -74,7 +74,7 @@ const ProjectSummaryProjectDescription = ({
     updateProjectDescription({
       variables: {
         projectId: projectId,
-        description: 1,
+        description: description,
       },
       refetchQueries: [{ query: listViewQuery }],
     })
