@@ -9,7 +9,7 @@ const SubprojectsToolbar = ({ onClick }) => (
       Subprojects
     </Typography>
     <Button
-      variant="contained"
+      variant="outlined"
       color="primary"
       startIcon={<AddCircleIcon />}
       onClick={onClick}

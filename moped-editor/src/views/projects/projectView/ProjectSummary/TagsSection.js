@@ -124,7 +124,7 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
             Tags
           </Typography>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             size="medium"
             startIcon={<AddCircle />}
