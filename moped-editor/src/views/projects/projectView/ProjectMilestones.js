@@ -277,7 +277,7 @@ const ProjectMilestones = ({
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "milestone_id" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "moped_milestone" },
     }));
   };
 
