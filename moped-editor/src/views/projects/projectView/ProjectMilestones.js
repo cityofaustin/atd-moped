@@ -73,6 +73,7 @@ const useColumns = ({
             name={"milestone"}
             options={data?.moped_milestones}
             textFieldProps={{
+              helperText: props.error ? "Milestone is required" : "",
               error: props.error,
             }}
             dependentFieldName="moped_milestone_related_phase"
