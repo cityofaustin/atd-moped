@@ -1,6 +1,13 @@
 import React from "react";
 import { IconButton, Icon } from "@mui/material";
 
+const iconButtonStyles = {
+  width: 40,
+  height: 40,
+  flexShrink: 0,
+  alignSelf: "flex-start",
+};
+
 /**
  * ProjectSummaryIconButtons Component
  * @param {function} handleSave - Function to handle save action
@@ -17,10 +24,14 @@ const ProjectSummaryIconButtons = ({
 }) => {
   return (
     <>
-      <IconButton disabled={disabledCondition || loading} onClick={handleSave}>
+      <IconButton
+        disabled={disabledCondition || loading}
+        onClick={handleSave}
+        sx={iconButtonStyles}
+      >
         <Icon>check</Icon>
       </IconButton>
-      <IconButton onClick={handleClose}>
+      <IconButton onClick={handleClose} sx={iconButtonStyles}>
         <Icon>close</Icon>
       </IconButton>
     </>
