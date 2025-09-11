@@ -5,7 +5,6 @@ import ProjectSummaryMap from "src/views/projects/projectView/ProjectSummary/Pro
 import ProjectSummaryStatusUpdate from "src/views/projects/projectView/ProjectSummary/ProjectSummaryStatusUpdate";
 
 import { Grid, CardContent, CircularProgress } from "@mui/material";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
 import ProjectSummaryProjectWebsite from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectDescription";
@@ -56,168 +55,162 @@ const ProjectSummary = ({
   if (error) return `Error! ${error.message}`;
 
   return (
-    <ApolloErrorHandler errors={error}>
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Grid container spacing={0}>
-              <ProjectSummaryProjectDescription
-                projectId={projectId}
-                data={data}
-                refetch={refetch}
-                handleSnackbar={handleSnackbar}
-                listViewQuery={listViewQuery}
-              />
-              {data.moped_project[0]?.parent_project_id && (
-                <ProjectSummaryParentProjectLink
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                />
-              )}
-              {/*Status Update Component*/}
-              <ProjectSummaryStatusUpdate
+    <CardContent>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={0}>
+            <ProjectSummaryProjectDescription
+              projectId={projectId}
+              data={data}
+              refetch={refetch}
+              handleSnackbar={handleSnackbar}
+              listViewQuery={listViewQuery}
+            />
+            {data.moped_project[0]?.parent_project_id && (
+              <ProjectSummaryParentProjectLink
                 projectId={projectId}
                 data={data}
                 refetch={refetch}
                 handleSnackbar={handleSnackbar}
               />
-              <Grid item xs={12}>
-                <ProjectSummaryAutocomplete
-                  field="Lead"
-                  idColumn={"entity_id"}
-                  nameColumn={"entity_name"}
-                  initialValue={data?.moped_project[0]?.moped_project_lead}
-                  optionList={data?.moped_entity ?? []}
-                  updateMutation={PROJECT_UPDATE_LEAD}
-                  tooltipText="Division, department, or organization responsible for successful project implementation"
-                  projectId={projectId}
-                  loading={loading}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryAutocomplete
-                  field="Sponsor"
-                  idColumn={"entity_id"}
-                  nameColumn={"entity_name"}
-                  initialValue={data?.moped_project[0]?.moped_entity}
-                  optionList={data?.moped_entity ?? []}
-                  updateMutation={PROJECT_UPDATE_SPONSOR}
-                  tooltipText="Division, department, or organization who is the main contributor of funds for the project"
-                  projectId={projectId}
-                  loading={loading}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryProjectPartners
-                  projectId={projectId}
-                  loading={loading}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                  tooltipText="Other internal or external workgroups participating in the project"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryComponentWorkTypes
-                  data={data}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryAutocomplete
-                  field="Public process"
-                  idColumn={"id"}
-                  nameColumn={"name"}
-                  initialValue={
-                    data?.moped_project[0]?.moped_public_process_statuses
-                  }
-                  optionList={data?.moped_public_process_statuses ?? []}
-                  updateMutation={PROJECT_UPDATE_PUBLIC_PROCESS}
-                  tooltipText="Current public phase of a project"
-                  projectId={projectId}
-                  loading={loading}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryProjectWebsite
-                  projectId={projectId}
-                  loading={loading}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryInterimID
-                  projectId={projectId}
-                  loading={loading}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryProjectECapris
-                  projectId={projectId}
-                  loading={loading}
-                  data={data}
-                  refetch={refetch}
-                  handleSnackbar={handleSnackbar}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryDataTrackerSignals
-                  project={data?.moped_project?.[0]}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryWorkOrders
-                  project={data?.moped_project?.[0]}
-                />
-              </Grid>
+            )}
+            {/*Status Update Component*/}
+            <ProjectSummaryStatusUpdate
+              projectId={projectId}
+              data={data}
+              refetch={refetch}
+              handleSnackbar={handleSnackbar}
+            />
+            <Grid item xs={12}>
+              <ProjectSummaryAutocomplete
+                field="Lead"
+                idColumn={"entity_id"}
+                nameColumn={"entity_name"}
+                initialValue={data?.moped_project[0]?.moped_project_lead}
+                optionList={data?.moped_entity ?? []}
+                updateMutation={PROJECT_UPDATE_LEAD}
+                tooltipText="Division, department, or organization responsible for successful project implementation"
+                projectId={projectId}
+                loading={loading}
+                data={data}
+                refetch={refetch}
+                handleSnackbar={handleSnackbar}
+              />
             </Grid>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <ProjectSummaryMap data={data} />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryCouncilDistricts
-                  projectGeography={data.project_geography}
-                  childProjectGeography={childProjectGeography}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TagsSection
-                  projectId={projectId}
-                  handleSnackbar={handleSnackbar}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                {!data.moped_project[0].parent_project_id && (
-                  <SubprojectsTable
-                    projectId={projectId}
-                    refetchSummaryData={refetch}
-                    handleSnackbar={handleSnackbar}
-                  />
-                )}
-              </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryAutocomplete
+                field="Sponsor"
+                idColumn={"entity_id"}
+                nameColumn={"entity_name"}
+                initialValue={data?.moped_project[0]?.moped_entity}
+                optionList={data?.moped_entity ?? []}
+                updateMutation={PROJECT_UPDATE_SPONSOR}
+                tooltipText="Division, department, or organization who is the main contributor of funds for the project"
+                projectId={projectId}
+                loading={loading}
+                data={data}
+                refetch={refetch}
+                handleSnackbar={handleSnackbar}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryProjectPartners
+                projectId={projectId}
+                loading={loading}
+                data={data}
+                refetch={refetch}
+                handleSnackbar={handleSnackbar}
+                tooltipText="Other internal or external workgroups participating in the project"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryComponentWorkTypes data={data} />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryAutocomplete
+                field="Public process"
+                idColumn={"id"}
+                nameColumn={"name"}
+                initialValue={
+                  data?.moped_project[0]?.moped_public_process_statuses
+                }
+                optionList={data?.moped_public_process_statuses ?? []}
+                updateMutation={PROJECT_UPDATE_PUBLIC_PROCESS}
+                tooltipText="Current public phase of a project"
+                projectId={projectId}
+                loading={loading}
+                data={data}
+                refetch={refetch}
+                handleSnackbar={handleSnackbar}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryProjectWebsite
+                projectId={projectId}
+                loading={loading}
+                data={data}
+                refetch={refetch}
+                handleSnackbar={handleSnackbar}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryInterimID
+                projectId={projectId}
+                loading={loading}
+                data={data}
+                refetch={refetch}
+                handleSnackbar={handleSnackbar}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryProjectECapris
+                projectId={projectId}
+                loading={loading}
+                data={data}
+                refetch={refetch}
+                handleSnackbar={handleSnackbar}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryDataTrackerSignals
+                project={data?.moped_project?.[0]}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryWorkOrders project={data?.moped_project?.[0]} />
             </Grid>
           </Grid>
         </Grid>
-      </CardContent>
-    </ApolloErrorHandler>
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <ProjectSummaryMap data={data} />
+            </Grid>
+            <Grid item xs={12}>
+              <ProjectSummaryCouncilDistricts
+                projectGeography={data.project_geography}
+                childProjectGeography={childProjectGeography}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TagsSection
+                projectId={projectId}
+                handleSnackbar={handleSnackbar}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              {!data.moped_project[0].parent_project_id && (
+                <SubprojectsTable
+                  projectId={projectId}
+                  refetchSummaryData={refetch}
+                  handleSnackbar={handleSnackbar}
+                />
+              )}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </CardContent>
   );
 };
 

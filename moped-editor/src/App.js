@@ -13,6 +13,7 @@ import ProjectListViewQueryContext from "./components/QueryContextProvider";
 import ActivityMetrics from "./components/ActivityMetrics";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackComponent from "src/components/FallbackComponent";
+import ApolloErrorContext from "src/utils/errorHandling";
 
 // Apollo GraphQL Client
 import {
@@ -20,7 +21,9 @@ import {
   ApolloClient,
   InMemoryCache,
   createHttpLink,
+  from,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 
 import { LicenseInfo } from "@mui/x-license";
 
@@ -29,7 +32,8 @@ const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
-const useClient = () => {
+const useApolloClient = () => {
+  const [error, setError] = useState(null);
   const { getCognitoSession } = useUser();
 
   const apolloClient = useMemo(() => {
@@ -51,9 +55,25 @@ const useClient = () => {
       };
     });
 
+    const errorLink = onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors) {
+        // Concatenate all error messages to create a single error and message
+        const concatenatedMessage = graphQLErrors
+          .map(({ message }) => message)
+          .join("; ");
+
+        const combinedError = new Error(concatenatedMessage);
+        setError(combinedError);
+      }
+
+      if (networkError) {
+        setError(networkError);
+      }
+    });
+
     return new ApolloClient({
       // Join authLink and httpLink to handle auth in each request
-      link: authLink.concat(httpLink),
+      link: from([errorLink, authLink, httpLink]),
       cache: new InMemoryCache({
         typePolicies: {
           // a type policy must be added for any type we want to cache that
@@ -74,7 +94,7 @@ const useClient = () => {
     });
   }, [getCognitoSession]);
 
-  return apolloClient;
+  return { apolloClient, error, setError };
 };
 
 LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
@@ -82,23 +102,27 @@ LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
   const routing = useRoutes(restrictedRoutes);
-  const client = useClient();
+  const { apolloClient: client, error, setError } = useApolloClient();
 
   return (
     <ApolloProvider client={client}>
       <StyledEngineProvider injectFirst>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
-            <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <GlobalStyles />
-              <ActivityMetrics eventName="app_load">
-                <ProjectListViewQueryContext.Provider
-                  value={{ listViewQuery, setListViewQuery }}
-                >
-                  {routing}
-                </ProjectListViewQueryContext.Provider>
-              </ActivityMetrics>
-            </ErrorBoundary>
+            <ApolloErrorContext.Provider
+              value={{ apolloError: error, setApolloError: setError }}
+            >
+              <ErrorBoundary FallbackComponent={FallbackComponent}>
+                <GlobalStyles />
+                <ActivityMetrics eventName="app_load">
+                  <ProjectListViewQueryContext.Provider
+                    value={{ listViewQuery, setListViewQuery }}
+                  >
+                    {routing}
+                  </ProjectListViewQueryContext.Provider>
+                </ActivityMetrics>
+              </ErrorBoundary>
+            </ApolloErrorContext.Provider>
           </ThemeProvider>
         </LocalizationProvider>
       </StyledEngineProvider>
