@@ -233,6 +233,7 @@ const ProjectSummary = ({
               {!data.moped_project[0].parent_project_id && (
                 <Grid item xs={12}>
                   <Card sx={{ height: "fit-content", p: 0 }}>
+                    {/* The `&:last-child` is used to remove the padding from the bottom of the Table making it flush with the card layout */}
                     <CardContent sx={{ "&:last-child": { p: 0 } }}>
                       <SubprojectsTable
                         projectId={projectId}
