@@ -3,7 +3,6 @@ import { Box, Container, Paper } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import Search from "src/components/GridTable/Search";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import { useColumns } from "src/views/projects/projectsListView/helpers";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
@@ -135,7 +134,6 @@ const ProjectsListViewTable = () => {
   const {
     data: projectListViewData,
     loading,
-    error,
     refetch,
   } = useQuery(projectListViewQuery, {
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
@@ -205,7 +203,7 @@ const ProjectsListViewTable = () => {
   }, [refetch, queryContext, projectListViewQuery]);
 
   return (
-    <ApolloErrorHandler error={error}>
+    <>
       <Container maxWidth={false}>
         <CsvDownloadOptionsDialog
           dialogOpen={downloadOptionsDialogOpen}
@@ -300,7 +298,7 @@ const ProjectsListViewTable = () => {
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}
       />
-    </ApolloErrorHandler>
+    </>
   );
 };
 

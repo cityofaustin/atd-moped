@@ -32,10 +32,18 @@ export const fieldLabelTextSpanNoBorder = {
 
 export const fieldBox = {
   width: "100%",
+  minWidth: 0, // Allow shrinking
+  overflow: "hidden", // Prevent overflow
 };
 
 export const fieldSelectItem = {
   width: "calc(100% - 3rem)",
+  minWidth: 0, // Allow shrinking
+  "& .MuiSelect-select": {
+    overflowWrap: "break-word",
+    wordBreak: "break-word",
+    whiteSpace: "normal",
+  },
 };
 
 export const fieldLabelDataTrackerLink = (theme) => ({
