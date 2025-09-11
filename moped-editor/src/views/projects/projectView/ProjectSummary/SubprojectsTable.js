@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import SubprojectsToolbar from "./SubprojectsToolbar";
-import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
@@ -115,7 +114,7 @@ const SubprojectsTable = ({
   refetchSummaryData,
   handleSnackbar,
 }) => {
-  const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
+  const { loading, data, refetch } = useQuery(SUBPROJECT_QUERY, {
     variables: { projectId: projectId },
     fetchPolicy: "no-cache",
   });
@@ -274,7 +273,7 @@ const SubprojectsTable = ({
   if (loading || !data) return <CircularProgress />;
 
   return (
-    <ApolloErrorHandler errors={error}>
+    <>
       <DataGridPro
         sx={{ ...dataGridProStyleOverrides, border: 0 }}
         columns={dataGridColumns}
@@ -303,7 +302,7 @@ const SubprojectsTable = ({
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-    </ApolloErrorHandler>
+    </>
   );
 };
 

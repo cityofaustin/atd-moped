@@ -1,8 +1,34 @@
-import { createTheme, adaptV4Theme } from "@mui/material";
+import { createTheme } from "@mui/material";
 import shadows from "./shadows";
 import typography from "./typography";
 
-const theme = createTheme(adaptV4Theme({
+export const globalStyles = {
+  "*": {
+    boxSizing: "border-box",
+    margin: 0,
+    padding: 0,
+  },
+  html: {
+    "-webkit-font-smoothing": "antialiased",
+    "-moz-osx-font-smoothing": "grayscale",
+    height: "100%",
+    width: "100%",
+  },
+  body: {
+    backgroundColor: "#f4f6f8",
+    height: "100%",
+    width: "100%",
+  },
+  a: {
+    textDecoration: "none",
+  },
+  "#root": {
+    height: "100%",
+    width: "100%",
+  },
+};
+
+const theme = createTheme({
   palette: {
     background: {
       default: "#edeeed",
@@ -52,6 +78,6 @@ const theme = createTheme(adaptV4Theme({
       },
     },
   },
-}));
+});
 
 export default theme;

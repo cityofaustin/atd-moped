@@ -15,8 +15,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
-
 import {
   FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
@@ -280,7 +278,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
    * */
   const { projectId } = useParams();
 
-  const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
+  const { loading, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
     // id 0 used when creating a new project, no project funding will be returned
     variables: {
@@ -552,7 +550,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
   return (
-    <ApolloErrorHandler errors={error}>
+    <>
       <Box my={4}>
         <DataGridPro
           sx={dataGridProStyleOverrides}
@@ -613,7 +611,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
         handleSnackbar={handleSnackbar}
         refetch={refetch}
       />
-    </ApolloErrorHandler>
+    </>
   );
 };
 
