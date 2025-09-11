@@ -64,7 +64,7 @@
     "@turf/circle": "^6.5.0",
     "apollo-boost": "^0.4.9",
     "aws-amplify": "^5.3.27",
-    "axios": "^0.28.0",
+    "axios": "^0.30.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
     "dompurify": "^3.2.4",
