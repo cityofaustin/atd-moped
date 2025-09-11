@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
-import GlobalStyles from "src/components/GlobalStyles";
-import theme from "src/theme";
+import GlobalStyles from "@mui/material/GlobalStyles";
+import theme, { globalStyles } from "src/theme";
 import { restrictedRoutes } from "src/routes";
 import { getHighestRole } from "./auth/user";
 import { useUser, getCognitoIdJwt } from "src/auth/user";
@@ -113,7 +113,7 @@ const App = () => {
               value={{ apolloError: error, setApolloError: setError }}
             >
               <ErrorBoundary FallbackComponent={FallbackComponent}>
-                <GlobalStyles />
+                <GlobalStyles styles={globalStyles} />
                 <ActivityMetrics eventName="app_load">
                   <ProjectListViewQueryContext.Provider
                     value={{ listViewQuery, setListViewQuery }}
