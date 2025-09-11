@@ -5,7 +5,6 @@ select_permissions:
   - role: moped-admin
     permission:
       columns:
-        - component_categories
         - component_description
         - component_id
         - component_location_description
@@ -44,6 +43,7 @@ select_permissions:
         - parent_project_url
         - project_added_by
         - project_component_id
+        - project_created_at
         - project_description
         - project_designer
         - project_development_status
@@ -86,7 +86,6 @@ select_permissions:
   - role: moped-editor
     permission:
       columns:
-        - component_categories
         - component_description
         - component_id
         - component_location_description
@@ -125,6 +124,7 @@ select_permissions:
         - parent_project_url
         - project_added_by
         - project_component_id
+        - project_created_at
         - project_description
         - project_designer
         - project_development_status
@@ -167,7 +167,6 @@ select_permissions:
   - role: moped-viewer
     permission:
       columns:
-        - component_categories
         - component_description
         - component_id
         - component_location_description
@@ -206,6 +205,7 @@ select_permissions:
         - parent_project_url
         - project_added_by
         - project_component_id
+        - project_created_at
         - project_description
         - project_designer
         - project_development_status

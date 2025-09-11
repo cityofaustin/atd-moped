@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
-import TopBar from "./TopBar";
-import { useUser } from "../../auth/user";
-import Footer from "./Footer";
 import Box from "@mui/material/Box";
+import TopBar from "src/layouts/DashboardLayout/TopBar";
+import { useUser } from "src/auth/user";
+import Footer from "src/layouts/DashboardLayout/Footer";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import { useApolloErrorContext } from "src/utils/errorHandling";
 
 /**
  * Dashboard layout component for the app when users are signed in.
@@ -12,6 +14,12 @@ import Box from "@mui/material/Box";
 const DashboardLayout = () => {
   const { user } = useUser();
   const location = useLocation();
+  const { apolloError, setApolloError } = useApolloErrorContext();
+
+  // Clear Apollo error when navigating to a new route so ApolloErrorHandler doesn't block UI
+  useEffect(() => {
+    setApolloError(null);
+  }, [location.pathname, setApolloError]);
 
   /* If user is not authenticated, redirect to sign-in page
    * and preserve the current location so they can be redirected back
@@ -39,7 +47,9 @@ const DashboardLayout = () => {
           flexDirection: "column",
         }}
       >
-        <Outlet />
+        <ApolloErrorHandler error={apolloError}>
+          <Outlet />
+        </ApolloErrorHandler>
         <Footer />
       </Box>
     </Box>

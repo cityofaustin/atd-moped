@@ -14,7 +14,6 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import ExternalLink from "src/components/ExternalLink";
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
 import {
@@ -320,7 +319,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   /**
    * List of files query
    */
-  const { loading, error, data, refetch } = useQuery(PROJECT_FILE_ATTACHMENTS, {
+  const { loading, data, refetch } = useQuery(PROJECT_FILE_ATTACHMENTS, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
@@ -459,40 +458,38 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   return (
     <CardContent>
-      <ApolloErrorHandler errors={error}>
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
-          apiRef={apiRef}
-          ref={apiRef}
-          autoHeight
-          columns={dataGridColumns}
-          rows={rows}
-          getRowId={(row) => row.project_file_id}
-          editMode="row"
-          onRowEditStop={handleRowEditStop(rows, setRows)}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) =>
-            handleSnackbar(true, "Error updating table", "error", error)
-          }
-          disableRowSelectionOnClick
-          toolbar
-          density="comfortable"
-          getRowHeight={() => "auto"}
-          hideFooter
-          localeText={{ noRowsLabel: "No files to display" }}
-          initialState={{ pinnedColumns: { right: ["edit"] } }}
-          slots={{
-            toolbar: ProjectFilesToolbar,
-          }}
-          slotProps={{
-            toolbar: {
-              onClick: handleClickUploadFile,
-            },
-          }}
-        />
-      </ApolloErrorHandler>
+      <DataGridPro
+        sx={dataGridProStyleOverrides}
+        apiRef={apiRef}
+        ref={apiRef}
+        autoHeight
+        columns={dataGridColumns}
+        rows={rows}
+        getRowId={(row) => row.project_file_id}
+        editMode="row"
+        onRowEditStop={handleRowEditStop(rows, setRows)}
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={(error) =>
+          handleSnackbar(true, "Error updating table", "error", error)
+        }
+        disableRowSelectionOnClick
+        toolbar
+        density="comfortable"
+        getRowHeight={() => "auto"}
+        hideFooter
+        localeText={{ noRowsLabel: "No files to display" }}
+        initialState={{ pinnedColumns: { right: ["edit"] } }}
+        slots={{
+          toolbar: ProjectFilesToolbar,
+        }}
+        slotProps={{
+          toolbar: {
+            onClick: handleClickUploadFile,
+          },
+        }}
+      />
       <FileUploadDialogSingle
         title={"Add file"}
         dialogOpen={dialogOpen}
