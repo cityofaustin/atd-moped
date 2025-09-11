@@ -275,7 +275,7 @@ const SubprojectsTable = ({
   return (
     <>
       <DataGridPro
-        sx={dataGridProStyleOverrides}
+        sx={{ ...dataGridProStyleOverrides, border: 0 }}
         columns={dataGridColumns}
         rows={rows}
         autoHeight
