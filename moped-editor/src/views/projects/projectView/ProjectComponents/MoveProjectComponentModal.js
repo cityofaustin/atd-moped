@@ -73,7 +73,7 @@ const MoveProjectComponentModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent dividers={true}>
-        {!updatedComponentFormData ? (
+        {!updatedComponentFormData && component ? (
           <MoveComponentForm component={component} onSave={onSave} />
         ) : (
           <Typography>
