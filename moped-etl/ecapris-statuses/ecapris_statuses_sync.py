@@ -51,7 +51,7 @@ def get_conn(host, port, service, user, password):
     )
 
 
-def main(dry_run=False):
+def main(dry_run=False, verify_database_strings=False):
     # Connect to Moped DB and get distinct eCapris subproject IDs set on any project
     results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
 
@@ -92,7 +92,7 @@ def main(dry_run=False):
 
     logger.info(f"No results for eCapris IDs: {', '.join(no_result_ids)}")
 
-    # Loop through the eCapris IDs and upsert the status updates into the Moped DB
+    # Loop through the eCapris IDs and either verify strings or upsert the status updates
     updated_ecapris_ids = []
 
     for ecapris_id, statuses in statuses_by_ecapris_id.items():
@@ -119,6 +119,30 @@ def main(dry_run=False):
                 }
             )
 
+        if verify_database_strings:
+            logger.info(
+                f"Verifying database strings for eCapris ID {ecapris_id} ({len(payload)} records)"
+            )
+            for obj in payload:
+                logger.info(
+                    (
+                        "subproject_name: {subproject_name}\n"
+                        "sub_project_status_desc: {sub_project_status_desc}\n"
+                        "summary_description:\n{summary_description}\n"
+                        "subproject_status_impacts:\n{subproject_status_impacts}\n"
+                    ).format(
+                        subproject_name=obj.get("subproject_name", ""),
+                        sub_project_status_desc=obj.get("sub_project_status_desc", ""),
+                        summary_description=obj.get("summary_description", ""),
+                        subproject_status_impacts=obj.get(
+                            "subproject_status_impacts", ""
+                        ),
+                    )
+                )
+            # Separate groups visually
+            logger.info("")
+            continue
+
         if dry_run:
             logger.info(
                 f"[dry-run] Would upsert {len(payload)} statuses for eCapris ID {ecapris_id}"
@@ -132,7 +156,9 @@ def main(dry_run=False):
             if len(results["insert_ecapris_subproject_statuses"]["returning"]) > 0:
                 updated_ecapris_ids.append(ecapris_id)
 
-    if dry_run:
+    if verify_database_strings:
+        logger.info("Verification complete. No write operations were performed.")
+    elif dry_run:
         logger.info("Dry run complete. No write operations were performed.")
     else:
         if len(updated_ecapris_ids) == 0:
@@ -157,6 +183,14 @@ if __name__ == "__main__":
         action="store_true",
         help="Do not perform write operations; log intended upserts instead",
     )
+    parser.add_argument(
+        "--verify-database-strings",
+        action="store_true",
+        help=(
+            "Print values for: subproject_status_impacts, summary_description, "
+            "sub_project_status_desc, subproject_name. Suppresses writes."
+        ),
+    )
     args = parser.parse_args()
 
     log_level = logging.DEBUG
@@ -165,7 +199,14 @@ if __name__ == "__main__":
         f"Starting sync. Transferring eCapris status updates from FSD Data Warehouse to Moped DB."
     )
 
-    if args.dry_run:
+    if args.verify_database_strings:
+        logger.info(
+            "Running in verify mode. Printing selected string fields; writes are suppressed."
+        )
+    elif args.dry_run:
         logger.info("Running in dry-run mode. Writes to Hasura are suppressed.")
 
-    main(dry_run=args.dry_run)
+    main(
+        dry_run=args.dry_run or args.verify_database_strings,
+        verify_database_strings=args.verify_database_strings,
+    )
