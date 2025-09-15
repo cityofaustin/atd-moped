@@ -22,14 +22,33 @@ ORACLE_SERVICE = os.getenv("ORACLE_SERVICE")
 
 
 def get_conn(host, port, service, user, password):
-    # Need to run this once if you want to work locally
-    # Change lib_dir to your cx_Oracle library location
-    # https://stackoverflow.com/questions/56119490/cx-oracle-error-dpi-1047-cannot-locate-a-64-bit-oracle-client-library
-    # lib_dir = r"/Users/charliehenry/instantclient_23_3"
-    # cx_Oracle.init_oracle_client(lib_dir="/Users/atd/lib/oracle/instantclient_23_3")
-    cx_Oracle.init_oracle_client()
-    dsn_tns = cx_Oracle.makedsn(host, port, service_name=service)
-    return cx_Oracle.connect(user=user, password=password, dsn=dsn_tns)
+    # Ensure client uses UTF-8 so the Oracle client converts from DB charset (e.g., WE8MSWIN1252)
+    os.environ.setdefault("NLS_LANG", "AMERICAN_AMERICA.AL32UTF8")
+
+    # Initialize thick client if available; otherwise fall back to thin mode
+    try:
+        cx_Oracle.init_oracle_client()
+        logging.getLogger("moped-ecapris-statuses-sync").debug(
+            "Initialized Oracle thick client."
+        )
+    except Exception as init_err:
+        logging.getLogger("moped-ecapris-statuses-sync").debug(
+            f"Oracle thick client not initialized, using thin mode: {init_err}"
+        )
+
+    # Prefer modern keyword args over makedsn; cast port to int
+    try:
+        port_int = int(port) if port is not None else None
+    except (TypeError, ValueError):
+        raise ValueError(f"Invalid ORACLE_PORT value: {port!r}. Must be an integer.")
+
+    return cx_Oracle.connect(
+        user=user,
+        password=password,
+        host=host,
+        port=port_int,
+        service_name=service,
+    )
 
 
 def main():
