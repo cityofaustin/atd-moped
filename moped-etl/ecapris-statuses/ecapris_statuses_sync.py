@@ -5,6 +5,7 @@ Fetch ecapris status records from the FSD Data Warehouse and sync to Moped ecapr
 import os
 import sys
 import logging
+import argparse
 
 import oracledb as cx_Oracle
 
@@ -36,7 +37,6 @@ def get_conn(host, port, service, user, password):
             f"Oracle thick client not initialized, using thin mode: {init_err}"
         )
 
-    # Prefer modern keyword args over makedsn; cast port to int
     try:
         port_int = int(port) if port is not None else None
     except (TypeError, ValueError):
@@ -51,7 +51,7 @@ def get_conn(host, port, service, user, password):
     )
 
 
-def main():
+def main(dry_run=False):
     # Connect to Moped DB and get distinct eCapris subproject IDs set on any project
     results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
 
@@ -119,29 +119,53 @@ def main():
                 }
             )
 
-        results = make_hasura_request(
-            query=GRAPHQL_QUERIES["subproject_statuses_upsert"],
-            variables={"objects": payload},
-        )
+        if dry_run:
+            logger.info(
+                f"[dry-run] Would upsert {len(payload)} statuses for eCapris ID {ecapris_id}"
+            )
+        else:
+            results = make_hasura_request(
+                query=GRAPHQL_QUERIES["subproject_statuses_upsert"],
+                variables={"objects": payload},
+            )
 
-        if len(results["insert_ecapris_subproject_statuses"]["returning"]) > 0:
-            updated_ecapris_ids.append(ecapris_id)
+            if len(results["insert_ecapris_subproject_statuses"]["returning"]) > 0:
+                updated_ecapris_ids.append(ecapris_id)
 
-    if len(updated_ecapris_ids) == 0:
-        logger.info(
-            "No new eCapris statuses were found for subproject IDs associated with Moped projects."
-        )
+    if dry_run:
+        logger.info("Dry run complete. No write operations were performed.")
     else:
-        logger.info(
-            f"Upserted eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}"
-        )
+        if len(updated_ecapris_ids) == 0:
+            logger.info(
+                "No new eCapris statuses were found for subproject IDs associated with Moped projects."
+            )
+        else:
+            logger.info(
+                f"Upserted eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}"
+            )
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description=(
+            "Fetch eCapris status records from the FSD Data Warehouse and sync to "
+            "the Moped ecapris_subproject_statuses table."
+        )
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Do not perform write operations; log intended upserts instead",
+    )
+    args = parser.parse_args()
+
     log_level = logging.DEBUG
     logger = get_logger(name="moped-ecapris-statuses-sync", level=log_level)
     logger.info(
         f"Starting sync. Transferring eCapris status updates from FSD Data Warehouse to Moped DB."
     )
 
-    main()
+    if args.dry_run:
+        logger.info("Running in dry-run mode. Writes to Hasura are suppressed.")
+
+    main(dry_run=args.dry_run)
