@@ -6,7 +6,6 @@ import {
   useSearchParams,
   useLocation,
 } from "react-router-dom";
-import makeStyles from "@mui/styles/makeStyles";
 import { ErrorBoundary } from "react-error-boundary";
 
 import {
@@ -68,61 +67,7 @@ import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  noPadding: {
-    padding: 0,
-  },
-  cardWrapper: {
-    marginTop: theme.spacing(3),
-  },
-  title: {
-    minHeight: "3rem",
-  },
-  moreHorizontal: {
-    fontSize: "2rem",
-    float: "right",
-    cursor: "pointer",
-  },
-  projectOptionsMenuItem: {
-    minWidth: "14rem",
-  },
-  projectOptionsMenuItemIcon: {
-    minWidth: "2rem",
-  },
-  appBar: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.secondary,
-  },
-  selectedTab: {
-    minWidth: "160px",
-    "&.Mui-selected": {
-      color: theme.palette.text.primary,
-    },
-  },
-  indicatorColor: {
-    backgroundColor: theme.palette.primary.light,
-  },
-  colorPrimary: {
-    color: theme.palette.primary.main,
-  },
-  followDiv: {
-    float: "right",
-    cursor: "pointer",
-  },
-  unfollowIcon: {
-    color: theme.palette.primary.main,
-    fontSize: "2rem",
-  },
-  followIcon: {
-    color: theme.palette.text.secondary,
-    fontSize: "2rem",
-  },
-}));
+import theme from "src/theme";
 
 function a11yProps(index) {
   return {
@@ -416,11 +361,16 @@ const ProjectView = () => {
         >
           <Container maxWidth="xl">
             <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <Card className={classes.cardWrapper}>
+              <Card sx={{ cardWrapper: (theme) => ({ marginTop: theme.spacing(3) }) }}>
                 {loading ? (
                   <CircularProgress />
                 ) : (
-                  <div className={classes.root}>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      backgroundColor: (theme) => theme.palette.background.paper,
+                    }}
+                  >
                     <Box p={4} pb={2}>
                       <Grid container>
                         <Grid item xs={11}>
@@ -434,7 +384,10 @@ const ProjectView = () => {
                         </Grid>
                         <Grid item xs={1} md={1}>
                           <Box
-                            className={classes.followDiv}
+                            sx={{
+                              float: "right",
+                              cursor: "pointer",
+                            }}
                             onClick={() => handleFollowProject()}
                           >
                             <Tooltip
@@ -442,17 +395,23 @@ const ProjectView = () => {
                             >
                               {isFollowing ? (
                                 <BookmarkIcon
-                                  className={classes.unfollowIcon}
+                                  sx={(theme) => ({
+  color: theme.palette.primary.main,
+  fontSize: theme.spacing(2),
+})}
                                 />
                               ) : (
                                 <BookmarkBorderIcon
-                                  className={classes.followIcon}
+                                  sx={(theme) => ({
+  color: theme.palette.text.secondary,
+  fontSize: theme.spacing(2),
+})}
                                 />
                               )}
                             </Tooltip>
                           </Box>
                         </Grid>
-                        <Grid item xs={11} md={11} className={classes.title}>
+                        <Grid item xs={11} md={11} sx={{ minHeight: theme => theme.spacing(3) }}>
                           <Box
                             alignItems="center"
                             display="flex"
@@ -473,7 +432,11 @@ const ProjectView = () => {
                           <MoreHorizIcon
                             aria-controls="fade-menu"
                             aria-haspopup="true"
-                            className={classes.moreHorizontal}
+                            sx={{
+                              fontSize: theme => theme.spacing(2),
+                              float: "right",
+                              cursor: "pointer",
+                            }}
                             onClick={handleMenuOpen}
                           />
                           <Menu
@@ -495,11 +458,15 @@ const ProjectView = () => {
                           >
                             <MenuItem
                               onClick={handleRenameClick}
-                              className={classes.projectOptionsMenuItem}
+                              sx={{
+                                minWidth: theme => theme.spacing(14),
+                              }}
                               selected={false}
                             >
                               <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
+                                sx={{
+                                  minWidth: theme => theme.spacing(2),
+                                }}
                               >
                                 <CreateOutlinedIcon />
                               </ListItemIcon>
@@ -507,11 +474,15 @@ const ProjectView = () => {
                             </MenuItem>
                             <MenuItem
                               onClick={handleDeleteClick}
-                              className={classes.projectOptionsMenuItem}
+                              sx={{
+                                minWidth: theme => theme.spacing(14),
+                              }}
                               selected={false}
                             >
                               <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
+                                sx={{
+                                  minWidth: theme => theme.spacing(2),
+                                }}
                               >
                                 <DeleteOutlinedIcon />
                               </ListItemIcon>
@@ -522,9 +493,19 @@ const ProjectView = () => {
                       </Grid>
                     </Box>
                     <Divider />
-                    <AppBar className={classes.appBar} position="static">
+                    <AppBar
+                      sx={{
+                        backgroundColor: (theme) => theme.palette.background.paper,
+                        color: (theme) => theme.palette.text.secondary,
+                      }}
+                      position="static"
+                    >
                       <Tabs
-                        classes={{ indicator: classes.indicatorColor }}
+                        classes={{
+                          indicator: {
+                            backgroundColor: (theme) => theme.palette.primary.light,
+                          },
+                        }}
                         value={activeTab}
                         onChange={handleChange}
                         variant="scrollable"
@@ -533,7 +514,12 @@ const ProjectView = () => {
                         {TABS.map((tab, i) => {
                           return (
                             <Tab
-                              className={classes.selectedTab}
+                              sx={{
+                                minWidth: "160px",
+                                "&.Mui-selected": {
+                                  color: (theme) => theme.palette.text.primary,
+                                },
+                              }}
                               key={tab.label}
                               label={tab.label}
                               {...a11yProps(i)}
@@ -550,8 +536,12 @@ const ProjectView = () => {
                           key={tab.label}
                           value={activeTab}
                           index={i}
-                          className={
-                            tab.label === "Map" ? classes.noPadding : null
+                          sx={
+                            tab.label === "Map"
+                              ? {
+                                  padding: 0,
+                                }
+                              : null
                           }
                         >
                           <TabComponent
@@ -577,7 +567,7 @@ const ProjectView = () => {
                         </TabPanel>
                       );
                     })}
-                  </div>
+                  </Box>
                 )}
               </Card>
             </ErrorBoundary>
@@ -626,7 +616,9 @@ const ProjectView = () => {
                 <Button>
                   <RouterLink
                     to={allProjectsLink}
-                    className={classes.colorPrimary}
+                    sx={{
+                      color: theme.palette.primary.main,
+                    }}
                   >
                     Back to all projects
                   </RouterLink>

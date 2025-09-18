@@ -33,26 +33,7 @@ import ProjectComponentsList from "src/views/projects/projectView/ProjectCompone
 
 export const drawerWidth = 350;
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: "flex",
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerContainer: {
-    overflow: "auto",
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    backgroundColor: "#fff",
-    minHeight: ({ appBarHeight }) => `calc(100vh - ${appBarHeight}px)`,
-  },
-}));
+const useStyles = makeStyles(() => ({}));
 
 /* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */
 const PlaceholderToolbar = () => <Toolbar />;
@@ -243,7 +224,11 @@ export default function MapView({
 
   return (
     <Dialog fullScreen open={true}>
-      <div className={classes.root}>
+      <Box
+        sx={{
+          display: "flex",
+        }}
+      >
         <CssBaseline />
         <ComponentMapToolbar
           isFetchingFeatures={isFetchingFeatures}
@@ -254,14 +239,19 @@ export default function MapView({
           onCloseTab={onCloseTab}
         />
         <Drawer
-          className={classes.drawer}
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+          }}
           variant="permanent"
           classes={{
-            paper: classes.drawerPaper,
+            paper: {
+              width: drawerWidth,
+            },
           }}
         >
           <PlaceholderToolbar />
-          <div className={classes.drawerContainer}>
+          <Box sx={{ overflow: "auto" }}>
             <List sx={{ paddingBottom: 0 }}>
               <NewComponentToolbar
                 createState={createState}
@@ -301,9 +291,15 @@ export default function MapView({
                 isNotCreatingOrEditing={isNotCreatingOrEditing}
               />
             ) : null}
-          </div>
+          </Box>
         </Drawer>
-        <main className={classes.content}>
+        <main
+          sx={{
+            flexGrow: 1,
+            backgroundColor: "#fff",
+            minHeight: ({ appBarHeight }) => `calc(100vh - ${appBarHeight}px)`,
+          }}
+        >
           <PlaceholderToolbar />
           <div style={{ height: "100%" }}>
             <TheMap
@@ -357,7 +353,7 @@ export default function MapView({
             refetchProjectComponents={refetchProjectComponents}
           />
         </main>
-      </div>
+      </Box>
     </Dialog>
   );
 }
