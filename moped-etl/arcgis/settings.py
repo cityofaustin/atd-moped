@@ -8,7 +8,6 @@ query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_
     project_id
   }
   component_arcgis_online_view(where: $component_where) {
-    component_categories
     component_description
     component_id
     component_location_description
@@ -72,6 +71,7 @@ query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_
     project_tags
     project_team_members
     project_updated_at
+    project_created_at
     project_url
     project_website
     public_process_status

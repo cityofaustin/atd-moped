@@ -14,7 +14,6 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
-import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import ExternalLink from "src/components/ExternalLink";
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
 import {
@@ -23,7 +22,6 @@ import {
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "src/queries/project";
-import { getJwt, useUser } from "src/auth/user";
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
@@ -33,6 +31,7 @@ import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesT
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import { useUser } from "src/auth/user";
 
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
@@ -63,7 +62,7 @@ const clickableTextStyles = {
 };
 
 const useColumns = ({
-  token,
+  getCognitoSession,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -103,8 +102,10 @@ const useColumns = ({
           if (row.file_key) {
             return (
               <Link
+                onClick={() =>
+                  downloadFileAttachment(row?.file_key, getCognitoSession)
+                }
                 sx={clickableTextStyles}
-                onClick={() => downloadFileAttachment(row?.file_key, token)}
               >
                 {cleanUpFileKey(row?.file_key)}
               </Link>
@@ -233,7 +234,7 @@ const useColumns = ({
       },
     ];
   }, [
-    token,
+    getCognitoSession,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -253,8 +254,7 @@ const useColumns = ({
 const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const { projectId } = useParams();
-  const { user } = useUser();
-  const token = getJwt(user);
+  const { getCognitoSession } = useUser();
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -319,7 +319,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   /**
    * List of files query
    */
-  const { loading, error, data, refetch } = useQuery(PROJECT_FILE_ATTACHMENTS, {
+  const { loading, data, refetch } = useQuery(PROJECT_FILE_ATTACHMENTS, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
@@ -442,7 +442,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   };
 
   const dataGridColumns = useColumns({
-    token,
+    getCognitoSession,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -458,40 +458,38 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   return (
     <CardContent>
-      <ApolloErrorHandler errors={error}>
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
-          apiRef={apiRef}
-          ref={apiRef}
-          autoHeight
-          columns={dataGridColumns}
-          rows={rows}
-          getRowId={(row) => row.project_file_id}
-          editMode="row"
-          onRowEditStop={handleRowEditStop(rows, setRows)}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) =>
-            handleSnackbar(true, "Error updating table", "error", error)
-          }
-          disableRowSelectionOnClick
-          toolbar
-          density="comfortable"
-          getRowHeight={() => "auto"}
-          hideFooter
-          localeText={{ noRowsLabel: "No files to display" }}
-          initialState={{ pinnedColumns: { right: ["edit"] } }}
-          slots={{
-            toolbar: ProjectFilesToolbar,
-          }}
-          slotProps={{
-            toolbar: {
-              onClick: handleClickUploadFile,
-            },
-          }}
-        />
-      </ApolloErrorHandler>
+      <DataGridPro
+        sx={dataGridProStyleOverrides}
+        apiRef={apiRef}
+        ref={apiRef}
+        autoHeight
+        columns={dataGridColumns}
+        rows={rows}
+        getRowId={(row) => row.project_file_id}
+        editMode="row"
+        onRowEditStop={handleRowEditStop(rows, setRows)}
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={(error) =>
+          handleSnackbar(true, "Error updating table", "error", error)
+        }
+        disableRowSelectionOnClick
+        toolbar
+        density="comfortable"
+        getRowHeight={() => "auto"}
+        hideFooter
+        localeText={{ noRowsLabel: "No files to display" }}
+        initialState={{ pinnedColumns: { right: ["edit"] } }}
+        slots={{
+          toolbar: ProjectFilesToolbar,
+        }}
+        slotProps={{
+          toolbar: {
+            onClick: handleClickUploadFile,
+          },
+        }}
+      />
       <FileUploadDialogSingle
         title={"Add file"}
         dialogOpen={dialogOpen}

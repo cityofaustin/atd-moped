@@ -1,42 +1,42 @@
 import React from "react";
-import { Tooltip, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
+import { fieldLabelText } from "src/styles/reusableStyles";
 
 /**
  *
  * @param {String} text - Label text
- * @param {Object} classes - The style classes from parent
  * @param {function} onClickEdit - The function to call on edit click
- * @param {Object} className - Class name override if present
+ * @param {Object} sxProp - sx object determined by parent component
+ * @param {Object} spanSxProp - sx object for span element determined by parent component
  * @returns {JSX.Element}
  * @constructor
  */
 const ProjectSummaryLabel = ({
   text,
-  classes,
   onClickEdit,
-  className,
-  spanClassName,
+  sxProp,
+  spanSxProp,
   tooltipText,
 }) => {
   return (
     // the tooltip will not appear if the `title` is empty
     <Tooltip placement="bottom-start" title={tooltipText || ""}>
       <Typography
-        className={className ?? classes.fieldLabelText}
+        sx={sxProp ?? fieldLabelText}
         onClick={onClickEdit}
         component="span"
       >
         {/* If there is no input, render a "-" */}
-        {text.length === 0 && <span>-</span>}
+        {text.length === 0 && <Box>-</Box>}
         {/* If the input is an array, render one item per line */}
         {Array.isArray(text) &&
           text.map((element, i) => (
-            <span key={i} className={spanClassName}>
+            <Box key={i} sx={spanSxProp}>
               {element} <br />
-            </span>
+            </Box>
           ))}
         {/* Otherwise, render the input on one line */}
-        {!Array.isArray(text) && <span className={spanClassName}>{text}</span>}
+        {!Array.isArray(text) && <Box sx={spanSxProp}>{text}</Box>}
       </Typography>
     </Tooltip>
   );
