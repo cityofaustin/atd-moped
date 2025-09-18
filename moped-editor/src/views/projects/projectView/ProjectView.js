@@ -51,7 +51,6 @@ import {
   PROJECT_UNFOLLOW,
 } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 
 import { useSessionDatabaseData } from "src/auth/user";
@@ -349,7 +348,7 @@ const ProjectView = () => {
   }, [handleChange]);
 
   return (
-    <ApolloErrorHandler error={error}>
+    <>
       {data && !data?.moped_project?.length && <NotFoundView />}
       {data && !!data?.moped_project?.length && (
         <Page
@@ -632,7 +631,7 @@ const ProjectView = () => {
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}
       />
-    </ApolloErrorHandler>
+    </>
   );
 };
 
