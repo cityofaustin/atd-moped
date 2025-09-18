@@ -25,6 +25,7 @@ const requiredFields = ["project_name_full"];
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
+  loading,
   data,
   rowModesModel,
   handleDeleteOpen,
@@ -59,6 +60,7 @@ const useColumns = ({
               getOptionLabel: (option) =>
                 `${option.project_id} - ${option.project_name_full}`,
             }}
+            loading={loading}
           />
         ),
       },
@@ -103,6 +105,7 @@ const useColumns = ({
       },
     ];
   }, [
+    loading,
     data,
     rowModesModel,
     handleDeleteOpen,

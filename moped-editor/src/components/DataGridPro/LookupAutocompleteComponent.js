@@ -21,6 +21,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @returns {React component}
  */
 const LookupAutocompleteComponent = ({
+  loading,
   id,
   value,
   field,
@@ -67,6 +68,8 @@ const LookupAutocompleteComponent = ({
     [name]
   );
 
+  console.log(loading);
+
   return (
     <Autocomplete
       sx={{ width: "100%", mx: 1, alignContent: "center" }}
@@ -96,6 +99,7 @@ const LookupAutocompleteComponent = ({
           : defaultIsOptionEqualToValue
       }
       onChange={handleChange}
+
     />
   );
 };
