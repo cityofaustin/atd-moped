@@ -30,12 +30,13 @@ import UserSavedViewsTable from "src/views/dashboard/UserSavedViewsTable";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
+import { formatRelativeDate } from "src/utils/dateAndTime";
+import StatusUpdateWithAuthor from "src/components/StatusUpdateWithAuthor";
 
 import { DASHBOARD_QUERY } from "src/queries/dashboard";
 
 import { useSessionDatabaseData } from "src/auth/user";
 
-import parse from "html-react-parser";
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -157,6 +158,10 @@ const useColumns = ({ data, refetch, handleSnackbar }) => {
           // Display status update (from Project details page), i.e., most recent note
           const statusUpdate =
             row.project_list_view?.project_status_update ?? "";
+          const author = row.project_list_view?.project_status_update_author;
+          const dateCreated = formatRelativeDate(
+            row.project_list_view?.project_status_update_date_created
+          );
 
           return (
             <div style={tableCellStyles}>
@@ -177,7 +182,11 @@ const useColumns = ({ data, refetch, handleSnackbar }) => {
                   moped_note_types: data.moped_note_types,
                 }}
               >
-                {parse(String(statusUpdate))}
+                <StatusUpdateWithAuthor
+                  statusUpdate={statusUpdate}
+                  author={author}
+                  dateCreated={dateCreated}
+                />
               </DashboardStatusModal>
             </div>
           );

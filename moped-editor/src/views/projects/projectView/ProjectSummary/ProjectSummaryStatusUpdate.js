@@ -56,7 +56,7 @@ const ProjectSummaryStatusUpdate = ({
           data={data}
         >
           {!!statusUpdate && (
-            <StatusUpdateWithAuthor 
+            <StatusUpdateWithAuthor
               statusUpdate={statusUpdate}
               author={author}
               dateCreated={dateCreated}
