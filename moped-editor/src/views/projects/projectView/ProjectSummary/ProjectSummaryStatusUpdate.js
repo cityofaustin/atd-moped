@@ -54,15 +54,9 @@ const ProjectSummaryStatusUpdate = ({
           queryRefetch={refetch}
           handleSnackbar={handleSnackbar}
           data={data}
-        >
-          {!!statusUpdate && (
-            <StatusUpdateWithAuthor
-              statusUpdate={statusUpdate}
-              author={author}
-              dateCreated={dateCreated}
-            />
-          )}
-        </DashboardStatusModal>
+          statusUpdateAuthor={author}
+          statusUpdateDateCreated={dateCreated}
+        />
       </Box>
     </Grid>
   );

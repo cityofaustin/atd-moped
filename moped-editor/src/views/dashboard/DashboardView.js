@@ -181,13 +181,9 @@ const useColumns = ({ data, refetch, handleSnackbar }) => {
                   moped_project: [row],
                   moped_note_types: data.moped_note_types,
                 }}
-              >
-                <StatusUpdateWithAuthor
-                  statusUpdate={statusUpdate}
-                  author={author}
-                  dateCreated={dateCreated}
-                />
-              </DashboardStatusModal>
+                statusUpdateAuthor={author}
+                statusUpdateDateCreated={dateCreated}
+              />
             </div>
           );
         },
