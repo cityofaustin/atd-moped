@@ -1,11 +1,11 @@
 import React from "react";
 
 import { Box, Grid, Typography } from "@mui/material";
-import parse from "html-react-parser";
 
 import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 import { formatRelativeDate } from "src/utils/dateAndTime";
 import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
+import StatusUpdateWithAuthor from "src/components/StatusUpdateWithAuthor";
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -56,18 +56,11 @@ const ProjectSummaryStatusUpdate = ({
           data={data}
         >
           {!!statusUpdate && (
-            <Box>
-              <Box>{parse(String(statusUpdate))}</Box>
-              <Box
-                sx={(theme) => ({
-                  width: "100%",
-                  color: theme.palette.text.secondary,
-                  fontSize: ".7rem",
-                })}
-              >
-                {author} - {dateCreated}
-              </Box>
-            </Box>
+            <StatusUpdateWithAuthor 
+              statusUpdate={statusUpdate}
+              author={author}
+              dateCreated={dateCreated}
+            />
           )}
         </DashboardStatusModal>
       </Box>

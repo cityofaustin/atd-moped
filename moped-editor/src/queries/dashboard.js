@@ -30,6 +30,8 @@ export const DASHBOARD_QUERY = gql`
         }
         project_list_view {
           project_status_update
+          project_status_update_date_created
+          project_status_update_author
         }
       }
     }
