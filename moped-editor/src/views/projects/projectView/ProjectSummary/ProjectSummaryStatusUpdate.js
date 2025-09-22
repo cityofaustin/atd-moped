@@ -5,7 +5,6 @@ import { Box, Grid, Typography } from "@mui/material";
 import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 import { formatRelativeDate } from "src/utils/dateAndTime";
 import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
-import StatusUpdateWithAuthor from "src/components/StatusUpdateWithAuthor";
 
 /**
  * ProjectSummaryStatusUpdate Component

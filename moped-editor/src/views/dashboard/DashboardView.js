@@ -31,7 +31,6 @@ import { DataGridPro } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
 import { formatRelativeDate } from "src/utils/dateAndTime";
-import StatusUpdateWithAuthor from "src/components/StatusUpdateWithAuthor";
 
 import { DASHBOARD_QUERY } from "src/queries/dashboard";
 
