@@ -5,7 +5,9 @@ CREATE OR REPLACE VIEW council_district_project_distribution_analytics AS WITH a
         projects.project_id,
         st_buffer(st_transform(projects.geography::geometry, 2277), 100::double precision) AS buffer_geom
     FROM project_geography AS projects
-    WHERE st_geometrytype(projects.geography::geometry) = any(ARRAY['ST_MultiPoint'::text, 'ST_MultiLineString'::text])
+    INNER JOIN moped_project AS mp ON projects.project_id = mp.project_id
+    WHERE mp.is_deleted = false
+        AND st_geometrytype(projects.geography::geometry) = any(ARRAY['ST_MultiPoint'::text, 'ST_MultiLineString'::text])
 ),
 
 dissolved_project_buffers AS (
