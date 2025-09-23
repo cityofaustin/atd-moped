@@ -13,16 +13,6 @@ import oracledb as cx_Oracle
 
 logger = logging.getLogger("oracle-test-fixture")
 
-# DEFAULT_REPLACEMENTS: Dict[bytes, bytes] = {
-# bytes.fromhex("E2BFBF"): bytes.fromhex("E2809C"),  # “
-# bytes.fromhex("E2BF9D"): bytes.fromhex("E2809D"),  # ”
-## Examples you can enable if you see them:
-# bytes.fromhex("E2BF98"): bytes.fromhex("E28098"),  # ‘
-# bytes.fromhex("E2BF99"): bytes.fromhex("E28099"),  # ’
-# bytes.fromhex("E2BF93"): bytes.fromhex("E28093"),  # –
-# bytes.fromhex("E2BF94"): bytes.fromhex("E28094"),  # —
-# bytes.fromhex("E2BFA6"): bytes.fromhex("E280A6"),  # …
-# }
 
 # Map "bad" UTF-8 byte sequences -> "correct" UTF-8 byte sequences
 MOJIBAKE_REPAIRS = {
@@ -37,7 +27,6 @@ MOJIBAKE_REPAIRS = {
     bytes.fromhex("C3A2C2BFC29D"): bytes.fromhex(
         "E2809D"
     ),  # â¿ -> right double quote "
-    # add more pairs here as needed...
 }
 
 
