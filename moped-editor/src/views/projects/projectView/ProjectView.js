@@ -67,6 +67,7 @@ import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,9 +79,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cardWrapper: {
     marginTop: theme.spacing(3),
-  },
-  title: {
-    minHeight: "3rem",
   },
   moreHorizontal: {
     fontSize: "2rem",
@@ -108,10 +106,6 @@ const useStyles = makeStyles((theme) => ({
   },
   colorPrimary: {
     color: theme.palette.primary.main,
-  },
-  followDiv: {
-    float: "right",
-    cursor: "pointer",
   },
   unfollowIcon: {
     color: theme.palette.primary.main,
@@ -420,103 +414,132 @@ const ProjectView = () => {
                   <CircularProgress />
                 ) : (
                   <div className={classes.root}>
-                    <Box p={4} pb={2}>
+                    <Box p={2} pb={1}>
                       <Grid container>
-                        <Grid item xs={11}>
-                          <Box pb={1}>
-                            <Breadcrumbs aria-label="all-projects-breadcrumb">
-                              <Link component={RouterLink} to={allProjectsLink}>
-                                <strong>{"< ALL PROJECTS"}</strong>
-                              </Link>
-                            </Breadcrumbs>
+                        <Grid item xs={4} alignContent="center">
+                          {/* <Box pb={1}> */}
+                          <Breadcrumbs aria-label="all-projects-breadcrumb">
+                            <Link component={RouterLink} to={allProjectsLink}>
+                              <strong>{"< ALL PROJECTS"}</strong>
+                            </Link>
+                          </Breadcrumbs>
+                          {/* </Box> */}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={4}
+                          sx={{
+                            justifyContent: "center",
+                            display: "flex",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <Box>
+                            <ProjectStatusBadge
+                              phaseKey={currentPhase?.phase_key}
+                              phaseName={currentPhase?.phase_name}
+                            />
                           </Box>
                         </Grid>
-                        <Grid item xs={1} md={1}>
-                          <Box
-                            className={classes.followDiv}
-                            onClick={() => handleFollowProject()}
-                          >
-                            <Tooltip
-                              title={isFollowing ? "Unfollow" : "Follow"}
-                            >
-                              {isFollowing ? (
-                                <BookmarkIcon
-                                  className={classes.unfollowIcon}
-                                />
-                              ) : (
-                                <BookmarkBorderIcon
-                                  className={classes.followIcon}
-                                />
-                              )}
-                            </Tooltip>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={11} md={11} className={classes.title}>
-                          <Box
-                            alignItems="center"
-                            display="flex"
+                        <Grid item xs={4}>
+                          <Grid
+                            container
+                            justifyContent="flex-end"
                             flexDirection="row"
+                            alignItems="center"
+                            spacing={1}
                           >
+                            <Grid item onClick={() => handleFollowProject()}>
+                              <Tooltip
+                                title={isFollowing ? "Unfollow" : "Follow"}
+                              >
+                                {isFollowing ? (
+                                  <BookmarkIcon
+                                    className={classes.unfollowIcon}
+                                  />
+                                ) : (
+                                  <BookmarkBorderIcon
+                                    className={classes.followIcon}
+                                  />
+                                )}
+                              </Tooltip>
+                            </Grid>
+                            <Grid item>
+                              <MoreHorizIcon
+                                aria-controls="fade-menu"
+                                aria-haspopup="true"
+                                className={classes.moreHorizontal}
+                                onClick={handleMenuOpen}
+                              />
+                              <Menu
+                                id="fade-menu"
+                                anchorEl={anchorElement}
+                                keepMounted
+                                open={menuOpen}
+                                onClose={handleMenuClose}
+                                autoFocus={false}
+                                TransitionComponent={Fade}
+                                anchorOrigin={{
+                                  vertical: "bottom",
+                                  horizontal: "center",
+                                }}
+                                transformOrigin={{
+                                  vertical: "top",
+                                  horizontal: "center",
+                                }}
+                              >
+                                <MenuItem
+                                  onClick={handleRenameClick}
+                                  className={classes.projectOptionsMenuItem}
+                                  selected={false}
+                                >
+                                  <ListItemIcon
+                                    className={
+                                      classes.projectOptionsMenuItemIcon
+                                    }
+                                  >
+                                    <CreateOutlinedIcon />
+                                  </ListItemIcon>
+                                  <ListItemText primary="Rename" />
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={handleDeleteClick}
+                                  className={classes.projectOptionsMenuItem}
+                                  selected={false}
+                                >
+                                  <ListItemIcon
+                                    className={
+                                      classes.projectOptionsMenuItemIcon
+                                    }
+                                  >
+                                    <DeleteOutlinedIcon />
+                                  </ListItemIcon>
+                                  <ListItemText primary="Delete" />
+                                </MenuItem>
+                              </Menu>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sx={(theme) => ({
+                            minHeight: theme.spacing(8),
+                            justifyContent: "center",
+                            display: "flex",
+                            alignItems: "center",
+                          })}
+                        >
+                          <Box>
                             <ProjectNameEditable
                               projectData={data.moped_project[0]}
                               projectId={projectId}
                               isEditing={isEditing}
                               setIsEditing={setIsEditing}
-                              currentPhase={currentPhase}
                               handleSnackbar={handleSnackbar}
                               refetch={refetch}
                             />
                           </Box>
-                        </Grid>
-                        <Grid item xs={1} md={1}>
-                          <MoreHorizIcon
-                            aria-controls="fade-menu"
-                            aria-haspopup="true"
-                            className={classes.moreHorizontal}
-                            onClick={handleMenuOpen}
-                          />
-                          <Menu
-                            id="fade-menu"
-                            anchorEl={anchorElement}
-                            keepMounted
-                            open={menuOpen}
-                            onClose={handleMenuClose}
-                            autoFocus={false}
-                            TransitionComponent={Fade}
-                            anchorOrigin={{
-                              vertical: "bottom",
-                              horizontal: "center",
-                            }}
-                            transformOrigin={{
-                              vertical: "top",
-                              horizontal: "center",
-                            }}
-                          >
-                            <MenuItem
-                              onClick={handleRenameClick}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
-                            >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
-                              >
-                                <CreateOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Rename" />
-                            </MenuItem>
-                            <MenuItem
-                              onClick={handleDeleteClick}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
-                            >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
-                              >
-                                <DeleteOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Delete" />
-                            </MenuItem>
-                          </Menu>
                         </Grid>
                       </Grid>
                     </Box>
