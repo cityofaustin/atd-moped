@@ -4,6 +4,14 @@ services:
       context: .
     volumes:
       - .:/app
-    entrypoint: python3.12 /app/ecapris_statuses_sync.py
+    entrypoint: python3.12 /app/ecapris_statuses_sync.py --dry-run
+    env_file:
+      - env_file
+  ecapris-statuses-test-fixture:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    entrypoint: python3.12 /app/test_oracle_fixture.py
     env_file:
       - env_file

@@ -13,27 +13,32 @@ import oracledb as cx_Oracle
 
 logger = logging.getLogger("oracle-test-fixture")
 
-DEFAULT_REPLACEMENTS: Dict[bytes, bytes] = {
-    bytes.fromhex("E2BFBF"): bytes.fromhex("E2809C"),  # “
-    bytes.fromhex("E2BF9D"): bytes.fromhex("E2809D"),  # ”
-    # Examples you can enable if you see them:
-    # bytes.fromhex("E2BF98"): bytes.fromhex("E28098"),  # ‘
-    # bytes.fromhex("E2BF99"): bytes.fromhex("E28099"),  # ’
-    # bytes.fromhex("E2BF93"): bytes.fromhex("E28093"),  # –
-    # bytes.fromhex("E2BF94"): bytes.fromhex("E28094"),  # —
-    # bytes.fromhex("E2BFA6"): bytes.fromhex("E280A6"),  # …
+# DEFAULT_REPLACEMENTS: Dict[bytes, bytes] = {
+# bytes.fromhex("E2BFBF"): bytes.fromhex("E2809C"),  # “
+# bytes.fromhex("E2BF9D"): bytes.fromhex("E2809D"),  # ”
+## Examples you can enable if you see them:
+# bytes.fromhex("E2BF98"): bytes.fromhex("E28098"),  # ‘
+# bytes.fromhex("E2BF99"): bytes.fromhex("E28099"),  # ’
+# bytes.fromhex("E2BF93"): bytes.fromhex("E28093"),  # –
+# bytes.fromhex("E2BF94"): bytes.fromhex("E28094"),  # —
+# bytes.fromhex("E2BFA6"): bytes.fromhex("E280A6"),  # …
+# }
+
+# Map "bad" UTF-8 byte sequences -> "correct" UTF-8 byte sequences
+MOJIBAKE_REPAIRS = {
+    # Original patterns (direct UTF-8 mojibake)
+    bytes.fromhex("E2BFBF"): bytes.fromhex("E2809C"),  # left double quote
+    bytes.fromhex("E2BF9D"): bytes.fromhex("E2809D"),  # right double quote
+    # Double-encoded patterns (Latin-1 interpreted UTF-8 re-encoded as UTF-8)
+    # These are what we actually see from Oracle: â¿¿ and â¿
+    bytes.fromhex("C3A2C2BFC2BF"): bytes.fromhex(
+        "E2809C"
+    ),  # â¿¿ -> left double quote "
+    bytes.fromhex("C3A2C2BFC29D"): bytes.fromhex(
+        "E2809D"
+    ),  # â¿ -> right double quote "
+    # add more pairs here as needed...
 }
-
-
-def repair_mojibake(text: str, replacements=DEFAULT_REPLACEMENTS) -> str:
-    """
-    Input: mojibake string fetched via JDBC/thin driver (decoded as CP-1252).
-    Strategy: re-encode to CP-1252 bytes, patch bad triplets, decode as UTF-8.
-    """
-    data = text.encode("windows-1252", errors="ignore")
-    for bad, good in replacements.items():
-        data = data.replace(bad, good)
-    return data.decode("utf-8", errors="strict")
 
 
 def get_env(name: str) -> str:
@@ -78,17 +83,109 @@ def connect_oracle():
     )
 
 
+# Precompile a single regex that matches any "bad" sequence
+_BAD_BYTES_RE = re.compile(b"|".join(map(re.escape, MOJIBAKE_REPAIRS.keys())))
+
+
+def repair_mojibake(text: str) -> str:
+    """
+    Encode to UTF-8 bytes, swap any known bad sequences to the intended ones,
+    then decode back to text. Logs successful substitutions with context.
+
+    Returns:
+        str: The repaired text
+    """
+    result, _ = repair_mojibake_with_info(text)
+    return result
+
+
+def repair_mojibake_with_info(text: str) -> tuple[str, int]:
+    """
+    Encode to UTF-8 bytes, swap any known bad sequences to the intended ones,
+    then decode back to text. Logs successful substitutions with context.
+
+    Returns:
+        tuple[str, int]: The repaired text and the number of substitutions made
+    """
+    data = text.encode("utf-8", "surrogatepass")
+    match_count = 0
+
+    def replacement_logger(match):
+        nonlocal match_count
+        match_count += 1
+
+        # Get the matched bad sequence and its replacement
+        bad_bytes = match.group(0)
+        good_bytes = MOJIBAKE_REPAIRS[bad_bytes]
+
+        # Find the position of the match in the original data
+        match_start = match.start()
+        match_end = match.end()
+
+        # Get context around the match (20 chars before and after)
+        context_start = max(0, match_start - 20)
+        context_end = min(len(data), match_end + 20)
+        context_bytes = data[context_start:context_end]
+
+        try:
+            # Try to decode context for display (may fail if we're in the middle of bad encoding)
+            context_str = context_bytes.decode("utf-8", "replace")
+            # Highlight the match position within the context
+            relative_start = match_start - context_start
+            relative_end = match_end - context_start
+            highlighted_context = (
+                context_str[:relative_start]
+                + f"[{context_str[relative_start:relative_end]}]"
+                + context_str[relative_end:]
+            )
+        except:
+            # Fallback to hex representation if decoding fails
+            highlighted_context = f"bytes: {context_bytes.hex()}"
+
+        logger.debug(
+            "Mojibake repair #%d: Replaced %s -> %s at position %d-%d. Context: ",
+            match_count,
+            bad_bytes.hex(),
+            good_bytes.hex(),
+            match_start,
+            match_end,
+            # highlighted_context,
+        )
+
+        return good_bytes
+
+    fixed = _BAD_BYTES_RE.sub(replacement_logger, data)
+
+    if match_count > 0:
+        logger.info(
+            "Successfully repaired %d mojibake sequence(s) in text", match_count
+        )
+    else:
+        logger.debug("No mojibake patterns found in text")
+
+    return fixed.decode("utf-8", "strict"), match_count
+
+
 def main() -> int:
     logging.basicConfig(
         level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s"
     )
 
     query = """
-SELECT SUB_PROJECT_STATUS_DESC
+SELECT sp_number, sub_project_status_id, sub_project_status_desc
 FROM   ATD_SUB_PROJECT_STATUS_VW
+WHERE SUB_PROJECT_STATUS_DESC LIKE '%specialty%'
 """.strip()
 
-    potential_mojibake_strings = ["SUB_PROJECT_STATUS_DESC"]
+    query = """
+SELECT sp_number, sub_project_status_id, sub_project_status_desc
+FROM   ATD_SUB_PROJECT_STATUS_VW
+WHERE SUB_PROJECT_STATUS_DESC LIKE '%Holly Implementation Phase 1%'
+""".strip()
+
+    potential_mojibake_strings = [
+        "SUB_PROJECT_STATUS_DESC",
+    ]
 
     try:
         conn = connect_oracle()
@@ -112,7 +209,7 @@ FROM   ATD_SUB_PROJECT_STATUS_VW
                     # Apply mojibake repair to columns in the potential_mojibake_strings list
                     if col_name in potential_mojibake_strings and value is not None:
                         try:
-                            value = repair_mojibake(str(value))
+                            value = repair_mojibake(value)
                         except Exception as repair_err:
                             logger.warning(
                                 "Failed to repair mojibake for column %s: %s",
