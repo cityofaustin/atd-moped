@@ -77,6 +77,9 @@ const useStyles = makeStyles((theme) => ({
   noPadding: {
     padding: 0,
   },
+  lessPadding: {
+    padding: theme.spacing(1),
+  },
   cardWrapper: {
     marginTop: theme.spacing(3),
   },
@@ -414,7 +417,7 @@ const ProjectView = () => {
                   <CircularProgress />
                 ) : (
                   <div className={classes.root}>
-                    <Box p={2} pb={1}>
+                    <Box p={2} px={3} pb={1}>
                       <Grid container>
                         <Grid item xs={4} alignContent="center">
                           {/* <Box pb={1}> */}
@@ -575,6 +578,7 @@ const ProjectView = () => {
                           className={
                             tab.label === "Map" ? classes.noPadding : null
                           }
+                          className={classes.noPadding}
                         >
                           <TabComponent
                             loading={loading}
