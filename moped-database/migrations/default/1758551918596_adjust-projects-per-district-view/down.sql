@@ -1,3 +1,6 @@
+DROP INDEX IF EXISTS idx_council_district_geom_2277;
+
+
 CREATE OR REPLACE VIEW council_district_project_distribution_analytics AS WITH area_project_buffers AS (
     SELECT
         projects.project_id,

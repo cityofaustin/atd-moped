@@ -43,3 +43,7 @@ SELECT
 FROM area_district_aggregates AS ada
 INNER JOIN project_totals AS pt ON ada.project_id = pt.project_id
 ORDER BY ada.project_id, ada.council_district_id;
+
+
+CREATE INDEX IF NOT EXISTS idx_council_district_geom_2277
+ON layer_council_district USING gist (st_transform(geography::geometry, 2277));
