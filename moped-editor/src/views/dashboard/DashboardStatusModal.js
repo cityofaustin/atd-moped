@@ -24,8 +24,9 @@ import parse from "html-react-parser";
  * @param {String} statusUpdate - The current status update for the project
  * @param {Function} queryRefetch - The refetch function to fire on modal close
  * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
- * @param {JSX.Element} children - The content to render inside the modal
  * @param {Object} data - The project data object from the GraphQL query
+ * @param {String} statusUpdateAuthor - Author of status update being rendered
+ * @param {String} statusUpdateDateCreated - Formatted date of status update
  * @returns {JSX.Element}
  */
 const DashboardStatusModal = ({
@@ -37,7 +38,6 @@ const DashboardStatusModal = ({
   statusUpdate,
   queryRefetch,
   handleSnackbar,
-  children,
   data,
   statusUpdateAuthor,
   statusUpdateDateCreated,
@@ -72,8 +72,6 @@ const DashboardStatusModal = ({
                 alignItems: "center",
               }}
             >
-              {/* if the parent is the summary page, also render the status label */}
-              {modalParent === "summary" && children}
               <Tooltip
                 placement="bottom-start"
                 title="Create new status update"
