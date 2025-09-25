@@ -18,99 +18,126 @@ used to create the view.
 ### project_list_view
 
 #### Usage
+
 React app, Power BI dataflow
 
 #### Dependencies
+
 current_phase_view
 
 #### Summary
+
 Lists projects with joined data needed to display the project list view in the Moped application.
 
 ### component_arcgis_online_view
 
-#### Usage
+#### Usage (component_arcgis_online_view)
+
 ArcGIS Online ETL to populate feature service, Power BI
 
-#### Dependencies
+#### Dependencies (component_arcgis_online_view)
+
 project_list_view
 
-#### Summary
+#### Summary (component_arcgis_online_view)
+
 Lists project components with joined project data to populate the AGOL Moped components feature service.
 
 ### exploded_component_arcgis_online_view
 
-#### Usage
+#### Usage (exploded_component_arcgis_online_view)
+
 AGOL ETL
 
-#### Dependencies
+#### Dependencies (exploded_component_arcgis_online_view)
+
 project_list_view, component_arcgis_online_view
 
-#### Summary
+#### Summary (exploded_component_arcgis_online_view)
+
 Lists project components with MultiPoint geometry and splits out the MultiPoints into individual point geometries. This is a workaround for AGOL not supporting
 [labeling](https://pro.arcgis.com/en/pro-app/latest/help/mapping/text/labeling-basics.htm) on MultiPoint geometries. See https://github.com/cityofaustin/atd-data-tech/issues/17999.
 
 ### uniform_features
 
-#### Usage
+#### Usage (uniform_features)
+
 React app
 
-#### Dependencies
+#### Dependencies (uniform_features)
+
 None
 
-#### Summary
+#### Summary (uniform_features)
+
 Lists unioned project component features by component id as stored in feature_intersections, feature_street_segments, and other feature_ tables.
 
 ### project_geography
 
-#### Usage
+#### Usage (project_geography)
+
 React app
 
-#### Dependencies
+#### Dependencies (project_geography)
+
 uniform_features
 
-#### Summary
+#### Summary (project_geography)
+
 Lists project component geographies from all feature tables where project component features are stored (feature_intersections, feature_street_segments, and other feature_ tables). Used in the React app to query all features by project id to show in components map.
 
 ### project_funding_view
 
-#### Usage
+#### Usage (project_funding_view)
+
 Power BI
 
-#### Dependencies
+#### Dependencies (project_funding_view)
+
 None
 
-#### Summary
+#### Summary (project_funding_view)
+
 Lists project funding rows with joined data from funding program and source tables to make values human-readable.
 
 ### current_phase_view
 
-#### Usage
+#### Usage (current_phase_view)
+
 Data Tracker sync ETL
 
-#### Dependencies
+#### Dependencies (current_phase_view)
+
 None
 
-#### Summary
+#### Summary (current_phase_view)
+
 Lists current phases of projects.
 
 ### combined_project_notes_view
 
-#### Usage
+#### Usage (combined_project_notes_view)
+
 React app
 
-#### Dependencies
+#### Dependencies (combined_project_notes_view)
+
 None
 
-#### Summary
+#### Summary (combined_project_notes_view)
+
 Lists Moped notes, status updates, and eCAPRIS subproject status updates to show a combined timeline in the project notes tab.
 
 ### council_district_project_distribution_analytics
 
-#### Usage
+#### Usage (council_district_project_distribution_analytics)
+
 Power BI
 
-#### Dependencies
+#### Dependencies (council_district_project_distribution_analytics)
+
 project_geography
 
-#### Summary
+#### Summary (council_district_project_distribution_analytics)
+
 Preliminary view to estimate project distribution across city council districts. This is used internally by ATSD along with project manager review to estimate bond funding distribution.
