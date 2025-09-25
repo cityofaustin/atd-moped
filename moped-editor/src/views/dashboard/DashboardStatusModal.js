@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ProjectNotes from "../projects/projectView/ProjectNotes";
 import { fieldLabelText } from "src/styles/reusableStyles";
+import parse from "html-react-parser";
 
 /**
  * Dashboard status modal component
@@ -23,8 +24,9 @@ import { fieldLabelText } from "src/styles/reusableStyles";
  * @param {String} statusUpdate - The current status update for the project
  * @param {Function} queryRefetch - The refetch function to fire on modal close
  * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
- * @param {JSX.Element} children - The content to render inside the modal
  * @param {Object} data - The project data object from the GraphQL query
+ * @param {String} statusUpdateAuthor - Author of status update being rendered
+ * @param {String} statusUpdateDateCreated - Formatted date of status update
  * @returns {JSX.Element}
  */
 const DashboardStatusModal = ({
@@ -36,8 +38,9 @@ const DashboardStatusModal = ({
   statusUpdate,
   queryRefetch,
   handleSnackbar,
-  children,
   data,
+  statusUpdateAuthor,
+  statusUpdateDateCreated,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -69,8 +72,6 @@ const DashboardStatusModal = ({
                 alignItems: "center",
               }}
             >
-              {/* if the parent is the summary page, also render the status label */}
-              {modalParent === "summary" && children}
               <Tooltip
                 placement="bottom-start"
                 title="Create new status update"
@@ -83,7 +84,20 @@ const DashboardStatusModal = ({
           </Box>
         )}
         {/* if there is a status update, render the content */}
-        {!!statusUpdate && children}
+        {!!statusUpdate && (
+          <Box>
+            <Box>{parse(String(statusUpdate))}</Box>
+            <Box
+              sx={(theme) => ({
+                width: "100%",
+                color: theme.palette.text.secondary,
+                fontSize: ".7rem",
+              })}
+            >
+              {statusUpdateAuthor} - {statusUpdateDateCreated}
+            </Box>
+          </Box>
+        )}
       </Typography>
       <Dialog
         open={isDialogOpen}
