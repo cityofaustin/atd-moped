@@ -13,14 +13,6 @@ import {
 import Cancel from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import makeStyles from "@mui/styles/makeStyles";
-import theme from "src/theme/index";
-
-const useStyles = makeStyles((theme) => ({
-  dialogContent: {
-    paddingBottom: theme.spacing(3),
-  },
-}));
 
 const DeleteComponentModal = ({
   showDialog,
@@ -28,8 +20,6 @@ const DeleteComponentModal = ({
   setIsDeletingComponent,
   onDeleteComponent,
 }) => {
-  const classes = useStyles();
-
   const onClose = () => {
     setIsDeletingComponent(false);
   };
@@ -50,7 +40,7 @@ const DeleteComponentModal = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent} dividers={true}>
+      <DialogContent sx={{ paddingBottom: 3 }} dividers={true}>
         <Grid container spacing={1}>
           <List>
             <Box borderLeft={7} borderColor="secondary.main">
@@ -69,7 +59,7 @@ const DeleteComponentModal = ({
           <Grid item>
             <Button
               size="small"
-              style={{ color: theme.palette.text.primary }}
+              sx={{ color: "text.primary" }}
               startIcon={<Cancel />}
               onClick={onClose}
             >
