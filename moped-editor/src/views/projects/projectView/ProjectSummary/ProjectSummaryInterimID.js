@@ -34,8 +34,10 @@ const ProjectSummaryInterimID = ({
   const originalValue = data?.moped_project?.[0]?.interim_project_id ?? null;
   const [editMode, setEditMode] = useState(false);
   const [interimId, setInterimId] = useState(originalValue);
-  const [updateProjectInterimId] = useMutation(PROJECT_UPDATE_INTERIM_ID);
-  const [clearProjectInterimId] = useMutation(PROJECT_CLEAR_INTERIM_ID);
+  const [updateProjectInterimId, { loading: updateMutationLoading }] =
+    useMutation(PROJECT_UPDATE_INTERIM_ID);
+  const [clearProjectInterimId, { loading: clearMutationLoading }] =
+    useMutation(PROJECT_CLEAR_INTERIM_ID);
 
   /**
    * Resets the project interim ID to original value
@@ -97,14 +99,8 @@ const ProjectSummaryInterimID = ({
 
   return (
     <Grid item xs={12} sx={fieldGridItem}>
-      <Typography sx={fieldLabel}>
-        Interim MPD (Access) ID
-      </Typography>
-      <Box
-        display="flex"
-        justifyContent="flex-start"
-        sx={fieldBox}
-      >
+      <Typography sx={fieldLabel}>Interim MPD (Access) ID</Typography>
+      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <>
             <TextField
@@ -122,7 +118,7 @@ const ProjectSummaryInterimID = ({
               disabledCondition={
                 parseInt(originalValue) === parseInt(interimId)
               }
-              loading={loading}
+              loading={loading || clearMutationLoading || updateMutationLoading}
             />
           </>
         )}
