@@ -23,7 +23,7 @@ const ProjectSummaryIconButtons = ({
   loading,
 }) => {
   return (
-    <div style={{display: "contents"}}>
+    <div style={{ display: "contents" }}>
       <IconButton
         disabled={disabledCondition || loading}
         onClick={handleSave}
@@ -32,7 +32,11 @@ const ProjectSummaryIconButtons = ({
       >
         <Icon>check</Icon>
       </IconButton>
-      <IconButton onClick={handleClose} sx={iconButtonStyles}>
+      <IconButton
+        disabled={loading}
+        onClick={handleClose}
+        sx={iconButtonStyles}
+      >
         <Icon>close</Icon>
       </IconButton>
     </div>
