@@ -55,11 +55,11 @@ CREATE TABLE ecapris_funding (
 
 -- Indices for performance
 CREATE INDEX idx_ecapris_funding_ecapris_id 
-    ON ecapris_funding(ecapris_id);
+    ON ecapris_funding(fao_id);
 CREATE INDEX idx_ecapris_funding_fdu 
     ON ecapris_funding(fdu);
 CREATE INDEX idx_ecapris_funding_sp_number 
-    ON ecapris_funding(sp_number);
+    ON ecapris_funding(ecapris_subproject_id);
 
 -- Comments for documentation
 COMMENT ON TABLE ecapris_funding IS 'Stores eCAPRIS subproject status records synced from the FSD Data Warehouse to supplement the moped_proj_funding table records.';
@@ -78,7 +78,7 @@ ALTER TABLE moped_proj_funding
 ADD COLUMN overrides_ecapris_id VARCHAR(255);
 
 -- View to combine both sources
-CREATE VIEW moped_all_funding AS
+CREATE VIEW combined_project_funding_view AS
 SELECT
     'moped_'::text || proj_funding_id AS id,
     proj_funding_id  AS original_id,
