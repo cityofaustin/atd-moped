@@ -11,7 +11,7 @@ CREATE TABLE ecapris_funding (
     fao_id INTEGER NOT NULL UNIQUE, -- Unique FDU id field from eCAPRIS
     
     -- FDU and Fund information
-    ecapris_id TEXT NOT NULL, 
+    ecapris_subproject_id TEXT NOT NULL, 
     fdu TEXT,
     fdu_status TEXT,
     fund TEXT,
@@ -32,7 +32,6 @@ CREATE TABLE ecapris_funding (
     unit_long_name TEXT,
     
     -- Financial identifiers
-    sp_number INTEGER,
     sp_name TEXT,
     sp_status TEXT,
     
@@ -56,22 +55,23 @@ CREATE TABLE ecapris_funding (
 
 -- Indices for performance
 CREATE INDEX idx_ecapris_funding_ecapris_id 
-    ON moped_ecapris_funding(ecapris_id);
+    ON ecapris_funding(ecapris_id);
 CREATE INDEX idx_ecapris_funding_fdu 
-    ON moped_ecapris_funding(fdu);
+    ON ecapris_funding(fdu);
 CREATE INDEX idx_ecapris_funding_sp_number 
-    ON moped_ecapris_funding(sp_number);
+    ON ecapris_funding(sp_number);
 
 -- Comments for documentation
-COMMENT ON TABLE moped_ecapris_funding IS 'Stores eCAPRIS subproject status records synced from the FSD Data Warehouse to supplement the moped_proj_notes table records.';
-COMMENT ON COLUMN moped_ecapris_funding.ecapris_id IS 'eCapris subproject ID number';
-COMMENT ON COLUMN moped_ecapris_funding.fdu IS 'Fund-Department-Unit concatenated';
-COMMENT ON COLUMN moped_ecapris_funding.appropriated IS 'Appropriated amount (app field from API)';
-COMMENT ON COLUMN moped_ecapris_funding.expenses IS 'Expenses (exp field from API)';
-COMMENT ON COLUMN moped_ecapris_funding.obligated IS 'Obligated amount (obl field from API)';
-COMMENT ON COLUMN moped_ecapris_funding.encumbered IS 'Encumbered amount (enc field from API)';
-COMMENT ON COLUMN moped_ecapris_funding.fdu_bal IS 'FDU Balance';
-COMMENT ON COLUMN moped_ecapris_funding.fao_id IS 'Unique ID of FDU from eCapris';
+COMMENT ON TABLE ecapris_funding IS 'Stores eCAPRIS subproject status records synced from the FSD Data Warehouse to supplement the moped_proj_funding table records.';
+COMMENT ON COLUMN ecapris_funding.ecapris_id IS 'eCapris subproject ID number (SP number)';
+COMMENT ON COLUMN ecapris_funding.fdu IS 'Fund-Department-Unit concatenated';
+COMMENT ON COLUMN ecapris_funding.fdu_status IS 'FDU status (Active or Inactive)';
+COMMENT ON COLUMN ecapris_funding.appropriated IS 'Appropriated amount (app field from API)';
+COMMENT ON COLUMN ecapris_funding.expenses IS 'Expenses (exp field from API)';
+COMMENT ON COLUMN ecapris_funding.obligated IS 'Obligated amount (obl field from API)';
+COMMENT ON COLUMN ecapris_funding.encumbered IS 'Encumbered amount (enc field from API)';
+COMMENT ON COLUMN ecapris_funding.fdu_bal IS 'FDU Balance';
+COMMENT ON COLUMN ecapris_funding.fao_id IS 'Unique ID of FDU from eCapris';
 
 -- Add override tracking to existing table
 ALTER TABLE moped_proj_funding
@@ -82,7 +82,7 @@ CREATE VIEW moped_all_funding AS
 SELECT
     'moped_'::text || proj_funding_id AS id,
     proj_funding_id  AS original_id,
-    'Moped'
+    NULL AS ecapris_subproject_id, 
     project_id,
     funding_amount,
     funding_description,
@@ -92,8 +92,7 @@ SELECT
     fund_dept_unit,
     created_at,
     updated_at,
-    NULL AS ecapris_id,
-    overrides_ecapris_id
+    overrides_ecapris_funding_id
 FROM moped_proj_funding
 WHERE is_deleted = FALSE
 
@@ -101,8 +100,9 @@ UNION ALL
 
 SELECT
     'ecapris_'::text || ecapris_funding_id AS id,
-    ecapris_funding_id AS original_id,
-    project_id AS null,
+    fao_id AS original_id,
+    ecapris_subproject_id,
+    NULL AS project_id,
     app AS funding_amount,
     null AS funding_description,
     2 AS funding_status_id,
@@ -112,10 +112,4 @@ SELECT
     created_at,
     updated_at,
     NULL as overrides_ecapris_id
-FROM moped_ecapris_funding
-WHERE NOT EXISTS (
-        -- Exclude eCAPRIS records that have been overridden
-        SELECT 1 FROM moped_proj_funding
-        WHERE overrides_ecapris_id = moped_ecapris_funding.ecapris_id
-            AND is_deleted = FALSE
-    );
+FROM ecapris_funding;
