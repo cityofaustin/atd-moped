@@ -145,7 +145,6 @@ const ProjectNameForm = ({
             })}
           >
             <ProjectSummaryIconButtons
-              // handleSave={handleFieldSave}
               handleClose={handleCancelClick}
               disabledCondition={!isDirty}
               loading={loading}
