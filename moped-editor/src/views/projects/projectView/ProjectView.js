@@ -430,11 +430,7 @@ const ProjectView = () => {
                         sx={{ color: "primary.main" }}
                         separator={<NavigateNextIcon fontSize="small" />}
                       >
-                        <Link
-                          underline="hover"
-                          color="inherit"
-                          href={allProjectsLink}
-                        >
+                        <Link color="inherit" href={allProjectsLink}>
                           {`${
                             previousProjectListViewQueryString
                               ? "Filtered"
