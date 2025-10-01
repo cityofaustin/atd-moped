@@ -450,14 +450,15 @@ const ProjectView = () => {
                       <Grid container>
                         <Grid
                           item
+                          xs // Takes available space
                           sx={(theme) => ({
                             minHeight: theme.spacing(8),
                             display: "flex",
                             alignItems: "center",
-                            flexGrow: 1,
+                            minWidth: 0, // Critical for text truncation/wrapping
                           })}
                         >
-                          <Box>
+                          <Box sx={{ minWidth: 0, width: "100%" }}>
                             <ProjectNameEditable
                               projectData={data.moped_project[0]}
                               projectId={projectId}
@@ -475,6 +476,7 @@ const ProjectView = () => {
                             display: "flex",
                             alignItems: "center",
                             gap: 2,
+                            flexShrink: 0,
                           }}
                         >
                           <Box>
@@ -499,12 +501,11 @@ const ProjectView = () => {
                                 )}
                               </IconButton>
                             </Tooltip>
-                            <IconButton>
+                            <IconButton onClick={handleMenuOpen}>
                               <MoreHorizIcon
                                 aria-controls="fade-menu"
                                 aria-haspopup="true"
                                 className={classes.moreHorizontal}
-                                onClick={handleMenuOpen}
                               />
                             </IconButton>
                             <Menu
