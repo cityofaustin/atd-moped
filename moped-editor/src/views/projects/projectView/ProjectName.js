@@ -36,7 +36,7 @@ const ProjectName = ({
           </Box>
         ) : null}
 
-        <Box
+        {/* <Box
           sx={{ display: "inline", paddingLeft: "10px", paddingRight: "10px" }}
         >
           <Typography
@@ -46,7 +46,7 @@ const ProjectName = ({
           >
             #{projectId}
           </Typography>
-        </Box>
+        </Box> */}
       </Box>
     </Grid>
   </Grid>
