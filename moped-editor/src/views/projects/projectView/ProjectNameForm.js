@@ -1,12 +1,13 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { Box, Grid, Icon, IconButton } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
 import { agolValidation } from "src/constants/projects";
+import ProjectSummaryIconButtons from "./ProjectSummary/ProjectSummaryIconButtons";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -136,18 +137,18 @@ const ProjectNameForm = ({
             container
             direction="row"
             alignItems="center"
+            alignContent="center"
             xs={12}
             sm="auto"
             sx={(theme) => ({
               minWidth: theme.spacing(12),
             })}
           >
-            <IconButton type="submit" disabled={!isDirty || loading}>
-              <Icon>check</Icon>
-            </IconButton>
-            <IconButton onClick={handleCancelClick} disabled={loading}>
-              <Icon>close</Icon>
-            </IconButton>
+            <ProjectSummaryIconButtons
+              handleClose={handleCancelClick}
+              disabledCondition={!isDirty}
+              loading={loading}
+            />
           </Grid>
           <Grid item xs={12} sm="auto" container alignItems="center">
             <ProjectStatusBadge

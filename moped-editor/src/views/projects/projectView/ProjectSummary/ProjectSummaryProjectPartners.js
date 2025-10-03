@@ -14,7 +14,12 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { useMutation } from "@apollo/client";
 import { PROJECT_UPDATE_PARTNERS } from "../../../../queries/project";
-import { fieldBox, fieldGridItem, fieldLabel, fieldSelectItem } from "src/styles/reusableStyles";
+import {
+  fieldBox,
+  fieldGridItem,
+  fieldLabel,
+  fieldSelectItem,
+} from "src/styles/reusableStyles";
 
 /**
  * ProjectSummaryProjectPartners Component
@@ -56,7 +61,9 @@ const ProjectSummaryProjectPartners = ({
   const [selectedEntities, setSelectedEntities] = useState(originalEntities);
 
   // The mutation and mutation function
-  const [updateProjectPartners] = useMutation(PROJECT_UPDATE_PARTNERS);
+  const [updateProjectPartners, { loading: mutationLoading }] = useMutation(
+    PROJECT_UPDATE_PARTNERS
+  );
 
   /**
    * Handles whenever there is a click in any of the menu items
@@ -121,11 +128,7 @@ const ProjectSummaryProjectPartners = ({
   return (
     <Grid item xs={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>Partners</Typography>
-      <Box
-        display="flex"
-        justifyContent="flex-start"
-        sx={fieldBox}
-      >
+      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <>
             <Select
@@ -163,7 +166,7 @@ const ProjectSummaryProjectPartners = ({
                 JSON.stringify(originalEntities) ===
                 JSON.stringify(selectedEntities)
               }
-              loading={loading}
+              loading={loading || mutationLoading}
             />
           </>
         )}

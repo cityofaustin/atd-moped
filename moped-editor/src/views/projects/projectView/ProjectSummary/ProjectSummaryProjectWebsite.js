@@ -36,7 +36,7 @@ const ProjectSummaryProjectWebsite = ({
   // Hasura returns null if the website is empty which is a valid entry
   const isWebsiteValid = isValidUrl(websiteMadeValid) || website === null;
 
-  const [updateProjectWebsite] = useMutation(PROJECT_UPDATE_WEBSITE);
+  const [updateProjectWebsite, {loading: mutationLoading}] = useMutation(PROJECT_UPDATE_WEBSITE);
 
   /**
    * Resets the project website to original value
@@ -106,7 +106,7 @@ const ProjectSummaryProjectWebsite = ({
               handleSave={handleProjectWebsiteSave}
               handleClose={handleProjectWebsiteClose}
               disabledCondition={website === originalWebsite || !isWebsiteValid}
-              loading={loading}
+              loading={loading || mutationLoading}
             />
           </>
         )}
