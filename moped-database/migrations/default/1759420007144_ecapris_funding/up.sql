@@ -56,8 +56,8 @@ CREATE TABLE public.ecapris_funding (
     -- Sync metadata
     updated_at TIMESTAMPTZ DEFAULT now(),
     created_at TIMESTAMPTZ DEFAULT now(),
-    created_by_user_id INTEGER REFERENCES moped_users (user_id) DEFAULT NULL,
-    updated_by_user_id INTEGER REFERENCES moped_users (user_id) DEFAULT NULL
+    created_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    updated_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE INDEX idx_ecapris_funding_ecapris_id
@@ -99,6 +99,11 @@ COMMENT ON COLUMN ecapris_funding.updated_at IS 'Timestamp when the record was l
 COMMENT ON COLUMN ecapris_funding.created_by_user_id IS 'ID of the user who created the record';
 COMMENT ON COLUMN ecapris_funding.updated_by_user_id IS 'ID of the user who updated the record';
 
+-- Create trigger to set updated_at audit column before update
+CREATE TRIGGER set_ecapris_funding_updated_at BEFORE UPDATE ON public.ecapris_funding FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+COMMENT ON TRIGGER set_ecapris_funding_updated_at ON public.ecapris_funding IS 'Trigger to set updated_at on row update';
+
 
 -- Create view to combine both sources of funding records
 CREATE VIEW combined_project_funding_view AS
@@ -122,7 +127,7 @@ WHERE is_deleted = FALSE
 UNION ALL
 
 SELECT
-    'ecapris_'::TEXT || ecapris_funding_id AS id,
+    'ecapris_'::TEXT || id AS id,
     fao_id AS original_id,
     ecapris_subproject_id,
     NULL AS project_id,
