@@ -32,7 +32,6 @@ import {
   Fade,
   ListItemIcon,
   ListItemText,
-  Tooltip,
   Typography,
   IconButton,
 } from "@mui/material";
@@ -47,20 +46,14 @@ import ProjectTimeline from "./ProjectTimeline";
 import ProjectNotes from "./ProjectNotes";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
-import {
-  PROJECT_ARCHIVE,
-  SUMMARY_QUERY,
-  PROJECT_FOLLOW,
-  PROJECT_UNFOLLOW,
-} from "../../../queries/project";
+import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "src/queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ProjectNameEditable from "./ProjectNameEditable";
+import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
 import { useSessionDatabaseData } from "src/auth/user";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
@@ -111,14 +104,6 @@ const useStyles = makeStyles((theme) => ({
   },
   colorPrimary: {
     color: theme.palette.primary.main,
-  },
-  unfollowIcon: {
-    color: theme.palette.primary.main,
-    fontSize: "2rem",
-  },
-  followIcon: {
-    color: theme.palette.text.secondary,
-    fontSize: "2rem",
   },
 }));
 
@@ -234,8 +219,6 @@ const ProjectView = () => {
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  const [followProject] = useMutation(PROJECT_FOLLOW);
-  const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
   /**
    * Clears the dialog contents
@@ -353,40 +336,6 @@ const ProjectView = () => {
       });
   };
 
-  const handleFollowProject = () => {
-    if (!isFollowing) {
-      followProject({
-        variables: {
-          object: {
-            project_id: projectId,
-            user_id: userId,
-          },
-        },
-      })
-        .then(() => {
-          refetch();
-          handleSnackbar(true, "Project followed", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error following project", "error", error);
-        });
-    } else {
-      unfollowProject({
-        variables: {
-          project_id: projectId,
-          user_id: userId,
-        },
-      })
-        .then(() => {
-          refetch();
-          handleSnackbar(true, "Project unfollowed", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error unfollowing project", "error", error);
-        });
-    }
-  };
-
   /**
    * Establishes the project status for our badge
    */
@@ -446,12 +395,12 @@ const ProjectView = () => {
                       <Grid container>
                         <Grid
                           item
-                          xs // Takes available space
+                          xs // Take all available space
                           sx={(theme) => ({
                             minHeight: theme.spacing(8),
                             display: "flex",
                             alignItems: "center",
-                            minWidth: 0, // Critical for text truncation/wrapping
+                            minWidth: 0, // Wrap long names
                           })}
                         >
                           <Box sx={{ minWidth: 0, width: "100%" }}>
@@ -473,7 +422,9 @@ const ProjectView = () => {
                             alignItems: "center",
                             gap: 2,
                             flexShrink: 0,
+                            marginLeft: 2,
                           }}
+                          spacing={2}
                         >
                           <Box>
                             <ProjectStatusBadge
@@ -482,21 +433,12 @@ const ProjectView = () => {
                             />
                           </Box>
                           <Box>
-                            <Tooltip
-                              title={isFollowing ? "Unfollow" : "Follow"}
-                            >
-                              <IconButton onClick={() => handleFollowProject()}>
-                                {isFollowing ? (
-                                  <BookmarkIcon
-                                    className={classes.unfollowIcon}
-                                  />
-                                ) : (
-                                  <BookmarkBorderIcon
-                                    className={classes.followIcon}
-                                  />
-                                )}
-                              </IconButton>
-                            </Tooltip>
+                            <ProjectFollowButton
+                              projectId={projectId}
+                              isFollowing={isFollowing}
+                              refetch={refetch}
+                              handleSnackbar={handleSnackbar}
+                            />
                             <IconButton onClick={handleMenuOpen}>
                               <MoreHorizIcon
                                 aria-controls="fade-menu"

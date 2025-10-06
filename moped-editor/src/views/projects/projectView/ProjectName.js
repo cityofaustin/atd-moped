@@ -1,13 +1,7 @@
 import React from "react";
 import { Grid, Box, Typography } from "@mui/material";
-import ProjectStatusBadge from "./ProjectStatusBadge";
 
-const ProjectName = ({
-  projectData,
-  setIsEditing,
-  projectId,
-  currentPhase,
-}) => (
+const ProjectName = ({ projectData, setIsEditing }) => (
   <Grid container>
     <Grid item xs={12}>
       <Box>
@@ -35,18 +29,6 @@ const ProjectName = ({
             </Typography>
           </Box>
         ) : null}
-
-        {/* <Box
-          sx={{ display: "inline", paddingLeft: "10px", paddingRight: "10px" }}
-        >
-          <Typography
-            color="textSecondary"
-            variant="h2"
-            sx={{ display: "inline" }}
-          >
-            #{projectId}
-          </Typography>
-        </Box> */}
       </Box>
     </Grid>
   </Grid>

@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { Box, Grid } from "@mui/material";
 
-import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
 import { agolValidation } from "src/constants/projects";
@@ -25,7 +24,6 @@ const inputStyles = { fontSize: "1.4rem", fontWeight: "bold" };
  * @param {Object} projectData - The data object from the GraphQL query
  * @param {Function} setIsEditing - The function to toggle the editing boolean state
  * @param {Function} handleSnackbar - The function to show the snackbar
- * @param {Object} currentPhase - The current phase data object
  * @param {Function} refetch - The refetch function from Apollo
  * @returns {JSX.Element}
  * @constructor
@@ -35,7 +33,6 @@ const ProjectNameForm = ({
   projectData,
   setIsEditing,
   handleSnackbar,
-  currentPhase,
   refetch,
 }) => {
   const originalName = projectData?.project_name ?? null;
