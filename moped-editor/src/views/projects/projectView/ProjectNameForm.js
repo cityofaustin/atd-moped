@@ -86,7 +86,7 @@ const ProjectNameForm = ({
         onSubmit={handleSubmit(handleSave)}
       >
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} lg={6}>
             <ControlledTextInput
               autoFocus
               variant="standard"
@@ -107,7 +107,7 @@ const ProjectNameForm = ({
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} lg={5}>
             <ControlledTextInput
               variant="standard"
               fullWidth
@@ -136,7 +136,7 @@ const ProjectNameForm = ({
             alignItems="center"
             alignContent="center"
             xs={12}
-            sm="auto"
+            lg={1}
             sx={(theme) => ({
               minWidth: theme.spacing(12),
             })}

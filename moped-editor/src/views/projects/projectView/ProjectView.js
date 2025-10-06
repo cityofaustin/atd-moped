@@ -38,17 +38,17 @@ import {
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import Page from "src/components/Page";
-import ProjectSummary from "./ProjectSummary/ProjectSummary";
-import MapView from "./ProjectComponents/index";
-import ProjectFunding from "./ProjectFunding";
-import ProjectTeam from "./ProjectTeam/ProjectTeam";
-import ProjectTimeline from "./ProjectTimeline";
-import ProjectNotes from "./ProjectNotes";
-import ProjectFiles from "./ProjectFiles";
-import TabPanel from "./TabPanel";
+import ProjectSummary from "src/views/projects/projectView/ProjectSummary/ProjectSummary";
+import MapView from "src/views/projects/projectView/ProjectComponents";
+import ProjectFunding from "src/views/projects/projectView/ProjectFunding";
+import ProjectTeam from "src/views/projects/projectView/ProjectTeam/ProjectTeam";
+import ProjectTimeline from "src/views/projects/projectView/ProjectTimeline";
+import ProjectNotes from "src/views/projects/projectView/ProjectNotes";
+import ProjectFiles from "src/views/projects/projectView/ProjectFiles";
+import TabPanel from "src/views/projects/projectView/TabPanel";
 import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "src/queries/project";
-import ProjectActivityLog from "./ProjectActivityLog";
-import ProjectNameEditable from "./ProjectNameEditable";
+import ProjectActivityLog from "src/views/projects/projectView/ProjectActivityLog";
+import ProjectNameEditable from "src/views/projects/projectView/ProjectNameEditable";
 import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
 import { useSessionDatabaseData } from "src/auth/user";
@@ -56,7 +56,7 @@ import { useSessionDatabaseData } from "src/auth/user";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import NotFoundView from "../../errors/NotFoundView";
+import NotFoundView from "src/views/errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar, {
@@ -71,9 +71,6 @@ const useStyles = makeStyles((theme) => ({
   },
   noPadding: {
     padding: 0,
-  },
-  lessPadding: {
-    padding: theme.spacing(1),
   },
   cardWrapper: {
     marginTop: theme.spacing(3),
@@ -370,7 +367,7 @@ const ProjectView = () => {
                   <div className={classes.root}>
                     <Box
                       sx={{
-                        pt: "12px",
+                        pt: 2,
                         px: 3,
                       }}
                     >
@@ -521,7 +518,9 @@ const ProjectView = () => {
                           key={tab.label}
                           value={activeTab}
                           index={i}
-                          className={classes.noPadding}
+                          className={
+                            tab.label === "Map" ? classes.noPadding : null
+                          }
                         >
                           <TabComponent
                             loading={loading}
