@@ -10,6 +10,7 @@ COMMENT ON COLUMN moped_project.should_sync_ecapris_statuses IS 'Indicates if pr
 -- New table for eCAPRIS funding data
 CREATE TABLE public.ecapris_funding (
     -- Primary key and foreign keys
+    -- TODO: Update this to BIGSERIAL? And update in status update table too?
     id SERIAL PRIMARY KEY,
 
     -- eCAPRIS unique identifier
