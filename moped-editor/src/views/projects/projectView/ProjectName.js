@@ -10,7 +10,7 @@ const ProjectName = ({
 }) => (
   <Grid container>
     <Grid item xs={12}>
-      <Box sx={{ position: "relative", top: "0.5rem" }}>
+      <Box>
         <Box sx={{ display: "inline", cursor: "pointer" }}>
           <Typography
             color="textPrimary"
@@ -36,7 +36,7 @@ const ProjectName = ({
           </Box>
         ) : null}
 
-        <Box
+        {/* <Box
           sx={{ display: "inline", paddingLeft: "10px", paddingRight: "10px" }}
         >
           <Typography
@@ -46,14 +46,7 @@ const ProjectName = ({
           >
             #{projectId}
           </Typography>
-        </Box>
-
-        <Box sx={{ display: "inline", position: "relative", top: "-0.4rem" }}>
-          <ProjectStatusBadge
-            phaseKey={currentPhase?.phase_key}
-            phaseName={currentPhase?.phase_name}
-          />
-        </Box>
+        </Box> */}
       </Box>
     </Grid>
   </Grid>

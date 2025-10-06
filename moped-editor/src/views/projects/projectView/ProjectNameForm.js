@@ -84,7 +84,7 @@ const ProjectNameForm = ({
     <>
       <Box
         component="form"
-        sx={{ minWidth: "100%" }}
+        sx={{ width: "100%" }}
         onSubmit={handleSubmit(handleSave)}
       >
         <Grid container spacing={2}>
@@ -148,12 +148,6 @@ const ProjectNameForm = ({
             <IconButton onClick={handleCancelClick} disabled={loading}>
               <Icon>close</Icon>
             </IconButton>
-          </Grid>
-          <Grid item xs={12} sm="auto" container alignItems="center">
-            <ProjectStatusBadge
-              phaseKey={currentPhase?.phase_key}
-              phaseName={currentPhase?.phase_name}
-            />
           </Grid>
         </Grid>
       </Box>
