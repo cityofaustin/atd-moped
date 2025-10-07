@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, Typography, IconButton } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 
 import { PROJECT_UPDATE_DESCRIPTION } from "src/queries/project";
 import { useMutation } from "@apollo/client";
@@ -127,16 +128,11 @@ const ProjectSummaryProjectDescription = ({
                 disabled: loading,
               }}
             />
-            <IconButton
-              size="large"
-              disabled={!isDirty || loading}
-              type="submit"
-            >
-              <Icon>check</Icon>
-            </IconButton>
-            <IconButton disabled={loading} onClick={handleCancel} size="large">
-              <Icon>close</Icon>
-            </IconButton>
+            <ProjectSummaryIconButtons
+              handleClose={handleCancel}
+              disabledCondition={!isDirty}
+              loading={loading}
+            />
           </>
         ) : (
           <ProjectSummaryLabel
