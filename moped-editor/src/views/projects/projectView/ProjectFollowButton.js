@@ -26,41 +26,37 @@ const ProjectFollowButton = ({
   const [followProject] = useMutation(PROJECT_FOLLOW);
   const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
-  const handleFollowProject = () => {
+  const handleFollowProject = async () => {
     if (!isFollowing) {
-      followProject({
-        variables: {
-          object: {
+      try {
+        await followProject({
+          variables: {
+            object: {
+              project_id: projectId,
+              user_id: userId,
+            },
+          },
+        });
+        await refetch();
+
+        handleSnackbar(true, "Project followed", "success");
+      } catch (error) {
+        handleSnackbar(true, "Error following project", "error", error);
+      }
+    } else {
+      try {
+        await unfollowProject({
+          variables: {
             project_id: projectId,
             user_id: userId,
           },
-        },
-      })
-        .then(() => {
-          return refetch();
-        })
-        .then(() => {
-          handleSnackbar(true, "Project followed", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error following project", "error", error);
         });
-    } else {
-      unfollowProject({
-        variables: {
-          project_id: projectId,
-          user_id: userId,
-        },
-      })
-        .then(() => {
-          return refetch();
-        })
-        .then(() => {
-          handleSnackbar(true, "Project unfollowed", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error unfollowing project", "error", error);
-        });
+        await refetch();
+
+        handleSnackbar(true, "Project unfollowed", "success");
+      } catch (error) {
+        handleSnackbar(true, "Error unfollowing project", "error", error);
+      }
     }
   };
 

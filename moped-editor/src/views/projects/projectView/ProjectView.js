@@ -394,10 +394,13 @@ const ProjectView = () => {
                           item
                           xs // Take all available space
                           sx={(theme) => ({
-                            minHeight: theme.spacing(8),
+                            minHeight: theme.spacing(8), // Prevent jumping when edit form appears
                             display: "flex",
                             alignItems: "center",
                             minWidth: 0, // Wrap long names
+                            [theme.breakpoints.down("lg")]: {
+                              my: 1, // Add margin when on small screen and stacked vertically
+                            },
                           })}
                         >
                           <Box sx={{ minWidth: 0, width: "100%" }}>
