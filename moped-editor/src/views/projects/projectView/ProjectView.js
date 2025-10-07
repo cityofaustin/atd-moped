@@ -381,7 +381,7 @@ const ProjectView = () => {
                             previousProjectListViewQueryString
                               ? "Filtered"
                               : "All"
-                          } Projects`}
+                          } projects`}
                         </Link>
                         <Typography sx={{ color: "text.primary" }}>
                           {`Project #${data.moped_project[0].project_id}`}
