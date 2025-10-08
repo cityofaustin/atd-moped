@@ -111,7 +111,6 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const classes = useStyles();
 
   /* Create link back to previous filters using queryString state passed with React Router */
   const locationState = location?.state;
