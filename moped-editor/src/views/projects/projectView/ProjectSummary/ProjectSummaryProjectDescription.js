@@ -79,11 +79,10 @@ const ProjectSummaryProjectDescription = ({
       },
       refetchQueries: [{ query: listViewQuery }],
     })
+      .then(() => refetch())
       .then(() => {
-        refetch().then(() => {
-          handleProjectDescriptionClose();
-          handleSnackbar(true, "Project description updated", "success");
-        });
+        handleProjectDescriptionClose();
+        handleSnackbar(true, "Project description updated", "success");
       })
       .catch((error) => {
         handleSnackbar(

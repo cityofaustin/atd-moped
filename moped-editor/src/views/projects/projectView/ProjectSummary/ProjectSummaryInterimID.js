@@ -66,9 +66,9 @@ const ProjectSummaryInterimID = ({
           },
         })
     )
+      .then(() => refetch())
       .then(() => {
         setEditMode(false);
-        refetch();
         handleSnackbar(true, "Project interim database ID updated", "success");
       })
       .catch((error) => {

@@ -66,9 +66,9 @@ const ProjectSummaryAutocomplete = ({
         fieldValueId: fieldValue?.[idColumn] ?? null,
       },
     })
+      .then(() => refetch())
       .then(() => {
         setEditMode(false);
-        refetch();
         handleSnackbar(true, `${field} updated`, "success");
       })
       .catch((error) => {

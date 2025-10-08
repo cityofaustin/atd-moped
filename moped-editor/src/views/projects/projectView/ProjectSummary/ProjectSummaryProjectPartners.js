@@ -113,8 +113,8 @@ const ProjectSummaryProjectPartners = ({
         deleteList: partnerPksToDelete,
       },
     })
+      .then(() => refetch())
       .then(() => {
-        refetch();
         setEditMode(false);
         handleSnackbar(true, "Project partners updated", "success");
       })
