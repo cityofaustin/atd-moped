@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
-import makeStyles from "@mui/styles/makeStyles";
 import { Box, Dialog } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -33,8 +32,6 @@ import ProjectComponentsList from "src/views/projects/projectView/ProjectCompone
 
 export const drawerWidth = 350;
 
-const useStyles = makeStyles(() => ({}));
-
 /* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */
 const PlaceholderToolbar = () => <Toolbar />;
 
@@ -46,7 +43,6 @@ export default function MapView({
   onCloseTab,
 }) {
   const appBarHeight = useAppBarHeight();
-  const classes = useStyles({ appBarHeight });
   const mapRef = useRef();
   const { projectId } = useParams();
 
@@ -297,7 +293,7 @@ export default function MapView({
           sx={{
             flexGrow: 1,
             backgroundColor: "#fff",
-            minHeight: ({ appBarHeight }) => `calc(100vh - ${appBarHeight}px)`,
+            minHeight: `calc(100vh - ${appBarHeight}px)`,
           }}
         >
           <PlaceholderToolbar />

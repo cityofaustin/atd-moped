@@ -66,7 +66,6 @@ import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
-import theme from "src/theme";
 
 function a11yProps(index) {
   return {
@@ -359,14 +358,19 @@ const ProjectView = () => {
         >
           <Container maxWidth="xl">
             <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <Card sx={{ cardWrapper: (theme) => ({ marginTop: theme.spacing(3) }) }}>
+              <Card
+                sx={{
+                  marginTop: (theme) => theme.spacing(3),
+                }}
+              >
                 {loading ? (
                   <CircularProgress />
                 ) : (
                   <Box
                     sx={{
                       flexGrow: 1,
-                      backgroundColor: (theme) => theme.palette.background.paper,
+                      backgroundColor: (theme) =>
+                        theme.palette.background.paper,
                     }}
                   >
                     <Box p={4} pb={2}>
@@ -393,23 +397,28 @@ const ProjectView = () => {
                             >
                               {isFollowing ? (
                                 <BookmarkIcon
-                                  sx={(theme) => ({
-  color: theme.palette.primary.main,
-  fontSize: theme.spacing(2),
-})}
+                                  sx={{
+                                    fontSize: "2rem",
+                                    color: (theme) => theme.palette.primary.main,
+                                  }}
                                 />
                               ) : (
                                 <BookmarkBorderIcon
-                                  sx={(theme) => ({
-  color: theme.palette.text.secondary,
-  fontSize: theme.spacing(2),
-})}
+                                  sx={{
+                                    fontSize: "2rem",
+                                    color: (theme) => theme.palette.text.secondary,
+                                  }}
                                 />
                               )}
                             </Tooltip>
                           </Box>
                         </Grid>
-                        <Grid item xs={11} md={11} sx={{ minHeight: theme => theme.spacing(3) }}>
+                        <Grid
+                          item
+                          xs={11}
+                          md={11}
+                          sx={{ minHeight: (theme) => theme.spacing(3) }}
+                        >
                           <Box
                             alignItems="center"
                             display="flex"
@@ -431,7 +440,7 @@ const ProjectView = () => {
                             aria-controls="fade-menu"
                             aria-haspopup="true"
                             sx={{
-                              fontSize: theme => theme.spacing(2),
+                              fontSize: "2rem",
                               float: "right",
                               cursor: "pointer",
                             }}
@@ -457,13 +466,13 @@ const ProjectView = () => {
                             <MenuItem
                               onClick={handleRenameClick}
                               sx={{
-                                minWidth: theme => theme.spacing(14),
+                                minWidth: (theme) => theme.spacing(14),
                               }}
                               selected={false}
                             >
                               <ListItemIcon
                                 sx={{
-                                  minWidth: theme => theme.spacing(2),
+                                  minWidth: (theme) => theme.spacing(2),
                                 }}
                               >
                                 <CreateOutlinedIcon />
@@ -473,13 +482,13 @@ const ProjectView = () => {
                             <MenuItem
                               onClick={handleDeleteClick}
                               sx={{
-                                minWidth: theme => theme.spacing(14),
+                                minWidth: (theme) => theme.spacing(14),
                               }}
                               selected={false}
                             >
                               <ListItemIcon
                                 sx={{
-                                  minWidth: theme => theme.spacing(2),
+                                  minWidth: (theme) => theme.spacing(2),
                                 }}
                               >
                                 <DeleteOutlinedIcon />
@@ -493,7 +502,8 @@ const ProjectView = () => {
                     <Divider />
                     <AppBar
                       sx={{
-                        backgroundColor: (theme) => theme.palette.background.paper,
+                        backgroundColor: (theme) =>
+                          theme.palette.background.paper,
                         color: (theme) => theme.palette.text.secondary,
                       }}
                       position="static"
@@ -501,7 +511,8 @@ const ProjectView = () => {
                       <Tabs
                         classes={{
                           indicator: {
-                            backgroundColor: (theme) => theme.palette.primary.light,
+                            backgroundColor: (theme) =>
+                              theme.palette.primary.light,
                           },
                         }}
                         value={activeTab}
@@ -615,7 +626,7 @@ const ProjectView = () => {
                   <RouterLink
                     to={allProjectsLink}
                     sx={{
-                      color: theme.palette.primary.main,
+                      color: (theme) => theme.palette.primary.main,
                     }}
                   >
                     Back to all projects
