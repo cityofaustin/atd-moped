@@ -424,7 +424,6 @@ const ProjectView = () => {
                             flexShrink: 0,
                             marginLeft: 2,
                           }}
-                          spacing={2}
                         >
                           <Box>
                             <ProjectStatusBadge
