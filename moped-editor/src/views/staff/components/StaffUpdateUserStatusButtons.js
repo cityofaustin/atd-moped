@@ -9,7 +9,6 @@ import {
 import { useButtonStyles } from "./StaffFormButtons";
 
 import { Button, Typography, Box } from "@mui/material";
-import clsx from "clsx";
 
 /**
  * Generates a button to inactivate or activate an existing user
@@ -167,7 +166,7 @@ const StaffUpdateUserStatusButtons = ({
       )}
       {isUserActive === false && (
         <Button
-          className={clsx(classes.formButton, classes.formButtonGreen)}
+          className={`${classes.formButton} ${classes.formButtonGreen}`}
           variant="contained"
           onClick={handleActivateUser}
         >

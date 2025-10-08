@@ -12,7 +12,6 @@ import {
 import { useButtonStyles } from "./StaffFormButtons";
 
 import { Button, Typography, Box } from "@mui/material";
-import clsx from "clsx";
 
 /**
  * Generates a button to convert a non-login user to a Moped user with login
@@ -134,7 +133,7 @@ const NonLoginUserActivationButtons = ({
         Save
       </Button>
       <Button
-        className={clsx(classes.formButton, classes.formButtonGreen)}
+        className={`${classes.formButton} ${classes.formButtonGreen}`}
         variant="contained"
         onClick={handleActivateNonLoginUser}
       >

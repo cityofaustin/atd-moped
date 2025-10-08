@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import clsx from "clsx";
 import { Icon, Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { SpeedDial, SpeedDialAction } from '@mui/material';
+import makeStyles from "@mui/styles/makeStyles";
+import { SpeedDial, SpeedDialAction } from "@mui/material";
 import {
   MAPBOX_PADDING_PIXELS,
   MAPBOX_CONTROL_BUTTON_WIDTH,
@@ -88,10 +87,7 @@ const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
       icon={
         <Typography>
           <Icon
-            className={clsx(
-              classes.mapStyleToggleLabel,
-              classes.mapStyleToggleLabelIcon
-            )}
+            className={`${classes.mapStyleToggleLabel} ${classes.mapStyleToggleLabelIcon}`}
           >
             layers
           </Icon>
@@ -105,22 +101,18 @@ const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
         classes: {
           label: classes.fabLabel,
         },
-        className: clsx(
-          classes.speedDialAction,
+        className: `${classes.speedDialAction} ${
           basemapKey !== "streets"
             ? classes.speedDialStreets
             : classes.speedDialAerial
-        ),
+        }`,
       }}
     >
       <SpeedDialAction
         key={"streets"}
         icon={
           <Typography
-            className={clsx(
-              classes.mapStyleToggleLabel,
-              classes.mapStyleActionLabel
-            )}
+            className={`${classes.mapStyleToggleLabel} ${classes.mapStyleActionLabel}`}
           >
             Streets
           </Typography>
@@ -128,23 +120,20 @@ const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
         tooltipTitle={"Streets Base Map"}
         tooltipPlacement={"top"}
         onClick={() => onBasemapSelect("streets")}
-        className={clsx(classes.speedDialStreets, classes.speedDialAction)}
+        className={`${classes.speedDialStreets} ${classes.speedDialAction}`}
       />
       <SpeedDialAction
         key={"aerial"}
         icon={
           <Typography
-            className={clsx(
-              classes.mapStyleToggleLabel,
-              classes.mapStyleActionLabel
-            )}
+            className={`${classes.mapStyleToggleLabel} ${classes.mapStyleActionLabel}`}
           >
             Aerial
           </Typography>
         }
         tooltipTitle={"Aerial Base Map"}
         tooltipPlacement={"top"}
-        className={clsx(classes.speedDialAerial, classes.speedDialAction)}
+        className={`${classes.speedDialAerial} ${classes.speedDialAction}`}
         onClick={() => onBasemapSelect("aerial")}
       />
     </SpeedDial>
