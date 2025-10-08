@@ -6,7 +6,6 @@ import {
   passwordLooksGood,
   fieldParsers,
 } from "../helpers";
-import { useButtonStyles } from "./StaffFormButtons";
 
 import { Button, Typography, Box } from "@mui/material";
 
@@ -31,7 +30,6 @@ const StaffUpdateUserStatusButtons = ({
   roles,
   isUserActive,
 }) => {
-  const classes = useButtonStyles();
   let navigate = useNavigate();
 
   /**
@@ -156,7 +154,7 @@ const StaffUpdateUserStatusButtons = ({
     <>
       {isUserActive === true && (
         <Button
-          className={classes.formButton}
+          sx={{ m: 1, color: "white" }}
           color="secondary"
           variant="contained"
           onClick={handleDeactivateUser}
@@ -166,7 +164,12 @@ const StaffUpdateUserStatusButtons = ({
       )}
       {isUserActive === false && (
         <Button
-          className={`${classes.formButton} ${classes.formButtonGreen}`}
+          sx={(theme) => ({
+            m: 1,
+            color: "white",
+            bgcolor: theme.palette.success.main,
+            "&:hover": { bgcolor: theme.palette.success.dark },
+          })}
           variant="contained"
           onClick={handleActivateUser}
         >
