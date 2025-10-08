@@ -4,37 +4,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import AddCircle from "@mui/icons-material/AddCircle";
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles((theme) => ({
-  dropDownMenu: {
-    color: theme.palette.background.paper,
-    "& .MuiMenu-paper": {
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.background.paper,
-    },
-    "& .MuiList-root": {
-      padding: "0px",
-    },
-    "& .MuiMenuItem-root": {
-      textTransform: "uppercase",
-      fontSize: "14px",
-      fontWeight: 500,
-      paddingTop: "8px",
-      paddingBottom: "8px",
-    },
-    "& .MuiMenuItem-root:hover": {
-      backgroundColor: theme.palette.primary.dark,
-    },
-    "& .MuiMenuItem-root:first-of-type": {
-      borderBottom: `1px solid ${theme.palette.primary.dark}`,
-    },
-    "& .MuiListItemIcon-root": {
-      color: theme.palette.background.paper,
-      minWidth: "28px",
-    },
-  },
-}));
 
 /**
  * ButtonDropdownMenu - Button that opens to show two different options
@@ -51,7 +20,6 @@ const ButtonDropdownMenu = ({
   secondOptionText,
   secondOptionIcon,
 }) => {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const toggleDropdown = (event) => {
@@ -68,9 +36,9 @@ const ButtonDropdownMenu = ({
   };
 
   const handleActionDialog = () => {
-    openActionDialog(true)
-    setAnchorEl(null)
-  }
+    openActionDialog(true);
+    setAnchorEl(null);
+  };
 
   return (
     <div>
@@ -86,7 +54,34 @@ const ButtonDropdownMenu = ({
         {parentButtonText}
       </Button>
       <Menu
-        className={classes.dropDownMenu}
+        sx={{
+          color: "background.paper",
+          "& .MuiMenu-paper": {
+            backgroundColor: "primary.main",
+            color: "background.paper",
+          },
+          "& .MuiList-root": {
+            padding: 0,
+          },
+          "& .MuiMenuItem-root": {
+            textTransform: "uppercase",
+            fontSize: "14px",
+            fontWeight: 500,
+            paddingTop: "8px",
+            paddingBottom: "8px",
+            "&:hover": {
+              backgroundColor: "primary.dark",
+            },
+            "&:first-of-type": {
+              borderBottom: "1px solid",
+              borderBottomColor: "primary.dark",
+            },
+          },
+          "& .MuiListItemIcon-root": {
+            color: "background.paper",
+            minWidth: "28px",
+          },
+        }}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}

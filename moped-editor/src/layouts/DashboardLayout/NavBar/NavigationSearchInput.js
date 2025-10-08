@@ -7,136 +7,69 @@ import {
   Popper,
   Slide,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import clsx from "clsx";
 import SearchIcon from "@mui/icons-material/Search";
 import { useLazyQuery } from "@apollo/client";
 import { NAVIGATION_SEARCH_QUERY_CONFIG } from "./NavigationSearchQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
 import { useNavigationSearch } from "./useNavigationSearchQuery";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    [theme.breakpoints.up("sm")]: {
-      marginRight: "20px",
-    },
-    // overflow hidden makes it so the popper does not slide in from edge of screen
-    // but instead appears to come in from edge of div
-    overflow: "hidden",
+// Reusable style fragments
+const searchContainerBaseSx = {
+  backgroundColor: "background.paper",
+  overflow: "hidden",
+};
+
+const searchContainer404Sx = {
+  ...searchContainerBaseSx,
+  borderRadius: "4px",
+  width: { xs: "400px", sm: "400px", md: "400px", lg: "600px" },
+  height: "44px",
+  cursor: "pointer",
+};
+
+const searchContainerDefaultSx = {
+  ...searchContainerBaseSx,
+  mr: { sm: "20px" },
+};
+
+const inputBaseCommonSx = {
+  borderWidth: 1,
+  borderRadius: "4px",
+  borderColor: "rgba(0,0,0, .23)",
+  borderStyle: "solid",
+  p: "2px",
+  height: "44px",
+  "&:hover": { borderColor: "text.secondary" },
+  "&.Mui-focused": {
+    borderWidth: 2,
+    borderColor: "primary.main",
+    "&:hover": { borderColor: "primary.main" },
   },
-  root404: {
-    borderRadius: "4px",
-    backgroundColor: theme.palette.background.paper,
-    [theme.breakpoints.up("sm")]: {
-      width: "600px",
-    },
-    [theme.breakpoints.down("md")]: {
-      maxWidth: "400px",
-    },
-    // overflow hidden makes it so the popper does not slide in from edge of screen
-    // but instead appears to come in from edge of div
-    overflow: "hidden",
-    height: "44px",
-    cursor: "pointer",
+  "&.MuiInputBase-adornedStart": {
+    color: "text.secondary",
+    pl: "5px",
   },
-  inputRoot: {
-    borderWidth: "1px",
-    borderRadius: "4px",
-    borderColor: "rgba(0,0,0, .23)",
-    "&:hover": {
-      borderColor: theme.palette.text.secondary,
-    },
-    borderStyle: "solid",
-    padding: "2px",
-    [theme.breakpoints.up("sm")]: {
-      width: "300px",
-    },
-    [theme.breakpoints.down("md")]: {
-      maxWidth: "200px",
-    },
-    height: "44px",
+  "& .MuiInputBase-input": {
+    fontSize: { xs: "0.75rem", sm: "0.75rem", md: "0.75rem", lg: "0.875rem" },
+    pl: "1em",
+    color: "text.primary",
   },
-  inputRoot404: {
-    borderWidth: "1px",
-    borderRadius: "4px",
-    borderColor: "rgba(0,0,0, .23)",
-    "&:hover": {
-      borderColor: theme.palette.text.secondary,
-    },
-    borderStyle: "solid",
-    padding: "2px",
-    [theme.breakpoints.up("sm")]: {
-      width: "600px",
-    },
-    [theme.breakpoints.down("md")]: {
-      maxWidth: "400px",
-    },
-    height: "44px",
-  },
-  inputInput: {
-    [theme.breakpoints.up("sm")]: {
-      fontSize: "0.875rem",
-    },
-    [theme.breakpoints.down("md")]: {
-      fontSize: "0.75rem",
-    },
-    paddingLeft: "1em",
-    color: theme.palette.text.primary,
-  },
-  adornedStart: {
-    color: theme.palette.text.secondary,
-    paddingLeft: "5px",
-  },
-  inputFocused: {
-    borderWidth: "2px",
-    borderRadius: "4px",
-    borderStyle: "solid",
-    borderColor: theme.palette.primary.main,
-    "&:hover": {
-      borderColor: theme.palette.primary.main,
-    },
-  },
-  searchPopper: {
-    [theme.breakpoints.up("sm")]: {
-      width: "300px",
-    },
-    [theme.breakpoints.down("md")]: {
-      width: "200px",
-    },
-    overflow: "hidden",
-    borderRadius: "4px",
-  },
-  searchPopper404: {
-    [theme.breakpoints.up("sm")]: {
-      width: "600px",
-    },
-    [theme.breakpoints.down("md")]: {
-      width: "400px",
-    },
-    overflow: "hidden",
-    borderRadius: "4px",
-  },
-  // separate style so it can be applied after animation completes
-  searchPopperShadow: {
-    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
-  },
-  searchResults: {
-    borderWidth: "1px",
-    borderRadius: "4px",
-    borderStyle: "solid",
-    borderColor: theme.palette.background.default,
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.primary,
-  },
-}));
+};
+
+const resultsBoxCommonSx = {
+  borderWidth: 1,
+  borderRadius: "4px",
+  borderStyle: "solid",
+  borderColor: "background.default",
+  backgroundColor: "background.paper",
+  color: "text.primary",
+};
 
 /**
  * @return {JSX.Element}
  * @constructor
  */
 const NavigationSearchInput = ({ input404Class }) => {
-  const classes = useStyles();
   const divRef = React.useRef();
 
   // Toggle Text Input or magnifying glass
@@ -231,9 +164,9 @@ const NavigationSearchInput = ({ input404Class }) => {
   return (
     <Box display="flex" justifyContent="center" onClick={handleMagClick}>
       <ClickAwayListener onClickAway={startSlideAway}>
-        <div
-          className={input404Class ? classes.root404 : classes.root}
+        <Box
           ref={divRef}
+          sx={input404Class ? searchContainer404Sx : searchContainerDefaultSx}
         >
           {!searchInput ? (
             <IconButton size="large">
@@ -248,13 +181,11 @@ const NavigationSearchInput = ({ input404Class }) => {
             >
               <InputBase
                 placeholder="Project ID, name, description or eCAPRIS ID"
-                classes={{
-                  root: input404Class
-                    ? classes.inputRoot404
-                    : classes.inputRoot,
-                  input: classes.inputInput,
-                  adornedStart: classes.adornedStart,
-                  focused: classes.inputFocused,
+                sx={{
+                  ...inputBaseCommonSx,
+                  width: input404Class
+                    ? { xs: "400px", sm: "400px", md: "400px", lg: "600px" }
+                    : { xs: "200px", sm: "200px", md: "200px", lg: "300px" },
                 }}
                 inputProps={{ "aria-label": "search" }}
                 startAdornment={<SearchIcon fontSize={"small"} />}
@@ -275,13 +206,17 @@ const NavigationSearchInput = ({ input404Class }) => {
             // inherit the position from the modifiers and dont reset to 0
             style={{ position: "fixed", top: "unset", left: "unset" }}
             modifiers={[]}
-            className={clsx(
-              input404Class ? classes.searchPopper404 : classes.searchPopper,
-              {
-                // only apply dropshadow after component has fully slid into position
-                [classes.searchPopperShadow]: popperEnterComplete,
-              }
-            )}
+            sx={{
+              width: input404Class
+                ? { xs: "400px", sm: "400px", md: "400px", lg: "600px" }
+                : { xs: "200px", sm: "200px", md: "200px", lg: "300px" },
+              overflow: "hidden",
+              borderRadius: "4px",
+              ...(popperEnterComplete && {
+                boxShadow:
+                  "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
+              }),
+            }}
             // including the transition prop counter intuitively messes up the positioning
             // transition
           >
@@ -292,7 +227,7 @@ const NavigationSearchInput = ({ input404Class }) => {
               onEntered={() => setPopperEntered(true)}
               container={searchResultsAnchor}
             >
-              <Box className={classes.searchResults}>
+              <Box sx={resultsBoxCommonSx}>
                 {called && !loading && !!searchTerm.length > 0 && (
                   <NavigationSearchResults
                     results={data?.project_list_view || []}
@@ -303,7 +238,7 @@ const NavigationSearchInput = ({ input404Class }) => {
               </Box>
             </Slide>
           </Popper>
-        </div>
+        </Box>
       </ClickAwayListener>
     </Box>
   );
