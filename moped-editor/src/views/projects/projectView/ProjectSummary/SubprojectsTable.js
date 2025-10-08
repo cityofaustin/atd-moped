@@ -122,6 +122,8 @@ const SubprojectsTable = ({
     fetchPolicy: "no-cache",
   });
 
+  console.log(loading, data)
+
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
 
