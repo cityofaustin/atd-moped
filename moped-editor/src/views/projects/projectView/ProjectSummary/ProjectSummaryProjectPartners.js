@@ -122,7 +122,6 @@ const ProjectSummaryProjectPartners = ({
         handleProjectPartnersClose();
         handleSnackbar(true, `Error updating project partners`, "error", error);
       });
-    setEditMode(false);
   };
 
   return (

@@ -115,8 +115,6 @@ const ProjectSummaryProjectECapris = ({
           error
         );
       });
-
-    setEditMode(false);
   };
 
   /**

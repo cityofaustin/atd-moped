@@ -80,8 +80,6 @@ const ProjectSummaryInterimID = ({
           error
         );
       });
-
-    setEditMode(false);
   };
 
   /**
