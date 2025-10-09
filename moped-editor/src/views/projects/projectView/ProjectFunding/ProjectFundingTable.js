@@ -36,31 +36,11 @@ import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 // Pass this object as `sx` to the toolbar slotProps.
 const toolbarSx = {
-  fieldGridItem: (theme) => ({
-    margin: theme.spacing(2),
-  }),
-  fieldLabel: (theme) => ({
-    width: "100%",
-    color: theme.palette.text.secondary,
-    fontSize: ".8rem",
-  }),
-  fieldBox: {
-    maxWidth: "10rem",
-  },
   fundingButton: {
     position: "absolute",
     top: "1rem",
     right: "1rem",
   },
-  fieldLabelText: (theme) => ({
-    width: "calc(100% - 2rem)",
-    paddingLeft: theme.spacing(0.5),
-    "&:hover": {
-      backgroundColor: theme.palette.background.summaryHover,
-      borderRadius: theme.spacing(0.5),
-      cursor: "pointer",
-    },
-  }),
   toolbarTitle: (theme) => ({
     marginBottom: theme.spacing(1),
   }),

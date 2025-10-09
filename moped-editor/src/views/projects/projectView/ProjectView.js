@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useContext, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
-  Link as RouterLink,
+  NavLink as RouterLink,
   useParams,
   useSearchParams,
   useLocation,
@@ -357,199 +357,198 @@ const ProjectView = () => {
                       </Breadcrumbs>
                     </Box>
                     <Box px={3} pb={1}>
-                          <Grid container>
-                            <Grid
-                              item
-                              xs // Take all available space
-                              sx={(theme) => ({
-                                minHeight: theme.spacing(8), // Prevent jumping when edit form appears
-                                display: "flex",
-                                alignItems: "center",
-                                minWidth: 0, // Wrap long names
-                                [theme.breakpoints.down("lg")]: {
-                                  my: 1, // Add margin when on small screen and stacked vertically
-                                },
-                              })}
-                            >
-                              <Box sx={{ minWidth: 0, width: "100%" }}>
-                                <ProjectNameEditable
-                                  projectData={data.moped_project[0]}
-                                  projectId={projectId}
-                                  isEditing={isEditing}
-                                  setIsEditing={setIsEditing}
-                                  handleSnackbar={handleSnackbar}
-                                  refetch={refetch}
-                                />
-                              </Box>
-                            </Grid>
-                            <Grid
-                              item
-                              sx={{
-                                justifyItems: "right",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 2,
-                                flexShrink: 0,
-                                marginLeft: 2,
+                      <Grid container>
+                        <Grid
+                          item
+                          xs // Take all available space
+                          sx={(theme) => ({
+                            minHeight: theme.spacing(8), // Prevent jumping when edit form appears
+                            display: "flex",
+                            alignItems: "center",
+                            minWidth: 0, // Wrap long names
+                            [theme.breakpoints.down("lg")]: {
+                              my: 1, // Add margin when on small screen and stacked vertically
+                            },
+                          })}
+                        >
+                          <Box sx={{ minWidth: 0, width: "100%" }}>
+                            <ProjectNameEditable
+                              projectData={data.moped_project[0]}
+                              projectId={projectId}
+                              isEditing={isEditing}
+                              setIsEditing={setIsEditing}
+                              handleSnackbar={handleSnackbar}
+                              refetch={refetch}
+                            />
+                          </Box>
+                        </Grid>
+                        <Grid
+                          item
+                          sx={{
+                            justifyItems: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                            flexShrink: 0,
+                            marginLeft: 2,
+                          }}
+                        >
+                          <Box>
+                            <ProjectStatusBadge
+                              phaseKey={currentPhase?.phase_key}
+                              phaseName={currentPhase?.phase_name}
+                            />
+                          </Box>
+                          <Box>
+                            <ProjectFollowButton
+                              projectId={projectId}
+                              isFollowing={isFollowing}
+                              refetch={refetch}
+                              handleSnackbar={handleSnackbar}
+                            />
+                            <IconButton onClick={handleMenuOpen}>
+                              <MoreHorizIcon
+                                aria-controls="fade-menu"
+                                aria-haspopup="true"
+                                sx={{
+                                  fontSize: "2rem",
+                                  float: "right",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </IconButton>
+                            <Menu
+                              id="fade-menu"
+                              anchorEl={anchorElement}
+                              keepMounted
+                              open={menuOpen}
+                              onClose={handleMenuClose}
+                              autoFocus={false}
+                              TransitionComponent={Fade}
+                              anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "center",
+                              }}
+                              transformOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
                               }}
                             >
-                              <Box>
-                                <ProjectStatusBadge
-                                  phaseKey={currentPhase?.phase_key}
-                                  phaseName={currentPhase?.phase_name}
-                                />
-                              </Box>
-                              <Box>
-                                <ProjectFollowButton
-                                  projectId={projectId}
-                                  isFollowing={isFollowing}
-                                  refetch={refetch}
-                                  handleSnackbar={handleSnackbar}
-                                />
-                                <IconButton onClick={handleMenuOpen}>
-                                  <MoreHorizIcon
-                                    aria-controls="fade-menu"
-                                    aria-haspopup="true"
-                                    sx={{
-                                      fontSize: "2rem",
-                                      float: "right",
-                                      cursor: "pointer",
-                                    }}
-                                  />
-                                </IconButton>
-                                <Menu
-                                  id="fade-menu"
-                                  anchorEl={anchorElement}
-                                  keepMounted
-                                  open={menuOpen}
-                                  onClose={handleMenuClose}
-                                  autoFocus={false}
-                                  TransitionComponent={Fade}
-                                  anchorOrigin={{
-                                    vertical: "bottom",
-                                    horizontal: "center",
-                                  }}
-                                  transformOrigin={{
-                                    vertical: "top",
-                                    horizontal: "center",
+                              <MenuItem
+                                onClick={handleRenameClick}
+                                sx={{
+                                  minWidth: (theme) => theme.spacing(14),
+                                }}
+                                selected={false}
+                              >
+                                <ListItemIcon
+                                  sx={{
+                                    minWidth: (theme) => theme.spacing(2),
                                   }}
                                 >
-                                  <MenuItem
-                                    onClick={handleRenameClick}
-                                    sx={{
-                                      minWidth: (theme) => theme.spacing(14),
-                                    }}
-                                    selected={false}
-                                  >
-                                    <ListItemIcon
-                                      sx={{
-                                        minWidth: (theme) => theme.spacing(2),
-                                      }}
-                                    >
-                                      <CreateOutlinedIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Rename" />
-                                  </MenuItem>
-                                  <MenuItem
-                                    onClick={handleDeleteClick}
-                                    sx={{
-                                      minWidth: (theme) => theme.spacing(14),
-                                    }}
-                                    selected={false}
-                                  >
-                                    <ListItemIcon
-                                      sx={{
-                                        minWidth: (theme) => theme.spacing(2),
-                                      }}
-                                    >
-                                      <DeleteOutlinedIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Delete" />
-                                  </MenuItem>
-                                </Menu>
-                              </Box>
-                            </Grid>
-                          </Grid>
-                        </Box>
-                        <Divider />
-                        <AppBar
-                          sx={{
-                            backgroundColor: (theme) =>
-                              theme.palette.background.paper,
-                            color: (theme) => theme.palette.text.secondary,
-                          }}
-                          position="static"
-                        >
-                          <Tabs
-                            sx={{
-                              "& .MuiTabs-indicator": {
-                                backgroundColor: (theme) =>
-                                  theme.palette.primary.light,
-                              },
-                            }}
-                            value={activeTab}
-                            onChange={handleChange}
-                            variant="scrollable"
-                            aria-label="Project Details Tabs"
-                          >
-                            {TABS.map((tab, i) => {
-                              return (
-                                <Tab
+                                  <CreateOutlinedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Rename" />
+                              </MenuItem>
+                              <MenuItem
+                                onClick={handleDeleteClick}
+                                sx={{
+                                  minWidth: (theme) => theme.spacing(14),
+                                }}
+                                selected={false}
+                              >
+                                <ListItemIcon
                                   sx={{
-                                    minWidth: "160px",
-                                    "&.Mui-selected": {
-                                      color: (theme) =>
-                                        theme.palette.text.primary,
-                                    },
+                                    minWidth: (theme) => theme.spacing(2),
                                   }}
-                                  key={tab.label}
-                                  label={tab.label}
-                                  {...a11yProps(i)}
-                                />
-                              );
-                            })}
-                          </Tabs>
-                        </AppBar>
+                                >
+                                  <DeleteOutlinedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Delete" />
+                              </MenuItem>
+                            </Menu>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                    <Divider />
+                    <AppBar
+                      sx={{
+                        backgroundColor: (theme) =>
+                          theme.palette.background.paper,
+                        color: (theme) => theme.palette.text.secondary,
+                      }}
+                      position="static"
+                    >
+                      <Tabs
+                        sx={{
+                          "& .MuiTabs-indicator": {
+                            backgroundColor: (theme) =>
+                              theme.palette.primary.light,
+                          },
+                        }}
+                        value={activeTab}
+                        onChange={handleChange}
+                        variant="scrollable"
+                        aria-label="Project Details Tabs"
+                      >
                         {TABS.map((tab, i) => {
-                          const TabComponent = tab.Component;
                           return (
-                            <TabPanel
-                              data-name={"moped-project-view-tabpanel"}
+                            <Tab
+                              sx={{
+                                minWidth: "160px",
+                                "&.Mui-selected": {
+                                  color: (theme) => theme.palette.text.primary,
+                                },
+                              }}
                               key={tab.label}
-                              value={activeTab}
-                              index={i}
-                              sx={
-                                tab.label === "Map"
-                                  ? {
-                                      padding: 0,
-                                    }
-                                  : null
-                              }
-                            >
-                              <TabComponent
-                                loading={loading}
-                                data={data}
-                                error={error}
-                                refetch={refetch}
-                                projectName={
-                                  data.moped_project[0].project_name_full
-                                }
-                                phaseKey={currentPhase?.phase_key}
-                                phaseName={currentPhase?.phase_name}
-                                parentProjectId={
-                                  data.moped_project[0].parent_project_id
-                                }
-                                eCaprisSubprojectId={
-                                  data.moped_project[0].ecapris_subproject_id
-                                }
-                                onCloseTab={onCloseTab}
-                                listViewQuery={queryContext.listViewQuery}
-                                handleSnackbar={handleSnackbar}
-                              />
-                            </TabPanel>
+                              label={tab.label}
+                              {...a11yProps(i)}
+                            />
                           );
                         })}
-                      {/* </Box> */}
+                      </Tabs>
+                    </AppBar>
+                    {TABS.map((tab, i) => {
+                      const TabComponent = tab.Component;
+                      return (
+                        <TabPanel
+                          data-name={"moped-project-view-tabpanel"}
+                          key={tab.label}
+                          value={activeTab}
+                          index={i}
+                          sx={
+                            tab.label === "Map"
+                              ? {
+                                  padding: 0,
+                                }
+                              : null
+                          }
+                        >
+                          <TabComponent
+                            loading={loading}
+                            data={data}
+                            error={error}
+                            refetch={refetch}
+                            projectName={
+                              data.moped_project[0].project_name_full
+                            }
+                            phaseKey={currentPhase?.phase_key}
+                            phaseName={currentPhase?.phase_name}
+                            parentProjectId={
+                              data.moped_project[0].parent_project_id
+                            }
+                            eCaprisSubprojectId={
+                              data.moped_project[0].ecapris_subproject_id
+                            }
+                            onCloseTab={onCloseTab}
+                            listViewQuery={queryContext.listViewQuery}
+                            handleSnackbar={handleSnackbar}
+                          />
+                        </TabPanel>
+                      );
+                    })}
+                    {/* </Box> */}
                     {/* </Box> */}
                   </Box>
                 )}
@@ -598,14 +597,15 @@ const ProjectView = () => {
               </DialogContent>
               <DialogActions>
                 <Button>
-                  <RouterLink
+                  <Link
+                    component={RouterLink}
                     to={allProjectsLink}
                     sx={{
                       color: (theme) => theme.palette.primary.main,
                     }}
                   >
                     Back to all projects
-                  </RouterLink>
+                  </Link>
                 </Button>
               </DialogActions>
             </Dialog>
