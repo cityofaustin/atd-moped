@@ -240,8 +240,8 @@ export default function MapView({
             flexShrink: 0,
           }}
           variant="permanent"
-          slotProps={{
-            paper: {
+          PaperProps={{
+            sx: {
               width: drawerWidth,
             },
           }}

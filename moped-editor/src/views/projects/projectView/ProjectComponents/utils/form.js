@@ -348,12 +348,11 @@ export const ComponentOptionWithIcon = ({ option, state, props }) => {
 
   return (
     <Box
-      sx={(theme) => ({
+      sx={{
         display: "flex",
         justifyContent: "start",
         alignItems: "center",
-        margin: theme.spacing(1),
-      })}
+      }}
       {...props}
     >
       <Box
