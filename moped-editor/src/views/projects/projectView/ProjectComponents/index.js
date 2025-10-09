@@ -240,7 +240,7 @@ export default function MapView({
             flexShrink: 0,
           }}
           variant="permanent"
-          classes={{
+          slotProps={{
             paper: {
               width: drawerWidth,
             },
@@ -289,7 +289,7 @@ export default function MapView({
             ) : null}
           </Box>
         </Drawer>
-        <main
+        <Box
           sx={{
             flexGrow: 1,
             backgroundColor: "#fff",
@@ -297,7 +297,7 @@ export default function MapView({
           }}
         >
           <PlaceholderToolbar />
-          <div style={{ height: "100%" }}>
+          <Box sx={{ height: "100%" }}>
             <TheMap
               mapRef={mapRef}
               projectComponents={projectComponents}
@@ -321,7 +321,7 @@ export default function MapView({
               shouldShowRelatedProjects={shouldShowRelatedProjects}
               makeClickedComponentUpdates={makeClickedComponentUpdates}
             />
-          </div>
+          </Box>
           <CreateComponentModal
             setLinkMode={setLinkMode}
             createDispatch={createDispatch}
@@ -348,7 +348,7 @@ export default function MapView({
             setIsMovingComponent={setIsMovingComponent}
             refetchProjectComponents={refetchProjectComponents}
           />
-        </main>
+        </Box>
       </Box>
     </Dialog>
   );
