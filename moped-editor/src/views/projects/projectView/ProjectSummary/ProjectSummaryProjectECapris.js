@@ -22,16 +22,12 @@ import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 const WrapperComponent = ({ children, noWrapper }) =>
   noWrapper ? (
     <>
-      <Typography sx={fieldLabel}>
-        eCAPRIS Subproject ID
-      </Typography>
+      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
       {children}
     </>
   ) : (
     <Grid item xs={12} sx={fieldGridItem}>
-      <Typography sx={fieldLabel}>
-        eCAPRIS Subproject ID
-      </Typography>
+      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
       {children}
     </Grid>
   );
@@ -65,11 +61,10 @@ const ProjectSummaryProjectECapris = ({
     setECapris(newVal);
   }, [data]);
 
-  const [updateProjectECapris] = useMutation(
-    PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID
-  );
+  const [updateProjectECapris, { loading: updateMutationLoading }] =
+    useMutation(PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID);
 
-  const [clearProjectECapris] = useMutation(
+  const [clearProjectECapris, { loading: clearMutationLoading }] = useMutation(
     PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID
   );
 
@@ -106,11 +101,11 @@ const ProjectSummaryProjectECapris = ({
           },
         })
     )
+      .then(() => refetch())
       .then(() => {
         setEditMode(false);
         handleSnackbar(true, "eCAPRIS Subproject ID updated", "success");
       })
-      .then(() => refetch())
       .catch((error) => {
         handleProjectECaprisClose();
         handleSnackbar(
@@ -120,8 +115,6 @@ const ProjectSummaryProjectECapris = ({
           error
         );
       });
-
-    setEditMode(false);
   };
 
   /**
@@ -134,11 +127,7 @@ const ProjectSummaryProjectECapris = ({
 
   return (
     <WrapperComponent noWrapper={noWrapper}>
-      <Box
-        display="flex"
-        justifyContent="flex-start"
-        sx={fieldBox}
-      >
+      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <>
             <TextField
@@ -162,7 +151,7 @@ const ProjectSummaryProjectECapris = ({
               disabledCondition={
                 originalValue === eCapris || !isValidECaprisId(eCapris)
               }
-              loading={loading}
+              loading={loading || updateMutationLoading || clearMutationLoading}
             />
           </>
         )}

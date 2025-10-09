@@ -27,20 +27,18 @@ const ProjectSummaryDataTrackerSignals = ({ project }) => {
   const signals = useProjectSignals(project);
 
   return (
-    <>
-      <Grid item xs={12} sx={fieldGridItem}>
-        <Typography sx={fieldLabel}>Signal IDs</Typography>
-        <Box display="flex" justifyContent="flex-start">
-          <ProjectSummaryLabel
-            sxProp={fieldLabelDataTrackerLink}
-            spanSxProp={fieldLabelTextSpanNoBorder}
-            text={
-              signals.length > 0 ? <RenderSignalLink signals={signals} /> : "-"
-            }
-          />
-        </Box>
-      </Grid>
-    </>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>Signal IDs</Typography>
+      <Box display="flex" justifyContent="flex-start">
+        <ProjectSummaryLabel
+          sxProp={fieldLabelDataTrackerLink}
+          spanSxProp={fieldLabelTextSpanNoBorder}
+          text={
+            signals.length > 0 ? <RenderSignalLink signals={signals} /> : "-"
+          }
+        />
+      </Box>
+    </Grid>
   );
 };
 
