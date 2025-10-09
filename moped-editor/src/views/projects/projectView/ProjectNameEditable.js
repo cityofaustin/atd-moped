@@ -12,7 +12,6 @@ const ProjectNameEditable = (props) => {
           projectData={props.projectData}
           setIsEditing={props.setIsEditing}
           projectId={props.projectId}
-          currentPhase={props.currentPhase}
         />
       )}
     </>
