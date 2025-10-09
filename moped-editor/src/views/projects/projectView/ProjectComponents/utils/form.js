@@ -1,6 +1,5 @@
 import { useMemo, useEffect, useState } from "react";
-import { Icon } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { Box, Icon } from "@mui/material";
 import {
   featureSchoolBeaconRecordToKnackSchoolBeaconRecord,
   featureSignalsRecordToKnackSignalRecord,
@@ -10,7 +9,6 @@ import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
-import theme from "src/theme/index";
 import { get } from "lodash";
 
 /**
@@ -309,40 +307,36 @@ export const makeTagFormFieldValues = (tags) => {
   }));
 };
 
-const useComponentIconByLineRepresentationStyles = makeStyles(() => ({
-  icon: (props) => ({
-    color: props.color,
-  }),
-}));
-
 export const ComponentIconByLineRepresentation = ({
   lineRepresentation,
   color,
 }) => {
-  const classes = useComponentIconByLineRepresentationStyles({ color });
-
   if (lineRepresentation === true)
-    return <TimelineIcon className={classes.icon} />;
+    return (
+      <TimelineIcon
+        sx={{
+          color: color,
+        }}
+      />
+    );
   if (lineRepresentation === false)
-    return <RoomOutlinedIcon className={classes.icon} />;
+    return (
+      <RoomOutlinedIcon
+        sx={{
+          color: color,
+        }}
+      />
+    );
   /* Fall back to a blank icon to keep labels lined up */
-  if (lineRepresentation === null) return <Icon className={classes.icon} />;
+  if (lineRepresentation === null)
+    return (
+      <Icon
+        sx={{
+          color: color,
+        }}
+      />
+    );
 };
-
-const useComponentOptionWithIconStyles = makeStyles((theme) => ({
-  iconContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: theme.spacing(1),
-  },
-  optionContainer: {
-    display: "flex",
-    justifyContent: "start",
-    alignItems: "center",
-    margin: theme.spacing(1),
-  },
-}));
 
 /**
  * Renders an option with icon based on the type of geometry (if it exists) and component type label
@@ -350,19 +344,33 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  */
 export const ComponentOptionWithIcon = ({ option, state, props }) => {
-  const classes = useComponentOptionWithIconStyles();
   const { data: { line_representation = null } = {} } = option;
 
   return (
-    <span className={classes.optionContainer} {...props}>
-      <span className={classes.iconContainer}>
+    <Box
+      sx={(theme) => ({
+        display: "flex",
+        justifyContent: "start",
+        alignItems: "center",
+        margin: theme.spacing(1),
+      })}
+      {...props}
+    >
+      <Box
+        sx={(theme) => ({
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginRight: theme.spacing(1),
+        })}
+      >
         <ComponentIconByLineRepresentation
           lineRepresentation={line_representation}
-          color={theme.palette.primary.main}
-        />{" "}
-      </span>
+          color={(theme) => theme.palette.primary.main}
+        />
+      </Box>
       {option.label}
-    </span>
+    </Box>
   );
 };
 
