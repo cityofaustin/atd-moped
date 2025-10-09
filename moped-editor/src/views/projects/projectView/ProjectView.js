@@ -63,46 +63,6 @@ import FeedbackSnackbar, {
 } from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  noPadding: {
-    padding: 0,
-  },
-  cardWrapper: {
-    marginTop: theme.spacing(3),
-  },
-  moreHorizontal: {
-    fontSize: "2rem",
-    float: "right",
-    cursor: "pointer",
-  },
-  projectOptionsMenuItem: {
-    minWidth: "14rem",
-  },
-  projectOptionsMenuItemIcon: {
-    minWidth: "2rem",
-  },
-  appBar: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.secondary,
-  },
-  selectedTab: {
-    minWidth: "160px",
-    "&.Mui-selected": {
-      color: theme.palette.text.primary,
-    },
-  },
-  indicatorColor: {
-    backgroundColor: theme.palette.primary.light,
-  },
-  colorPrimary: {
-    color: theme.palette.primary.main,
-  },
-}));
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -366,7 +326,13 @@ const ProjectView = () => {
                 {loading ? (
                   <CircularProgress />
                 ) : (
-                  <div className={classes.root}>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      backgroundColor: (theme) =>
+                        theme.palette.background.paper,
+                    }}
+                  >
                     <Box
                       sx={{
                         pt: 2,
@@ -391,205 +357,208 @@ const ProjectView = () => {
                       </Breadcrumbs>
                     </Box>
                     <Box px={3} pb={1}>
-                  <Box
-                    sx={{
-                      flexGrow: 1,
-                      backgroundColor: (theme) =>
-                        theme.palette.background.paper,
-                    }}
-                  >
-                    <Box p={4} pb={2}>
-                      <Grid container>
-                        <Grid
-                          item
-                          xs // Take all available space
-                          sx={(theme) => ({
-                            minHeight: theme.spacing(8), // Prevent jumping when edit form appears
-                            display: "flex",
-                            alignItems: "center",
-                            minWidth: 0, // Wrap long names
-                            [theme.breakpoints.down("lg")]: {
-                              my: 1, // Add margin when on small screen and stacked vertically
-                            },
-                          })}
-                        >
-                          <Box sx={{ minWidth: 0, width: "100%" }}>
-                            <ProjectNameEditable
-                              projectData={data.moped_project[0]}
-                              projectId={projectId}
-                              isEditing={isEditing}
-                              setIsEditing={setIsEditing}
-                              handleSnackbar={handleSnackbar}
-                              refetch={refetch}
-                            />
-                          </Box>
-                        </Grid>
-                        <Grid
-                          item
-                          sx={{
-                            justifyItems: "right",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 2,
-                            flexShrink: 0,
-                            marginLeft: 2,
-                          }}
-                        >
-                          <Box>
-                            <ProjectStatusBadge
-                              phaseKey={currentPhase?.phase_key}
-                              phaseName={currentPhase?.phase_name}
-                            />
-                          </Box>
-                          <Box>
-                            <ProjectFollowButton
-                              projectId={projectId}
-                              isFollowing={isFollowing}
-                              refetch={refetch}
-                              handleSnackbar={handleSnackbar}
-                            />
-                            <IconButton onClick={handleMenuOpen}>
-                              <MoreHorizIcon
-                                aria-controls="fade-menu"
-                                aria-haspopup="true"
-                                sx={{
-                              fontSize: "2rem",
-                              float: "right",
-                              cursor: "pointer",
-                            }}
-                              />
-                            </IconButton>
-                            <Menu
-                              id="fade-menu"
-                              anchorEl={anchorElement}
-                              keepMounted
-                              open={menuOpen}
-                              onClose={handleMenuClose}
-                              autoFocus={false}
-                              TransitionComponent={Fade}
-                              anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "center",
-                              }}
-                              transformOrigin={{
-                                vertical: "top",
-                                horizontal: "center",
+                      <Box
+                        sx={{
+                          flexGrow: 1,
+                          backgroundColor: (theme) =>
+                            theme.palette.background.paper,
+                        }}
+                      >
+                        <Box p={4} pb={2}>
+                          <Grid container>
+                            <Grid
+                              item
+                              xs // Take all available space
+                              sx={(theme) => ({
+                                minHeight: theme.spacing(8), // Prevent jumping when edit form appears
+                                display: "flex",
+                                alignItems: "center",
+                                minWidth: 0, // Wrap long names
+                                [theme.breakpoints.down("lg")]: {
+                                  my: 1, // Add margin when on small screen and stacked vertically
+                                },
+                              })}
+                            >
+                              <Box sx={{ minWidth: 0, width: "100%" }}>
+                                <ProjectNameEditable
+                                  projectData={data.moped_project[0]}
+                                  projectId={projectId}
+                                  isEditing={isEditing}
+                                  setIsEditing={setIsEditing}
+                                  handleSnackbar={handleSnackbar}
+                                  refetch={refetch}
+                                />
+                              </Box>
+                            </Grid>
+                            <Grid
+                              item
+                              sx={{
+                                justifyItems: "right",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
+                                flexShrink: 0,
+                                marginLeft: 2,
                               }}
                             >
-                              <MenuItem
-                                onClick={handleRenameClick}
-                                sx={{
-                                minWidth: (theme) => theme.spacing(14),
-                              }}
-                                selected={false}
-                              >
-                                <ListItemIcon
-                                  sx={{
-                                  minWidth: (theme) => theme.spacing(2),
-                                }}
+                              <Box>
+                                <ProjectStatusBadge
+                                  phaseKey={currentPhase?.phase_key}
+                                  phaseName={currentPhase?.phase_name}
+                                />
+                              </Box>
+                              <Box>
+                                <ProjectFollowButton
+                                  projectId={projectId}
+                                  isFollowing={isFollowing}
+                                  refetch={refetch}
+                                  handleSnackbar={handleSnackbar}
+                                />
+                                <IconButton onClick={handleMenuOpen}>
+                                  <MoreHorizIcon
+                                    aria-controls="fade-menu"
+                                    aria-haspopup="true"
+                                    sx={{
+                                      fontSize: "2rem",
+                                      float: "right",
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </IconButton>
+                                <Menu
+                                  id="fade-menu"
+                                  anchorEl={anchorElement}
+                                  keepMounted
+                                  open={menuOpen}
+                                  onClose={handleMenuClose}
+                                  autoFocus={false}
+                                  TransitionComponent={Fade}
+                                  anchorOrigin={{
+                                    vertical: "bottom",
+                                    horizontal: "center",
+                                  }}
+                                  transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "center",
+                                  }}
                                 >
-                                  <CreateOutlinedIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Rename" />
-                              </MenuItem>
-                              <MenuItem
-                                onClick={handleDeleteClick}
-                                sx={{
-                                minWidth: (theme) => theme.spacing(14),
-                              }}
-                                selected={false}
-                              >
-                                <ListItemIcon
-                                  sx={{
-                                  minWidth: (theme) => theme.spacing(2),
-                                }}
-                                >
-                                  <DeleteOutlinedIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Delete" />
-                              </MenuItem>
-                            </Menu>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                    <Divider />
-                    <AppBar
-                      sx={{
-                        backgroundColor: (theme) =>
-                          theme.palette.background.paper,
-                        color: (theme) => theme.palette.text.secondary,
-                      }}
-                      position="static"
-                    >
-                      <Tabs
-                        classes={{
-                          indicator: {
+                                  <MenuItem
+                                    onClick={handleRenameClick}
+                                    sx={{
+                                      minWidth: (theme) => theme.spacing(14),
+                                    }}
+                                    selected={false}
+                                  >
+                                    <ListItemIcon
+                                      sx={{
+                                        minWidth: (theme) => theme.spacing(2),
+                                      }}
+                                    >
+                                      <CreateOutlinedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Rename" />
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={handleDeleteClick}
+                                    sx={{
+                                      minWidth: (theme) => theme.spacing(14),
+                                    }}
+                                    selected={false}
+                                  >
+                                    <ListItemIcon
+                                      sx={{
+                                        minWidth: (theme) => theme.spacing(2),
+                                      }}
+                                    >
+                                      <DeleteOutlinedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Delete" />
+                                  </MenuItem>
+                                </Menu>
+                              </Box>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                        <Divider />
+                        <AppBar
+                          sx={{
                             backgroundColor: (theme) =>
-                              theme.palette.primary.light,
-                          },
-                        }}
-                        value={activeTab}
-                        onChange={handleChange}
-                        variant="scrollable"
-                        aria-label="Project Details Tabs"
-                      >
+                              theme.palette.background.paper,
+                            color: (theme) => theme.palette.text.secondary,
+                          }}
+                          position="static"
+                        >
+                          <Tabs
+                            sx={{
+                              "& .MuiTabs-indicator": {
+                                backgroundColor: (theme) =>
+                                  theme.palette.primary.light,
+                              },
+                            }}
+                            value={activeTab}
+                            onChange={handleChange}
+                            variant="scrollable"
+                            aria-label="Project Details Tabs"
+                          >
+                            {TABS.map((tab, i) => {
+                              return (
+                                <Tab
+                                  sx={{
+                                    minWidth: "160px",
+                                    "&.Mui-selected": {
+                                      color: (theme) =>
+                                        theme.palette.text.primary,
+                                    },
+                                  }}
+                                  key={tab.label}
+                                  label={tab.label}
+                                  {...a11yProps(i)}
+                                />
+                              );
+                            })}
+                          </Tabs>
+                        </AppBar>
                         {TABS.map((tab, i) => {
+                          const TabComponent = tab.Component;
                           return (
-                            <Tab
-                              sx={{
-                                minWidth: "160px",
-                                "&.Mui-selected": {
-                                  color: (theme) => theme.palette.text.primary,
-                                },
-                              }}
+                            <TabPanel
+                              data-name={"moped-project-view-tabpanel"}
                               key={tab.label}
-                              label={tab.label}
-                              {...a11yProps(i)}
-                            />
+                              value={activeTab}
+                              index={i}
+                              sx={
+                                tab.label === "Map"
+                                  ? {
+                                      padding: 0,
+                                    }
+                                  : null
+                              }
+                            >
+                              <TabComponent
+                                loading={loading}
+                                data={data}
+                                error={error}
+                                refetch={refetch}
+                                projectName={
+                                  data.moped_project[0].project_name_full
+                                }
+                                phaseKey={currentPhase?.phase_key}
+                                phaseName={currentPhase?.phase_name}
+                                parentProjectId={
+                                  data.moped_project[0].parent_project_id
+                                }
+                                eCaprisSubprojectId={
+                                  data.moped_project[0].ecapris_subproject_id
+                                }
+                                onCloseTab={onCloseTab}
+                                listViewQuery={queryContext.listViewQuery}
+                                handleSnackbar={handleSnackbar}
+                              />
+                            </TabPanel>
                           );
                         })}
-                      </Tabs>
-                    </AppBar>
-                    {TABS.map((tab, i) => {
-                      const TabComponent = tab.Component;
-                      return (
-                        <TabPanel
-                          data-name={"moped-project-view-tabpanel"}
-                          key={tab.label}
-                          value={activeTab}
-                          index={i}
-                          sx={
-                            tab.label === "Map"
-                              ? {
-                                  padding: 0,
-                                }
-                              : null
-                          }
-                        >
-                          <TabComponent
-                            loading={loading}
-                            data={data}
-                            error={error}
-                            refetch={refetch}
-                            projectName={
-                              data.moped_project[0].project_name_full
-                            }
-                            phaseKey={currentPhase?.phase_key}
-                            phaseName={currentPhase?.phase_name}
-                            parentProjectId={
-                              data.moped_project[0].parent_project_id
-                            }
-                            eCaprisSubprojectId={
-                              data.moped_project[0].ecapris_subproject_id
-                            }
-                            onCloseTab={onCloseTab}
-                            listViewQuery={queryContext.listViewQuery}
-                            handleSnackbar={handleSnackbar}
-                          />
-                        </TabPanel>
-                      );
-                    })}
+                      </Box>
+                    </Box>
                   </Box>
                 )}
               </Card>
