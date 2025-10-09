@@ -5,7 +5,6 @@ import isEqual from "lodash/isEqual";
 
 // Material
 import { CircularProgress, Box } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import {
   DataGridPro,
   GridRowModes,
@@ -35,15 +34,16 @@ import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
-const useStyles = makeStyles((theme) => ({
-  fieldGridItem: {
+// Pass this object as `sx` to the toolbar slotProps.
+const toolbarSx = {
+  fieldGridItem: (theme) => ({
     margin: theme.spacing(2),
-  },
-  fieldLabel: {
+  }),
+  fieldLabel: (theme) => ({
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
-  },
+  }),
   fieldBox: {
     maxWidth: "10rem",
   },
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     top: "1rem",
     right: "1rem",
   },
-  fieldLabelText: {
+  fieldLabelText: (theme) => ({
     width: "calc(100% - 2rem)",
     paddingLeft: theme.spacing(0.5),
     "&:hover": {
@@ -60,11 +60,11 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
-  },
-  toolbarTitle: {
+  }),
+  toolbarTitle: (theme) => ({
     marginBottom: theme.spacing(1),
-  },
-}));
+  }),
+};
 
 /*
  * Transportation Project Financial Codes
@@ -271,7 +271,6 @@ const useColumns = ({
 
 const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const apiRef = useGridApiRef();
-  const classes = useStyles();
 
   /** Params Hook
    * @type {integer} projectId
@@ -588,7 +587,8 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                 refetchProjectSummary();
               },
               handleSnackbar: handleSnackbar,
-              classes: classes,
+              // pass the sx-style object to the toolbar so it can apply inline sx props
+              sx: toolbarSx,
               noWrapper: true,
               setIsDialogOpen: setIsDialogOpen,
             },
