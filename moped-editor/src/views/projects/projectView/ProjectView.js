@@ -357,14 +357,6 @@ const ProjectView = () => {
                       </Breadcrumbs>
                     </Box>
                     <Box px={3} pb={1}>
-                      <Box
-                        sx={{
-                          flexGrow: 1,
-                          backgroundColor: (theme) =>
-                            theme.palette.background.paper,
-                        }}
-                      >
-                        <Box p={4} pb={2}>
                           <Grid container>
                             <Grid
                               item
@@ -557,8 +549,8 @@ const ProjectView = () => {
                             </TabPanel>
                           );
                         })}
-                      </Box>
-                    </Box>
+                      {/* </Box> */}
+                    {/* </Box> */}
                   </Box>
                 )}
               </Card>
