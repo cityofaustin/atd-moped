@@ -9,7 +9,7 @@ const ProjectFunding = ({ handleSnackbar, refetch: refetchProjectSummary }) => {
   const { projectId } = useParams();
   return (
     <CardContent>
-      <Grid container spacing={6}>
+      <Grid container spacing={4}>
         <Grid item xs={12}>
           <ProjectFundingTable
             projectId={projectId}

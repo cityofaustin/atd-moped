@@ -41,27 +41,23 @@ const ProjectTimeline = ({ handleSnackbar }) => {
 
   return (
     <CardContent>
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         <Grid item xs={12}>
-          <Box mb={2} style={{ maxWidth: "100%" }}>
-            <ProjectPhases
-              projectId={projectId}
-              data={data}
-              refetch={refetch}
-              handleSnackbar={handleSnackbar}
-            />
-          </Box>
+          <ProjectPhases
+            projectId={projectId}
+            data={data}
+            refetch={refetch}
+            handleSnackbar={handleSnackbar}
+          />
         </Grid>
         <Grid item xs={12}>
-          <Box style={{ maxWidth: "100%" }}>
-            <ProjectMilestones
-              projectId={projectId}
-              loading={loading}
-              data={data}
-              refetch={refetch}
-              handleSnackbar={handleSnackbar}
-            />
-          </Box>
+          <ProjectMilestones
+            projectId={projectId}
+            loading={loading}
+            data={data}
+            refetch={refetch}
+            handleSnackbar={handleSnackbar}
+          />
         </Grid>
       </Grid>
     </CardContent>

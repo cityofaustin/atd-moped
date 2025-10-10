@@ -251,32 +251,28 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
 
   return (
     <>
-      <Box sx={{ width: "100%", overflow: "auto", minHeight: "700px" }}>
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
-          autoHeight
-          columns={columns}
-          columnVisibilityModel={hiddenColumns}
-          onColumnVisibilityModelChange={(newModel) =>
-            setHiddenColumns(newModel)
-          }
-          toolbar
-          density="comfortable"
-          disableRowSelectionOnClick
-          getRowHeight={() => "auto"}
-          hideFooter
-          localeText={{ noRowsLabel: "No work activites" }}
-          initialState={{ pinnedColumns: { right: ["Edit"] } }}
-          rows={activities}
-          slots={{
-            toolbar: WorkActivityToolbar,
-          }}
-          slotProps={{
-            toolbar: { onClick: onClickAddActivity },
-          }}
-          onCellDoubleClick={doubleClickListener}
-        />
-      </Box>
+      <DataGridPro
+        sx={dataGridProStyleOverrides}
+        autoHeight
+        columns={columns}
+        columnVisibilityModel={hiddenColumns}
+        onColumnVisibilityModelChange={(newModel) => setHiddenColumns(newModel)}
+        toolbar
+        density="comfortable"
+        disableRowSelectionOnClick
+        getRowHeight={() => "auto"}
+        hideFooter
+        localeText={{ noRowsLabel: "No work activites" }}
+        initialState={{ pinnedColumns: { right: ["Edit"] } }}
+        rows={activities}
+        slots={{
+          toolbar: WorkActivityToolbar,
+        }}
+        slotProps={{
+          toolbar: { onClick: onClickAddActivity },
+        }}
+        onCellDoubleClick={doubleClickListener}
+      />
       {editActivity && (
         <ProjectWorkActivitiesDialog
           activity={editActivity}

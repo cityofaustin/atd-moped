@@ -9,7 +9,7 @@ const ProjectTeam = ({ handleSnackbar }) => {
 
   return (
     <CardContent>
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         <Grid item xs={12}>
           <ProjectTeamTable
             projectId={projectId}
