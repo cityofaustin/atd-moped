@@ -26,6 +26,7 @@ insert_permissions:
         - funding_status_id
         - is_deleted
         - project_id
+        - unit_long_name
     comment: No insert permissions on audit fields
   - role: moped-editor
     permission:
@@ -44,6 +45,7 @@ insert_permissions:
         - funding_status_id
         - is_deleted
         - project_id
+        - unit_long_name
     comment: No insert permissions on audit fields
 select_permissions:
   - role: moped-admin
@@ -67,6 +69,7 @@ select_permissions:
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
+        - unit_long_name
         - updated_at
         - updated_by_user_id
       filter: {}
@@ -92,6 +95,7 @@ select_permissions:
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
+        - unit_long_name
         - updated_at
         - updated_by_user_id
       filter: {}
@@ -117,6 +121,7 @@ select_permissions:
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
+        - unit_long_name
         - updated_at
         - updated_by_user_id
       filter: {}
@@ -135,6 +140,7 @@ update_permissions:
         - funding_status_id
         - is_deleted
         - project_id
+        - unit_long_name
       filter: {}
       check: null
       set:
@@ -153,6 +159,7 @@ update_permissions:
         - funding_status_id
         - is_deleted
         - project_id
+        - unit_long_name
       filter: {}
       check: null
       set:

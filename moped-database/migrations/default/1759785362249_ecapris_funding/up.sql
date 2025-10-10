@@ -11,7 +11,8 @@ ALTER TABLE moped_proj_funding
 ADD COLUMN ecapris_funding_id INTEGER,
 ADD COLUMN is_legacy_funding_record BOOLEAN DEFAULT FALSE,
 ADD COLUMN is_editable BOOLEAN GENERATED ALWAYS AS (ecapris_funding_id IS NULL) STORED,
-ADD COLUMN fdu TEXT DEFAULT NULL;
+ADD COLUMN fdu TEXT DEFAULT NULL,
+ADD COLUMN unit_long_name TEXT DEFAULT NULL;
 
 COMMENT ON COLUMN moped_proj_funding.ecapris_funding_id IS 'References the eCAPRIS FDU unique fao_id if applicable';
 COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if the funding record was created before eCAPRIS sync integration (Nov 2025)';
@@ -34,3 +35,4 @@ COMMENT ON COLUMN moped_proj_funding.fund IS 'Legacy JSONB object containing add
 COMMENT ON COLUMN moped_proj_funding.dept_unit IS 'Legacy JSONB object containing additional department/unit details from eCAPRIS (Socrata bgrt-2m2z)';
 COMMENT ON COLUMN moped_proj_funding.is_editable IS 'Indicates if the funding record is editable (false if linked to an eCAPRIS funding record)';
 COMMENT ON COLUMN moped_proj_funding.fdu IS 'The FDU (Fund-Dept-Unit) code associated with this funding record';
+COMMENT ON COLUMN moped_proj_funding.unit_long_name IS 'The long name of the unit associated with this funding record';
