@@ -1,12 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { Box, Grid, Icon, IconButton } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
-import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
 import { agolValidation } from "src/constants/projects";
+import ProjectSummaryIconButtons from "./ProjectSummary/ProjectSummaryIconButtons";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -24,7 +24,6 @@ const inputStyles = { fontSize: "1.4rem", fontWeight: "bold" };
  * @param {Object} projectData - The data object from the GraphQL query
  * @param {Function} setIsEditing - The function to toggle the editing boolean state
  * @param {Function} handleSnackbar - The function to show the snackbar
- * @param {Object} currentPhase - The current phase data object
  * @param {Function} refetch - The refetch function from Apollo
  * @returns {JSX.Element}
  * @constructor
@@ -34,7 +33,6 @@ const ProjectNameForm = ({
   projectData,
   setIsEditing,
   handleSnackbar,
-  currentPhase,
   refetch,
 }) => {
   const originalName = projectData?.project_name ?? null;
@@ -84,11 +82,11 @@ const ProjectNameForm = ({
     <>
       <Box
         component="form"
-        sx={{ minWidth: "100%" }}
+        sx={{ width: "100%" }}
         onSubmit={handleSubmit(handleSave)}
       >
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} lg={6}>
             <ControlledTextInput
               autoFocus
               variant="standard"
@@ -109,7 +107,7 @@ const ProjectNameForm = ({
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} lg={5}>
             <ControlledTextInput
               variant="standard"
               fullWidth
@@ -136,23 +134,17 @@ const ProjectNameForm = ({
             container
             direction="row"
             alignItems="center"
+            alignContent="center"
             xs={12}
-            sm="auto"
+            lg={1}
             sx={(theme) => ({
               minWidth: theme.spacing(12),
             })}
           >
-            <IconButton type="submit" disabled={!isDirty || loading}>
-              <Icon>check</Icon>
-            </IconButton>
-            <IconButton onClick={handleCancelClick} disabled={loading}>
-              <Icon>close</Icon>
-            </IconButton>
-          </Grid>
-          <Grid item xs={12} sm="auto" container alignItems="center">
-            <ProjectStatusBadge
-              phaseKey={currentPhase?.phase_key}
-              phaseName={currentPhase?.phase_name}
+            <ProjectSummaryIconButtons
+              handleClose={handleCancelClick}
+              disabledCondition={!isDirty}
+              loading={loading}
             />
           </Grid>
         </Grid>

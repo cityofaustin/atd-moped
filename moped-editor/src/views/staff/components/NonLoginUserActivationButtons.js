@@ -9,10 +9,8 @@ import {
   fieldParsers,
   transformFormDataIntoDatabaseTypes,
 } from "../helpers";
-import { useButtonStyles } from "./StaffFormButtons";
 
 import { Button, Typography, Box } from "@mui/material";
-import clsx from "clsx";
 
 /**
  * Generates a button to convert a non-login user to a Moped user with login
@@ -28,7 +26,6 @@ const NonLoginUserActivationButtons = ({
   userId,
   formValues,
 }) => {
-  const classes = useButtonStyles();
   let navigate = useNavigate();
   const { email, password, roles } = formValues;
 
@@ -126,7 +123,7 @@ const NonLoginUserActivationButtons = ({
     <>
       {/* Need to create a save button to update only the moped_user row with a new mutation */}
       <Button
-        className={classes.formButton}
+        sx={{ m: 1, color: "white" }}
         onClick={handleUpdateNonLoginUser}
         color="primary"
         variant="contained"
@@ -134,7 +131,12 @@ const NonLoginUserActivationButtons = ({
         Save
       </Button>
       <Button
-        className={clsx(classes.formButton, classes.formButtonGreen)}
+        sx={(theme) => ({
+          m: 1,
+          color: "white",
+          bgcolor: theme.palette.success.main,
+          "&:hover": { bgcolor: theme.palette.success.dark },
+        })}
         variant="contained"
         onClick={handleActivateNonLoginUser}
       >

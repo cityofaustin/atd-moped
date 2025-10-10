@@ -3,7 +3,12 @@ import { Grid, Box, Typography, TextField } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { Autocomplete } from "@mui/material";
-import { fieldBox, fieldGridItem, fieldLabel, fieldSelectItem } from "src/styles/reusableStyles";
+import {
+  fieldBox,
+  fieldGridItem,
+  fieldLabel,
+  fieldSelectItem,
+} from "src/styles/reusableStyles";
 
 import { useMutation } from "@apollo/client";
 
@@ -40,7 +45,8 @@ const ProjectSummaryAutocomplete = ({
   const [fieldValue, setFieldValue] = useState(initialValue);
 
   // The mutation and mutation function
-  const [updateFieldValue] = useMutation(updateMutation);
+  const [updateFieldValue, { loading: mutationLoading }] =
+    useMutation(updateMutation);
 
   /**
    * Resets the field value back to its original state, closes edit mode
@@ -60,9 +66,9 @@ const ProjectSummaryAutocomplete = ({
         fieldValueId: fieldValue?.[idColumn] ?? null,
       },
     })
+      .then(() => refetch())
       .then(() => {
         setEditMode(false);
-        refetch();
         handleSnackbar(true, `${field} updated`, "success");
       })
       .catch((error) => {
@@ -74,11 +80,7 @@ const ProjectSummaryAutocomplete = ({
   return (
     <Grid item xs={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>{field}</Typography>
-      <Box
-        display="flex"
-        justifyContent="flex-start"
-        sx={fieldBox}
-      >
+      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <>
             <Autocomplete
@@ -106,8 +108,10 @@ const ProjectSummaryAutocomplete = ({
             <ProjectSummaryIconButtons
               handleSave={handleFieldSave}
               handleClose={handleFieldClose}
-              disabledCondition={fieldValue?.[idColumn] === initialValue?.[idColumn]}
-              loading={loading}
+              disabledCondition={
+                fieldValue?.[idColumn] === initialValue?.[idColumn]
+              }
+              loading={loading || mutationLoading}
             />
           </>
         )}
