@@ -21,7 +21,7 @@ UPDATE moped_proj_funding
 SET is_legacy_funding_record = TRUE;
 
 -- Add comments on other existing moped_proj_funding columns
-COMMENT ON COLUMN moped_proj_funding.project_funding_id IS 'Primary key for the project funding record';
+COMMENT ON COLUMN moped_proj_funding.proj_funding_id IS 'Primary key for the project funding record';
 COMMENT ON COLUMN moped_proj_funding.project_id IS 'References the project this funding record is associated with';
 COMMENT ON COLUMN moped_proj_funding.funding_program_id IS 'References the funding program for this funding record';
 COMMENT ON COLUMN moped_proj_funding.funding_amount IS 'The amount of funding allocated from this funding source';
