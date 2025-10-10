@@ -548,8 +548,6 @@ const ProjectView = () => {
                         </TabPanel>
                       );
                     })}
-                    {/* </Box> */}
-                    {/* </Box> */}
                   </Box>
                 )}
               </Card>
