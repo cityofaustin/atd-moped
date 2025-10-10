@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { CircularProgress, Box } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import {
   DataGridPro,
   GridRowModes,
