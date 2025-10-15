@@ -21,6 +21,7 @@ from utils import (
     get_logger,
 )
 
+
 def get_esri_geometry_key(geometry):
     """Identify the name of the geometry property that will hold coordinate data in an
     Esri feature object.
@@ -189,17 +190,27 @@ def main(args):
             logger.info(f"Processing {feature_type} features...")
             features = all_features[feature_type]
 
-            logger.info("Deleting all existing features...")
-            if not args.test:
-                delete_all_features(feature_type)
-
-            logger.info(
-                f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
-            )
-            for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
-                logger.info("Uploading chunk....")
+            if args.dry_run:
+                logger.info(
+                    f"[DRY RUN] Would delete all existing features from {feature_type} layer"
+                )
+            else:
+                logger.info("Deleting all existing features...")
                 if not args.test:
-                    add_features(feature_type, feature_chunk)
+                    delete_all_features(feature_type)
+
+            if args.dry_run:
+                logger.info(
+                    f"[DRY RUN] Would upload {len(features)} features to {feature_type} layer in chunks of {UPLOAD_CHUNK_SIZE}"
+                )
+            else:
+                logger.info(
+                    f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+                )
+                for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+                    logger.info("Uploading chunk....")
+                    if not args.test:
+                        add_features(feature_type, feature_chunk)
     else:
         # Get project IDs that have been updated (including soft-deleted projects) for deletes
         project_ids_for_delete = [project["project_id"] for project in projects_data]
@@ -209,22 +220,39 @@ def main(args):
             logger.info(f"Processing {feature_type} features...")
             features = all_features[feature_type]
 
-            logger.info(
-                f"Deleting all existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
-            )
-            for delete_chunk in chunks(project_ids_for_delete, UPLOAD_CHUNK_SIZE):
-                joined_project_ids = ", ".join(str(x) for x in delete_chunk)
-                logger.info(f"Deleting features with project ids {joined_project_ids}")
-                if not args.test:
-                    delete_features_by_project_ids(feature_type, joined_project_ids)
+            if args.dry_run:
+                logger.info(
+                    f"[DRY RUN] Would delete features from {feature_type} layer for {len(project_ids_for_delete)} updated projects"
+                )
+                for delete_chunk in chunks(project_ids_for_delete, UPLOAD_CHUNK_SIZE):
+                    joined_project_ids = ", ".join(str(x) for x in delete_chunk)
+                    logger.info(
+                        f"[DRY RUN] Would delete features with project ids: {joined_project_ids}"
+                    )
+            else:
+                logger.info(
+                    f"Deleting all existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
+                )
+                for delete_chunk in chunks(project_ids_for_delete, UPLOAD_CHUNK_SIZE):
+                    joined_project_ids = ", ".join(str(x) for x in delete_chunk)
+                    logger.info(
+                        f"Deleting features with project ids {joined_project_ids}"
+                    )
+                    if not args.test:
+                        delete_features_by_project_ids(feature_type, joined_project_ids)
 
-            logger.info(
-                f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
-            )
-            for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
-                logger.info("Uploading chunk....")
-                if not args.test:
-                    add_features(feature_type, feature_chunk)
+            if args.dry_run:
+                logger.info(
+                    f"[DRY RUN] Would upload {len(features)} features to {feature_type} layer in chunks of {UPLOAD_CHUNK_SIZE}"
+                )
+            else:
+                logger.info(
+                    f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+                )
+                for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+                    logger.info("Uploading chunk....")
+                    if not args.test:
+                        add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":

@@ -34,4 +34,11 @@ def get_cli_args():
         help="Run script without making changes to the AGOL dataset",
     )
 
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Log what changes would be made without executing them",
+    )
+
     return parser.parse_args()
