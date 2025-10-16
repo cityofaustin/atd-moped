@@ -196,8 +196,7 @@ def main(args):
                 )
             else:
                 logger.info("Deleting all existing features...")
-                if not args.test:
-                    delete_all_features(feature_type)
+                delete_all_features(feature_type)
 
             if args.dry_run:
                 logger.info(
@@ -209,8 +208,7 @@ def main(args):
                 )
                 for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
                     logger.info("Uploading chunk....")
-                    if not args.test:
-                        add_features(feature_type, feature_chunk)
+                    add_features(feature_type, feature_chunk)
     else:
         # Get project IDs that have been updated (including soft-deleted projects) for deletes
         project_ids_for_delete = [project["project_id"] for project in projects_data]
@@ -238,8 +236,7 @@ def main(args):
                     logger.info(
                         f"Deleting features with project ids {joined_project_ids}"
                     )
-                    if not args.test:
-                        delete_features_by_project_ids(feature_type, joined_project_ids)
+                    delete_features_by_project_ids(feature_type, joined_project_ids)
 
             if args.dry_run:
                 logger.info(
@@ -251,8 +248,7 @@ def main(args):
                 )
                 for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
                     logger.info("Uploading chunk....")
-                    if not args.test:
-                        add_features(feature_type, feature_chunk)
+                    add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
