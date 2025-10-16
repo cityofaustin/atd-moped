@@ -46,7 +46,9 @@ const LookupAutocompleteComponent = ({
       ref.current.focus();
     }
     if (open) {
-      refetch();
+      refetch().then(() => {
+        console.log("refetched");
+      })
     }
   }, [hasFocus, open, refetch]);
 
@@ -108,6 +110,9 @@ const LookupAutocompleteComponent = ({
       onChange={handleChange}
       onOpen={() => {
         setOpen(true);
+        if (typeof refetch === "function") {
+          refetch();
+        }
       }}
       onClose={() => {
         setOpen(false);

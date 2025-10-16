@@ -51,7 +51,7 @@ const useColumns = ({
             value={row?.project_name_full}
           />
         ),
-        renderEditCell: (props, loading, data, refetch) => (
+        renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
             name="project"
@@ -107,6 +107,9 @@ const useColumns = ({
       },
     ];
   }, [
+    loading,
+    data,
+    refetch,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -267,7 +270,9 @@ const SubprojectsTable = ({
   );
 
   const dataGridColumns = useColumns({
+    loading,
     data,
+    refetch,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
