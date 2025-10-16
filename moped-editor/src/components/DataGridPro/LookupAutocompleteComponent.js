@@ -21,8 +21,6 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @returns {React component}
  */
 const LookupAutocompleteComponent = ({
-  loading,
-  data,
   refetch,
   id,
   value,
@@ -46,9 +44,7 @@ const LookupAutocompleteComponent = ({
       ref.current.focus();
     }
     if (open) {
-      refetch().then(() => {
-        console.log("refetched");
-      })
+      refetch();
     }
   }, [hasFocus, open, refetch]);
 
@@ -76,8 +72,6 @@ const LookupAutocompleteComponent = ({
     (value, option) => value[`${name}_id`] === option[`${name}_id`],
     [name]
   );
-
-  console.log(loading);
 
   return (
     <Autocomplete
