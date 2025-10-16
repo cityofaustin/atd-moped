@@ -26,6 +26,7 @@ const requiredFields = ["project_name_full"];
 const useColumns = ({
   loading,
   data,
+  refetch,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -50,7 +51,7 @@ const useColumns = ({
             value={row?.project_name_full}
           />
         ),
-        renderEditCell: (props) => (
+        renderEditCell: (props, loading, data, refetch) => (
           <LookupAutocompleteComponent
             {...props}
             name="project"
@@ -60,6 +61,8 @@ const useColumns = ({
                 `${option.project_id} - ${option.project_name_full}`,
             }}
             loading={loading}
+            data={data}
+            refetch={refetch}
           />
         ),
       },
@@ -104,8 +107,6 @@ const useColumns = ({
       },
     ];
   }, [
-    loading,
-    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -121,8 +122,6 @@ const SubprojectsTable = ({
     variables: { projectId: projectId },
     fetchPolicy: "no-cache",
   });
-
-  console.log(loading, data)
 
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);

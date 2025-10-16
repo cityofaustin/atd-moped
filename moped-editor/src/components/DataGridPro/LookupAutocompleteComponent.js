@@ -22,6 +22,8 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  */
 const LookupAutocompleteComponent = ({
   loading,
+  data,
+  refetch,
   id,
   value,
   field,
@@ -37,11 +39,16 @@ const LookupAutocompleteComponent = ({
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
+  const [open, setOpen] = React.useState(false);
+
   React.useEffect(() => {
     if (hasFocus) {
       ref.current.focus();
     }
-  }, [hasFocus]);
+    if (open) {
+      refetch();
+    }
+  }, [hasFocus, open, refetch]);
 
   const handleChange = (event, newValue) => {
     apiRef.current.setEditCellValue({
@@ -99,7 +106,12 @@ const LookupAutocompleteComponent = ({
           : defaultIsOptionEqualToValue
       }
       onChange={handleChange}
-
+      onOpen={() => {
+        setOpen(true);
+      }}
+      onClose={() => {
+        setOpen(false);
+      }}
     />
   );
 };
