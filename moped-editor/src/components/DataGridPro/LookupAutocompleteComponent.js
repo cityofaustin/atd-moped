@@ -37,17 +37,11 @@ const LookupAutocompleteComponent = ({
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
-  const [open, setOpen] = React.useState(false);
-
   React.useEffect(() => {
     if (hasFocus) {
       ref.current.focus();
     }
-    // only refetch when when component has been passed a refetch function
-    if (open && typeof refetch === "function") {
-      refetch();
-    }
-  }, [hasFocus, open, refetch]);
+  }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
     apiRef.current.setEditCellValue({
@@ -104,13 +98,10 @@ const LookupAutocompleteComponent = ({
       }
       onChange={handleChange}
       onOpen={() => {
-        setOpen(true);
+        // only refetch when when component has been passed a refetch function
         if (typeof refetch === "function") {
           refetch();
         }
-      }}
-      onClose={() => {
-        setOpen(false);
       }}
     />
   );
