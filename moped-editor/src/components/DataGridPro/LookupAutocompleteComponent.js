@@ -43,7 +43,8 @@ const LookupAutocompleteComponent = ({
     if (hasFocus) {
       ref.current.focus();
     }
-    if (open) {
+    // only refetch when when component has been passed a refetch function
+    if (open && typeof refetch === "function") {
       refetch();
     }
   }, [hasFocus, open, refetch]);
