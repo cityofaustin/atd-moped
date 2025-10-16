@@ -1,2 +1,2 @@
-DELETE FROM public.moped_component_tags WHERE slug IN ('map_bikeways_2026', 'map_bikeways_2027');
-DELETE FROM public.moped_tags WHERE slug = 'map_bikeways_2026';
+-- If we remove the MAP Bikeways 2026 and 2027 tags, we will soft delete
+SELECT 0;
