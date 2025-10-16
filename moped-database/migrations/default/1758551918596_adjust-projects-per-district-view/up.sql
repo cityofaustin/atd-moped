@@ -1,12 +1,13 @@
--- Most recent migration: moped-database/migrations/default/1758551918596_adjust-projects-per-district-view/up.sql
+-- Most recent migration: moped-database/migrations/default/1755539630397_add-project-district-analysis-m-views/up.sql
 
 CREATE OR REPLACE VIEW council_district_project_distribution_analytics AS WITH area_project_buffers AS (
     SELECT
         projects.project_id,
         st_buffer(st_transform(projects.geography::geometry, 2277), 100::double precision) AS buffer_geom
-    FROM project_geography projects
-    JOIN moped_project mp ON projects.project_id = mp.project_id
-    WHERE mp.is_deleted = false AND (st_geometrytype(projects.geography::geometry) = any(ARRAY['ST_MultiPoint'::text, 'ST_MultiLineString'::text]))
+    FROM project_geography AS projects
+    INNER JOIN moped_project AS mp ON projects.project_id = mp.project_id
+    WHERE mp.is_deleted = false
+        AND st_geometrytype(projects.geography::geometry) = any(ARRAY['ST_MultiPoint'::text, 'ST_MultiLineString'::text])
 ),
 
 dissolved_project_buffers AS (
@@ -22,8 +23,8 @@ area_district_aggregates AS (
         project_buffers.project_id,
         districts.council_district AS council_district_id,
         sum(st_area(st_intersection(project_buffers.dissolved_buffer_geom, st_transform(districts.geography::geometry, 2277)))) AS total_area_in_district_sq_ft
-    FROM dissolved_project_buffers project_buffers
-    JOIN layer_council_district districts ON st_intersects(project_buffers.dissolved_buffer_geom, st_transform(districts.geography::geometry, 2277))
+    FROM dissolved_project_buffers AS project_buffers
+    INNER JOIN layer_council_district AS districts ON st_intersects(project_buffers.dissolved_buffer_geom, st_transform(districts.geography::geometry, 2277))
     GROUP BY project_buffers.project_id, districts.council_district
 ),
 
@@ -39,6 +40,10 @@ SELECT
     ada.project_id,
     ada.council_district_id AS district_id,
     round((ada.total_area_in_district_sq_ft * 100::double precision / nullif(pt.total_area, 0::double precision))::numeric, 2) AS percentage_of_total
-FROM area_district_aggregates ada
-JOIN project_totals pt ON ada.project_id = pt.project_id
+FROM area_district_aggregates AS ada
+INNER JOIN project_totals AS pt ON ada.project_id = pt.project_id
 ORDER BY ada.project_id, ada.council_district_id;
+
+
+CREATE INDEX IF NOT EXISTS idx_council_district_geom_2277
+ON layer_council_district USING gist (st_transform(geography::geometry, 2277));
