@@ -13,11 +13,11 @@ const ProjectFundingToolbar = ({
   refetch,
   handleSnackbar,
   setIsDialogOpen,
-  classes,
+  sx,
 }) => (
   <Box display="flex" justifyContent="space-between" sx={{ margin: "1em" }}>
     <div>
-      <Typography variant="h2" color="primary" className={classes.toolbarTitle}>
+      <Typography variant="h2" color="primary" sx={sx.toolbarTitle}>
         Funding sources
       </Typography>
       <ProjectSummaryProjectECapris
@@ -25,14 +25,13 @@ const ProjectFundingToolbar = ({
         data={data}
         refetch={refetch}
         handleSnackbar={handleSnackbar}
-        classes={classes}
         noWrapper
       />
     </div>
 
     {!!eCaprisID ? (
       <ButtonDropdownMenu
-        buttonWrapperStyle={classes.fundingButton}
+        buttonWrapperStyle={sx.fundingButton}
         addAction={onClick}
         openActionDialog={setIsDialogOpen}
         parentButtonText="Add Funding Source"
@@ -41,7 +40,7 @@ const ProjectFundingToolbar = ({
       />
     ) : (
       <Button
-        className={classes.fundingButton}
+        sx={sx.fundingButton}
         variant="contained"
         color="primary"
         startIcon={<AddCircleIcon />}
