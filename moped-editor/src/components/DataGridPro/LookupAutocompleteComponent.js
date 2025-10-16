@@ -17,11 +17,11 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Object} textFieldProps - props passed to the renderInput TextField
  * @param {string} dependentFieldName - optional, if another field should be updated on change, name of field
  * @param {function} setDependentFieldValue - optional, takes newValue as input and returns the dependent fields change
+ * @param {function} refetch - optional, function to refetch lookup table data when dropdown is opened
  *
  * @returns {React component}
  */
 const LookupAutocompleteComponent = ({
-  refetch,
   id,
   value,
   field,
@@ -33,6 +33,7 @@ const LookupAutocompleteComponent = ({
   textFieldProps,
   dependentFieldName,
   setDependentFieldValue,
+  refetch,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
