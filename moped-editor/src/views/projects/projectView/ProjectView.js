@@ -1,12 +1,11 @@
 import React, { useState, useCallback, useContext, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
-  Link as RouterLink,
+  NavLink as RouterLink,
   useParams,
   useSearchParams,
   useLocation,
 } from "react-router-dom";
-import makeStyles from "@mui/styles/makeStyles";
 import { ErrorBoundary } from "react-error-boundary";
 
 import {
@@ -64,46 +63,6 @@ import FeedbackSnackbar, {
 } from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  noPadding: {
-    padding: 0,
-  },
-  cardWrapper: {
-    marginTop: theme.spacing(3),
-  },
-  moreHorizontal: {
-    fontSize: "2rem",
-    float: "right",
-    cursor: "pointer",
-  },
-  projectOptionsMenuItem: {
-    minWidth: "14rem",
-  },
-  projectOptionsMenuItemIcon: {
-    minWidth: "2rem",
-  },
-  appBar: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.secondary,
-  },
-  selectedTab: {
-    minWidth: "160px",
-    "&.Mui-selected": {
-      color: theme.palette.text.primary,
-    },
-  },
-  indicatorColor: {
-    backgroundColor: theme.palette.primary.light,
-  },
-  colorPrimary: {
-    color: theme.palette.primary.main,
-  },
-}));
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -147,7 +106,6 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const classes = useStyles();
 
   /* Create link back to previous filters using queryString state passed with React Router */
   const locationState = location?.state;
@@ -360,11 +318,21 @@ const ProjectView = () => {
         >
           <Container maxWidth="xl">
             <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <Card className={classes.cardWrapper}>
+              <Card
+                sx={{
+                  marginTop: (theme) => theme.spacing(3),
+                }}
+              >
                 {loading ? (
                   <CircularProgress />
                 ) : (
-                  <div className={classes.root}>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      backgroundColor: (theme) =>
+                        theme.palette.background.paper,
+                    }}
+                  >
                     <Box
                       sx={{
                         pt: 2,
@@ -442,7 +410,11 @@ const ProjectView = () => {
                               <MoreHorizIcon
                                 aria-controls="fade-menu"
                                 aria-haspopup="true"
-                                className={classes.moreHorizontal}
+                                sx={{
+                                  fontSize: "2rem",
+                                  float: "right",
+                                  cursor: "pointer",
+                                }}
                               />
                             </IconButton>
                             <Menu
@@ -464,11 +436,15 @@ const ProjectView = () => {
                             >
                               <MenuItem
                                 onClick={handleRenameClick}
-                                className={classes.projectOptionsMenuItem}
+                                sx={{
+                                  minWidth: (theme) => theme.spacing(14),
+                                }}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  className={classes.projectOptionsMenuItemIcon}
+                                  sx={{
+                                    minWidth: (theme) => theme.spacing(2),
+                                  }}
                                 >
                                   <CreateOutlinedIcon />
                                 </ListItemIcon>
@@ -476,11 +452,15 @@ const ProjectView = () => {
                               </MenuItem>
                               <MenuItem
                                 onClick={handleDeleteClick}
-                                className={classes.projectOptionsMenuItem}
+                                sx={{
+                                  minWidth: (theme) => theme.spacing(14),
+                                }}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  className={classes.projectOptionsMenuItemIcon}
+                                  sx={{
+                                    minWidth: (theme) => theme.spacing(2),
+                                  }}
                                 >
                                   <DeleteOutlinedIcon />
                                 </ListItemIcon>
@@ -492,9 +472,21 @@ const ProjectView = () => {
                       </Grid>
                     </Box>
                     <Divider />
-                    <AppBar className={classes.appBar} position="static">
+                    <AppBar
+                      sx={{
+                        backgroundColor: (theme) =>
+                          theme.palette.background.paper,
+                        color: (theme) => theme.palette.text.secondary,
+                      }}
+                      position="static"
+                    >
                       <Tabs
-                        classes={{ indicator: classes.indicatorColor }}
+                        sx={{
+                          "& .MuiTabs-indicator": {
+                            backgroundColor: (theme) =>
+                              theme.palette.primary.light,
+                          },
+                        }}
                         value={activeTab}
                         onChange={handleChange}
                         variant="scrollable"
@@ -503,7 +495,12 @@ const ProjectView = () => {
                         {TABS.map((tab, i) => {
                           return (
                             <Tab
-                              className={classes.selectedTab}
+                              sx={{
+                                minWidth: "160px",
+                                "&.Mui-selected": {
+                                  color: (theme) => theme.palette.text.primary,
+                                },
+                              }}
                               key={tab.label}
                               label={tab.label}
                               {...a11yProps(i)}
@@ -520,8 +517,12 @@ const ProjectView = () => {
                           key={tab.label}
                           value={activeTab}
                           index={i}
-                          className={
-                            tab.label === "Map" ? classes.noPadding : null
+                          sx={
+                            tab.label === "Map"
+                              ? {
+                                  padding: 0,
+                                }
+                              : null
                           }
                         >
                           <TabComponent
@@ -547,7 +548,7 @@ const ProjectView = () => {
                         </TabPanel>
                       );
                     })}
-                  </div>
+                  </Box>
                 )}
               </Card>
             </ErrorBoundary>
@@ -594,12 +595,15 @@ const ProjectView = () => {
               </DialogContent>
               <DialogActions>
                 <Button>
-                  <RouterLink
+                  <Link
+                    component={RouterLink}
                     to={allProjectsLink}
-                    className={classes.colorPrimary}
+                    sx={{
+                      color: (theme) => theme.palette.primary.main,
+                    }}
                   >
                     Back to all projects
-                  </RouterLink>
+                  </Link>
                 </Button>
               </DialogActions>
             </Dialog>
