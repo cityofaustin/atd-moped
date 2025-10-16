@@ -36,7 +36,8 @@ The fourth layer is sourced from a derivative view, `exploded_component_arcgis_o
 
 ## Testing the Script
 
-To run the script without making changes to the AGOL dataset, use the `-t` flag (`--test`) to fetch the project IDs to delete and the component data to use for AGOL record replacement. This is useful to observe what projects have updated and what component data will be transferred without updating the production AGOL dataset.
+To run the script without making changes to the AGOL dataset, use the `-n` flag (`--dry-run`) to see what changes would be made without executing them. This is useful to observe what projects have updated and what component data will be transferred without updating the production AGOL dataset.
 
-1. Run the script with the test flag and any of the available options above:
-   - `docker compose run arcgis -d <timestamptz> -t` to start the script in test mode with a refresh since the given timestamp.
+1. Run the script with the dry-run flag and any of the available options above:
+   - `docker compose run arcgis -d <timestamptz> -n` to start the script in dry-run mode with a refresh since the given timestamp.
+   - `docker compose run arcgis -f -n` to see what a full refresh would do without actually executing it.
