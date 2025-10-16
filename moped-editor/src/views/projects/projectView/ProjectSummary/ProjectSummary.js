@@ -31,7 +31,7 @@ import {
   PROJECT_UPDATE_SPONSOR,
   PROJECT_UPDATE_LEAD,
   PROJECT_UPDATE_PUBLIC_PROCESS,
-} from "../../../../queries/project";
+} from "src/queries/project";
 
 /**
  * Project Summary Component
@@ -61,7 +61,7 @@ const ProjectSummary = ({
   if (error) return `Error! ${error.message}`;
 
   return (
-    <CardContent>
+    <>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Card sx={{ height: "fit-content" }}>
@@ -245,7 +245,7 @@ const ProjectSummary = ({
           </Grid>
         </Grid>
       </Grid>
-    </CardContent>
+    </>
   );
 };
 
