@@ -25,6 +25,7 @@ const requiredFields = ["project_name_full"];
 /** Hook that provides memoized column settings */
 const useColumns = ({
   data,
+  refetch,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -58,6 +59,7 @@ const useColumns = ({
               getOptionLabel: (option) =>
                 `${option.project_id} - ${option.project_name_full}`,
             }}
+            refetch={refetch}
           />
         ),
       },
@@ -103,6 +105,7 @@ const useColumns = ({
     ];
   }, [
     data,
+    refetch,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -264,6 +267,7 @@ const SubprojectsTable = ({
 
   const dataGridColumns = useColumns({
     data,
+    refetch,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
