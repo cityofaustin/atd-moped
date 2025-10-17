@@ -8,7 +8,7 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
 } from "@mui/icons-material";
-import ProjectPhaseToolbar from "./ProjectPhase/ProjectPhaseToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
 import ProjectPhaseDateConfirmationPopover from "./ProjectPhase/ProjectPhaseDateConfirmationPopover";
@@ -236,7 +236,7 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
         rows={data?.moped_proj_phases || []}
         onCellDoubleClick={doubleClickListener}
         slots={{
-          toolbar: ProjectPhaseToolbar,
+          toolbar: DataGridToolbar,
         }}
         slotProps={{
           toolbar: {
