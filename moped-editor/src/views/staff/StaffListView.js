@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Box, Card, CircularProgress } from "@mui/material";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import { useQuery } from "@apollo/client";
 import { DataGridPro, GridToolbar } from "@mui/x-data-grid-pro";
 
@@ -108,10 +109,7 @@ const StaffListView = () => {
               justifyContent: "space-between",
               marginBottom: 3,
             }}
-          >
-            <CopyMugUsersButton users={data?.moped_users} />
-            <AddUserButton />
-          </Box>
+          ></Box>
           <Card>
             <DataGridPro
               sx={dataGridProStyleOverrides}
@@ -119,8 +117,17 @@ const StaffListView = () => {
               rows={data?.moped_users}
               columns={staffColumns}
               getRowId={(row) => row.user_id}
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{ toolbar: { showQuickFilter: true } }}
+              slots={{ toolbar: DataGridToolbar }}
+              slotProps={{
+                toolbar: {
+                  title: "Staff",
+                  primaryActionButton: <AddUserButton />,
+                  secondaryActionButton: (
+                    <CopyMugUsersButton users={data?.moped_users} />
+                  ),
+                  children: <GridToolbar showQuickFilter />,
+                },
+              }}
               initialState={{
                 filter: {
                   filterModel: {
