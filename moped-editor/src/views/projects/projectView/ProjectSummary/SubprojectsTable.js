@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { v4 as uuidv4 } from "uuid";
 
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import SubprojectsToolbar from "./SubprojectsToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
@@ -282,9 +283,23 @@ const SubprojectsTable = ({
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        onProcessRowUpdateError={(error) => console.error}
-        slots={{ toolbar: SubprojectsToolbar }}
-        slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
+        onProcessRowUpdateError={(error) => console.error(error.message)}
+        slots={{ toolbar: DataGridToolbar }}
+        slotProps={{
+          toolbar: {
+            title: "Subprojects",
+            primaryActionButton: (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleIcon />}
+                onClick={handleAddSubprojectClick}
+              >
+                Add Subproject
+              </Button>
+            ),
+          },
+        }}
         editMode="row"
         processRowUpdate={processRowUpdate}
         onRowEditStop={handleRowEditStop(rows, setRows)}
