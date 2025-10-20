@@ -3,12 +3,19 @@ import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import Button from "@mui/material/Button";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import {
+  DataGridPro,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid-pro";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
-import WorkActivityToolbar from "./ProjectWorkActivityToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
 import {
@@ -269,10 +276,28 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           initialState={{ pinnedColumns: { right: ["Edit"] } }}
           rows={activities}
           slots={{
-            toolbar: WorkActivityToolbar,
+            toolbar: DataGridToolbar,
           }}
           slotProps={{
-            toolbar: { onClick: onClickAddActivity },
+            toolbar: {
+              title: "Work activities",
+              primaryActionButton: (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddCircleIcon />}
+                  onClick={onClickAddActivity}
+                >
+                  Add Work Activity
+                </Button>
+              ),
+              children: (
+                <GridToolbarContainer>
+                  <GridToolbarColumnsButton />
+                  <GridToolbarFilterButton />
+                </GridToolbarContainer>
+              ),
+            },
           }}
           onCellDoubleClick={doubleClickListener}
         />
