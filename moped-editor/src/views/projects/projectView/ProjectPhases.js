@@ -9,6 +9,7 @@ import {
   CheckCircleOutline,
 } from "@mui/icons-material";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
+import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
 import ProjectPhaseDateConfirmationPopover from "./ProjectPhase/ProjectPhaseDateConfirmationPopover";
@@ -240,8 +241,17 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
         }}
         slotProps={{
           toolbar: {
-            addAction: onClickAddPhase,
-            setIsDialogOpen: setIsTemplateDialogOpen,
+            title: "Phases",
+            PrimaryActionButton: (
+              <ButtonDropdownMenu
+                addAction={onClickAddPhase}
+                openActionDialog={setIsTemplateDialogOpen}
+                parentButtonText="Add phase"
+                firstOptionText="New phase"
+                secondOptionText="From template"
+                secondOptionIcon
+              />
+            ),
             completionDate: completionDate,
           },
         }}
