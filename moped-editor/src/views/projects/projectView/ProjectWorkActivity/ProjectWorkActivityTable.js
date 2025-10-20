@@ -5,12 +5,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import {
-  DataGridPro,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarFilterButton,
-} from "@mui/x-data-grid-pro";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
@@ -291,12 +286,8 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
                   Add Work Activity
                 </Button>
               ),
-              children: (
-                <GridToolbarContainer>
-                  <GridToolbarColumnsButton />
-                  <GridToolbarFilterButton />
-                </GridToolbarContainer>
-              ),
+              showColumnsButton: true,
+              showFiltersButton: true,
             },
           }}
           onCellDoubleClick={doubleClickListener}
