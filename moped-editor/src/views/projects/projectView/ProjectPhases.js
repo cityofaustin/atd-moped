@@ -10,6 +10,7 @@ import {
 } from "@mui/icons-material";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
+import ProjectSubstantialCompletionDate from "src/views/projects/projectView/ProjectPhase/ProjectSubstantialCompletionDate";
 import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
 import ProjectPhaseDateConfirmationPopover from "./ProjectPhase/ProjectPhaseDateConfirmationPopover";
@@ -242,7 +243,7 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
         slotProps={{
           toolbar: {
             title: "Phases",
-            PrimaryActionButton: (
+            primaryActionButton: (
               <ButtonDropdownMenu
                 addAction={onClickAddPhase}
                 openActionDialog={setIsTemplateDialogOpen}
@@ -252,7 +253,11 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
                 secondOptionIcon
               />
             ),
-            completionDate: completionDate,
+            children: (
+              <ProjectSubstantialCompletionDate
+                completionDate={completionDate}
+              />
+            ),
           },
         }}
         onProcessRowUpdateError={(error) =>
