@@ -103,13 +103,6 @@ const StaffListView = () => {
             padding: 3,
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 3,
-            }}
-          ></Box>
           <Card>
             <DataGridPro
               sx={dataGridProStyleOverrides}
