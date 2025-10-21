@@ -283,7 +283,7 @@ const SubprojectsTable = ({
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        onProcessRowUpdateError={(error) => console.error(error.message)}
+        onProcessRowUpdateError={(error) => console.error(error)}
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{
           toolbar: {
