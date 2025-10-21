@@ -19,9 +19,9 @@ function download_hasura_settings() {
   echo "Downloading Hasura Settings: ${WORKING_STAGE}";
 
   if [[ "${WORKING_STAGE}" == "production" ]]; then
-    export AWS_HASURA_CONFIGURATION="${AWS_MOPED_HASURA_CONFIGURAITON_FILE_PRODUCTION}";
+    export AWS_HASURA_CONFIGURATION="${AWS_MOPED_HASURA_CONFIGURATION_FILE_PRODUCTION}";
   else
-    export AWS_HASURA_CONFIGURATION="${AWS_MOPED_HASURA_CONFIGURAITON_FILE_STAGING}";
+    export AWS_HASURA_CONFIGURATION="${AWS_MOPED_HASURA_CONFIGURATION_FILE_STAGING}";
   fi;
 
   aws secretsmanager get-secret-value \
