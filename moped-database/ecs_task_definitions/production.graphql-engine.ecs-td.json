@@ -1,0 +1,112 @@
+{
+    "family": "atd-moped-production",
+    "containerDefinitions": [
+        {
+            "cpu": 4096,
+            "environment": [
+                {
+                    "name": "HASURA_ENDPOINT",
+                    "value": "https://moped-graphql.austinmobility.io/v1/graphql"
+                },
+                {
+                    "name": "HASURA_GRAPHQL_ENABLE_TELEMETRY",
+                    "value": "false"
+                },
+                {
+                    "name": "HASURA_GRAPHQL_ENABLE_CONSOLE",
+                    "value": "false"
+                }
+            ],
+            "essential": true,
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -fsS http://localhost:8080/healthz?strict=true || exit 1"
+                ],
+                "interval": 15,
+                "retries": 3,
+                "startPeriod": 15,
+                "timeout": 5
+            },
+            "image": "hasura/graphql-engine:v2.48.5",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/aws/ecs/moped/graphql-api/production",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "memory": 8192,
+            "mountPoints": [],
+            "name": "atd-moped",
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "name": "atd-moped-8080-tcp",
+                    "protocol": "tcp"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "ACTIVITY_LOG_API_SECRET",
+                    "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_PRODUCTION_FARGATE_HASURA_GRAPHQL_ADMIN_SECRET"
+                },
+                {
+                    "name": "HASURA_GRAPHQL_ADMIN_SECRET",
+                    "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_PRODUCTION_FARGATE_HASURA_GRAPHQL_ADMIN_SECRET"
+                },
+                {
+                    "name": "HASURA_GRAPHQL_DATABASE_URL",
+                    "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_PRODUCTION_FARGATE_HASURA_GRAPHQL_DATABASE_URL"
+                },
+                {
+                    "name": "HASURA_GRAPHQL_JWT_SECRET",
+                    "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_PRODUCTION_FARGATE_HASURA_GRAPHQL_JWT_SECRET"
+                },
+                {
+                    "name": "MOPED_API_ACTIONS_URL",
+                    "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_PRODUCTION_FARGATE_HASURA_ACTIONS_URL"
+                },
+                {
+                    "name": "MOPED_API_APIKEY",
+                    "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_PRODUCTION_FARGATE_HASURA_API_KEY"
+                }
+            ],
+            "systemControls": [],
+            "volumesFrom": []
+        }
+    ],
+    "executionRoleArn": "arn:aws:iam::295525487728:role/atd-moped-ecs-execution-role-production",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "4096",
+    "memory": "8192",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "tags": [
+        {
+            "key": "project",
+            "value": "atd-moped"
+        },
+        {
+            "key": "environment",
+            "value": "production"
+        },
+        {
+            "key": "organization",
+            "value": "atd"
+        },
+        {
+            "key": "awsApplication",
+            "value": "arn:aws:resource-groups:us-east-1:295525487728:group/Moped/0d1wuyh5kinejubg588qch09jg"
+        }
+    ]
+}
