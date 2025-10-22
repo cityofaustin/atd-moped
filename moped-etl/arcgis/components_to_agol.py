@@ -29,7 +29,7 @@ def get_esri_geometry_key(geometry):
     See: https://developers.arcgis.com/documentation/common-data-types/feature-object.htm
 
     Args:
-        geometry (dict): A geojson geomtery object
+        geometry (dict): A geojson geometry object
 
     Returns:
         Str: "points" or "paths"
