@@ -214,7 +214,7 @@ def get_token():
     data = {
         "username": AGOL_USERNAME,
         "password": AGOL_PASSWORD,
-        "referer": "http://www.arcgis.com",
+        "referrer": "http://www.arcgis.com",
         "f": "pjson",
     }
     res = requests.post(url, data=data)
