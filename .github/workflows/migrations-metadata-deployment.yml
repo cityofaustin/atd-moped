@@ -49,3 +49,12 @@ jobs:
           echo "PWD: $(pwd)"
           source $(pwd)/.github/workflows/migration-metadata-application-helper.sh
           run_migration_process
+
+  placeholder-job:
+    name: Placeholder Job
+    runs-on: ubuntu-24.04
+    needs: apply-migrations-and-metadata
+    if: always()
+    steps:
+      - name: "Print Message"
+        run: echo "Migrations and metadata job has completed"
