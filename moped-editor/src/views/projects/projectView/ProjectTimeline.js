@@ -1,15 +1,15 @@
 import React from "react";
 
 // Material
-import { Box, CardContent, CircularProgress, Grid } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 
 // Query
-import { TIMELINE_QUERY } from "../../../queries/project";
+import { TIMELINE_QUERY } from "src/queries/project";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
-import ProjectPhases from "./ProjectPhases";
-import ProjectMilestones from "./ProjectMilestones";
+import ProjectPhases from "src/views/projects/projectView/ProjectPhases";
+import ProjectMilestones from "src/views/projects/projectView/ProjectMilestones";
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -40,31 +40,27 @@ const ProjectTimeline = ({ handleSnackbar }) => {
   if (loading || !data) return <CircularProgress />;
 
   return (
-    <CardContent>
-      <Grid container spacing={2}>
+    <>
+      <Grid container spacing={4}>
         <Grid item xs={12}>
-          <Box mb={2} style={{ maxWidth: "100%" }}>
-            <ProjectPhases
-              projectId={projectId}
-              data={data}
-              refetch={refetch}
-              handleSnackbar={handleSnackbar}
-            />
-          </Box>
+          <ProjectPhases
+            projectId={projectId}
+            data={data}
+            refetch={refetch}
+            handleSnackbar={handleSnackbar}
+          />
         </Grid>
         <Grid item xs={12}>
-          <Box style={{ maxWidth: "100%" }}>
-            <ProjectMilestones
-              projectId={projectId}
-              loading={loading}
-              data={data}
-              refetch={refetch}
-              handleSnackbar={handleSnackbar}
-            />
-          </Box>
+          <ProjectMilestones
+            projectId={projectId}
+            loading={loading}
+            data={data}
+            refetch={refetch}
+            handleSnackbar={handleSnackbar}
+          />
         </Grid>
       </Grid>
-    </CardContent>
+    </>
   );
 };
 

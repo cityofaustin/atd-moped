@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { CircularProgress, Box } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import {
   DataGridPro,
   GridRowModes,
@@ -530,51 +530,49 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
 
   return (
     <>
-      <Box my={4}>
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
-          apiRef={apiRef}
-          ref={apiRef}
-          autoHeight
-          columns={dataGridColumns}
-          rows={rows}
-          getRowId={(row) => row.proj_funding_id}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          onRowEditStop={handleRowEditStop(rows, setRows)}
-          onRowModesModelChange={handleRowModesModelChange}
-          processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => console.error(error)}
-          disableRowSelectionOnClick
-          toolbar
-          density="comfortable"
-          getRowHeight={() => "auto"}
-          hideFooter
-          onCellKeyDown={handleTabKeyDown}
-          localeText={{ noRowsLabel: "No funding sources" }}
-          initialState={{ pinnedColumns: { right: ["edit"] } }}
-          slots={{
-            toolbar: ProjectFundingToolbar,
-          }}
-          slotProps={{
-            toolbar: {
-              onClick: handleAddRecordClick,
-              projectId: projectId,
-              eCaprisID: eCaprisID,
-              data: data,
-              refetch: () => {
-                refetch();
-                refetchProjectSummary();
-              },
-              handleSnackbar: handleSnackbar,
-              // pass the sx-style object to the toolbar so it can apply inline sx props
-              sx: toolbarSx,
-              noWrapper: true,
-              setIsDialogOpen: setIsDialogOpen,
+      <DataGridPro
+        sx={dataGridProStyleOverrides}
+        apiRef={apiRef}
+        ref={apiRef}
+        autoHeight
+        columns={dataGridColumns}
+        rows={rows}
+        getRowId={(row) => row.proj_funding_id}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowModesModelChange={handleRowModesModelChange}
+        processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={(error) => console.error(error)}
+        disableRowSelectionOnClick
+        toolbar
+        density="comfortable"
+        getRowHeight={() => "auto"}
+        hideFooter
+        onCellKeyDown={handleTabKeyDown}
+        localeText={{ noRowsLabel: "No funding sources" }}
+        initialState={{ pinnedColumns: { right: ["edit"] } }}
+        slots={{
+          toolbar: ProjectFundingToolbar,
+        }}
+        slotProps={{
+          toolbar: {
+            onClick: handleAddRecordClick,
+            projectId: projectId,
+            eCaprisID: eCaprisID,
+            data: data,
+            refetch: () => {
+              refetch();
+              refetchProjectSummary();
             },
-          }}
-        />
-      </Box>
+            handleSnackbar: handleSnackbar,
+            // pass the sx-style object to the toolbar so it can apply inline sx props
+            sx: toolbarSx,
+            noWrapper: true,
+            setIsDialogOpen: setIsDialogOpen,
+          },
+        }}
+      />
       <DeleteConfirmationModal
         type={"funding source"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
