@@ -7,8 +7,8 @@ on:
       - production
     paths:
       - "moped-database/**"
-      - ".github/workflows/atd_moped_database.yml"
-      - ".github/workflows/aws-moped-migrations-helper.sh"
+      - ".github/workflows/migrations-metadata-deployment.yml"
+      - ".github/workflows/migrations-metadata-deployment-helper.sh"
 
 jobs:
   apply-migrations-and-metadata:
