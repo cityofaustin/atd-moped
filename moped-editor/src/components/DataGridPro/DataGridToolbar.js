@@ -32,6 +32,7 @@ const DataGridToolbar = ({
           display="flex"
           justifyContent="space-between"
           alignItems="flex-start"
+          sx={{ pb: hasSecondRow ? 1 : 0 }}
         >
           <Typography variant="h2" color="primary">
             {title}

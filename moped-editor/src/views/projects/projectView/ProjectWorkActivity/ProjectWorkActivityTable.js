@@ -267,7 +267,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           disableRowSelectionOnClick
           getRowHeight={() => "auto"}
           hideFooter
-          localeText={{ noRowsLabel: "No work activites" }}
+          localeText={{ noRowsLabel: "No work activities" }}
           initialState={{ pinnedColumns: { right: ["Edit"] } }}
           rows={activities}
           slots={{
