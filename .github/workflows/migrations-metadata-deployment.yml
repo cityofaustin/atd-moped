@@ -47,11 +47,11 @@ jobs:
           source $(pwd)/.github/workflows/migration-metadata-deployment-helper.sh
           # run_migration_process
 
-  placeholder-job:
-    name: Placeholder Job
+  update-ecs-task-deployment:
+    name: Check for updated ECS task definition and deploy if needed
     runs-on: ubuntu-24.04
     needs: apply-migrations-and-metadata
     if: always()
     steps:
-      - name: "Print Message"
-        run: echo "Migrations and metadata job has completed"
+      - name: "Job stub: Update ECS task definition and deploy if needed"
+        run: echo "We're in the update-ecs-task-deployment job"
