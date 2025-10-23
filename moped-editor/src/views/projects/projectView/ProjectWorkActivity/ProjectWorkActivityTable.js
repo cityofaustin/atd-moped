@@ -2,13 +2,15 @@ import { useMemo, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
-import WorkActivityToolbar from "src/views/projects/projectView/ProjectWorkActivity/ProjectWorkActivityToolbar";
-import ProjectWorkActivitiesDialog from "src/views/projects/projectView/ProjectWorkActivity/ProjectWorkActivityDialog";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
+import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
 import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
@@ -258,17 +260,32 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         disableRowSelectionOnClick
         getRowHeight={() => "auto"}
         hideFooter
-        localeText={{ noRowsLabel: "No work activites" }}
+        localeText={{ noRowsLabel: "No work activities" }}
         initialState={{ pinnedColumns: { right: ["Edit"] } }}
         rows={activities}
         slots={{
-          toolbar: WorkActivityToolbar,
+          toolbar: DataGridToolbar,
         }}
         slotProps={{
-          toolbar: { onClick: onClickAddActivity },
+          toolbar: {
+            title: "Work activities",
+            primaryActionButton: (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleIcon />}
+                onClick={onClickAddActivity}
+              >
+                Add Work Activity
+              </Button>
+            ),
+            showColumnsButton: true,
+            showFiltersButton: true,
+          },
         }}
         onCellDoubleClick={doubleClickListener}
       />
+
       {editActivity && (
         <ProjectWorkActivitiesDialog
           activity={editActivity}

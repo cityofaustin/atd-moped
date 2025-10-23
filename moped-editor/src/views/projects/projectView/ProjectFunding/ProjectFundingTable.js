@@ -4,7 +4,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Grid } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGridPro,
   GridRowModes,
@@ -25,11 +26,13 @@ import { useSocrataJson } from "src/utils/socrataHelpers";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
-import ProjectFundingToolbar from "src/views/projects/projectView/ProjectFunding/ProjectFundingToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import LookupSelectComponent from "src/components/LookupSelectComponent";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
+import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
@@ -513,6 +516,11 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     }
   };
 
+  const refetchFundingData = useCallback(() => {
+    refetch();
+    refetchProjectSummary();
+  }, [refetch, refetchProjectSummary]);
+
   const dataGridColumns = useColumns({
     data,
     rowModesModel,
@@ -553,23 +561,44 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
         localeText={{ noRowsLabel: "No funding sources" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
-          toolbar: ProjectFundingToolbar,
+          toolbar: DataGridToolbar,
         }}
         slotProps={{
           toolbar: {
-            onClick: handleAddRecordClick,
-            projectId: projectId,
-            eCaprisID: eCaprisID,
-            data: data,
-            refetch: () => {
-              refetch();
-              refetchProjectSummary();
-            },
-            handleSnackbar: handleSnackbar,
-            // pass the sx-style object to the toolbar so it can apply inline sx props
-            sx: toolbarSx,
-            noWrapper: true,
-            setIsDialogOpen: setIsDialogOpen,
+            title: "Funding sources",
+            primaryActionButton: !!eCaprisID ? (
+              <ButtonDropdownMenu
+                buttonWrapperStyle={toolbarSx.fundingButton}
+                addAction={handleAddRecordClick}
+                openActionDialog={setIsDialogOpen}
+                parentButtonText="Add Funding Source"
+                firstOptionText="New funding source"
+                secondOptionText="From eCapris"
+              />
+            ) : (
+              <Button
+                sx={toolbarSx.fundingButton}
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleIcon />}
+                onClick={handleAddRecordClick}
+              >
+                Add Funding Source
+              </Button>
+            ),
+            children: (
+              <Grid>
+                <Grid item xs={3}>
+                  <ProjectSummaryProjectECapris
+                    projectId={projectId}
+                    data={data}
+                    refetch={refetchFundingData}
+                    handleSnackbar={handleSnackbar}
+                    noWrapper
+                  />
+                </Grid>
+              </Grid>
+            ),
           },
         }}
       />

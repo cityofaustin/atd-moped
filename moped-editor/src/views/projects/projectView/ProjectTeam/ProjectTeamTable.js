@@ -2,7 +2,15 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
-import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Icon,
+  Link,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
@@ -14,7 +22,7 @@ import {
   DELETE_PROJECT_PERSONNEL,
 } from "src/queries/project";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import ProjectTeamToolbar from "./ProjectTeamToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -580,13 +588,23 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
         loading={loading}
-        slots={{
-          toolbar: ProjectTeamToolbar,
-        }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
+        slots={{
+          toolbar: DataGridToolbar,
+        }}
         slotProps={{
           toolbar: {
-            addAction: onClickAddTeamMember,
+            title: "Team",
+            primaryActionButton: (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleIcon />}
+                onClick={onClickAddTeamMember}
+              >
+                Add team member
+              </Button>
+            ),
           },
         }}
       />
