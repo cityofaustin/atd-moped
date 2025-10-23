@@ -35,7 +35,7 @@ const ProjectPhaseForm = ({
   phases,
   noteTypes,
   currentProjectPhaseIds,
-  currentPhaseIds,
+  currentPhaseTypeIds,
   onSubmitCallback,
   handleSnackbar,
 }) => {
@@ -113,7 +113,7 @@ const ProjectPhaseForm = ({
       mutate,
       isNewPhase,
       currentPhaseIdsToClear,
-      currentPhaseIds,
+      currentPhaseTypeIds,
       onSubmitCallback,
       handleSnackbar,
     });

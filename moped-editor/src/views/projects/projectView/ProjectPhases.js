@@ -193,10 +193,11 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
     handleDeleteOpen,
   });
 
+  console.log(data?.moped_proj_phases)
   const currentProjectPhaseIds = useCurrentProjectPhaseIDs(
     data?.moped_proj_phases
   );
-  const currentPhaseIds = useCurrentPhaseIds(data?.moped_proj_phases);
+  const currentPhaseTypeIds = useCurrentPhaseIds(data?.moped_proj_phases);
 
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
@@ -257,7 +258,7 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
           phases={data?.moped_phases}
           noteTypes={data?.moped_note_types ?? []}
           currentProjectPhaseIds={currentProjectPhaseIds}
-          currentPhaseIds={currentPhaseIds}
+          currentPhaseTypeIds={currentPhaseTypeIds}
           projectId={projectId}
           handleSnackbar={handleSnackbar}
         />
