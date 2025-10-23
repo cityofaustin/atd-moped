@@ -19,7 +19,7 @@ import {
   onSubmitPhase,
   useDefaultValues,
   useSubphases,
-  useCurrentPhaseIdsToClear,
+  // useCurrentPhaseIdsToClear,
 } from "./helpers";
 import { useSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "../ProjectComponents/utils/form";
@@ -39,9 +39,8 @@ const ProjectPhaseForm = ({
   onSubmitCallback,
   handleSnackbar,
 }) => {
-  const [markCurrent, setMarkCurrent] = useState(false);
+  const [isSetAsCurrentPhase, setAsCurrentPhase] = useState(false);
 
-  console.log(phase);
   const isNewPhase = !phase.project_phase_id;
   const isCurrentPhase = phase.is_current_phase;
   const userSessionData = useSessionDatabaseData();
@@ -65,7 +64,10 @@ const ProjectPhaseForm = ({
 
   const subphases = useSubphases(watch("phase_id"), phases);
 
-  const isSetToCurrentPhase = watch("is_current_phase");
+  // const isSetToCurrentPhase = watch("is_current_phase");
+
+  // console.log({currentPhaseTypeIds})
+  // console.log({currentProjectPhaseIds})
 
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
@@ -80,11 +82,11 @@ const ProjectPhaseForm = ({
       : UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE
   );
 
-  const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
-    phase.project_phase_id,
-    isSetToCurrentPhase,
-    currentProjectPhaseIds
-  );
+  // const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
+  //   phase.project_phase_id,
+  //   isSetToCurrentPhase,
+  //   currentProjectPhaseIds
+  // );
 
   const [phase_start, phase_end] = watch(["phase_start", "phase_end"]);
 
@@ -92,27 +94,32 @@ const ProjectPhaseForm = ({
     const { status_update, ...phaseData } = data;
     let noteData = null;
 
+    console.log(isSetAsCurrentPhase)
+
     if (status_update) {
       const { user_id } = userSessionData;
       noteData = { status_update, user_id, statusNoteTypeID };
     }
 
-    if (markCurrent) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+    if (isSetAsCurrentPhase) {
+      console.log("()()()(", phaseData)
+      phaseData["is_current_phase"] = true;
+      
+      if (!phase_start) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-      setValue("phase_start", today);
-      // 
+        setValue("phase_start", today);
+      }
     }
-
-    // if set as current phase ----
 
     onSubmitPhase({
       phaseData,
       noteData,
       mutate,
       isNewPhase,
-      currentPhaseIdsToClear,
+      currentProjectPhaseIds,
+      isSetAsCurrentPhase,
       currentPhaseTypeIds,
       onSubmitCallback,
       handleSnackbar,
@@ -168,23 +175,23 @@ const ProjectPhaseForm = ({
     }
   }, [phase_end, defaultValues, setValue]);
 
-  /* Defaults phase_start to today if current phase is true and there is no phase_start */
-  const onChangeCurrentPhase = (e) => {
-    const isToggledCurrentPhase = e.target.checked;
-    if (isToggledCurrentPhase && !phase_start) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+  // /* Defaults phase_start to today if current phase is true and there is no phase_start */
+  // const onChangeCurrentPhase = (e) => {
+  //   const isToggledCurrentPhase = e.target.checked;
+  //   if (isToggledCurrentPhase && !phase_start) {
+  //     const today = new Date();
+  //     today.setHours(0, 0, 0, 0);
 
-      setValue("phase_start", today);
-      setValue("is_current_phase", isToggledCurrentPhase, {
-        shouldDirty: true,
-      });
-    } else {
-      setValue("is_current_phase", isToggledCurrentPhase, {
-        shouldDirty: true,
-      });
-    }
-  };
+  //     setValue("phase_start", today);
+  //     setValue("is_current_phase", isToggledCurrentPhase, {
+  //       shouldDirty: true,
+  //     });
+  //   } else {
+  //     setValue("is_current_phase", isToggledCurrentPhase, {
+  //       shouldDirty: true,
+  //     });
+  //   }
+  // };
 
   if (mutationState.error) {
     return (
@@ -347,7 +354,7 @@ const ProjectPhaseForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            onClick={() => setMarkCurrent(true)}
+            onClick={() => setAsCurrentPhase(true)}
             // disabled if a current phase
             disabled={isCurrentPhase || mutationState.loading}
           >

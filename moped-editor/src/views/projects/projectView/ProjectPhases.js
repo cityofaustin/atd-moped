@@ -193,7 +193,6 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
     handleDeleteOpen,
   });
 
-  console.log(data?.moped_proj_phases)
   const currentProjectPhaseIds = useCurrentProjectPhaseIDs(
     data?.moped_proj_phases
   );

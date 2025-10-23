@@ -150,45 +150,54 @@ export const useCurrentPhaseIds = (projectPhases) =>
     [projectPhases]
   );
 
-/**
- * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
- * need to have their `is_current` flag cleared.
- * @param {int} thisProjectPhaseId - the `project_phase_id` that is being edited
- * @param {bool} isCurrent - if the phase that is being edited is set as the current phase
- * @param {array} currentProjectPhaseIds - an array of all project_phase_ids that are marked as current.
- * (this is the output of the useCurrentProjectPhaseIDs hook)
- * @return {Array} of project_phase_id's which need to set to `is_current` = false
- */
-export const useCurrentPhaseIdsToClear = (
-  thisProjectPhaseId,
-  isCurrent,
-  currentProjectPhaseIds
-) => {
-  if (!isCurrent) {
-    // nothing to do
-    return [];
-  }
-  // return all project phase IDs except the one we're editing
-  return currentProjectPhaseIds.filter(
-    (projectPhaseId) => projectPhaseId !== thisProjectPhaseId
-  );
-};
+// /**
+//  * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
+//  * need to have their `is_current` flag cleared.
+//  * @param {int} thisProjectPhaseId - the `project_phase_id` that is being edited
+//  * @param {bool} isCurrent - if the phase that is being edited is set as the current phase
+//  * @param {array} currentProjectPhaseIds - an array of all project_phase_ids that are marked as current.
+//  * (this is the output of the useCurrentProjectPhaseIDs hook)
+//  * @return {Array} of project_phase_id's which need to set to `is_current` = false
+//  */
+// export const useCurrentPhaseIdsToClear = (
+//   thisProjectPhaseId,
+//   isCurrent,
+//   currentProjectPhaseIds
+// ) => {
+//   if (!isCurrent) {
+//     // nothing to do
+//     return [];
+//   }
+//   // return all project phase IDs except the one we're editing
+//   return currentProjectPhaseIds.filter(
+//     (projectPhaseId) => projectPhaseId !== thisProjectPhaseId
+//   );
+// };
 
 export const onSubmitPhase = ({
   phaseData,
   noteData,
   mutate,
   isNewPhase,
-  currentPhaseIdsToClear,
+  currentProjectPhaseIds,
+  isSetAsCurrentPhase,
   currentPhaseTypeIds,
   onSubmitCallback,
   handleSnackbar,
 }) => {
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
-  const { is_current_phase } = formData;
+  const is_current_phase = isSetAsCurrentPhase;
+  let currentPhaseIdsToClear = [];
 
-  console.log(formData);
+  // formData["is_current_phase"] = isSetAsCurrentPhase;
+  console.log("*** ",formData);
+
+  if (isSetAsCurrentPhase) {
+    currentPhaseIdsToClear = currentProjectPhaseIds.filter(
+      (projectPhaseId) => projectPhaseId !== project_phase_id
+    );
+  }
 
   const noteObjects = noteData
     ? [
