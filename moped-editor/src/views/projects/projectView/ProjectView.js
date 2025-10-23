@@ -1,12 +1,11 @@
 import React, { useState, useCallback, useContext, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
-  Link as RouterLink,
+  NavLink as RouterLink,
   useParams,
   useSearchParams,
   useLocation,
 } from "react-router-dom";
-import makeStyles from "@mui/styles/makeStyles";
 import { ErrorBoundary } from "react-error-boundary";
 
 import {
@@ -32,96 +31,37 @@ import {
   Fade,
   ListItemIcon,
   ListItemText,
-  Tooltip,
   Typography,
+  IconButton,
 } from "@mui/material";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import Page from "src/components/Page";
-import ProjectSummary from "./ProjectSummary/ProjectSummary";
-import MapView from "./ProjectComponents/index";
-import ProjectFunding from "./ProjectFunding";
-import ProjectTeam from "./ProjectTeam/ProjectTeam";
-import ProjectTimeline from "./ProjectTimeline";
-import ProjectNotes from "./ProjectNotes";
-import ProjectFiles from "./ProjectFiles";
-import TabPanel from "./TabPanel";
-import {
-  PROJECT_ARCHIVE,
-  SUMMARY_QUERY,
-  PROJECT_FOLLOW,
-  PROJECT_UNFOLLOW,
-} from "../../../queries/project";
-import ProjectActivityLog from "./ProjectActivityLog";
-import ProjectNameEditable from "./ProjectNameEditable";
+import ProjectSummary from "src/views/projects/projectView/ProjectSummary/ProjectSummary";
+import MapView from "src/views/projects/projectView/ProjectComponents";
+import ProjectFunding from "src/views/projects/projectView/ProjectFunding";
+import ProjectTeam from "src/views/projects/projectView/ProjectTeam/ProjectTeam";
+import ProjectTimeline from "src/views/projects/projectView/ProjectTimeline";
+import ProjectNotes from "src/views/projects/projectView/ProjectNotes";
+import ProjectFiles from "src/views/projects/projectView/ProjectFiles";
+import TabPanel from "src/views/projects/projectView/TabPanel";
+import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "src/queries/project";
+import ProjectActivityLog from "src/views/projects/projectView/ProjectActivityLog";
+import ProjectNameEditable from "src/views/projects/projectView/ProjectNameEditable";
+import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
 import { useSessionDatabaseData } from "src/auth/user";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import NotFoundView from "../../errors/NotFoundView";
+import NotFoundView from "src/views/errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  noPadding: {
-    padding: 0,
-  },
-  cardWrapper: {
-    marginTop: theme.spacing(3),
-  },
-  title: {
-    minHeight: "3rem",
-  },
-  moreHorizontal: {
-    fontSize: "2rem",
-    float: "right",
-    cursor: "pointer",
-  },
-  projectOptionsMenuItem: {
-    minWidth: "14rem",
-  },
-  projectOptionsMenuItemIcon: {
-    minWidth: "2rem",
-  },
-  appBar: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.secondary,
-  },
-  selectedTab: {
-    minWidth: "160px",
-    "&.Mui-selected": {
-      color: theme.palette.text.primary,
-    },
-  },
-  indicatorColor: {
-    backgroundColor: theme.palette.primary.light,
-  },
-  colorPrimary: {
-    color: theme.palette.primary.main,
-  },
-  followDiv: {
-    float: "right",
-    cursor: "pointer",
-  },
-  unfollowIcon: {
-    color: theme.palette.primary.main,
-    fontSize: "2rem",
-  },
-  followIcon: {
-    color: theme.palette.text.secondary,
-    fontSize: "2rem",
-  },
-}));
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
 function a11yProps(index) {
   return {
@@ -166,7 +106,6 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const classes = useStyles();
 
   /* Create link back to previous filters using queryString state passed with React Router */
   const locationState = location?.state;
@@ -235,8 +174,6 @@ const ProjectView = () => {
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  const [followProject] = useMutation(PROJECT_FOLLOW);
-  const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
   /**
    * Clears the dialog contents
@@ -354,40 +291,6 @@ const ProjectView = () => {
       });
   };
 
-  const handleFollowProject = () => {
-    if (!isFollowing) {
-      followProject({
-        variables: {
-          object: {
-            project_id: projectId,
-            user_id: userId,
-          },
-        },
-      })
-        .then(() => {
-          refetch();
-          handleSnackbar(true, "Project followed", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error following project", "error", error);
-        });
-    } else {
-      unfollowProject({
-        variables: {
-          project_id: projectId,
-          user_id: userId,
-        },
-      })
-        .then(() => {
-          refetch();
-          handleSnackbar(true, "Project unfollowed", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error unfollowing project", "error", error);
-        });
-    }
-  };
-
   /**
    * Establishes the project status for our badge
    */
@@ -415,115 +318,175 @@ const ProjectView = () => {
         >
           <Container maxWidth="xl">
             <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <Card className={classes.cardWrapper}>
+              <Card
+                sx={{
+                  marginTop: (theme) => theme.spacing(3),
+                }}
+              >
                 {loading ? (
                   <CircularProgress />
                 ) : (
-                  <div className={classes.root}>
-                    <Box p={4} pb={2}>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      backgroundColor: (theme) =>
+                        theme.palette.background.paper,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        pt: 2,
+                        px: 3,
+                      }}
+                    >
+                      <Breadcrumbs
+                        aria-label="breadcrumb"
+                        sx={{ color: "primary.main" }}
+                        separator={<NavigateNextIcon fontSize="small" />}
+                      >
+                        <Link color="inherit" href={allProjectsLink}>
+                          {`${
+                            previousProjectListViewQueryString
+                              ? "Filtered"
+                              : "All"
+                          } projects`}
+                        </Link>
+                        <Typography sx={{ color: "text.primary" }}>
+                          {`Project #${data.moped_project[0].project_id}`}
+                        </Typography>
+                      </Breadcrumbs>
+                    </Box>
+                    <Box px={3} pb={1}>
                       <Grid container>
-                        <Grid item xs={11}>
-                          <Box pb={1}>
-                            <Breadcrumbs aria-label="all-projects-breadcrumb">
-                              <Link component={RouterLink} to={allProjectsLink}>
-                                <strong>{"< ALL PROJECTS"}</strong>
-                              </Link>
-                            </Breadcrumbs>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={1} md={1}>
-                          <Box
-                            className={classes.followDiv}
-                            onClick={() => handleFollowProject()}
-                          >
-                            <Tooltip
-                              title={isFollowing ? "Unfollow" : "Follow"}
-                            >
-                              {isFollowing ? (
-                                <BookmarkIcon
-                                  className={classes.unfollowIcon}
-                                />
-                              ) : (
-                                <BookmarkBorderIcon
-                                  className={classes.followIcon}
-                                />
-                              )}
-                            </Tooltip>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={11} md={11} className={classes.title}>
-                          <Box
-                            alignItems="center"
-                            display="flex"
-                            flexDirection="row"
-                          >
+                        <Grid
+                          item
+                          xs // Take all available space
+                          sx={(theme) => ({
+                            minHeight: theme.spacing(8), // Prevent jumping when edit form appears
+                            display: "flex",
+                            alignItems: "center",
+                            minWidth: 0, // Wrap long names
+                            [theme.breakpoints.down("lg")]: {
+                              my: 1, // Add margin when on small screen and stacked vertically
+                            },
+                          })}
+                        >
+                          <Box sx={{ minWidth: 0, width: "100%" }}>
                             <ProjectNameEditable
                               projectData={data.moped_project[0]}
                               projectId={projectId}
                               isEditing={isEditing}
                               setIsEditing={setIsEditing}
-                              currentPhase={currentPhase}
                               handleSnackbar={handleSnackbar}
                               refetch={refetch}
                             />
                           </Box>
                         </Grid>
-                        <Grid item xs={1} md={1}>
-                          <MoreHorizIcon
-                            aria-controls="fade-menu"
-                            aria-haspopup="true"
-                            className={classes.moreHorizontal}
-                            onClick={handleMenuOpen}
-                          />
-                          <Menu
-                            id="fade-menu"
-                            anchorEl={anchorElement}
-                            keepMounted
-                            open={menuOpen}
-                            onClose={handleMenuClose}
-                            autoFocus={false}
-                            TransitionComponent={Fade}
-                            anchorOrigin={{
-                              vertical: "bottom",
-                              horizontal: "center",
-                            }}
-                            transformOrigin={{
-                              vertical: "top",
-                              horizontal: "center",
-                            }}
-                          >
-                            <MenuItem
-                              onClick={handleRenameClick}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
+                        <Grid
+                          item
+                          sx={{
+                            justifyItems: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                            flexShrink: 0,
+                            marginLeft: 2,
+                          }}
+                        >
+                          <Box>
+                            <ProjectStatusBadge
+                              phaseKey={currentPhase?.phase_key}
+                              phaseName={currentPhase?.phase_name}
+                            />
+                          </Box>
+                          <Box>
+                            <ProjectFollowButton
+                              projectId={projectId}
+                              isFollowing={isFollowing}
+                              refetch={refetch}
+                              handleSnackbar={handleSnackbar}
+                            />
+                            <IconButton onClick={handleMenuOpen}>
+                              <MoreHorizIcon
+                                aria-controls="fade-menu"
+                                aria-haspopup="true"
+                                sx={{
+                                  fontSize: "2rem",
+                                  float: "right",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </IconButton>
+                            <Menu
+                              id="fade-menu"
+                              anchorEl={anchorElement}
+                              keepMounted
+                              open={menuOpen}
+                              onClose={handleMenuClose}
+                              autoFocus={false}
+                              TransitionComponent={Fade}
+                              anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "center",
+                              }}
+                              transformOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                              }}
                             >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
+                              <MenuItem
+                                onClick={handleRenameClick}
+                                sx={{
+                                  minWidth: (theme) => theme.spacing(14),
+                                }}
+                                selected={false}
                               >
-                                <CreateOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Rename" />
-                            </MenuItem>
-                            <MenuItem
-                              onClick={handleDeleteClick}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
-                            >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
+                                <ListItemIcon
+                                  sx={{
+                                    minWidth: (theme) => theme.spacing(2),
+                                  }}
+                                >
+                                  <CreateOutlinedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Rename" />
+                              </MenuItem>
+                              <MenuItem
+                                onClick={handleDeleteClick}
+                                sx={{
+                                  minWidth: (theme) => theme.spacing(14),
+                                }}
+                                selected={false}
                               >
-                                <DeleteOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Delete" />
-                            </MenuItem>
-                          </Menu>
+                                <ListItemIcon
+                                  sx={{
+                                    minWidth: (theme) => theme.spacing(2),
+                                  }}
+                                >
+                                  <DeleteOutlinedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Delete" />
+                              </MenuItem>
+                            </Menu>
+                          </Box>
                         </Grid>
                       </Grid>
                     </Box>
                     <Divider />
-                    <AppBar className={classes.appBar} position="static">
+                    <AppBar
+                      sx={{
+                        backgroundColor: (theme) =>
+                          theme.palette.background.paper,
+                        color: (theme) => theme.palette.text.secondary,
+                      }}
+                      position="static"
+                    >
                       <Tabs
-                        classes={{ indicator: classes.indicatorColor }}
+                        sx={{
+                          "& .MuiTabs-indicator": {
+                            backgroundColor: (theme) =>
+                              theme.palette.primary.light,
+                          },
+                        }}
                         value={activeTab}
                         onChange={handleChange}
                         variant="scrollable"
@@ -532,7 +495,12 @@ const ProjectView = () => {
                         {TABS.map((tab, i) => {
                           return (
                             <Tab
-                              className={classes.selectedTab}
+                              sx={{
+                                minWidth: "160px",
+                                "&.Mui-selected": {
+                                  color: (theme) => theme.palette.text.primary,
+                                },
+                              }}
                               key={tab.label}
                               label={tab.label}
                               {...a11yProps(i)}
@@ -549,8 +517,12 @@ const ProjectView = () => {
                           key={tab.label}
                           value={activeTab}
                           index={i}
-                          className={
-                            tab.label === "Map" ? classes.noPadding : null
+                          sx={
+                            tab.label === "Map"
+                              ? {
+                                  padding: 0,
+                                }
+                              : null
                           }
                         >
                           <TabComponent
@@ -576,7 +548,7 @@ const ProjectView = () => {
                         </TabPanel>
                       );
                     })}
-                  </div>
+                  </Box>
                 )}
               </Card>
             </ErrorBoundary>
@@ -623,12 +595,15 @@ const ProjectView = () => {
               </DialogContent>
               <DialogActions>
                 <Button>
-                  <RouterLink
+                  <Link
+                    component={RouterLink}
                     to={allProjectsLink}
-                    className={classes.colorPrimary}
+                    sx={{
+                      color: (theme) => theme.palette.primary.main,
+                    }}
                   >
                     Back to all projects
-                  </RouterLink>
+                  </Link>
                 </Button>
               </DialogActions>
             </Dialog>
