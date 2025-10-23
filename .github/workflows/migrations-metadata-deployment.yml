@@ -1,6 +1,3 @@
-#
-# Applies database migrations to staging (main) and production
-#
 name: "Applies the migrations to the database"
 
 on:
@@ -47,7 +44,7 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/migration-metadata-application-helper.sh
+          source $(pwd)/.github/workflows/migration-metadata-deployment-helper.sh
           run_migration_process
 
   placeholder-job:
