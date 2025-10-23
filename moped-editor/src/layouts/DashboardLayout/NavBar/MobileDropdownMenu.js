@@ -7,7 +7,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   helpItems,
   analysisItems,
-} from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
+} from "src/layouts/DashboardLayout/NavBar/menuConfig";
 import { navigationItems } from "src/layouts/DashboardLayout/TopBar";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 

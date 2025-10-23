@@ -1,7 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
-import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -13,14 +12,11 @@ import Link from "@mui/material/Link";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
-import {
-  WORK_ACTIVITY_QUERY,
-  DELETE_WORK_ACTIVITY,
-} from "../../../../queries/funding";
+import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { FormattedDateString } from "src/utils/dateAndTime";
 
 /** Hook that provides memoized column settings */
@@ -253,46 +249,43 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
 
   return (
     <>
-      <Box sx={{ width: "100%", overflow: "auto", minHeight: "700px" }}>
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
-          autoHeight
-          columns={columns}
-          columnVisibilityModel={hiddenColumns}
-          onColumnVisibilityModelChange={(newModel) =>
-            setHiddenColumns(newModel)
-          }
-          toolbar
-          density="comfortable"
-          disableRowSelectionOnClick
-          getRowHeight={() => "auto"}
-          hideFooter
-          localeText={{ noRowsLabel: "No work activities" }}
-          initialState={{ pinnedColumns: { right: ["Edit"] } }}
-          rows={activities}
-          slots={{
-            toolbar: DataGridToolbar,
-          }}
-          slotProps={{
-            toolbar: {
-              title: "Work activities",
-              primaryActionButton: (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AddCircleIcon />}
-                  onClick={onClickAddActivity}
-                >
-                  Add Work Activity
-                </Button>
-              ),
-              showColumnsButton: true,
-              showFiltersButton: true,
-            },
-          }}
-          onCellDoubleClick={doubleClickListener}
-        />
-      </Box>
+      <DataGridPro
+        sx={dataGridProStyleOverrides}
+        autoHeight
+        columns={columns}
+        columnVisibilityModel={hiddenColumns}
+        onColumnVisibilityModelChange={(newModel) => setHiddenColumns(newModel)}
+        toolbar
+        density="comfortable"
+        disableRowSelectionOnClick
+        getRowHeight={() => "auto"}
+        hideFooter
+        localeText={{ noRowsLabel: "No work activities" }}
+        initialState={{ pinnedColumns: { right: ["Edit"] } }}
+        rows={activities}
+        slots={{
+          toolbar: DataGridToolbar,
+        }}
+        slotProps={{
+          toolbar: {
+            title: "Work activities",
+            primaryActionButton: (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleIcon />}
+                onClick={onClickAddActivity}
+              >
+                Add Work Activity
+              </Button>
+            ),
+            showColumnsButton: true,
+            showFiltersButton: true,
+          },
+        }}
+        onCellDoubleClick={doubleClickListener}
+      />
+
       {editActivity && (
         <ProjectWorkActivitiesDialog
           activity={editActivity}

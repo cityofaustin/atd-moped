@@ -2,13 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 
-import {
-  Button,
-  CardContent,
-  CircularProgress,
-  Link,
-  Typography,
-} from "@mui/material";
+import { Button, CircularProgress, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import {
@@ -464,7 +458,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   if (loading || !data) return <CircularProgress />;
 
   return (
-    <CardContent>
+    <>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         apiRef={apiRef}
@@ -521,7 +515,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-    </CardContent>
+    </>
   );
 };
 
