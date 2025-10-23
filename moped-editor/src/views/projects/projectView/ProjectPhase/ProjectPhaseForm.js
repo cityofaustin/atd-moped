@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import Alert from "@mui/material/Alert";
@@ -14,7 +14,6 @@ import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete"
 import ControlledDateField from "src/components/forms/ControlledDateField";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledCheckbox from "src/components/forms/ControlledCheckbox";
-import ControlledSwitch from "src/components/forms/ControlledSwitch";
 import {
   phaseValidationSchema,
   onSubmitPhase,
@@ -40,7 +39,11 @@ const ProjectPhaseForm = ({
   onSubmitCallback,
   handleSnackbar,
 }) => {
+  const [markCurrent, setMarkCurrent] = useState(false);
+
+  console.log(phase);
   const isNewPhase = !phase.project_phase_id;
+  const isCurrentPhase = phase.is_current_phase;
   const userSessionData = useSessionDatabaseData();
 
   const noteTypesIDLookup = useNoteTypeObject(noteTypes);
@@ -62,7 +65,7 @@ const ProjectPhaseForm = ({
 
   const subphases = useSubphases(watch("phase_id"), phases);
 
-  const isCurrentPhase = watch("is_current_phase");
+  const isSetToCurrentPhase = watch("is_current_phase");
 
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
@@ -79,7 +82,7 @@ const ProjectPhaseForm = ({
 
   const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
     phase.project_phase_id,
-    isCurrentPhase,
+    isSetToCurrentPhase,
     currentProjectPhaseIds
   );
 
@@ -93,6 +96,16 @@ const ProjectPhaseForm = ({
       const { user_id } = userSessionData;
       noteData = { status_update, user_id, statusNoteTypeID };
     }
+
+    if (markCurrent) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      setValue("phase_start", today);
+      // 
+    }
+
+    // if set as current phase ----
 
     onSubmitPhase({
       phaseData,
@@ -157,15 +170,19 @@ const ProjectPhaseForm = ({
 
   /* Defaults phase_start to today if current phase is true and there is no phase_start */
   const onChangeCurrentPhase = (e) => {
-    const isCurrentPhase = e.target.checked;
-    if (isCurrentPhase && !phase_start) {
+    const isToggledCurrentPhase = e.target.checked;
+    if (isToggledCurrentPhase && !phase_start) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       setValue("phase_start", today);
-      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
+      setValue("is_current_phase", isToggledCurrentPhase, {
+        shouldDirty: true,
+      });
     } else {
-      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
+      setValue("is_current_phase", isToggledCurrentPhase, {
+        shouldDirty: true,
+      });
     }
   };
 
@@ -234,19 +251,6 @@ const ProjectPhaseForm = ({
             {formErrors?.subphase_id && (
               <FormHelperText>{formErrors.subphase_id.message}</FormHelperText>
             )}
-          </FormControl>
-        </Grid>
-        <Grid item container justifyContent="flex-start">
-          <FormControl>
-            <ControlledSwitch
-              name="is_current_phase"
-              control={control}
-              label="Current phase"
-              customOnChange={onChangeCurrentPhase}
-            />
-            <FormHelperText>
-              Set this phase as the project's current phase
-            </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={8}>
@@ -337,13 +341,31 @@ const ProjectPhaseForm = ({
         </Grid>
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
+        <Grid item sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<CheckCircle />}
+            type="submit"
+            onClick={() => setMarkCurrent(true)}
+            // disabled if a current phase
+            disabled={isCurrentPhase || mutationState.loading}
+          >
+            {mutationState.loading ? (
+              <CircularProgress color="primary" size={20} />
+            ) : (
+              "Mark as current"
+            )}
+          </Button>
+        </Grid>
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"
-            startIcon={<CheckCircle />}
+            // startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !isNewPhase) || mutationState.loading}
+            // shouldnt this be disabled if not Dirty and new?
+            disabled={!isDirty || mutationState.loading}
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />
