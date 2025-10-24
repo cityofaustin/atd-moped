@@ -133,11 +133,11 @@ export const useCurrentProjectPhaseIDs = (projectPhases) =>
   );
 
 /**
- * Hook which returns an array of project_phase_ids of the project's current phase(s).
+ * Hook which returns an array of phase_ids of the project's current phase(s).
  * Although only one phase should ever be current, we handle the possibilty that there
  * are multiple
- * @param {Array} projectPhases - array of this project's moped_proj_phases
- * @return {Array} of project_phase_id's of current project phases
+ * @param {Array} projectPhases - array of this project's phase_ids (ex: 1 (Potential), 7 (Pre Construction))
+ * @return {Array} of phase_id's of current project phases
  */
 export const useCurrentPhaseIds = (projectPhases) =>
   useMemo(
@@ -150,43 +150,28 @@ export const useCurrentPhaseIds = (projectPhases) =>
     [projectPhases]
   );
 
-/**
- * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
- * need to have their `is_current` flag cleared.
- * @param {int} thisProjectPhaseId - the `project_phase_id` that is being edited
- * @param {bool} isCurrent - if the phase that is being edited is set as the current phase
- * @param {array} currentProjectPhaseIds - an array of all project_phase_ids that are marked as current.
- * (this is the output of the useCurrentProjectPhaseIDs hook)
- * @return {Array} of project_phase_id's which need to set to `is_current` = false
- */
-export const useCurrentPhaseIdsToClear = (
-  thisProjectPhaseId,
-  isCurrent,
-  currentProjectPhaseIds
-) => {
-  if (!isCurrent) {
-    // nothing to do
-    return [];
-  }
-  // return all project phase IDs except the one we're editing
-  return currentProjectPhaseIds.filter(
-    (projectPhaseId) => projectPhaseId !== thisProjectPhaseId
-  );
-};
-
 export const onSubmitPhase = ({
   phaseData,
   noteData,
   mutate,
   isNewPhase,
-  currentPhaseIdsToClear,
-  currentPhaseIds,
+  currentProjectPhaseIds,
+  isSetAsCurrentPhase,
+  currentPhaseTypeIds,
   onSubmitCallback,
-  handleSnackbar
+  handleSnackbar,
 }) => {
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
   const { is_current_phase } = formData;
+  let currentPhaseIdsToClear = [];
+
+  //  * Array of `moped_proj_phases.project_phase_id`s which need to have their `is_current` flag cleared.
+  if (isSetAsCurrentPhase) {
+    currentPhaseIdsToClear = currentProjectPhaseIds.filter(
+      (projectPhaseId) => projectPhaseId !== project_phase_id
+    );
+  }
 
   const noteObjects = noteData
     ? [
@@ -194,7 +179,8 @@ export const onSubmitPhase = ({
           project_note: DOMPurify.sanitize(noteData.status_update),
           project_id,
           project_note_type: noteData.statusNoteTypeID,
-          phase_id: is_current_phase ? phase_id : currentPhaseIds[0],
+          // if phase is not marked as current, use the projects current phase type ID
+          phase_id: is_current_phase ? phase_id : currentPhaseTypeIds[0],
         },
       ]
     : [];

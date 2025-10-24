@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import Alert from "@mui/material/Alert";
@@ -14,13 +14,11 @@ import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete"
 import ControlledDateField from "src/components/forms/ControlledDateField";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledCheckbox from "src/components/forms/ControlledCheckbox";
-import ControlledSwitch from "src/components/forms/ControlledSwitch";
 import {
   phaseValidationSchema,
   onSubmitPhase,
   useDefaultValues,
   useSubphases,
-  useCurrentPhaseIdsToClear,
 } from "./helpers";
 import { useSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "../ProjectComponents/utils/form";
@@ -36,11 +34,14 @@ const ProjectPhaseForm = ({
   phases,
   noteTypes,
   currentProjectPhaseIds,
-  currentPhaseIds,
+  currentPhaseTypeIds,
   onSubmitCallback,
   handleSnackbar,
 }) => {
+  const [isSetAsCurrentPhase, setAsCurrentPhase] = useState(false);
+
   const isNewPhase = !phase.project_phase_id;
+  const isCurrentPhase = phase.is_current_phase;
   const userSessionData = useSessionDatabaseData();
 
   const noteTypesIDLookup = useNoteTypeObject(noteTypes);
@@ -62,8 +63,6 @@ const ProjectPhaseForm = ({
 
   const subphases = useSubphases(watch("phase_id"), phases);
 
-  const isCurrentPhase = watch("is_current_phase");
-
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
     dependentFieldName: "subphase_id",
@@ -77,12 +76,6 @@ const ProjectPhaseForm = ({
       : UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE
   );
 
-  const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
-    phase.project_phase_id,
-    isCurrentPhase,
-    currentProjectPhaseIds
-  );
-
   const [phase_start, phase_end] = watch(["phase_start", "phase_end"]);
 
   const onSubmit = (data) => {
@@ -94,13 +87,26 @@ const ProjectPhaseForm = ({
       noteData = { status_update, user_id, statusNoteTypeID };
     }
 
+    if (isSetAsCurrentPhase) {
+      phaseData["is_current_phase"] = true;
+
+      /* Defaults phase_start to today if current phase is true and there is no phase_start */
+      if (!phase_start) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        setValue("phase_start", today);
+      }
+    }
+
     onSubmitPhase({
       phaseData,
       noteData,
       mutate,
       isNewPhase,
-      currentPhaseIdsToClear,
-      currentPhaseIds,
+      currentProjectPhaseIds,
+      isSetAsCurrentPhase,
+      currentPhaseTypeIds,
       onSubmitCallback,
       handleSnackbar,
     });
@@ -155,19 +161,6 @@ const ProjectPhaseForm = ({
     }
   }, [phase_end, defaultValues, setValue]);
 
-  /* Defaults phase_start to today if current phase is true and there is no phase_start */
-  const onChangeCurrentPhase = (e) => {
-    const isCurrentPhase = e.target.checked;
-    if (isCurrentPhase && !phase_start) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      setValue("phase_start", today);
-      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
-    } else {
-      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
-    }
-  };
 
   if (mutationState.error) {
     return (
@@ -234,19 +227,6 @@ const ProjectPhaseForm = ({
             {formErrors?.subphase_id && (
               <FormHelperText>{formErrors.subphase_id.message}</FormHelperText>
             )}
-          </FormControl>
-        </Grid>
-        <Grid item container justifyContent="flex-start">
-          <FormControl>
-            <ControlledSwitch
-              name="is_current_phase"
-              control={control}
-              label="Current phase"
-              customOnChange={onChangeCurrentPhase}
-            />
-            <FormHelperText>
-              Set this phase as the project's current phase
-            </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={8}>
@@ -337,13 +317,31 @@ const ProjectPhaseForm = ({
         </Grid>
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
+        <Grid item sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<CheckCircle />}
+            type="submit"
+            onClick={() => setAsCurrentPhase(true)}
+            // disabled if a current phase
+            disabled={isCurrentPhase || mutationState.loading}
+          >
+            {mutationState.loading ? (
+              <CircularProgress color="primary" size={20} />
+            ) : (
+              "Mark as current"
+            )}
+          </Button>
+        </Grid>
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"
-            startIcon={<CheckCircle />}
+            // startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !isNewPhase) || mutationState.loading}
+            // shouldnt this be disabled if not Dirty and new?
+            disabled={!isDirty || mutationState.loading}
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />
