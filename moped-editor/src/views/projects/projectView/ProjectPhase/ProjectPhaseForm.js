@@ -19,7 +19,6 @@ import {
   onSubmitPhase,
   useDefaultValues,
   useSubphases,
-  // useCurrentPhaseIdsToClear,
 } from "./helpers";
 import { useSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "../ProjectComponents/utils/form";
@@ -64,11 +63,6 @@ const ProjectPhaseForm = ({
 
   const subphases = useSubphases(watch("phase_id"), phases);
 
-  // const isSetToCurrentPhase = watch("is_current_phase");
-
-  // console.log({currentPhaseTypeIds})
-  // console.log({currentProjectPhaseIds})
-
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
     dependentFieldName: "subphase_id",
@@ -82,19 +76,11 @@ const ProjectPhaseForm = ({
       : UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE
   );
 
-  // const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
-  //   phase.project_phase_id,
-  //   isSetToCurrentPhase,
-  //   currentProjectPhaseIds
-  // );
-
   const [phase_start, phase_end] = watch(["phase_start", "phase_end"]);
 
   const onSubmit = (data) => {
     const { status_update, ...phaseData } = data;
     let noteData = null;
-
-    console.log(isSetAsCurrentPhase)
 
     if (status_update) {
       const { user_id } = userSessionData;
@@ -102,9 +88,9 @@ const ProjectPhaseForm = ({
     }
 
     if (isSetAsCurrentPhase) {
-      console.log("()()()(", phaseData)
       phaseData["is_current_phase"] = true;
-      
+
+      /* Defaults phase_start to today if current phase is true and there is no phase_start */
       if (!phase_start) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -175,23 +161,6 @@ const ProjectPhaseForm = ({
     }
   }, [phase_end, defaultValues, setValue]);
 
-  // /* Defaults phase_start to today if current phase is true and there is no phase_start */
-  // const onChangeCurrentPhase = (e) => {
-  //   const isToggledCurrentPhase = e.target.checked;
-  //   if (isToggledCurrentPhase && !phase_start) {
-  //     const today = new Date();
-  //     today.setHours(0, 0, 0, 0);
-
-  //     setValue("phase_start", today);
-  //     setValue("is_current_phase", isToggledCurrentPhase, {
-  //       shouldDirty: true,
-  //     });
-  //   } else {
-  //     setValue("is_current_phase", isToggledCurrentPhase, {
-  //       shouldDirty: true,
-  //     });
-  //   }
-  // };
 
   if (mutationState.error) {
     return (
