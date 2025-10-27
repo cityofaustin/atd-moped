@@ -57,6 +57,12 @@ jobs:
       - name: "Checkout Code"
         uses: actions/checkout@v3
 
+      - name: "Install AWS CLI"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-setuptools
+          pip3 install awscli
+
       - name: "Configure AWS credentials"
         uses: aws-actions/configure-aws-credentials@v2
         with:
