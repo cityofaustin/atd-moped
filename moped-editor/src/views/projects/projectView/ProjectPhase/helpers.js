@@ -115,19 +115,15 @@ export const useSubphaseNameLookup = (subphases) =>
   );
 
 /**
- * Hook which returns an array of project_phase_ids of the project's current phase(s).
- * Although only one phase should ever be current, we handle the possibilty that there
- * are multiple
+ * Hook which returns the project_phase_id of the project's current phase.
  * @param {Array} projectPhases - array of this project's moped_proj_phases
- * @return {Array} of project_phase_id's of current project phases
+ * @return {number | undefined}  project_phase_id of current project phase
  */
-export const useCurrentProjectPhaseIDs = (projectPhases) =>
+export const useCurrentProjectPhaseID = (projectPhases) =>
   useMemo(
     () =>
       projectPhases
-        ? projectPhases
-            .filter(({ is_current_phase }) => is_current_phase)
-            .map(({ project_phase_id }) => project_phase_id)
+        ? projectPhases.find((phase) => phase.is_current_phase).project_phase_id
         : [],
     [projectPhases]
   );
@@ -155,7 +151,7 @@ export const onSubmitPhase = ({
   noteData,
   mutate,
   isNewPhase,
-  currentProjectPhaseIds,
+  currentProjectPhaseId,
   isSetAsCurrentPhase,
   currentPhaseTypeIds,
   onSubmitCallback,
@@ -166,11 +162,9 @@ export const onSubmitPhase = ({
   const { is_current_phase } = formData;
   let currentPhaseIdsToClear = [];
 
-  //  * Array of `moped_proj_phases.project_phase_id`s which need to have their `is_current` flag cleared.
-  if (isSetAsCurrentPhase) {
-    currentPhaseIdsToClear = currentProjectPhaseIds.filter(
-      (projectPhaseId) => projectPhaseId !== project_phase_id
-    );
+  if (isSetAsCurrentPhase && project_phase_id !== currentProjectPhaseId) {
+    // if the current project phase id does not match the id of this new current phase, clear the old one
+    currentPhaseIdsToClear = [currentProjectPhaseId];
   }
 
   const noteObjects = noteData
@@ -179,7 +173,7 @@ export const onSubmitPhase = ({
           project_note: DOMPurify.sanitize(noteData.status_update),
           project_id,
           project_note_type: noteData.statusNoteTypeID,
-          // if phase is not marked as current, use the projects current phase type ID
+          // if phase is not marked as current, use the projects current phase type ID when saving the note
           phase_id: is_current_phase ? phase_id : currentPhaseTypeIds[0],
         },
       ]

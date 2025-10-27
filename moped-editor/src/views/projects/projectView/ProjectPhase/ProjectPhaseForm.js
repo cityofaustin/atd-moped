@@ -33,7 +33,7 @@ const ProjectPhaseForm = ({
   phase,
   phases,
   noteTypes,
-  currentProjectPhaseIds,
+  currentProjectPhaseId,
   currentPhaseTypeIds,
   onSubmitCallback,
   handleSnackbar,
@@ -104,7 +104,7 @@ const ProjectPhaseForm = ({
       noteData,
       mutate,
       isNewPhase,
-      currentProjectPhaseIds,
+      currentProjectPhaseId,
       isSetAsCurrentPhase,
       currentPhaseTypeIds,
       onSubmitCallback,
@@ -160,7 +160,6 @@ const ProjectPhaseForm = ({
       setValue("is_phase_end_confirmed", false);
     }
   }, [phase_end, defaultValues, setValue]);
-
 
   if (mutationState.error) {
     return (

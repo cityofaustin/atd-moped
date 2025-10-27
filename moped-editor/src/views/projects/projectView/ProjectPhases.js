@@ -14,7 +14,7 @@ import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
 import ProjectPhaseDateConfirmationPopover from "./ProjectPhase/ProjectPhaseDateConfirmationPopover";
 import { DELETE_PROJECT_PHASE } from "src/queries/project";
 import {
-  useCurrentProjectPhaseIDs,
+  useCurrentProjectPhaseID,
   useCurrentPhaseIds,
   usePhaseNameLookup,
   useSubphaseNameLookup,
@@ -193,9 +193,11 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
     handleDeleteOpen,
   });
 
-  const currentProjectPhaseIds = useCurrentProjectPhaseIDs(
+  const currentProjectPhaseId = useCurrentProjectPhaseID(
     data?.moped_proj_phases
   );
+
+  console.log(currentProjectPhaseId);
   const currentPhaseTypeIds = useCurrentPhaseIds(data?.moped_proj_phases);
 
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
@@ -256,7 +258,7 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
           onSubmitCallback={onSubmitCallback}
           phases={data?.moped_phases}
           noteTypes={data?.moped_note_types ?? []}
-          currentProjectPhaseIds={currentProjectPhaseIds}
+          currentProjectPhaseId={currentProjectPhaseId}
           currentPhaseTypeIds={currentPhaseTypeIds}
           projectId={projectId}
           handleSnackbar={handleSnackbar}

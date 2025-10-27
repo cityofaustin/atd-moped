@@ -10,7 +10,7 @@ const ProjectPhaseDialog = ({
   phase,
   phases,
   noteTypes,
-  currentProjectPhaseIds,
+  currentProjectPhaseId,
   currentPhaseTypeIds,
   onSubmitCallback,
   handleSnackbar,
@@ -37,7 +37,7 @@ const ProjectPhaseDialog = ({
           onSubmitCallback={onSubmitCallback}
           phases={phases}
           noteTypes={noteTypes}
-          currentProjectPhaseIds={currentProjectPhaseIds}
+          currentProjectPhaseId={currentProjectPhaseId}
           currentPhaseTypeIds={currentPhaseTypeIds}
           handleSnackbar={handleSnackbar}
         />
