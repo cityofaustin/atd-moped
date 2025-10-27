@@ -77,9 +77,11 @@ function determine_task_definition_file() {
   if [ "${BRANCH_NAME}" = "production" ]; then
     export ENVIRONMENT="production"
     export TD_FILE="moped-database/ecs_task_definitions/production.graphql-engine.ecs-td.json"
+    export FAMILY="atd-moped-production"
   else
     export ENVIRONMENT="staging"
     export TD_FILE="moped-database/ecs_task_definitions/staging.graphql-engine.ecs-td.json"
+    export FAMILY="atd-moped-staging"
   fi
 
   echo "Environment: ${ENVIRONMENT}";
