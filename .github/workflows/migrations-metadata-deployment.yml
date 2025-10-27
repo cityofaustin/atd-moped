@@ -28,6 +28,7 @@ jobs:
       - name: "Install AWS Cli & Hasura CLI"
         run: |
           sudo apt-get install python3-setuptools
+          # reminder; this is V1 of the AWS CLI
           pip3 install awscli virtualenv
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
@@ -63,11 +64,6 @@ jobs:
           unzip awscliv2.zip
           sudo ./aws/install --update
           aws --version
-
-      # - name: "Install AWS CLI"
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y awscli
 
       # - name: "Configure AWS credentials"
       #   uses: aws-actions/configure-aws-credentials@v2

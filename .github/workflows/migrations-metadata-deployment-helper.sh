@@ -87,10 +87,10 @@ function determine_task_definition_file() {
 }
 
 #
-# Validates the ECS task definition JSON file using AWS CLI
-# Returns 0 if valid, exits with error if invalid or file not found
+# Registers the ECS task definition using AWS CLI
+# Returns 0 if successful, exits with error if registration fails or file not found
 #
-function validate_task_definition() {
+function register_task_definition() {
   # Check if task definition file exists
   if [ ! -f "${TD_FILE}" ]; then
     echo "Task definition file not found: ${TD_FILE}";
@@ -98,27 +98,25 @@ function validate_task_definition() {
     exit 0;
   fi
 
-  echo "Task definition file found, validating...";
+  echo "Task definition file found, registering...";
 
-  # Validate the task definition using AWS CLI
-  # This will check if the JSON is valid and compatible with ECS
-  # The --dry-run flag ensures we don't actually register the task definition
+  # Register the task definition using AWS CLI
   if aws ecs register-task-definition \
-    --cli-input-json file://${TD_FILE} \
-    --dry-run; then
-    echo "✓ Task definition is valid!";
+    --family ${FAMILY} \
+    --cli-input-json file://${TD_FILE}; then
+    echo "✓ Task definition registered successfully!";
     return 0;
   else
-    echo "✗ Task definition validation failed!";
+    echo "✗ Task definition registration failed!";
     exit 1;
   fi
 }
 
 #
 # Main entry point for ECS task definition update process
-# Determines the correct file and validates it
+# Determines the correct file and registers it
 #
 function update_ecs_task_definition_process() {
   determine_task_definition_file;
-  validate_task_definition;
+  register_task_definition;
 }
