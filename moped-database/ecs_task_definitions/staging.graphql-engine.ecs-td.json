@@ -28,7 +28,7 @@
                 "startPeriod": 15,
                 "timeout": 5
             },
-            "image": "hasura/graphql-engine:v2.48.6",
+            "image": "hasura/graphql-engine:v2.48.5",
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -87,7 +87,7 @@
         "FARGATE"
     ],
     "cpu": "512",
-    "memory": "4096",
+    "memory": "2048",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
