@@ -160,11 +160,11 @@ export const onSubmitPhase = ({
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
   const { is_current_phase } = formData;
-  let currentPhaseIdsToClear = [];
+  let currentPhaseIdToClear = [];
 
   if (isSetAsCurrentPhase && project_phase_id !== currentProjectPhaseId) {
     // if the current project phase id does not match the id of this new current phase, clear the old one
-    currentPhaseIdsToClear = [currentProjectPhaseId];
+    currentPhaseIdToClear = [currentProjectPhaseId];
   }
 
   const noteObjects = noteData
@@ -180,7 +180,7 @@ export const onSubmitPhase = ({
     : [];
 
   const variables = {
-    current_phase_ids_to_clear: currentPhaseIdsToClear,
+    current_phase_id_to_clear: currentPhaseIdToClear,
     noteObjects,
   };
 
