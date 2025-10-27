@@ -117,32 +117,28 @@ export const useSubphaseNameLookup = (subphases) =>
 /**
  * Hook which returns the project_phase_id of the project's current phase.
  * @param {Array} projectPhases - array of this project's moped_proj_phases
- * @return {number | undefined}  project_phase_id of current project phase
+ * @return {number | undefined}  project_phase_id of current project phase, undefined if no phases passed to hook
  */
 export const useCurrentProjectPhaseID = (projectPhases) =>
   useMemo(
     () =>
       projectPhases
         ? projectPhases.find((phase) => phase.is_current_phase).project_phase_id
-        : [],
+        : undefined,
     [projectPhases]
   );
 
 /**
- * Hook which returns an array of phase_ids of the project's current phase(s).
- * Although only one phase should ever be current, we handle the possibilty that there
- * are multiple
+ * Hook which returns the phase_id of the project's current phase.
  * @param {Array} projectPhases - array of this project's phase_ids (ex: 1 (Potential), 7 (Pre Construction))
- * @return {Array} of phase_id's of current project phases
+ * @return {number | undefined} phase_id of project's current phase, undefined if no phases passed to hook
  */
-export const useCurrentPhaseIds = (projectPhases) =>
+export const useCurrentPhaseId = (projectPhases) =>
   useMemo(
     () =>
       projectPhases
-        ? projectPhases
-            .filter(({ is_current_phase }) => is_current_phase)
-            .map(({ phase_id }) => phase_id)
-        : [],
+        ? projectPhases.find((phase) => phase.is_current_phase).phase_id
+        : undefined,
     [projectPhases]
   );
 
@@ -153,7 +149,7 @@ export const onSubmitPhase = ({
   isNewPhase,
   currentProjectPhaseId,
   isSetAsCurrentPhase,
-  currentPhaseTypeIds,
+  currentPhaseTypeId,
   onSubmitCallback,
   handleSnackbar,
 }) => {
@@ -174,7 +170,7 @@ export const onSubmitPhase = ({
           project_id,
           project_note_type: noteData.statusNoteTypeID,
           // if phase is not marked as current, use the projects current phase type ID when saving the note
-          phase_id: is_current_phase ? phase_id : currentPhaseTypeIds[0],
+          phase_id: is_current_phase ? phase_id : currentPhaseTypeId,
         },
       ]
     : [];

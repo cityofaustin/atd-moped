@@ -34,7 +34,7 @@ const ProjectPhaseForm = ({
   phases,
   noteTypes,
   currentProjectPhaseId,
-  currentPhaseTypeIds,
+  currentPhaseTypeId,
   onSubmitCallback,
   handleSnackbar,
 }) => {
@@ -106,7 +106,7 @@ const ProjectPhaseForm = ({
       isNewPhase,
       currentProjectPhaseId,
       isSetAsCurrentPhase,
-      currentPhaseTypeIds,
+      currentPhaseTypeId,
       onSubmitCallback,
       handleSnackbar,
     });
@@ -337,7 +337,6 @@ const ProjectPhaseForm = ({
           <Button
             variant="contained"
             color="primary"
-            // startIcon={<CheckCircle />}
             type="submit"
             // shouldnt this be disabled if not Dirty and new?
             disabled={!isDirty || mutationState.loading}
