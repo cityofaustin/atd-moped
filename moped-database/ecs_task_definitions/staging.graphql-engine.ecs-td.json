@@ -28,7 +28,7 @@
                 "startPeriod": 15,
                 "timeout": 5
             },
-            "image": "hasura/graphql-engine:v2.48.5",
+            "image": "hasura/graphql-engine:v2.48.6",
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
