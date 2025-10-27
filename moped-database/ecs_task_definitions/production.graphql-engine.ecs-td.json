@@ -38,7 +38,7 @@
                 }
             },
             "memory": 8192,
-            "mountPoints": [],
+            "mountPoints": [ ],
             "name": "atd-moped",
             "portMappings": [
                 {
@@ -74,14 +74,14 @@
                     "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_PRODUCTION_FARGATE_HASURA_API_KEY"
                 }
             ],
-            "systemControls": [],
-            "volumesFrom": []
+            "systemControls": [ ],
+            "volumesFrom": [ ]
         }
     ],
     "executionRoleArn": "arn:aws:iam::295525487728:role/atd-moped-ecs-execution-role-production",
     "networkMode": "awsvpc",
-    "volumes": [],
-    "placementConstraints": [],
+    "volumes": [ ],
+    "placementConstraints": [ ],
     "requiresCompatibilities": [
         "FARGATE"
     ],
