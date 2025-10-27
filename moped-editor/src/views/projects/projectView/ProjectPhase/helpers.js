@@ -123,7 +123,8 @@ export const useCurrentProjectPhaseID = (projectPhases) =>
   useMemo(
     () =>
       projectPhases
-        ? projectPhases.find((phase) => phase.is_current_phase).project_phase_id
+        ? projectPhases.find((phase) => phase.is_current_phase)
+            ?.project_phase_id
         : undefined,
     [projectPhases]
   );
@@ -137,7 +138,7 @@ export const useCurrentPhaseId = (projectPhases) =>
   useMemo(
     () =>
       projectPhases
-        ? projectPhases.find((phase) => phase.is_current_phase).phase_id
+        ? projectPhases.find((phase) => phase.is_current_phase)?.phase_id
         : undefined,
     [projectPhases]
   );
