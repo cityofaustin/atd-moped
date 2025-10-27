@@ -89,25 +89,48 @@ function determine_task_definition_file() {
 }
 
 #
-# Checks if the task definition file was modified in this push
-# Returns 0 if changed, 1 if unchanged
+# Compares the local task definition file with the one currently in AWS
+# Returns 0 if different (needs update), 1 if identical (no update needed)
 #
-function check_task_definition_changed() {
-  echo "Checking if task definition file changed in this push...";
+function check_task_definition_differs() {
+  echo "Fetching current task definition from AWS for family: ${FAMILY}...";
 
-  # Check if this is the first commit (no previous commit to compare)
-  if ! git rev-parse HEAD~1 >/dev/null 2>&1; then
-    echo "First commit detected, will register task definition";
+  # Describe the current task definition from AWS
+  # If this is the first task definition, the command will fail and we'll register it
+  if ! aws ecs describe-task-definition \
+    --task-definition ${FAMILY} \
+    --output json > /tmp/aws-task-def.json 2>/dev/null; then
+    echo "No existing task definition found in AWS, will register new one";
     return 0;
   fi
 
-  # Check if the task definition file was modified in the current commit
-  if git diff --name-only HEAD~1 HEAD | grep -q "^${TD_FILE}$"; then
-    echo "✓ Task definition file has changed";
-    return 0;
-  else
-    echo "Task definition file unchanged, skipping registration";
+  echo "Extracting task definition from AWS response...";
+
+  # Extract just the taskDefinition object and remove AWS-managed fields
+  # These fields are added by AWS and shouldn't be compared
+  jq --sort-keys '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' \
+    /tmp/aws-task-def.json > /tmp/aws-task-def-normalized.json
+
+  # Normalize the local file the same way (remove the same fields if present)
+  jq --sort-keys 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' \
+    ${TD_FILE} > /tmp/local-task-def-normalized.json
+
+  echo "Comparing local task definition with AWS version...";
+
+  # Compare the normalized JSON files
+  if diff -q /tmp/aws-task-def-normalized.json /tmp/local-task-def-normalized.json > /dev/null; then
+    echo "Task definitions are identical, no update needed";
     return 1;
+  else
+    echo "✓ Task definitions differ, update needed";
+    echo "";
+    echo "========================================";
+    echo "Differences (AWS version vs Local file):";
+    echo "========================================";
+    diff -u /tmp/aws-task-def-normalized.json /tmp/local-task-def-normalized.json || true
+    echo "========================================";
+    echo "";
+    return 0;
   fi
 }
 
@@ -123,13 +146,13 @@ function register_task_definition() {
     exit 0;
   fi
 
-  # Check if the task definition file changed in this push
-  if ! check_task_definition_changed; then
+  # Check if the task definition differs from what's in AWS
+  if ! check_task_definition_differs; then
     echo "Skipping ECS task definition registration";
     exit 0;
   fi
 
-  echo "Task definition file found, registering...";
+  echo "Registering updated task definition...";
 
   # Register the task definition using AWS CLI
   if aws ecs register-task-definition \
