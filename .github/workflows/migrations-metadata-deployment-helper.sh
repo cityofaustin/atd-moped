@@ -89,6 +89,29 @@ function determine_task_definition_file() {
 }
 
 #
+# Checks if the task definition file was modified in this push
+# Returns 0 if changed, 1 if unchanged
+#
+function check_task_definition_changed() {
+  echo "Checking if task definition file changed in this push...";
+
+  # Check if this is the first commit (no previous commit to compare)
+  if ! git rev-parse HEAD~1 >/dev/null 2>&1; then
+    echo "First commit detected, will register task definition";
+    return 0;
+  fi
+
+  # Check if the task definition file was modified in the current commit
+  if git diff --name-only HEAD~1 HEAD | grep -q "^${TD_FILE}$"; then
+    echo "✓ Task definition file has changed";
+    return 0;
+  else
+    echo "Task definition file unchanged, skipping registration";
+    return 1;
+  fi
+}
+
+#
 # Registers the ECS task definition using AWS CLI
 # Returns 0 if successful, exits with error if registration fails or file not found
 #
@@ -97,6 +120,12 @@ function register_task_definition() {
   if [ ! -f "${TD_FILE}" ]; then
     echo "Task definition file not found: ${TD_FILE}";
     echo "Skipping ECS task definition update";
+    exit 0;
+  fi
+
+  # Check if the task definition file changed in this push
+  if ! check_task_definition_changed; then
+    echo "Skipping ECS task definition registration";
     exit 0;
   fi
 
