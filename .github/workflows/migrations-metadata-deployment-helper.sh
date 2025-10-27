@@ -224,6 +224,6 @@ function update_ecs_task_definition_process() {
 
   # Only run cleanup if we successfully registered a new task definition
   if register_task_definition; then
-    cleanup_old_task_definitions;
+    # cleanup_old_task_definitions;
   fi
 }
