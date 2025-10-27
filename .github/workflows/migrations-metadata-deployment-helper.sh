@@ -126,7 +126,7 @@ function check_task_definition_differs() {
 
   # Compare the normalized JSON files
   if diff -q /tmp/aws-task-def-normalized.json /tmp/local-task-def-normalized.json > /dev/null; then
-    echo "Task definitions are identical, no update needed";
+    echo "🛑 Task definitions are identical, no update needed";
     return 1;
   else
     echo "✓ Task definitions differ, update needed";
