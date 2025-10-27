@@ -45,7 +45,7 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/migration-metadata-deployment-helper.sh
+          source $(pwd)/.github/workflows/migrations-metadata-deployment-helper.sh
           # run_migration_process
 
   update-ecs-task-deployment:
