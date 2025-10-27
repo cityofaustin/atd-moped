@@ -108,11 +108,11 @@ function check_task_definition_differs() {
 
   # Extract just the taskDefinition object and remove AWS-managed fields
   # These fields are added by AWS and shouldn't be compared
-  jq --sort-keys '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' \
+  jq --sort-keys '.taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt, .tags)' \
     /tmp/aws-task-def.json > /tmp/aws-task-def-normalized.json
 
   # Normalize the local file the same way (remove the same fields if present)
-  jq --sort-keys 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' \
+  jq --sort-keys 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt, .tags)' \
     ${TD_FILE} > /tmp/local-task-def-normalized.json
 
   echo "Comparing local task definition with AWS version...";
