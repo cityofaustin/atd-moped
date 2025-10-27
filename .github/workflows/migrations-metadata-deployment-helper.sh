@@ -78,13 +78,20 @@ function determine_task_definition_file() {
     export ENVIRONMENT="production"
     export TD_FILE="moped-database/ecs_task_definitions/production.graphql-engine.ecs-td.json"
     export FAMILY="atd-moped-production"
+    export CLUSTER="atd-moped-cluster-production"
   else
     export ENVIRONMENT="staging"
     export TD_FILE="moped-database/ecs_task_definitions/staging.graphql-engine.ecs-td.json"
     export FAMILY="atd-moped-staging"
+    export CLUSTER="atd-moped-cluster-staging"
   fi
 
+  export SERVICE="graphql-engine"
+
   echo "Environment: ${ENVIRONMENT}";
+  echo "Cluster: ${CLUSTER}";
+  echo "Service: ${SERVICE}";
+  echo "Family: ${FAMILY}";
   echo "Task definition file: ${TD_FILE}";
 }
 
@@ -216,14 +223,39 @@ function register_task_definition() {
 }
 
 #
+# Updates the ECS service to use the latest task definition
+#
+function update_ecs_service() {
+  echo "Updating ECS service to use the new task definition...";
+  echo "Cluster: ${CLUSTER}";
+  echo "Service: ${SERVICE}";
+  echo "Family: ${FAMILY}";
+
+  # Update the service to use the latest task definition from the family
+  if aws ecs update-service \
+    --cluster ${CLUSTER} \
+    --service ${SERVICE} \
+    --task-definition ${FAMILY} \
+    --force-new-deployment; then
+    echo "✓ ECS service updated successfully!";
+    echo "The service will now use the new task definition";
+    return 0;
+  else
+    echo "✗ Failed to update ECS service";
+    exit 1;
+  fi
+}
+
+#
 # Main entry point for ECS task definition update process
 # Determines the correct file, registers it if needed, and cleans up old revisions
 #
 function update_ecs_task_definition_process() {
   determine_task_definition_file;
 
-  # Only run cleanup if we successfully registered a new task definition
+  # Only run cleanup and service update if we successfully registered a new task definition
   if register_task_definition; then
-    # cleanup_old_task_definitions;
+    # cleanup_old_task_definitions; # leave this commented out until I put it back in.
+    update_ecs_service;
   fi
 }
