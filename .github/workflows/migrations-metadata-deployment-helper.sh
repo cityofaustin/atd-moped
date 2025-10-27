@@ -135,21 +135,70 @@ function check_task_definition_differs() {
 }
 
 #
+# Deregisters old task definitions, keeping only the last 3 active ones
+#
+function cleanup_old_task_definitions() {
+  echo "Cleaning up old task definitions for family: ${FAMILY}...";
+
+  # List all ACTIVE task definition revisions for this family, sorted by revision number
+  local active_revisions=$(aws ecs list-task-definitions \
+    --family-prefix ${FAMILY} \
+    --status ACTIVE \
+    --sort DESC \
+    --output json | jq -r '.taskDefinitionArns[]')
+
+  if [ -z "$active_revisions" ]; then
+    echo "No active task definitions found to clean up";
+    return 0;
+  fi
+
+  # Count total active revisions
+  local total_count=$(echo "$active_revisions" | wc -l | tr -d ' ')
+  echo "Found ${total_count} active task definition(s)";
+
+  # If we have 3 or fewer, no cleanup needed
+  if [ "$total_count" -le 3 ]; then
+    echo "Only ${total_count} active revision(s), no cleanup needed";
+    return 0;
+  fi
+
+  # Skip the first 3 (most recent) and deregister the rest
+  local to_deregister=$(echo "$active_revisions" | tail -n +4)
+  local deregister_count=$(echo "$to_deregister" | wc -l | tr -d ' ')
+
+  echo "Deregistering ${deregister_count} old revision(s), keeping the 3 most recent...";
+
+  while IFS= read -r task_def_arn; do
+    if [ -n "$task_def_arn" ]; then
+      echo "Deregistering: ${task_def_arn}";
+      if aws ecs deregister-task-definition --task-definition "${task_def_arn}" > /dev/null; then
+        echo "  ✓ Deregistered successfully";
+      else
+        echo "  ✗ Failed to deregister";
+      fi
+    fi
+  done <<< "$to_deregister"
+
+  echo "Cleanup complete!";
+}
+
+#
 # Registers the ECS task definition using AWS CLI
 # Returns 0 if successful, exits with error if registration fails or file not found
+# Returns 1 if no registration was needed (file unchanged)
 #
 function register_task_definition() {
   # Check if task definition file exists
   if [ ! -f "${TD_FILE}" ]; then
     echo "Task definition file not found: ${TD_FILE}";
     echo "Skipping ECS task definition update";
-    exit 0;
+    return 1;
   fi
 
   # Check if the task definition differs from what's in AWS
   if ! check_task_definition_differs; then
     echo "Skipping ECS task definition registration";
-    exit 0;
+    return 1;
   fi
 
   echo "Registering updated task definition...";
@@ -168,9 +217,13 @@ function register_task_definition() {
 
 #
 # Main entry point for ECS task definition update process
-# Determines the correct file and registers it
+# Determines the correct file, registers it if needed, and cleans up old revisions
 #
 function update_ecs_task_definition_process() {
   determine_task_definition_file;
-  register_task_definition;
+
+  # Only run cleanup if we successfully registered a new task definition
+  if register_task_definition; then
+    cleanup_old_task_definitions;
+  fi
 }
