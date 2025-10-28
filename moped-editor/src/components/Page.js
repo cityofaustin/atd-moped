@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react";
 import { Helmet } from "react-helmet";
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 
 const Page = forwardRef(({ children, title = "", ...rest }, ref) => {
@@ -13,10 +12,5 @@ const Page = forwardRef(({ children, title = "", ...rest }, ref) => {
     </Box>
   );
 });
-
-Page.propTypes = {
-  children: PropTypes.node.isRequired,
-  title: PropTypes.string,
-};
 
 export default Page;

@@ -5,10 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
+import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -450,12 +451,21 @@ const ProjectMilestones = ({
         localeText={{ noRowsLabel: "No project milestones to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
-          toolbar: ProjectMilestoneToolbar,
+          toolbar: DataGridToolbar,
         }}
         slotProps={{
           toolbar: {
-            addAction: onClickAddMilestone,
-            setIsDialogOpen: setIsDialogOpen,
+            title: "Milestones",
+            primaryActionButton: (
+              <ButtonDropdownMenu
+                addAction={onClickAddMilestone}
+                openActionDialog={setIsDialogOpen}
+                parentButtonText="Add milestone"
+                firstOptionText="New milestone"
+                secondOptionText="From template"
+                secondOptionIcon
+              />
+            ),
           },
         }}
       />
