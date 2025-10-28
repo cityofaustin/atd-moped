@@ -9,6 +9,7 @@ import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
+import Tooltip from "@mui/material/Tooltip";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import ControlledDateField from "src/components/forms/ControlledDateField";
@@ -317,28 +318,29 @@ const ProjectPhaseForm = ({
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<CheckCircle />}
-            type="submit"
-            onClick={() => setAsCurrentPhase(true)}
-            // disabled if a current phase
-            disabled={isCurrentPhase || mutationState.loading}
-          >
-            {mutationState.loading ? (
-              <CircularProgress color="primary" size={20} />
-            ) : (
-              "Mark as current"
-            )}
-          </Button>
+          <Tooltip title="Mark this phase as the current phase of the project">
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<CheckCircle />}
+              type="submit"
+              onClick={() => setAsCurrentPhase(true)}
+              // disabled if a current phase
+              disabled={isCurrentPhase || mutationState.loading}
+            >
+              {mutationState.loading ? (
+                <CircularProgress color="primary" size={20} />
+              ) : (
+                "Mark as current"
+              )}
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"
             type="submit"
-            // shouldnt this be disabled if not Dirty and new?
             disabled={!isDirty || mutationState.loading}
           >
             {mutationState.loading ? (
