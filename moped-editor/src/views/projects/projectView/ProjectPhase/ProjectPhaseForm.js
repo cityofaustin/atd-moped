@@ -326,7 +326,11 @@ const ProjectPhaseForm = ({
               type="submit"
               onClick={() => setAsCurrentPhase(true)}
               // disabled if a current phase
-              disabled={isCurrentPhase || mutationState.loading}
+              disabled={
+                isCurrentPhase ||
+                mutationState.loading ||
+                (isNewPhase && !isDirty)
+              }
             >
               {mutationState.loading ? (
                 <CircularProgress color="primary" size={20} />
