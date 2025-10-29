@@ -123,6 +123,7 @@ const SubprojectsTable = ({
     fetchPolicy: "no-cache",
   });
 
+  // separate query for options for the lookup autocomplete component
   const { data: optionsData, refetch: optionsRefetch } = useQuery(SUBPROJECT_OPTIONS_QUERY, {
      variables: { projectId: projectId },
      fetchPolicy: "no-cache",
