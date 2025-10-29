@@ -25,8 +25,6 @@ const requiredFields = ["project_name_full"];
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
-  data,
-  refetch,
   optionsData,
   optionsRefetch,
   rowModesModel,
@@ -107,8 +105,6 @@ const useColumns = ({
       },
     ];
   }, [
-    data,
-    refetch,
     optionsData,
     optionsRefetch,
     rowModesModel,
@@ -276,8 +272,6 @@ const SubprojectsTable = ({
   );
 
   const dataGridColumns = useColumns({
-    data,
-    refetch,
     optionsData,
     optionsRefetch,
     rowModesModel,
