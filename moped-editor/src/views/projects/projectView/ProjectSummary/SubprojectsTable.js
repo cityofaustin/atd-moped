@@ -14,7 +14,8 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import RenderFieldLink from "src/components/RenderFieldLink";
 
 import {
-  SUBPROJECT_QUERY,
+  SUBPROJECT_SUMMARY_QUERY,
+  SUBPROJECT_OPTIONS_QUERY,
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
@@ -26,6 +27,8 @@ const requiredFields = ["project_name_full"];
 const useColumns = ({
   data,
   refetch,
+  optionsData,
+  optionsRefetch,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -54,12 +57,12 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name="project"
-            options={data?.subprojectOptions}
+            options={optionsData?.subprojectOptions}
             autocompleteProps={{
               getOptionLabel: (option) =>
                 `${option.project_id} - ${option.project_name_full}`,
             }}
-            refetch={refetch}
+            refetch={optionsRefetch}
           />
         ),
       },
@@ -106,6 +109,8 @@ const useColumns = ({
   }, [
     data,
     refetch,
+    optionsData,
+    optionsRefetch,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -117,10 +122,15 @@ const SubprojectsTable = ({
   refetchSummaryData,
   handleSnackbar,
 }) => {
-  const { loading, data, refetch } = useQuery(SUBPROJECT_QUERY, {
+  const { loading, data, refetch } = useQuery(SUBPROJECT_SUMMARY_QUERY, {
     variables: { projectId: projectId },
     fetchPolicy: "no-cache",
   });
+
+  const { data: optionsData, refetch: optionsRefetch } = useQuery(SUBPROJECT_OPTIONS_QUERY, {
+     variables: { projectId: projectId },
+     fetchPolicy: "no-cache",
+   }); 
 
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
@@ -268,6 +278,8 @@ const SubprojectsTable = ({
   const dataGridColumns = useColumns({
     data,
     refetch,
+    optionsData,
+    optionsRefetch,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
