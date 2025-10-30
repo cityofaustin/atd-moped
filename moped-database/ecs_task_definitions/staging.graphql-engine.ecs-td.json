@@ -37,8 +37,8 @@
                     "awslogs-stream-prefix": "ecs"
                 }
             },
-            "memory": 2048,
-            "memoryReservation": 2048,
+            "memory": 4096,
+            "memoryReservation": 4096,
             "mountPoints": [ ],
             "name": "atd-moped",
             "portMappings": [
