@@ -37,8 +37,8 @@
                     "awslogs-stream-prefix": "ecs"
                 }
             },
-            "memory": 4096,
-            "memoryReservation": 4096,
+            "memory": 2048,
+            "memoryReservation": 2048,
             "mountPoints": [ ],
             "name": "atd-moped",
             "portMappings": [
@@ -87,7 +87,7 @@
         "FARGATE"
     ],
     "cpu": "256",
-    "memory": "4096",
+    "memory": "2048",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
