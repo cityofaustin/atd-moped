@@ -15,6 +15,10 @@
                 {
                     "name": "HASURA_GRAPHQL_ENABLE_CONSOLE",
                     "value": "false"
+                },
+                {
+                    "name": "FAKE_ENV",
+                    "value": "hello"
                 }
             ],
             "essential": true,
