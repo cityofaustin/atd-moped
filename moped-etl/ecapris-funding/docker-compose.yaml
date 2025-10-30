@@ -1,0 +1,9 @@
+services:
+  ecapris-statuses:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    entrypoint: python3.12 /app/ecapris_funding_sync.py
+    env_file:
+      - env_file
