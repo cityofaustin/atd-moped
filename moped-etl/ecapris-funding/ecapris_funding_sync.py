@@ -54,16 +54,31 @@ def main():
     # 2. Query ODP for all funding records and make list of records to upsert into Moped DB
     socrata_client = get_socrata_client()
 
-    # Build mapping of eCAPRIS subproject ID to Moped project IDs
+    # Build mapping of eCAPRIS subproject ID to Moped project IDs and include existing non-synced FDUs per project
+    # to avoid duplicating existing funding records
     ecapris_subproject_id_to_project_ids = {}
+    project_id_to_existing_fdus = {}
+
     for project in results["moped_project"]:
         ecapris_id = project["ecapris_subproject_id"]
         project_id = project["project_id"]
 
         if ecapris_id not in ecapris_subproject_id_to_project_ids:
             ecapris_subproject_id_to_project_ids[ecapris_id] = []
-
         ecapris_subproject_id_to_project_ids[ecapris_id].append(project_id)
+
+        # NEW: Extract existing FDUs for this project
+        existing_fdus = set(
+            funding["fdu"]
+            for funding in project.get("moped_proj_funding", [])
+            if funding.get("fdu")  # Handle null FDUs
+        )
+        project_id_to_existing_fdus[project_id] = existing_fdus
+
+        if existing_fdus:
+            logger.info(
+                f"Project {project_id} has {len(existing_fdus)} existing non-synced FDUs: {existing_fdus}"
+            )
 
     # Fetch all funding records from ODP
     logger.info(f"Fetching all eCAPRIS funding records from ODP...")
@@ -77,6 +92,7 @@ def main():
 
     # Use map of eCAPRIS subproject ID to project IDs to build list of funding records to upsert
     funding_records_to_upsert = []
+    skipped_duplicates = 0
 
     for ecapris_id, project_ids in ecapris_subproject_id_to_project_ids.items():
         # Filter funding records for this eCAPRIS subproject ID
@@ -93,18 +109,34 @@ def main():
             continue
 
         for project_id in project_ids:
+            existing_fdus = project_id_to_existing_fdus.get(project_id, set())
+
             for record in matching_funding_records:
+                fdu = record.get("fdu")
+
+                # Skip if this FDU already exists as non-synced record
+                if fdu in existing_fdus:
+                    logger.debug(
+                        f"Skipping duplicate FDU {fdu} for project {project_id} (already exists as manual/imported record)"
+                    )
+                    skipped_duplicates += 1
+                    continue
+
                 funding_records_to_upsert.append(
                     {
                         "project_id": project_id,
                         "ecapris_funding_id": record.get("fao_id"),
-                        "fdu": record.get("fdu"),
+                        "fdu": fdu,
                         "description": "Synced from eCAPRIS",
                         "amount": float(record.get("app", 0)),
                         "is_synced_from_ecapris": True,
                         "unit_long_name": record.get("unit_long_name"),
                     }
                 )
+
+    logger.info(
+        f"Built {len(funding_records_to_upsert)} funding records to upsert (skipped {skipped_duplicates} duplicates)."
+    )
 
     # 3. Upsert records into Moped DB
     for chunk in range(0, len(funding_records_to_upsert), CHUNK_SIZE):
