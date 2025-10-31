@@ -9,7 +9,6 @@ import logging
 from process.request import make_hasura_request
 from process.queries import GRAPHQL_QUERIES
 from process.logging import get_logger
-from process.time import convert_to_timezone_aware_timestamp
 
 
 def main():
@@ -22,8 +21,18 @@ def main():
     results = make_hasura_request(
         query=GRAPHQL_QUERIES["subprojects_to_query_for_funding"]
     )
-    print(results)
-    # 2. For each project, query ODP endpoint for FDUs for that subproject ID
+
+    project_ids_to_sync = [
+        project["project_id"] for project in results["moped_project"]
+    ]
+    unique_ecapris_ids = set(
+        project["ecapris_subproject_id"] for project in results["moped_project"]
+    )
+    logger.info(
+        f"Found {len(project_ids_to_sync)} projects to sync funding for with {len(unique_ecapris_ids)} unique eCAPRIS subproject ids."
+    )
+    # 2. For unique eCAPRIS subproject id, query ODP endpoint for associated FDUs
+
     # 3. For each FDU, check if it already exists on the project
     # 4. If it doesn't exist, insert it as a synced FDU
     # 5. If it does exist, skip it
