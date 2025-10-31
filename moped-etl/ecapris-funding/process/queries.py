@@ -19,8 +19,8 @@ GRAPHQL_QUERIES = {
         insert_moped_project_funding(
             objects: $objects,
             on_conflict: {
-                constraint: moped_proj_funding_unique_fdu_project_id,
-                do_nothing: {}
+                constraint: moped_proj_funding_unique_fao_id_project_id,
+                update_columns: [amount, unit_long_name]
             }
         ) {
             returning {
