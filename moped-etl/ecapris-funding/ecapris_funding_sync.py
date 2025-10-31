@@ -127,10 +127,11 @@ def main():
                         "project_id": project_id,
                         "ecapris_funding_id": record.get("fao_id"),
                         "fdu": fdu,
-                        "description": "Synced from eCAPRIS",
-                        "amount": float(record.get("app", 0)),
+                        "funding_description": "Synced from eCAPRIS",
+                        "funding_amount": int(float(record.get("app", 0))),
                         "is_synced_from_ecapris": True,
                         "unit_long_name": record.get("unit_long_name"),
+                        "funding_status_id": 2,  # All FDUs that already existin in  eCAPRIS are "Confirmed"
                     }
                 )
 

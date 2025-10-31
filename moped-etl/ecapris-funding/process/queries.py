@@ -11,6 +11,9 @@ GRAPHQL_QUERIES = {
         moped_project(where: {ecapris_subproject_id: {_is_null: false}, is_deleted: {_eq: false}, should_sync_ecapris_funding: {_eq: true}}) {
             project_id
             ecapris_subproject_id
+            moped_proj_funding(where: {is_deleted: {_eq: false}, is_synced_from_ecapris: {_eq: false}}) {
+                fdu
+            }
         }
     }
     """,
