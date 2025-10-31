@@ -153,6 +153,7 @@ def main():
 
 if __name__ == "__main__":
     # TODO: Add dry run -n flag
+    # TODO: Filter upsert by last run date? https://hasura.io/docs/2.0/mutations/postgres/upsert/#update-selected-columns-on-conflict-using-a-filter
 
     log_level = logging.DEBUG
     logger = get_logger(name="moped-ecapris-funding-sync", level=log_level)

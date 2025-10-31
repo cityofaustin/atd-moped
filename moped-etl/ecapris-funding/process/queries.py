@@ -15,18 +15,13 @@ GRAPHQL_QUERIES = {
     }
     """,
     "project_funding_upsert": """
-    mutation UpsertProjectFunding($objects: [moped_project_funding_insert_input!]!) {
-        insert_moped_project_funding(
-            objects: $objects,
-            on_conflict: {
-                constraint: moped_proj_funding_unique_fao_id_project_id,
-                update_columns: [amount, unit_long_name]
-            }
-        ) {
+    mutation UpsertProjectFunding($objects: [moped_proj_funding_insert_input!]!) {
+        insert_moped_proj_funding(objects: $objects, on_conflict: {constraint: moped_proj_funding_unique_ecapris_funding_id_project_id, update_columns: [funding_amount, unit_long_name]}) {
             returning {
-                project_funding_id
+                proj_funding_id
                 project_id
             }
+        }
     }
     """,
 }
