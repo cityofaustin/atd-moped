@@ -7,9 +7,10 @@ import sys
 import logging
 import sodapy
 
-from process.request import make_hasura_request
-from process.queries import GRAPHQL_QUERIES
+from process.args import get_cli_args
 from process.logging import get_logger
+from process.queries import GRAPHQL_QUERIES
+from process.request import make_hasura_request
 
 SO_WEB = os.getenv("SO_WEB")
 SO_TOKEN = os.getenv("SO_TOKEN")
@@ -29,7 +30,7 @@ def get_socrata_client():
     )
 
 
-def main():
+def main(args):
     # Funding records have three types:
     # 1. Manual entered (syncing will ignore these, completely manual)
     # 2. Imported (syncing will ignore these and not duplicate, amount can be overridden and not details automatically updated)
@@ -146,14 +147,21 @@ def main():
             f"Upserting chunk of {len(chunk_payload)} funding records into Moped DB..."
         )
 
-        results = make_hasura_request(
-            query=GRAPHQL_QUERIES["project_funding_upsert"],
-            variables={"objects": chunk_payload},
-        )
+        if args.dry_run:
+            logger.info(
+                f"[DRY RUN] Would upsert chunk of {len(chunk_payload)} funding records into Moped DB..."
+            )
+        else:
+            logger.info(
+                f"Upserting chunk of {len(chunk_payload)} funding records into Moped DB..."
+            )
+            results = make_hasura_request(
+                query=GRAPHQL_QUERIES["project_funding_upsert"],
+                variables={"objects": chunk_payload},
+            )
 
 
 if __name__ == "__main__":
-    # TODO: Add dry run -n flag
     # TODO: Filter upsert by last run date? https://hasura.io/docs/2.0/mutations/postgres/upsert/#update-selected-columns-on-conflict-using-a-filter
 
     log_level = logging.DEBUG
@@ -162,4 +170,6 @@ if __name__ == "__main__":
         f"Starting sync. Transferring eCapris funding records from ODP to Moped DB."
     )
 
-    main()
+    args = get_cli_args()
+
+    main(args)
