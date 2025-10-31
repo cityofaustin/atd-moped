@@ -16,6 +16,7 @@ SO_TOKEN = os.getenv("SO_TOKEN")
 SO_USER = os.getenv("SO_USER")
 SO_PASS = os.getenv("SO_PASS")
 FUNDING_DATASET_IDENTIFIER = os.getenv("FUNDING_DATASET_IDENTIFIER")
+CHUNK_SIZE = os.getenv("CHUNK_SIZE", 500)
 
 
 def get_socrata_client():
@@ -106,9 +107,21 @@ def main():
                 )
 
     # 3. Upsert records into Moped DB
+    for chunk in range(0, len(funding_records_to_upsert), CHUNK_SIZE):
+        chunk_payload = funding_records_to_upsert[chunk : chunk + CHUNK_SIZE]
+        logger.info(
+            f"Upserting chunk of {len(chunk_payload)} funding records into Moped DB..."
+        )
+
+        results = make_hasura_request(
+            query=GRAPHQL_QUERIES["project_funding_upsert"],
+            variables={"objects": chunk_payload},
+        )
 
 
 if __name__ == "__main__":
+    # TODO: Add dry run -n flag
+
     log_level = logging.DEBUG
     logger = get_logger(name="moped-ecapris-funding-sync", level=log_level)
     logger.info(

@@ -14,4 +14,19 @@ GRAPHQL_QUERIES = {
         }
     }
     """,
+    "project_funding_upsert": """
+    mutation UpsertProjectFunding($objects: [moped_project_funding_insert_input!]!) {
+        insert_moped_project_funding(
+            objects: $objects,
+            on_conflict: {
+                constraint: moped_proj_funding_unique_fdu_project_id,
+                do_nothing: {}
+            }
+        ) {
+            returning {
+                project_funding_id
+                project_id
+            }
+    }
+    """,
 }
