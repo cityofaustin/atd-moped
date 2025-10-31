@@ -1,5 +1,5 @@
 services:
-  ecapris-statuses:
+  ecapris-funding:
     build:
       context: .
     volumes:
