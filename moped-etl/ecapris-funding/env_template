@@ -1,2 +1,7 @@
+SO_WEB=
+SO_TOKEN=
+SO_USER=
+SO_PASS=
+FUNDING_DATASET_IDENTIFIER=
 HASURA_ENDPOINT=http://host.docker.internal:8080/v1/graphql
 HASURA_ADMIN_SECRET=hasurapassword
