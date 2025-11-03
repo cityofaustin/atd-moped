@@ -14,11 +14,12 @@ GRAPHQL_QUERIES = {
     }
     """,
     "project_funding_upsert": """
-    mutation UpsertEcaprisFunding($objects: [moped_proj_funding_insert_input!]!) {
-        insert_moped_proj_funding(objects: $objects, on_conflict: {constraint: moped_proj_funding_unique_ecapris_funding_id_project_id, update_columns: [funding_amount, unit_long_name]}) {
+    mutation UpsertEcaprisFunding($objects: [ecapris_subproject_funding_insert_input!]!) {
+        insert_ecapris_subproject_funding(objects: $objects, on_conflict: {constraint: ecapris_subproject_funding_fao_id_key, 
+        update_columns: [app, unit_long_name, subprogram, program]}) {
             returning {
-                proj_funding_id
-                project_id
+                fao_id
+                ecapris_subproject_id
             }
         }
     }
