@@ -5,7 +5,7 @@ Python script that transfers eCAPRIS funding to the Moped database
 ## Sync eCAPRIS funding
 
 The script `ecapris_funding_sync.py` is used to copy eCAPRIS subproject funding records to the Moped database:
-- Add step summary
+- TODO: Add step summary
 
 ## Testing the script locally using Docker Compose
 
