@@ -17,6 +17,7 @@ insert_permissions:
         updated_by_user_id: x-hasura-user-db-id
       columns:
         - dept_unit
+        - ecapris_funding_id
         - fdu
         - fund
         - funding_amount
@@ -36,6 +37,7 @@ insert_permissions:
         updated_by_user_id: x-hasura-user-db-id
       columns:
         - dept_unit
+        - ecapris_funding_id
         - fdu
         - fund
         - funding_amount
@@ -65,7 +67,6 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - is_deleted
-        - is_editable
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
@@ -91,7 +92,6 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - is_deleted
-        - is_editable
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
@@ -117,7 +117,6 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - is_deleted
-        - is_editable
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
@@ -131,6 +130,7 @@ update_permissions:
     permission:
       columns:
         - dept_unit
+        - ecapris_funding_id
         - fdu
         - fund
         - funding_amount
@@ -150,6 +150,7 @@ update_permissions:
     permission:
       columns:
         - dept_unit
+        - ecapris_funding_id
         - fdu
         - fund
         - funding_amount

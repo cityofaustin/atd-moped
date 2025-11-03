@@ -6,14 +6,14 @@ COMMENT ON COLUMN moped_project.should_sync_ecapris_funding IS 'Indicates if pro
 -- Fix eCAPRIS name in existing comment
 COMMENT ON COLUMN moped_project.should_sync_ecapris_statuses IS 'Indicates if project statuses should be synced from eCAPRIS';
 
--- Update moped_proj_funding table
+-- Update moped_proj_funding table to include information available new eCAPRIS data source and to track legacy records
 ALTER TABLE moped_proj_funding
 ADD COLUMN ecapris_funding_id INTEGER,
 ADD COLUMN is_legacy_funding_record BOOLEAN DEFAULT FALSE NOT NULL,
 ADD COLUMN fdu TEXT DEFAULT NULL,
 ADD COLUMN unit_long_name TEXT DEFAULT NULL;
 
-COMMENT ON COLUMN moped_proj_funding.ecapris_funding_id IS 'References the eCAPRIS FDU unique fao_id if applicable';
+COMMENT ON COLUMN moped_proj_funding.ecapris_funding_id IS 'References the eCAPRIS FDU unique fao_id of imported eCAPRIS funding records';
 COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if the funding record was created before eCAPRIS sync integration (Nov 2025)';
 
 -- Mark all existing funding records as legacy before eCAPRIS sync integration launches

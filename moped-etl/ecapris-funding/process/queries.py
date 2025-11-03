@@ -1,24 +1,20 @@
 """
 Queries for Moped DB
 
-The upsert query is used to insert or update the eCapris statuses into the Moped DB.
-eCapris statuses can be edited within 7 days after the status review date so we need to handle updates.
+The upsert query is used to insert or update the eCapris funding records into the Moped DB.
+eCapris funding records can be edited so we need to handle updates.
 """
 
 GRAPHQL_QUERIES = {
     "subprojects_to_query_for_funding": """
     query MopedProjects {
-        moped_project(where: {ecapris_subproject_id: {_is_null: false}, is_deleted: {_eq: false}, should_sync_ecapris_funding: {_eq: true}}) {
-            project_id
+        moped_project(where: {ecapris_subproject_id: {_is_null: false}, is_deleted: {_eq: false}}, distinct_on: ecapris_subproject_id) {
             ecapris_subproject_id
-            moped_proj_funding(where: {is_deleted: {_eq: false}, is_synced_from_ecapris: {_eq: false}}) {
-                fdu
-            }
         }
     }
     """,
     "project_funding_upsert": """
-    mutation UpsertProjectFunding($objects: [moped_proj_funding_insert_input!]!) {
+    mutation UpsertEcaprisFunding($objects: [moped_proj_funding_insert_input!]!) {
         insert_moped_proj_funding(objects: $objects, on_conflict: {constraint: moped_proj_funding_unique_ecapris_funding_id_project_id, update_columns: [funding_amount, unit_long_name]}) {
             returning {
                 proj_funding_id
