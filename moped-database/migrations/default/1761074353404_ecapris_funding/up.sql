@@ -1,6 +1,6 @@
 -- Add funding sync tracking to projects table
 ALTER TABLE moped_project
-ADD COLUMN should_sync_ecapris_funding BOOLEAN DEFAULT FALSE;
+ADD COLUMN should_sync_ecapris_funding BOOLEAN DEFAULT FALSE NOT NULL;
 
 COMMENT ON COLUMN moped_project.should_sync_ecapris_funding IS 'Indicates if project funding should be synced from eCAPRIS';
 -- Fix eCAPRIS name in existing comment
@@ -9,7 +9,7 @@ COMMENT ON COLUMN moped_project.should_sync_ecapris_statuses IS 'Indicates if pr
 -- Update moped_proj_funding table
 ALTER TABLE moped_proj_funding
 ADD COLUMN ecapris_funding_id INTEGER,
-ADD COLUMN is_legacy_funding_record BOOLEAN DEFAULT FALSE,
+ADD COLUMN is_legacy_funding_record BOOLEAN DEFAULT FALSE NOT NULL,
 ADD COLUMN is_editable BOOLEAN GENERATED ALWAYS AS (ecapris_funding_id IS NULL) STORED,
 ADD COLUMN fdu TEXT DEFAULT NULL,
 ADD COLUMN unit_long_name TEXT DEFAULT NULL;

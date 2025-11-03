@@ -5,7 +5,6 @@ import { isEqual } from "lodash";
 
 import {
   Box,
-  CardContent,
   CircularProgress,
   Paper,
   Table,
@@ -220,7 +219,7 @@ const ProjectActivityLog = () => {
   if (loading) return <CircularProgress />;
 
   return (
-    <CardContent>
+    <>
       {getTotalItems(data) === 0 ? (
         <Alert severity="info">
           There is no activity recorded for this project.
@@ -298,7 +297,7 @@ const ProjectActivityLog = () => {
           </Table>
         </TableContainer>
       )}
-    </CardContent>
+    </>
   );
 };
 
