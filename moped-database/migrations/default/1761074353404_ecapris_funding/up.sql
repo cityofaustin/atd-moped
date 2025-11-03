@@ -20,6 +20,10 @@ COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if t
 UPDATE moped_proj_funding
 SET is_legacy_funding_record = TRUE;
 
+-- Switch on sync for projects with ecapris_subproject_id set
+UPDATE moped_project SET should_sync_ecapris_funding = TRUE
+WHERE ecapris_subproject_id IS NOT NULL;
+
 -- Add comments on other existing moped_proj_funding columns
 COMMENT ON COLUMN moped_proj_funding.proj_funding_id IS 'Primary key for the project funding record';
 COMMENT ON COLUMN moped_proj_funding.created_by_user_id IS 'ID of the user who last created the record';
@@ -67,8 +71,8 @@ COMMENT ON COLUMN public.ecapris_subproject_statuses.updated_by_user_id IS 'ID o
 -- both moped_proj_funding and ecapris_subproject_funding data and removes duplicates based on FDU.
 CREATE OR REPLACE VIEW combined_project_funding_view AS
 SELECT
-    ('moped_' || moped_proj_funding.project_funding_id) AS id,
-    moped_proj_funding.project_funding_id AS original_id,
+    ('moped_' || moped_proj_funding.proj_funding_id) AS id,
+    moped_proj_funding.proj_funding_id AS original_id,
     moped_proj_funding.created_at,
     moped_proj_funding.updated_at,
     moped_proj_funding.project_id,
@@ -130,9 +134,9 @@ CREATE OR REPLACE VIEW project_funding_view AS SELECT
     combined_project_funding_view.fdu AS fund_dept_unit,
     combined_project_funding_view.created_at,
     combined_project_funding_view.updated_at,
-    combined_project_funding_view.funding_source_name,
-    combined_project_funding_view.funding_program_name,
-    combined_project_funding_view.funding_status_name
-FROM moped_project AS mp
-LEFT JOIN combined_project_funding_view ON moped_project.project_id = combined_project_funding_view.project_id OR (moped_project.project_id = combined_project_funding_view.ecapris_subproject_id AND moped_project.ecapris_subproject_id IS NOT NULL)
-WHERE TRUE AND mp.is_deleted = FALSE;
+    combined_project_funding_view.source_name AS funding_source_name,
+    combined_project_funding_view.program_name AS funding_program_name,
+    combined_project_funding_view.status_name AS funding_status_name
+FROM moped_project
+LEFT JOIN combined_project_funding_view ON moped_project.project_id = combined_project_funding_view.project_id OR (moped_project.ecapris_subproject_id = combined_project_funding_view.ecapris_subproject_id AND moped_project.ecapris_subproject_id IS NOT NULL)
+WHERE TRUE AND moped_project.is_deleted = FALSE;
