@@ -43,6 +43,8 @@ CREATE TABLE public.ecapris_subproject_funding (
     fdu TEXT NOT NULL,
     app INT4 NOT NULL,
     unit_long_name TEXT NOT NULL,
+    subprogram TEXT DEFAULT NULL,
+    program TEXT DEFAULT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     created_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -61,6 +63,53 @@ COMMENT ON COLUMN public.ecapris_subproject_statuses.updated_at IS 'Timestamp wh
 COMMENT ON COLUMN public.ecapris_subproject_statuses.created_by_user_id IS 'ID of the user who created the record';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.updated_by_user_id IS 'ID of the user who updated the record';
 
+-- Create a combined_project_funding_view for the project funding UI to consume. This view combines
+-- both moped_proj_funding and ecapris_subproject_funding data and removes duplicates based on FDU.
+CREATE OR REPLACE VIEW combined_project_funding_view AS
+SELECT
+    ('moped_' || moped_proj_funding.project_funding_id) AS id,
+    moped_proj_funding.project_funding_id AS original_id,
+    moped_proj_funding.created_at,
+    moped_proj_funding.updated_at,
+    moped_proj_funding.project_id,
+    moped_proj_funding.fdu AS fdu,
+    moped_proj_funding.funding_amount AS amount,
+    moped_proj_funding.funding_description AS description,
+    moped_fund_sources.funding_source_name AS source_name,
+    moped_fund_status.funding_status_name AS status_name,
+    moped_fund_programs.funding_program_name AS program_name,
+    TRUE AS is_editable,
+    NULL AS ecapris_subproject_id
+FROM
+    moped_proj_funding
+LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
+LEFT JOIN moped_fund_sources ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
+LEFT JOIN moped_fund_programs ON moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
+WHERE moped_proj_funding.is_deleted = FALSE
+UNION ALL
+SELECT
+    ('ecapris_' || ecapris_subproject_funding.id) AS id,
+    ecapris_subproject_funding.id AS original_id,
+    ecapris_subproject_funding.created_at,
+    ecapris_subproject_funding.updated_at,
+    NULL AS project_id,
+    ecapris_subproject_funding.fdu AS fdu,
+    ecapris_subproject_funding.app AS amount,
+    'Synced from eCAPRIS' AS description,
+    ecapris_subproject_funding.subprogram AS source_name,
+    ecapris_subproject_funding.program AS program_name,
+    'Confirmed' AS status_name,
+    FALSE AS is_editable,
+    ecapris_subproject_funding.ecapris_subproject_id
+FROM
+    ecapris_subproject_funding
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM moped_proj_funding
+        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu
+            AND moped_proj_funding.is_deleted = FALSE
+    );
+
 -- Populate new fdu column based on existing fund_dept_unit data if available and 
 -- populate unit_long_name from dept_unit JSONB
 -- Note: fund_dept_unit is a generated column that is null if fund or dept_unit is null
@@ -74,19 +123,16 @@ WHERE fund_dept_unit IS NOT NULL;
 DROP VIEW IF EXISTS project_funding_view;
 
 CREATE OR REPLACE VIEW project_funding_view AS SELECT
-    mp.project_id,
-    mpf.proj_funding_id,
-    mpf.funding_amount,
-    mpf.funding_description,
-    mpf.fdu AS fund_dept_unit,
-    mpf.created_at,
-    mpf.updated_at,
-    mfs.funding_source_name,
-    mfp.funding_program_name,
-    mfst.funding_status_name
+    moped_project.project_id,
+    combined_project_funding_view.id AS proj_funding_id,
+    combined_project_funding_view.amount AS funding_amount,
+    combined_project_funding_view.description AS funding_description,
+    combined_project_funding_view.fdu AS fund_dept_unit,
+    combined_project_funding_view.created_at,
+    combined_project_funding_view.updated_at,
+    combined_project_funding_view.funding_source_name,
+    combined_project_funding_view.funding_program_name,
+    combined_project_funding_view.funding_status_name
 FROM moped_project AS mp
-LEFT JOIN moped_proj_funding AS mpf ON mp.project_id = mpf.project_id
-LEFT JOIN moped_fund_sources AS mfs ON mpf.funding_source_id = mfs.funding_source_id
-LEFT JOIN moped_fund_programs AS mfp ON mpf.funding_program_id = mfp.funding_program_id
-LEFT JOIN moped_fund_status AS mfst ON mpf.funding_status_id = mfst.funding_status_id
-WHERE TRUE AND mp.is_deleted = FALSE AND mpf.is_deleted = FALSE;
+LEFT JOIN combined_project_funding_view ON moped_project.project_id = combined_project_funding_view.project_id OR (moped_project.project_id = combined_project_funding_view.ecapris_subproject_id AND moped_project.ecapris_subproject_id IS NOT NULL)
+WHERE TRUE AND mp.is_deleted = FALSE;

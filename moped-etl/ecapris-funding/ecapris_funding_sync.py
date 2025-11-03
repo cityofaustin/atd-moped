@@ -132,7 +132,7 @@ def main(args):
                         "funding_amount": int(float(record.get("app", 0))),
                         "is_synced_from_ecapris": True,
                         "unit_long_name": record.get("unit_long_name"),
-                        "funding_status_id": 2,  # All FDUs that already existin in  eCAPRIS are "Confirmed"
+                        "funding_status_id": 2,  # All FDUs that already exist in eCAPRIS are "Confirmed"
                     }
                 )
 
