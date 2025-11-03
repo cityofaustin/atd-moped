@@ -3,7 +3,6 @@ import {
   Alert,
   Box,
   Card,
-  CardContent,
   CircularProgress,
   Divider,
   Grid,
@@ -360,176 +359,174 @@ const ProjectNotes = ({
   }
 
   return (
-    <CardContent>
-      <Grid container spacing={2}>
-        {/*New Note Form*/}
-        {!isEditingNote && (
-          <Grid item xs={12}>
-            <Card>
-              <NoteInput
-                noteText={noteText}
-                setNoteText={setNoteText}
-                newNoteType={newNoteType}
-                setNewNoteType={setNewNoteType}
-                isEditingNote={isEditingNote}
-                noteAddLoading={noteAddLoading}
-                noteAddSuccess={noteAddSuccess}
-                submitNewNote={submitNewNote}
-                submitEditNote={submitEditNote}
-                cancelNoteEdit={cancelNoteEdit}
-                isStatusEditModal={isStatusEditModal}
-                noteTypes={projectData?.moped_note_types ?? []}
-                validator={isStatusUpdate ? validator : null}
-              />
-            </Card>
-          </Grid>
-        )}
-        {/* Visible note types can only be filtered on the Notes Tab.
+    <Grid container spacing={2}>
+      {/*New Note Form*/}
+      {!isEditingNote && (
+        <Grid item xs={12}>
+          <Card>
+            <NoteInput
+              noteText={noteText}
+              setNoteText={setNoteText}
+              newNoteType={newNoteType}
+              setNewNoteType={setNewNoteType}
+              isEditingNote={isEditingNote}
+              noteAddLoading={noteAddLoading}
+              noteAddSuccess={noteAddSuccess}
+              submitNewNote={submitNewNote}
+              submitEditNote={submitEditNote}
+              cancelNoteEdit={cancelNoteEdit}
+              isStatusEditModal={isStatusEditModal}
+              noteTypes={projectData?.moped_note_types ?? []}
+              validator={isStatusUpdate ? validator : null}
+            />
+          </Card>
+        </Grid>
+      )}
+      {/* Visible note types can only be filtered on the Notes Tab.
           The status edit modal only shows statuses, and does not show internal notes */}
-        {!isStatusEditModal && (
-          <Grid
-            container
-            item
-            xs={12}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Grid item>
-              <FormControlLabel
-                sx={{ margin: 2 }}
-                label="Show"
-                control={<span />}
-              />
+      {!isStatusEditModal && (
+        <Grid
+          container
+          item
+          xs={12}
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Grid item>
+            <FormControlLabel
+              sx={{ margin: 2 }}
+              label="Show"
+              control={<span />}
+            />
+            <NoteTypeButton
+              filterNoteType={filterNoteType}
+              setFilterNoteType={setFilterNoteType}
+              noteTypeId={null}
+              label="All"
+            />
+            {projectData?.moped_note_types.map((type) => (
               <NoteTypeButton
                 filterNoteType={filterNoteType}
                 setFilterNoteType={setFilterNoteType}
-                noteTypeId={null}
-                label="All"
-              />
-              {projectData?.moped_note_types.map((type) => (
-                <NoteTypeButton
-                  filterNoteType={filterNoteType}
-                  setFilterNoteType={setFilterNoteType}
-                  noteTypeId={type.id}
-                  label={type.name}
-                  key={type.slug}
-                  isDisabled={
-                    type.slug === "ecapris_status_update" &&
-                    (!hasECaprisId || !shouldSyncFromECAPRIS)
-                  }
-                  disabledMessage="Enable eCAPRIS syncing to filter to eCAPRIS statuses"
-                />
-              ))}
-            </Grid>
-            <Grid item>
-              <Tooltip
-                placement="top"
-                title={
-                  !hasECaprisId
-                    ? "Add eCAPRIS subproject ID to enable syncing"
-                    : null
+                noteTypeId={type.id}
+                label={type.name}
+                key={type.slug}
+                isDisabled={
+                  type.slug === "ecapris_status_update" &&
+                  (!hasECaprisId || !shouldSyncFromECAPRIS)
                 }
-              >
-                <Box>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={shouldSyncFromECAPRIS}
-                        disabled={!hasECaprisId}
-                        onChange={handleECaprisSwitch}
-                      />
-                    }
-                    label="Sync from eCAPRIS"
-                  />
-                  {hasECaprisId ? (
-                    <FormHelperText>
-                      Statuses are synced every 30 minutes
-                    </FormHelperText>
-                  ) : null}
-                </Box>
-              </Tooltip>
-            </Grid>
+                disabledMessage="Enable eCAPRIS syncing to filter to eCAPRIS statuses"
+              />
+            ))}
           </Grid>
-        )}
-        {/*Now the notes*/}
-        <Grid item xs={12}>
-          <Card>
-            {loading || !displayNotes ? (
-              <CircularProgress />
-            ) : displayNotes.length > 0 ? (
-              <List
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <DeleteConfirmationModal
-                  type="note"
-                  submitDelete={() => submitDeleteNote(deleteConfirmationId)}
-                  isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-                  setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-                >
-                  {displayNotes.map((note, i) => {
-                    const isNotLastItem = i < displayNotes.length - 1;
-
-                    /**
-                     * Only allow the user who wrote the status to edit it - if it is editable
-                     */
-                    const isNoteEditable =
-                      userSessionData.user_id === note.created_by_user_id &&
-                      note.is_editable;
-                    const isEditingNote = editingNoteId === note.original_id;
-                    return (
-                      <React.Fragment key={note.id}>
-                        <ProjectNote
-                          note={note}
-                          noteIndex={i}
-                          isNoteEditable={isNoteEditable}
-                          isEditingNote={isEditingNote}
-                          handleDeleteOpen={handleDeleteOpen}
-                          handleEditClick={editNote}
-                          secondary={
-                            isEditingNote ? (
-                              <NoteInput
-                                noteText={noteText}
-                                setNoteText={setNoteText}
-                                isEditingNote={isEditingNote}
-                                noteAddLoading={noteAddLoading}
-                                noteAddSuccess={noteAddSuccess}
-                                submitNewNote={submitNewNote}
-                                submitEditNote={submitEditNote}
-                                cancelNoteEdit={cancelNoteEdit}
-                                editingNoteType={editingNoteType}
-                                setEditingNoteType={setEditingNoteType}
-                                isStatusEditModal={isStatusEditModal}
-                                noteTypes={projectData?.moped_note_types ?? []}
-                                validator={isStatusUpdate ? validator : null}
-                              />
-                            ) : (
-                              <Typography component={"span"}>
-                                {parse(note.project_note)}
-                              </Typography>
-                            )
-                          }
-                        />
-                        {isNotLastItem && <Divider component="li" />}
-                      </React.Fragment>
-                    );
-                  })}
-                </DeleteConfirmationModal>
-              </List>
-            ) : (
-              <Typography
-                sx={{
-                  margin: 3,
-                }}
-              >
-                No notes to display
-              </Typography>
-            )}
-          </Card>
+          <Grid item>
+            <Tooltip
+              placement="top"
+              title={
+                !hasECaprisId
+                  ? "Add eCAPRIS subproject ID to enable syncing"
+                  : null
+              }
+            >
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={shouldSyncFromECAPRIS}
+                      disabled={!hasECaprisId}
+                      onChange={handleECaprisSwitch}
+                    />
+                  }
+                  label="Sync from eCAPRIS"
+                />
+                {hasECaprisId ? (
+                  <FormHelperText>
+                    Statuses are synced every 30 minutes
+                  </FormHelperText>
+                ) : null}
+              </Box>
+            </Tooltip>
+          </Grid>
         </Grid>
+      )}
+      {/*Now the notes*/}
+      <Grid item xs={12}>
+        <Card>
+          {loading || !displayNotes ? (
+            <CircularProgress />
+          ) : displayNotes.length > 0 ? (
+            <List
+              sx={{
+                width: "100%",
+              }}
+            >
+              <DeleteConfirmationModal
+                type="note"
+                submitDelete={() => submitDeleteNote(deleteConfirmationId)}
+                isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+                setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+              >
+                {displayNotes.map((note, i) => {
+                  const isNotLastItem = i < displayNotes.length - 1;
+
+                  /**
+                   * Only allow the user who wrote the status to edit it - if it is editable
+                   */
+                  const isNoteEditable =
+                    userSessionData.user_id === note.created_by_user_id &&
+                    note.is_editable;
+                  const isEditingNote = editingNoteId === note.original_id;
+                  return (
+                    <React.Fragment key={note.id}>
+                      <ProjectNote
+                        note={note}
+                        noteIndex={i}
+                        isNoteEditable={isNoteEditable}
+                        isEditingNote={isEditingNote}
+                        handleDeleteOpen={handleDeleteOpen}
+                        handleEditClick={editNote}
+                        secondary={
+                          isEditingNote ? (
+                            <NoteInput
+                              noteText={noteText}
+                              setNoteText={setNoteText}
+                              isEditingNote={isEditingNote}
+                              noteAddLoading={noteAddLoading}
+                              noteAddSuccess={noteAddSuccess}
+                              submitNewNote={submitNewNote}
+                              submitEditNote={submitEditNote}
+                              cancelNoteEdit={cancelNoteEdit}
+                              editingNoteType={editingNoteType}
+                              setEditingNoteType={setEditingNoteType}
+                              isStatusEditModal={isStatusEditModal}
+                              noteTypes={projectData?.moped_note_types ?? []}
+                              validator={isStatusUpdate ? validator : null}
+                            />
+                          ) : (
+                            <Typography component={"span"}>
+                              {parse(note.project_note)}
+                            </Typography>
+                          )
+                        }
+                      />
+                      {isNotLastItem && <Divider component="li" />}
+                    </React.Fragment>
+                  );
+                })}
+              </DeleteConfirmationModal>
+            </List>
+          ) : (
+            <Typography
+              sx={{
+                margin: 3,
+              }}
+            >
+              No notes to display
+            </Typography>
+          )}
+        </Card>
       </Grid>
-    </CardContent>
+    </Grid>
   );
 };
 
