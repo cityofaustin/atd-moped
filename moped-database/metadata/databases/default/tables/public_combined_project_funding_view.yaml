@@ -1,0 +1,58 @@
+table:
+  name: combined_project_funding_view
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - is_editable
+        - amount
+        - original_id
+        - project_id
+        - description
+        - ecapris_subproject_id
+        - fdu
+        - id
+        - program_name
+        - source_name
+        - status_name
+        - created_at
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - is_editable
+        - amount
+        - original_id
+        - project_id
+        - description
+        - ecapris_subproject_id
+        - fdu
+        - id
+        - program_name
+        - source_name
+        - status_name
+        - created_at
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: moped-viewer
+    permission:
+      columns:
+        - is_editable
+        - amount
+        - original_id
+        - project_id
+        - description
+        - ecapris_subproject_id
+        - fdu
+        - id
+        - program_name
+        - source_name
+        - status_name
+        - created_at
+        - updated_at
+      filter: {}
+    comment: ""
