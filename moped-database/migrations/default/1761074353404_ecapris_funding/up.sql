@@ -101,8 +101,8 @@ SELECT
     ecapris_subproject_funding.app AS amount,
     'Synced from eCAPRIS' AS description,
     ecapris_subproject_funding.subprogram AS source_name,
-    ecapris_subproject_funding.program AS program_name,
     'Confirmed' AS status_name,
+    ecapris_subproject_funding.program AS program_name,
     FALSE AS is_editable,
     ecapris_subproject_funding.ecapris_subproject_id
 FROM

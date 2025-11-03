@@ -31,12 +31,7 @@ def get_socrata_client():
 
 
 def main(args):
-    # Funding records have three types:
-    # 1. Manual entered (syncing will ignore these, completely manual)
-    # 2. Imported (syncing will ignore these and not duplicate, amount can be overridden and not details automatically updated)
-    # 3. Synced (sync all FDUs that aren't already present on the project: legacy or new; amount cannot be overriden)
-
-    # 1. Get list of projects need syncing
+    # Get list of projects need syncing
     results = make_hasura_request(
         query=GRAPHQL_QUERIES["subprojects_to_query_for_funding"]
     )
@@ -46,10 +41,10 @@ def main(args):
         project["ecapris_subproject_id"] for project in results["moped_project"]
     ]
     logger.info(
-        f"Found {len(distinct_project_ecapris_ids)} unique eCapris subproject IDs to sync: {', '.join(distinct_project_ecapris_ids)}"
+        f"Found {len(distinct_project_ecapris_ids)} unique eCapris subproject IDs to sync"
     )
 
-    # 2. Query ODP for all funding records and make list of records to upsert into Moped DB
+    # Query ODP for all funding records and make list of records to upsert into Moped DB
     socrata_client = get_socrata_client()
 
     # Fetch all funding records from ODP
@@ -71,7 +66,7 @@ def main(args):
                 "ecapris_subproject_id": record.get("sp_number"),
                 "fao_id": record.get("fao_id"),
                 "fdu": record.get("fdu"),
-                "funding_amount": int(float(record.get("app", 0))),
+                "app": int(float(record.get("app", 0))),
                 "unit_long_name": record.get("unit_long_name"),
                 "subprogram": record.get("subprogram"),
                 "program": record.get("program"),
@@ -80,12 +75,9 @@ def main(args):
 
     logger.info(f"Built {len(funding_records_to_upsert)} funding records to upsert.")
 
-    # 3. Upsert records into Moped DB
+    # Upsert records into Moped DB
     for chunk in range(0, len(funding_records_to_upsert), CHUNK_SIZE):
         chunk_payload = funding_records_to_upsert[chunk : chunk + CHUNK_SIZE]
-        logger.info(
-            f"Upserting chunk of {len(chunk_payload)} funding records into Moped DB..."
-        )
 
         if args.dry_run:
             logger.info(
