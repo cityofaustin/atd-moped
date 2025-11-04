@@ -1,4 +1,4 @@
--- Add MAP Signals, Map Bikeshare 2025/2026 and Arterial Management - PIP component tags
+-- Add MAP Signals - 2026, Map Bikeshare - 2025, Map Bikeshare - 2026, and Arterial Management - PIP component tags
 INSERT INTO public.moped_component_tags (type, name, slug) VALUES
 ('MAP Signals', '2026', 'map_signals_2026'),
 ('MAP Bikeshare', '2025', 'map_bikeshare_2025'),
