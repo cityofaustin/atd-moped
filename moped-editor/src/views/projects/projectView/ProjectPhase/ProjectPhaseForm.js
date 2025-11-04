@@ -318,25 +318,28 @@ const ProjectPhaseForm = ({
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
           <Tooltip title="Mark this phase as the current phase of the project">
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<CheckCircle />}
-              type="submit"
-              onClick={() => setAsCurrentPhase(true)}
-              // disabled if a current phase
-              disabled={
-                isCurrentPhase ||
-                mutationState.loading ||
-                (isNewPhase && !isDirty)
-              }
-            >
-              {mutationState.loading ? (
-                <CircularProgress color="primary" size={20} />
-              ) : (
-                "Mark as current"
-              )}
-            </Button>
+            <span>
+              {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<CheckCircle />}
+                type="submit"
+                onClick={() => setAsCurrentPhase(true)}
+                // disabled if a current phase
+                disabled={
+                  isCurrentPhase ||
+                  mutationState.loading ||
+                  (isNewPhase && !isDirty)
+                }
+              >
+                {mutationState.loading ? (
+                  <CircularProgress color="primary" size={20} />
+                ) : (
+                  "Mark as current"
+                )}
+              </Button>
+            </span>
           </Tooltip>
         </Grid>
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
