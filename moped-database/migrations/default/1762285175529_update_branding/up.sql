@@ -14,6 +14,12 @@ UPDATE moped_entity
 SET
     entity_name = replace(entity_name, 'TPW', 'ATPW');
 
+-- Update all TPWs to ATPWs in entity names
+UPDATE moped_project_roles
+SET
+    project_role_description = replace(project_role_description, 'TPW', 'ATPW'),
+    project_role_name = replace(project_role_name, 'TPW', 'ATPW');
+
 -- Add MAP Mobility Hubs 2026 component tag
 INSERT INTO public.moped_component_tags (type, name, slug) VALUES
 ('MAP Mobility Hubs', '2026', 'map_mobility_hubs_2026');
