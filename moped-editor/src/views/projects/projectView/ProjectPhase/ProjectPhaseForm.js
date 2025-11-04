@@ -90,13 +90,12 @@ const ProjectPhaseForm = ({
 
     if (isSetAsCurrentPhase) {
       phaseData["is_current_phase"] = true;
-
-      /* Defaults phase_start to today if current phase is true and there is no phase_start */
+      /* Defaults phase_start to today if there is no phase_start */
       if (!phase_start) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
-        setValue("phase_start", today);
+        phaseData["phase_start"] = today;
+        phaseData["is_phase_start_confirmed"] = true;
       }
     }
 
