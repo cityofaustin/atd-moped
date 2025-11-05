@@ -81,7 +81,6 @@
     ],
     "executionRoleArn": "arn:aws:iam::295525487728:role/atd-moped-ecs-execution-role-staging",
     "networkMode": "awsvpc",
-    "outdatedKeyCuzApiChange": "blahblahblah",
     "volumes": [ ],
     "placementConstraints": [ ],
     "requiresCompatibilities": [
