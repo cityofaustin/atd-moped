@@ -1,4 +1,4 @@
-name: "Applies the migrations to the database"
+name: "Applies migrations, metadata, and deploys ECS task definition if needed"
 
 on:
   push:
