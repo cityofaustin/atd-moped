@@ -1,7 +1,7 @@
 # Architecture Independent Docker Stack Components for Moped Development Environment
 services:
     hasura:
-        image: hasura/graphql-engine:v2.48.5
+        image: hasura/graphql-engine:v2.48.6
         depends_on:
             - moped-pgsql
         expose:
@@ -21,8 +21,7 @@ services:
             - HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword
             - ACTIVITY_LOG_API_SECRET=hasurapassword
             - HASURA_GRAPHQL_NO_OF_RETRIES=30
-        command: ["graphql-engine", "serve",  "--enable-console"]
-
+        command: ["graphql-engine", "serve", "--enable-console"]
 
     moped-pgsql:
         image: "atddocker/postgis:unified-db"
@@ -36,11 +35,16 @@ services:
             - POSTGRES_USER=moped
             - POSTGRES_PASSWORD=moped
             - POSTGRES_DB=moped
-        command: ["postgres",
-            "-c", "jit=off",
-            "-c","log_statement=ddl",
-            "-c", "log_min_messages=info"]
-
+        command:
+            [
+                "postgres",
+                "-c",
+                "jit=off",
+                "-c",
+                "log_statement=ddl",
+                "-c",
+                "log_min_messages=info",
+            ]
 
 # There is a volume which is common
 volumes:
