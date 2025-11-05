@@ -76,7 +76,7 @@
                 },
                 {
                 "name": "MIKES_SUPER_SECRET_KEY",
-                "value": "DONT_SHARE_THIS_WITH_ANYONE_PLZZZZZ"
+                "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_STAGING_FARGATE_HASURA_API_KEY"
                 }
             ],
             "systemControls": [ ],
