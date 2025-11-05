@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 
-import { CardContent, CircularProgress, Link, Typography } from "@mui/material";
+import { Button, CircularProgress, Link, Typography } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import {
   DataGridPro,
@@ -25,7 +26,7 @@ import {
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
-import ProjectFilesToolbar from "src/views/projects/projectView/ProjectFilesToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
@@ -457,7 +458,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   if (loading || !data) return <CircularProgress />;
 
   return (
-    <CardContent>
+    <>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         apiRef={apiRef}
@@ -482,11 +483,21 @@ const ProjectFiles = ({ handleSnackbar }) => {
         localeText={{ noRowsLabel: "No files to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
-          toolbar: ProjectFilesToolbar,
+          toolbar: DataGridToolbar,
         }}
         slotProps={{
           toolbar: {
-            onClick: handleClickUploadFile,
+            title: "Files",
+            primaryActionButton: (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleIcon />}
+                onClick={handleClickUploadFile}
+              >
+                Add File
+              </Button>
+            ),
           },
         }}
       />
@@ -504,7 +515,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-    </CardContent>
+    </>
   );
 };
 
