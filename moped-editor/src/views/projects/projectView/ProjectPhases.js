@@ -8,7 +8,9 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
 } from "@mui/icons-material";
-import ProjectPhaseToolbar from "./ProjectPhase/ProjectPhaseToolbar";
+import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
+import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
+import ProjectSubstantialCompletionDate from "src/views/projects/projectView/ProjectPhase/ProjectSubstantialCompletionDate";
 import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
 import ProjectPhaseDateConfirmationPopover from "./ProjectPhase/ProjectPhaseDateConfirmationPopover";
@@ -236,13 +238,26 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
         rows={data?.moped_proj_phases || []}
         onCellDoubleClick={doubleClickListener}
         slots={{
-          toolbar: ProjectPhaseToolbar,
+          toolbar: DataGridToolbar,
         }}
         slotProps={{
           toolbar: {
-            addAction: onClickAddPhase,
-            setIsDialogOpen: setIsTemplateDialogOpen,
-            completionDate: completionDate,
+            title: "Phases",
+            primaryActionButton: (
+              <ButtonDropdownMenu
+                addAction={onClickAddPhase}
+                openActionDialog={setIsTemplateDialogOpen}
+                parentButtonText="Add phase"
+                firstOptionText="New phase"
+                secondOptionText="From template"
+                secondOptionIcon
+              />
+            ),
+            children: (
+              <ProjectSubstantialCompletionDate
+                completionDate={completionDate}
+              />
+            ),
           },
         }}
         onProcessRowUpdateError={(error) =>
