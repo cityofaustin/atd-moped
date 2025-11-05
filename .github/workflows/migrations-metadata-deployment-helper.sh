@@ -169,8 +169,8 @@ function cleanup_old_task_definitions() {
     return 0;
   fi
 
-  # Skip the first 3 (most recent) and deregister the rest
-  local to_deregister=$(echo "$active_revisions" | tail -n +4)
+  # Skip the first 10 (most recent) and deregister the rest
+  local to_deregister=$(echo "$active_revisions" | tail -n +11)
   local deregister_count=$(echo "$to_deregister" | wc -l | tr -d ' ')
 
   echo "Deregistering ${deregister_count} old revision(s), keeping the 3 most recent...";
