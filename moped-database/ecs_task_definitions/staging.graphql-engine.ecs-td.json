@@ -73,10 +73,6 @@
                 {
                     "name": "MOPED_API_APIKEY",
                     "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_STAGING_FARGATE_HASURA_API_KEY"
-                },
-                {
-                "name": "MIKES_SUPER_SECRET_KEY",
-                "valueFrom": "arn:aws:ssm:us-east-1:295525487728:parameter/MOPED_STAGING_FARGATE_HASURA_API_KEY"
                 }
             ],
             "systemControls": [ ],
@@ -85,6 +81,7 @@
     ],
     "executionRoleArn": "arn:aws:iam::295525487728:role/atd-moped-ecs-execution-role-staging",
     "networkMode": "awsvpc",
+    "outdatedKeyCuzApiChange": "blahblahblah",
     "volumes": [ ],
     "placementConstraints": [ ],
     "requiresCompatibilities": [
