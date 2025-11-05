@@ -173,7 +173,7 @@ function cleanup_old_task_definitions() {
   local to_deregister=$(echo "$active_revisions" | tail -n +11)
   local deregister_count=$(echo "$to_deregister" | wc -l | tr -d ' ')
 
-  echo "Deregistering ${deregister_count} old revision(s), keeping the 3 most recent...";
+  echo "Deregistering ${deregister_count} old revision(s), keeping the 10 most recent...";
 
   while IFS= read -r task_def_arn; do
     if [ -n "$task_def_arn" ]; then
