@@ -44,11 +44,14 @@ const LookupAutocompleteComponent = ({
     if (hasFocus) {
       ref.current.focus();
     }
+  }, [hasFocus]);
+
+  React.useEffect(() => {
     // only refetch when when component has been passed a refetch function
     if (open && typeof refetch === "function") {
       refetch();
     }
-  }, [hasFocus, open, refetch]);
+  }, [open, refetch]);
 
   const handleChange = (event, newValue) => {
     apiRef.current.setEditCellValue({
