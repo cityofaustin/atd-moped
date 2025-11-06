@@ -85,7 +85,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
     label: "Contract numbers",
   },
   project_tags: {
-    label: "Tags",
+    label: "Project tags",
   },
   added_by: {
     label: "Created by",

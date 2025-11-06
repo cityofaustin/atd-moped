@@ -9,7 +9,7 @@ export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
   "Arterial Management",
   "Markings",
   "Signs",
-  "Sidewalks & Special Projects",
+  "Sidewalks and Urban Trails",
   "General contractor",
   "Other",
 ];

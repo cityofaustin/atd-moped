@@ -17,6 +17,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Object} textFieldProps - props passed to the renderInput TextField
  * @param {string} dependentFieldName - optional, if another field should be updated on change, name of field
  * @param {function} setDependentFieldValue - optional, takes newValue as input and returns the dependent fields change
+ * @param {function} refetch - optional, function to refetch lookup table data when dropdown is opened
  *
  * @returns {React component}
  */
@@ -32,15 +33,25 @@ const LookupAutocompleteComponent = ({
   textFieldProps,
   dependentFieldName,
   setDependentFieldValue,
+  refetch,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
+
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (hasFocus) {
       ref.current.focus();
     }
   }, [hasFocus]);
+
+  React.useEffect(() => {
+    // only refetch when when component has been passed a refetch function
+    if (open && typeof refetch === "function") {
+      refetch();
+    }
+  }, [open, refetch]);
 
   const handleChange = (event, newValue) => {
     apiRef.current.setEditCellValue({
@@ -96,6 +107,12 @@ const LookupAutocompleteComponent = ({
           : defaultIsOptionEqualToValue
       }
       onChange={handleChange}
+      onOpen={() => {
+        setOpen(true);
+      }}
+      onClose={() => {
+        setOpen(false);
+      }}
     />
   );
 };
