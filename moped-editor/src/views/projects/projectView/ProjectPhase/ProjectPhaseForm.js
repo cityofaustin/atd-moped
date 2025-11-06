@@ -336,7 +336,7 @@ const ProjectPhaseForm = ({
                 {mutationState.loading ? (
                   <CircularProgress color="primary" size={20} />
                 ) : (
-                  "Mark as current"
+                  "Save and mark as current"
                 )}
               </Button>
             </span>
