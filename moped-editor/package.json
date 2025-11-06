@@ -23,8 +23,7 @@
     "build:netlifypr": "env-cmd -e netlifypr npm run build:local",
     "build:netlifybranch": "./set_env_branch_build.py",
     "test": "react-scripts test --verbose",
-    "eject": "react-scripts eject",
-    "postinstall": "patch-package"
+    "eject": "react-scripts eject"
   },
   "browserslist": {
     "production": [
@@ -54,7 +53,6 @@
     "@mui/icons-material": "^5.15.4",
     "@mui/lab": "^5.0.0-alpha.127",
     "@mui/material": "^5.15.5",
-    "@mui/styles": "^5.15.5",
     "@mui/x-data-grid-pro": "^7.0.0",
     "@mui/x-date-pickers": "^6.19.0",
     "@mui/x-license": "^7.2.0",
@@ -83,10 +81,8 @@
     "lodash.toarray": "^4.4.0",
     "mapbox-gl": "^3.0.1",
     "papaparse": "^5.4.1",
-    "patch-package": "^8.0.1",
-    "prop-types": "^15.8.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-error-boundary": "^4.0.12",
     "react-feather": "^2.0.10",
     "react-filepond": "^7.1.2",
