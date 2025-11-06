@@ -161,7 +161,9 @@ export const onSubmitPhase = ({
 
   if (isSetAsCurrentPhase && project_phase_id !== currentProjectPhaseId) {
     // if the current project phase id does not match the id of this new current phase, clear the old one
-    currentPhaseIdToClear = [currentProjectPhaseId];
+    currentPhaseIdToClear = currentProjectPhaseId
+      ? [currentProjectPhaseId]
+      : [];
   }
 
   const noteObjects = noteData
