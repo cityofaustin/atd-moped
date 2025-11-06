@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const SUBPROJECT_QUERY = gql`
+export const SUBPROJECT_SUMMARY_QUERY = gql`
   query SubprojectSummary($projectId: Int) {
     subprojects: moped_project(
       where: {
@@ -18,7 +18,11 @@ export const SUBPROJECT_QUERY = gql`
         }
       }
     }
-    # todo: we might shouldnt be fetching all projects every time this tab loads...
+  }
+`;
+
+export const SUBPROJECT_OPTIONS_QUERY = gql`
+  query SubprojectOptions($projectId: Int) {
     subprojectOptions: moped_project(
       where: {
         _and: [
