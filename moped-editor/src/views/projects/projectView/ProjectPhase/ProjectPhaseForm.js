@@ -238,8 +238,7 @@ const ProjectPhaseForm = ({
             />
             {!isCurrentPhase && (
               <FormHelperText>
-                A confirmed start date is added automatically when phase is
-                marked as current
+                Defaults to today (confirmed) if blank when marked as current
               </FormHelperText>
             )}
             {formErrors?.phase_start && (
