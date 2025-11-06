@@ -446,7 +446,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
   },
   project_tags: {
     name: "project_tags",
-    label: "Tags",
+    label: "Project tags",
     placeholder: "Tags",
     type: "string",
     lookup: {
