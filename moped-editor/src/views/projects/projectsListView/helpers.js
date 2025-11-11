@@ -348,7 +348,7 @@ export const useColumns = ({ hiddenColumns }) => {
         width: COLUMN_WIDTHS.medium,
       },
       {
-        headerName: "Tags",
+        headerName: "Project tags",
         field: "project_tags",
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "project_tags"),

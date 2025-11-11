@@ -115,78 +115,56 @@ export const useSubphaseNameLookup = (subphases) =>
   );
 
 /**
- * Hook which returns an array of project_phase_ids of the project's current phase(s).
- * Although only one phase should ever be current, we handle the possibilty that there
- * are multiple
+ * Hook which returns the project_phase_id of the project's current phase.
  * @param {Array} projectPhases - array of this project's moped_proj_phases
- * @return {Array} of project_phase_id's of current project phases
+ * @return {number | undefined}  project_phase_id of current project phase, undefined if no phases passed to hook
  */
-export const useCurrentProjectPhaseIDs = (projectPhases) =>
+export const useCurrentProjectPhaseID = (projectPhases) =>
   useMemo(
     () =>
       projectPhases
-        ? projectPhases
-            .filter(({ is_current_phase }) => is_current_phase)
-            .map(({ project_phase_id }) => project_phase_id)
-        : [],
+        ? projectPhases.find((phase) => phase.is_current_phase)
+            ?.project_phase_id
+        : undefined,
     [projectPhases]
   );
 
 /**
- * Hook which returns an array of project_phase_ids of the project's current phase(s).
- * Although only one phase should ever be current, we handle the possibilty that there
- * are multiple
- * @param {Array} projectPhases - array of this project's moped_proj_phases
- * @return {Array} of project_phase_id's of current project phases
+ * Hook which returns the phase_id of the project's current phase.
+ * @param {Array} projectPhases - array of this project's phase_ids (ex: 1 (Potential), 7 (Pre Construction))
+ * @return {number | undefined} phase_id of project's current phase, undefined if no phases passed to hook
  */
-export const useCurrentPhaseIds = (projectPhases) =>
+export const useCurrentPhaseId = (projectPhases) =>
   useMemo(
     () =>
       projectPhases
-        ? projectPhases
-            .filter(({ is_current_phase }) => is_current_phase)
-            .map(({ phase_id }) => phase_id)
-        : [],
+        ? projectPhases.find((phase) => phase.is_current_phase)?.phase_id
+        : undefined,
     [projectPhases]
   );
-
-/**
- * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
- * need to have their `is_current` flag cleared.
- * @param {int} thisProjectPhaseId - the `project_phase_id` that is being edited
- * @param {bool} isCurrent - if the phase that is being edited is set as the current phase
- * @param {array} currentProjectPhaseIds - an array of all project_phase_ids that are marked as current.
- * (this is the output of the useCurrentProjectPhaseIDs hook)
- * @return {Array} of project_phase_id's which need to set to `is_current` = false
- */
-export const useCurrentPhaseIdsToClear = (
-  thisProjectPhaseId,
-  isCurrent,
-  currentProjectPhaseIds
-) => {
-  if (!isCurrent) {
-    // nothing to do
-    return [];
-  }
-  // return all project phase IDs except the one we're editing
-  return currentProjectPhaseIds.filter(
-    (projectPhaseId) => projectPhaseId !== thisProjectPhaseId
-  );
-};
 
 export const onSubmitPhase = ({
   phaseData,
   noteData,
   mutate,
   isNewPhase,
-  currentPhaseIdsToClear,
-  currentPhaseIds,
+  currentProjectPhaseId,
+  isSetAsCurrentPhase,
+  currentPhaseTypeId,
   onSubmitCallback,
-  handleSnackbar
+  handleSnackbar,
 }) => {
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
   const { is_current_phase } = formData;
+  let currentPhaseIdToClear = [];
+
+  if (isSetAsCurrentPhase && project_phase_id !== currentProjectPhaseId) {
+    // if the current project phase id does not match the id of this new current phase, clear the old one
+    currentPhaseIdToClear = currentProjectPhaseId
+      ? [currentProjectPhaseId]
+      : [];
+  }
 
   const noteObjects = noteData
     ? [
@@ -194,13 +172,14 @@ export const onSubmitPhase = ({
           project_note: DOMPurify.sanitize(noteData.status_update),
           project_id,
           project_note_type: noteData.statusNoteTypeID,
-          phase_id: is_current_phase ? phase_id : currentPhaseIds[0],
+          // if phase is not marked as current, use the projects current phase type ID when saving the note
+          phase_id: is_current_phase ? phase_id : currentPhaseTypeId,
         },
       ]
     : [];
 
   const variables = {
-    current_phase_ids_to_clear: currentPhaseIdsToClear,
+    current_phase_id_to_clear: currentPhaseIdToClear,
     noteObjects,
   };
 

@@ -5,17 +5,27 @@ import DialogContent from "@mui/material/DialogContent";
 import CloseIcon from "@mui/icons-material/Close";
 import ProjectPhaseForm from "./ProjectPhaseForm";
 
+const dialogTitle = (phase) => {
+  if (phase.project_phase_id) {
+    if (phase.is_current_phase) {
+      return "Edit current phase";
+    }
+    return "Edit phase";
+  }
+  return "Add phase";
+};
+
 const ProjectPhaseDialog = ({
   onClose,
   phase,
   phases,
   noteTypes,
-  currentProjectPhaseIds,
-  currentPhaseIds,
+  currentProjectPhaseId,
+  currentPhaseTypeId,
   onSubmitCallback,
   handleSnackbar,
 }) => {
-  const titleText = phase.project_phase_id ? "Edit phase" : "Add phase";
+  const titleText = dialogTitle(phase);
   return (
     <Dialog open onClose={onClose} fullWidth scroll="body">
       <DialogTitle
@@ -37,8 +47,8 @@ const ProjectPhaseDialog = ({
           onSubmitCallback={onSubmitCallback}
           phases={phases}
           noteTypes={noteTypes}
-          currentProjectPhaseIds={currentProjectPhaseIds}
-          currentPhaseIds={currentPhaseIds}
+          currentProjectPhaseId={currentProjectPhaseId}
+          currentPhaseTypeId={currentPhaseTypeId}
           handleSnackbar={handleSnackbar}
         />
       </DialogContent>
