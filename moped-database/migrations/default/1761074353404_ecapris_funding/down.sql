@@ -9,6 +9,13 @@ DROP COLUMN is_legacy_funding_record,
 DROP COLUMN fdu,
 DROP COLUMN unit_long_name;
 
+-- Drop added indexes
+DROP INDEX IF EXISTS idx_moped_proj_funding_fdu_not_deleted;
+DROP INDEX IF EXISTS idx_moped_proj_funding_project_id;
+DROP INDEX IF EXISTS idx_moped_proj_funding_status_id;
+DROP INDEX IF EXISTS idx_moped_proj_funding_source_id;
+DROP INDEX IF EXISTS idx_moped_proj_funding_program_id;
+
 -- Drop ecapris_subproject_funding table
 DROP TABLE IF EXISTS public.ecapris_subproject_funding;
 
