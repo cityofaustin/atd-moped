@@ -12,31 +12,31 @@ CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     moped_fund_sources.funding_source_name AS source_name,
     moped_fund_status.funding_status_name AS status_name,
     moped_fund_programs.funding_program_name AS program_name,
-    true AS is_editable,
-    null::text AS ecapris_subproject_id
+    NULL::integer AS fao_id,
+    NULL::text AS ecapris_subproject_id
 FROM moped_proj_funding
 LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
 LEFT JOIN moped_fund_sources ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
 LEFT JOIN moped_fund_programs ON moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
-WHERE moped_proj_funding.is_deleted = false
+WHERE moped_proj_funding.is_deleted = FALSE
 UNION ALL
 SELECT
     'ecapris_'::text || ecapris_subproject_funding.id AS id,
     ecapris_subproject_funding.id AS original_id,
     ecapris_subproject_funding.created_at,
     ecapris_subproject_funding.updated_at,
-    null::integer AS project_id,
+    NULL::integer AS project_id,
     ecapris_subproject_funding.fdu,
     ecapris_subproject_funding.app AS amount,
     'Synced from eCAPRIS'::text AS description,
-    ecapris_subproject_funding.subprogram AS source_name,
-    'Confirmed'::text AS status_name,
-    ecapris_subproject_funding.program AS program_name,
-    false AS is_editable,
+    NULL::text AS source_name,
+    'Set up'::text AS status_name,
+    NULL::text AS program_name,
+    ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id
 FROM ecapris_subproject_funding
 WHERE NOT (EXISTS (
         SELECT 1
         FROM moped_proj_funding
-        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.is_deleted = false
+        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.is_deleted = FALSE
     ));
