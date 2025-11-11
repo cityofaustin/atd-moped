@@ -13,6 +13,26 @@ ADD COLUMN is_legacy_funding_record BOOLEAN DEFAULT FALSE NOT NULL,
 ADD COLUMN fdu TEXT DEFAULT NULL,
 ADD COLUMN unit_long_name TEXT DEFAULT NULL;
 
+-- Index fdu since we'll be querying by it to avoid duplicates in the combined view (using NOT EXISTS)
+CREATE INDEX idx_moped_proj_funding_fdu_not_deleted
+ON moped_proj_funding (fdu)
+WHERE is_deleted = FALSE AND fdu IS NOT NULL;
+
+-- Index project_id since we are going to be joining this in the project_list_View
+CREATE INDEX idx_moped_proj_funding_project_id
+ON moped_proj_funding (project_id)
+WHERE is_deleted = FALSE;
+
+-- Index foreign keys of source, program, and status since we join in the combined view
+CREATE INDEX idx_moped_proj_funding_status_id
+ON moped_proj_funding (funding_status_id);
+
+CREATE INDEX idx_moped_proj_funding_source_id
+ON moped_proj_funding (funding_source_id);
+
+CREATE INDEX idx_moped_proj_funding_program_id
+ON moped_proj_funding (funding_program_id);
+
 COMMENT ON COLUMN moped_proj_funding.ecapris_funding_id IS 'References the eCAPRIS FDU unique fao_id of imported eCAPRIS funding records';
 COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if the funding record was created before eCAPRIS sync integration (Nov 2025)';
 
@@ -46,6 +66,14 @@ CREATE TABLE public.ecapris_subproject_funding (
     created_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     updated_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+-- Index fdu since we'll be querying by it to avoid duplicates in the combined view (using NOT EXISTS)
+CREATE INDEX idx_ecapris_subproject_funding_fdu
+ON ecapris_subproject_funding (fdu);
+
+-- Index ecapris_subproject_id for our future GraphQL query for the project funding table
+CREATE INDEX idx_ecapris_subproject_funding_subproject_id
+ON ecapris_subproject_funding (ecapris_subproject_id);
 
 COMMENT ON TABLE public.ecapris_subproject_funding IS 'Stores eCAPRIS subproject fund records synced from the FSD Data Warehouse to supplement the moped_proj_funding table records.';
 COMMENT ON COLUMN public.ecapris_subproject_funding.id IS 'Primary key for the table';
@@ -107,9 +135,44 @@ WHERE NOT EXISTS (
     );
 
 -- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
-ALTER TABLE moped_proj_funding DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
-ALTER TABLE moped_proj_funding DISABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
-ALTER TABLE moped_project DISABLE TRIGGER "set_moped_project_updated_at";
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 
+    FROM pg_trigger 
+    WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
+      AND tgrelid = 'moped_proj_funding'::regclass
+  ) THEN
+    ALTER TABLE moped_proj_funding 
+    DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+  ELSE
+    RAISE NOTICE 'Trigger does not exist, skipping';
+  END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'update_moped_proj_funding_and_project_audit_fields'
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
+        ALTER TABLE moped_proj_funding 
+        DISABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'set_moped_project_updated_at'
+        AND tgrelid = 'moped_project'::regclass
+    ) THEN
+        ALTER TABLE moped_project 
+        DISABLE TRIGGER "set_moped_project_updated_at";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+END $$;
 
 -- Switch on sync for projects with ecapris_subproject_id set
 UPDATE moped_project SET should_sync_ecapris_funding = TRUE
@@ -129,9 +192,44 @@ UPDATE moped_proj_funding
 SET is_legacy_funding_record = TRUE;
 
 -- Re-enable Hasura triggers
-ALTER TABLE moped_proj_funding ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
-ALTER TABLE moped_proj_funding ENABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
-ALTER TABLE moped_project ENABLE TRIGGER "set_moped_project_updated_at";
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 
+    FROM pg_trigger 
+    WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
+      AND tgrelid = 'moped_proj_funding'::regclass
+  ) THEN
+    ALTER TABLE moped_proj_funding 
+    ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+  ELSE
+    RAISE NOTICE 'Trigger does not exist, skipping';
+  END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'update_moped_proj_funding_and_project_audit_fields'
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
+        ALTER TABLE moped_proj_funding 
+        ENABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'set_moped_project_updated_at'
+        AND tgrelid = 'moped_project'::regclass
+    ) THEN
+        ALTER TABLE moped_project 
+        ENABLE TRIGGER "set_moped_project_updated_at";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+END $$;
 
 -- Drop and recreate view to use new fdu column instead of fund_dept_unit
 DROP VIEW IF EXISTS project_funding_view;
