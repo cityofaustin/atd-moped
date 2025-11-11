@@ -16,10 +16,6 @@ ADD COLUMN unit_long_name TEXT DEFAULT NULL;
 COMMENT ON COLUMN moped_proj_funding.ecapris_funding_id IS 'References the eCAPRIS FDU unique fao_id of imported eCAPRIS funding records';
 COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if the funding record was created before eCAPRIS sync integration (Nov 2025)';
 
--- Mark all existing funding records as legacy before eCAPRIS sync integration launches
-UPDATE moped_proj_funding
-SET is_legacy_funding_record = TRUE;
-
 -- Switch on sync for projects with ecapris_subproject_id set
 UPDATE moped_project SET should_sync_ecapris_funding = TRUE
 WHERE ecapris_subproject_id IS NOT NULL;
@@ -114,14 +110,25 @@ WHERE NOT EXISTS (
             AND moped_proj_funding.is_deleted = FALSE
     );
 
+-- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
+ALTER TABLE moped_proj_funding DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+
 -- Populate new fdu column based on existing fund_dept_unit data if available and 
 -- populate unit_long_name from dept_unit JSONB
 -- Note: fund_dept_unit is a generated column that is null if fund or dept_unit is null
+
 UPDATE moped_proj_funding
 SET
     fdu = fund_dept_unit,
     unit_long_name = (dept_unit ->> 'unit_long_name')
 WHERE fund_dept_unit IS NOT NULL;
+
+-- Mark all existing funding records as legacy before eCAPRIS sync integration launches
+UPDATE moped_proj_funding
+SET is_legacy_funding_record = TRUE;
+
+-- Re-enable Hasura triggers
+ALTER TABLE moped_proj_funding ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
 
 -- Drop and recreate view to use new fdu column instead of fund_dept_unit
 DROP VIEW IF EXISTS project_funding_view;
