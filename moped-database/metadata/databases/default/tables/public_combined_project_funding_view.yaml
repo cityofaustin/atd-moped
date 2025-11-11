@@ -5,54 +5,54 @@ select_permissions:
   - role: moped-admin
     permission:
       columns:
-        - is_editable
         - amount
-        - original_id
-        - project_id
+        - created_at
         - description
         - ecapris_subproject_id
+        - fao_id
         - fdu
         - id
+        - original_id
         - program_name
+        - project_id
         - source_name
         - status_name
-        - created_at
         - updated_at
       filter: {}
     comment: ""
   - role: moped-editor
     permission:
       columns:
-        - is_editable
         - amount
-        - original_id
-        - project_id
+        - created_at
         - description
         - ecapris_subproject_id
+        - fao_id
         - fdu
         - id
+        - original_id
         - program_name
+        - project_id
         - source_name
         - status_name
-        - created_at
         - updated_at
       filter: {}
     comment: ""
   - role: moped-viewer
     permission:
       columns:
-        - is_editable
         - amount
-        - original_id
-        - project_id
+        - created_at
         - description
         - ecapris_subproject_id
+        - fao_id
         - fdu
         - id
+        - original_id
         - program_name
+        - project_id
         - source_name
         - status_name
-        - created_at
         - updated_at
       filter: {}
     comment: ""

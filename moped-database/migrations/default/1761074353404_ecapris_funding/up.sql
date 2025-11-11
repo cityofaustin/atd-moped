@@ -82,7 +82,7 @@ SELECT
     moped_fund_sources.funding_source_name AS source_name,
     moped_fund_status.funding_status_name AS status_name,
     moped_fund_programs.funding_program_name AS program_name,
-    TRUE AS is_editable,
+    NULL AS fao_id,
     NULL AS ecapris_subproject_id
 FROM
     moped_proj_funding
@@ -100,10 +100,10 @@ SELECT
     ecapris_subproject_funding.fdu AS fdu,
     ecapris_subproject_funding.app AS amount,
     'Synced from eCAPRIS' AS description,
-    ecapris_subproject_funding.subprogram AS source_name,
-    'Confirmed' AS status_name,
-    ecapris_subproject_funding.program AS program_name,
-    FALSE AS is_editable,
+    NULL AS source_name,
+    'Set up' AS status_name,
+    NULL AS program_name,
+    ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id
 FROM
     ecapris_subproject_funding
