@@ -143,8 +143,8 @@ BEGIN
     WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
       AND tgrelid = 'moped_proj_funding'::regclass
   ) THEN
-    ALTER TABLE moped_proj_funding 
-    DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+        ALTER TABLE moped_proj_funding 
+        DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
   ELSE
     RAISE NOTICE 'Trigger does not exist, skipping';
   END IF;
@@ -200,8 +200,8 @@ BEGIN
     WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
       AND tgrelid = 'moped_proj_funding'::regclass
   ) THEN
-    ALTER TABLE moped_proj_funding 
-    ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+        ALTER TABLE moped_proj_funding 
+        ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
   ELSE
     RAISE NOTICE 'Trigger does not exist, skipping';
   END IF;

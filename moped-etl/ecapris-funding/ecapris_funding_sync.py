@@ -31,19 +31,6 @@ def get_socrata_client():
 
 
 def main(args):
-    # Get list of projects need syncing
-    results = make_hasura_request(
-        query=GRAPHQL_QUERIES["subprojects_to_query_for_funding"]
-    )
-
-    # eCapris subproject IDs are de-duplicated in the GraphQL query
-    distinct_project_ecapris_ids = [
-        project["ecapris_subproject_id"] for project in results["moped_project"]
-    ]
-    logger.info(
-        f"Found {len(distinct_project_ecapris_ids)} unique eCapris subproject IDs to sync"
-    )
-
     # Query ODP for all funding records and make list of records to upsert into Moped DB
     socrata_client = get_socrata_client()
 
@@ -70,6 +57,8 @@ def main(args):
                 "unit_long_name": record.get("unit_long_name"),
                 "subprogram": record.get("subprogram"),
                 "program": record.get("program"),
+                "created_by_user_id": 1,
+                "updated_by_user_id": 1,
             }
         )
 
