@@ -16,10 +16,6 @@ ADD COLUMN unit_long_name TEXT DEFAULT NULL;
 COMMENT ON COLUMN moped_proj_funding.ecapris_funding_id IS 'References the eCAPRIS FDU unique fao_id of imported eCAPRIS funding records';
 COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if the funding record was created before eCAPRIS sync integration (Nov 2025)';
 
--- Switch on sync for projects with ecapris_subproject_id set
-UPDATE moped_project SET should_sync_ecapris_funding = TRUE
-WHERE ecapris_subproject_id IS NOT NULL;
-
 -- Add comments on other existing moped_proj_funding columns
 COMMENT ON COLUMN moped_proj_funding.proj_funding_id IS 'Primary key for the project funding record';
 COMMENT ON COLUMN moped_proj_funding.created_by_user_id IS 'ID of the user who last created the record';
@@ -112,11 +108,16 @@ WHERE NOT EXISTS (
 
 -- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
 ALTER TABLE moped_proj_funding DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+ALTER TABLE moped_proj_funding DISABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
+ALTER TABLE moped_project DISABLE TRIGGER "set_moped_project_updated_at";
+
+-- Switch on sync for projects with ecapris_subproject_id set
+UPDATE moped_project SET should_sync_ecapris_funding = TRUE
+WHERE ecapris_subproject_id IS NOT NULL;
 
 -- Populate new fdu column based on existing fund_dept_unit data if available and 
 -- populate unit_long_name from dept_unit JSONB
 -- Note: fund_dept_unit is a generated column that is null if fund or dept_unit is null
-
 UPDATE moped_proj_funding
 SET
     fdu = fund_dept_unit,
@@ -129,6 +130,8 @@ SET is_legacy_funding_record = TRUE;
 
 -- Re-enable Hasura triggers
 ALTER TABLE moped_proj_funding ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+ALTER TABLE moped_proj_funding ENABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
+ALTER TABLE moped_project ENABLE TRIGGER "set_moped_project_updated_at";
 
 -- Drop and recreate view to use new fdu column instead of fund_dept_unit
 DROP VIEW IF EXISTS project_funding_view;
