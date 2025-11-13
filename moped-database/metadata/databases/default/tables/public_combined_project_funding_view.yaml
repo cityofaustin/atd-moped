@@ -12,6 +12,7 @@ select_permissions:
         - fao_id
         - fdu
         - id
+        - is_synced_from_ecapris
         - original_id
         - program_name
         - project_id
@@ -30,6 +31,7 @@ select_permissions:
         - fao_id
         - fdu
         - id
+        - is_synced_from_ecapris
         - original_id
         - program_name
         - project_id
@@ -48,6 +50,7 @@ select_permissions:
         - fao_id
         - fdu
         - id
+        - is_synced_from_ecapris
         - original_id
         - program_name
         - project_id
