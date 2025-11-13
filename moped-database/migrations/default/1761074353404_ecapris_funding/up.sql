@@ -103,7 +103,8 @@ SELECT
     moped_fund_status.funding_status_name AS status_name,
     moped_fund_programs.funding_program_name AS program_name,
     NULL AS fao_id,
-    NULL AS ecapris_subproject_id
+    NULL AS ecapris_subproject_id,
+    FALSE AS is_synced_from_ecapris
 FROM
     moped_proj_funding
 LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
@@ -124,7 +125,8 @@ SELECT
     'Set up' AS status_name,
     NULL AS program_name,
     ecapris_subproject_funding.fao_id,
-    ecapris_subproject_funding.ecapris_subproject_id
+    ecapris_subproject_funding.ecapris_subproject_id,
+    TRUE AS is_synced_from_ecapris
 FROM
     ecapris_subproject_funding
 WHERE NOT EXISTS (
