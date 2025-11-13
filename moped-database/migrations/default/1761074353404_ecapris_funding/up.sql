@@ -18,7 +18,7 @@ CREATE INDEX idx_moped_proj_funding_fdu_not_deleted
 ON moped_proj_funding (fdu)
 WHERE is_deleted = FALSE AND fdu IS NOT NULL;
 
--- Index project_id since we are going to be joining this in the project_list_View
+-- Index project_id since we are going to be joining this in the project_list_view
 CREATE INDEX idx_moped_proj_funding_project_id
 ON moped_proj_funding (project_id)
 WHERE is_deleted = FALSE;
@@ -34,7 +34,7 @@ CREATE INDEX idx_moped_proj_funding_program_id
 ON moped_proj_funding (funding_program_id);
 
 COMMENT ON COLUMN moped_proj_funding.ecapris_funding_id IS 'References the eCAPRIS FDU unique fao_id of imported eCAPRIS funding records';
-COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if the funding record was created before eCAPRIS sync integration (Nov 2025)';
+COMMENT ON COLUMN moped_proj_funding.is_legacy_funding_record IS 'Indicates if the funding record was created before eCAPRIS sync integration (Dec 2025)';
 
 -- Add comments on other existing moped_proj_funding columns
 COMMENT ON COLUMN moped_proj_funding.proj_funding_id IS 'Primary key for the project funding record';
@@ -137,17 +137,17 @@ WHERE NOT EXISTS (
 -- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
 DO $$
 BEGIN
-  IF EXISTS (
+    IF EXISTS (
     SELECT 1 
     FROM pg_trigger 
     WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
-      AND tgrelid = 'moped_proj_funding'::regclass
-  ) THEN
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
         ALTER TABLE moped_proj_funding 
         DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
-  ELSE
+    ELSE
     RAISE NOTICE 'Trigger does not exist, skipping';
-  END IF;
+    END IF;
 
     IF EXISTS (
         SELECT 1 
@@ -194,17 +194,17 @@ SET is_legacy_funding_record = TRUE;
 -- Re-enable Hasura triggers
 DO $$
 BEGIN
-  IF EXISTS (
+    IF EXISTS (
     SELECT 1 
     FROM pg_trigger 
     WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
-      AND tgrelid = 'moped_proj_funding'::regclass
-  ) THEN
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
         ALTER TABLE moped_proj_funding 
         ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
-  ELSE
+    ELSE
     RAISE NOTICE 'Trigger does not exist, skipping';
-  END IF;
+    END IF;
 
     IF EXISTS (
         SELECT 1 
