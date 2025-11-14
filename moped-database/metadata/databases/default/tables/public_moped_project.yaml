@@ -309,6 +309,7 @@ event_triggers:
           - project_lead_id
           - public_process_status_id
           - should_sync_ecapris_statuses
+          - should_sync_ecapris_funding
           - project_name
           - project_description
           - ecapris_subproject_id
