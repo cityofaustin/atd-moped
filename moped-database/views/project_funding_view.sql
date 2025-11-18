@@ -1,16 +1,19 @@
--- Most recent migration: moped-database/migrations/default/1761074353404_ecapris_funding/up.sql
+-- Most recent migration: moped-database/migrations/default/1736291471358_add_proj_fund_view/up.sql
 
 CREATE OR REPLACE VIEW project_funding_view AS SELECT
-    moped_project.project_id,
-    combined_project_funding_view.id AS proj_funding_id,
-    combined_project_funding_view.amount AS funding_amount,
-    combined_project_funding_view.description AS funding_description,
-    combined_project_funding_view.fdu AS fund_dept_unit,
-    combined_project_funding_view.created_at,
-    combined_project_funding_view.updated_at,
-    combined_project_funding_view.source_name AS funding_source_name,
-    combined_project_funding_view.program_name AS funding_program_name,
-    combined_project_funding_view.status_name AS funding_status_name
-FROM moped_project
-LEFT JOIN combined_project_funding_view ON moped_project.project_id = combined_project_funding_view.project_id OR moped_project.ecapris_subproject_id = combined_project_funding_view.ecapris_subproject_id AND moped_project.ecapris_subproject_id IS NOT NULL
-WHERE TRUE AND moped_project.is_deleted = FALSE;
+    mp.project_id,
+    mpf.proj_funding_id,
+    mpf.funding_amount,
+    mpf.funding_description,
+    mpf.fund_dept_unit,
+    mpf.created_at,
+    mpf.updated_at,
+    mfs.funding_source_name,
+    mfp.funding_program_name,
+    mfst.funding_status_name
+FROM moped_project mp
+LEFT JOIN moped_proj_funding mpf ON mp.project_id = mpf.project_id
+LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
+LEFT JOIN moped_fund_programs mfp ON mpf.funding_program_id = mfp.funding_program_id
+LEFT JOIN moped_fund_status mfst ON mpf.funding_status_id = mfst.funding_status_id
+WHERE true AND mp.is_deleted = false AND mpf.is_deleted = false;
