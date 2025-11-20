@@ -26,6 +26,7 @@ import ProjectSummaryComponentWorkTypes from "src/views/projects/projectView/Pro
 
 import SubprojectsTable from "src/views/projects/projectView/ProjectSummary/SubprojectsTable";
 import TagsSection from "src/views/projects/projectView/ProjectSummary/TagsSection";
+import ParentProjectHeader from "src/views/projects/projectView/ProjectSummary/ParentProjectHeader";
 
 import {
   PROJECT_UPDATE_SPONSOR,
@@ -230,32 +231,16 @@ const ProjectSummary = ({
                     handleSnackbar={handleSnackbar}
                     isSubproject={!!data.moped_project[0]?.parent_project_id}
                     toolbarChildren={
-                      <Box sx={{ px: 2, pb: 2 }}>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: "text.secondary", mb: 0.5 }}
-                        >
-                          Parent project
-                        </Typography>
-                        {data.moped_project[0]?.parent_project_id ? (
-                          <RouterLink
-                            to={`/moped/projects/${data.moped_project[0]?.parent_project_id}`}
-                          >
-                            <Typography variant="body1" color="primary">
-                              {
-                                data.moped_project[0]?.moped_project
-                                  ?.project_name_full
-                              }
-                            </Typography>
-                          </RouterLink>
-                        ) : data?.childProjects?.length > 0 ? (
-                          <Typography variant="body1">
-                            This is a parent project
-                          </Typography>
-                        ) : (
-                          <Typography variant="body1">None</Typography>
-                        )}
-                      </Box>
+                      <ParentProjectHeader
+                        parentProjectId={
+                          data.moped_project[0]?.parent_project_id
+                        }
+                        parentProjectName={
+                          data.moped_project[0]?.moped_project
+                            ?.project_name_full
+                        }
+                        hasChildren={data?.childProjects?.length > 0}
+                      />
                     }
                   />
                 </CardContent>
