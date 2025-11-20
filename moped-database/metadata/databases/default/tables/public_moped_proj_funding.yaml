@@ -16,15 +16,18 @@ insert_permissions:
         created_by_user_id: x-hasura-user-db-id
         updated_by_user_id: x-hasura-user-db-id
       columns:
-        - project_id
-        - funding_source_id
-        - funding_program_id
+        - dept_unit
+        - ecapris_funding_id
+        - fdu
+        - fund
         - funding_amount
         - funding_description
+        - funding_program_id
+        - funding_source_id
         - funding_status_id
-        - fund
-        - dept_unit
         - is_deleted
+        - project_id
+        - unit_long_name
     comment: No insert permissions on audit fields
   - role: moped-editor
     permission:
@@ -33,15 +36,18 @@ insert_permissions:
         created_by_user_id: x-hasura-user-db-id
         updated_by_user_id: x-hasura-user-db-id
       columns:
+        - dept_unit
+        - ecapris_funding_id
+        - fdu
+        - fund
         - funding_amount
+        - funding_description
         - funding_program_id
         - funding_source_id
         - funding_status_id
-        - project_id
-        - dept_unit
-        - fund
-        - funding_description
         - is_deleted
+        - project_id
+        - unit_long_name
     comment: No insert permissions on audit fields
 select_permissions:
   - role: moped-admin
@@ -50,6 +56,8 @@ select_permissions:
         - created_at
         - created_by_user_id
         - dept_unit
+        - ecapris_funding_id
+        - fdu
         - fund
         - fund_dept_unit
         - fund_name
@@ -59,8 +67,10 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - is_deleted
+        - is_legacy_funding_record
         - proj_funding_id
         - project_id
+        - unit_long_name
         - updated_at
         - updated_by_user_id
       filter: {}
@@ -71,6 +81,8 @@ select_permissions:
         - created_at
         - created_by_user_id
         - dept_unit
+        - ecapris_funding_id
+        - fdu
         - fund
         - fund_dept_unit
         - fund_name
@@ -80,8 +92,10 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - is_deleted
+        - is_legacy_funding_record
         - proj_funding_id
         - project_id
+        - unit_long_name
         - updated_at
         - updated_by_user_id
       filter: {}
@@ -92,6 +106,8 @@ select_permissions:
         - created_at
         - created_by_user_id
         - dept_unit
+        - ecapris_funding_id
+        - fdu
         - fund
         - fund_dept_unit
         - fund_name
@@ -101,8 +117,10 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - is_deleted
+        - is_legacy_funding_record
         - proj_funding_id
         - project_id
+        - unit_long_name
         - updated_at
         - updated_by_user_id
       filter: {}
@@ -111,15 +129,18 @@ update_permissions:
   - role: moped-admin
     permission:
       columns:
+        - dept_unit
+        - ecapris_funding_id
+        - fdu
+        - fund
         - funding_amount
+        - funding_description
         - funding_program_id
         - funding_source_id
         - funding_status_id
-        - project_id
-        - dept_unit
-        - fund
-        - funding_description
         - is_deleted
+        - project_id
+        - unit_long_name
       filter: {}
       check: null
       set:
@@ -128,15 +149,18 @@ update_permissions:
   - role: moped-editor
     permission:
       columns:
+        - dept_unit
+        - ecapris_funding_id
+        - fdu
+        - fund
         - funding_amount
+        - funding_description
         - funding_program_id
         - funding_source_id
         - funding_status_id
-        - project_id
-        - dept_unit
-        - fund
-        - funding_description
         - is_deleted
+        - project_id
+        - unit_long_name
       filter: {}
       check: null
       set:

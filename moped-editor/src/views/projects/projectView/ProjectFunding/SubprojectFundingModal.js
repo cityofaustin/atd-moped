@@ -30,6 +30,12 @@ const useColumns = () =>
         display: "flex",
         flex: 2,
       },
+      {
+        headerName: "Status",
+        field: "dept_unit_status",
+        display: "flex",
+        flex: 1,
+      },
     ];
   }, []);
 
@@ -44,7 +50,7 @@ const SubprojectFundingModal = ({
   refetch,
 }) => {
   const { data } = useSocrataJson(
-    `https://data.austintexas.gov/resource/jega-nqf6.json?dept_unit_status=Active&sp_number_txt=${eCaprisID}&$limit=9999`
+    `https://data.austintexas.gov/resource/jega-nqf6.json?sp_number_txt=${eCaprisID}&$limit=9999`
   );
   // Filter the list of fdus to remove one(s) already on funding sources table
   const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
@@ -84,17 +90,13 @@ const SubprojectFundingModal = ({
       },
     })
       .then(() => {
-        refetch().then(() => {handleDialogClose()
-          handleSnackbar(true, "Funding source added", "success")
+        refetch().then(() => {
+          handleDialogClose();
+          handleSnackbar(true, "Funding source added", "success");
         });
       })
       .catch((error) => {
-        handleSnackbar(
-          true,
-          "Error adding funding source",
-          "error",
-          error
-        );
+        handleSnackbar(true, "Error adding funding source", "error", error);
       });
     setSelectedFdus([]);
   }, [
