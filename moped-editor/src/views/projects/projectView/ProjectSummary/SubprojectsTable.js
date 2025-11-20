@@ -40,6 +40,18 @@ const useColumns = ({
         field: "project_id",
         editable: false,
         width: 75,
+        renderCell: ({ row }) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            {row?.project_id}
+          </Box>
+        ),
       },
       {
         headerName: "Full name",
@@ -50,6 +62,10 @@ const useColumns = ({
         renderCell: ({ row }) => (
           <Box
             sx={{
+              py: 1,
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
               whiteSpace: "normal",
               wordBreak: "break-word",
               overflow: "visible",
@@ -84,17 +100,26 @@ const useColumns = ({
         // valueGetter allows us to derive from a nested field which will be used for sorting/filtering
         valueGetter: (value) =>
           value?.[0]?.moped_phase?.phase_name || "Unknown",
-        renderCell: ({ row }) =>
-          // only render a badge once we exit edit mode and there is a phase
-          row.moped_proj_phases ? (
-            <ProjectStatusBadge
-              phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
-              phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
-              condensed
-            />
-          ) : (
-            <div />
-          ),
+        renderCell: ({ row }) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            {row.moped_proj_phases ? (
+              <ProjectStatusBadge
+                phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+                phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
+                condensed
+              />
+            ) : (
+              <div />
+            )}
+          </Box>
+        ),
       },
       {
         headerName: "",
@@ -138,10 +163,13 @@ const SubprojectsTable = ({
   });
 
   // separate query for options for the lookup autocomplete component
-  const { data: optionsData, refetch: optionsRefetch } = useQuery(SUBPROJECT_OPTIONS_QUERY, {
-     variables: { projectId: projectId },
-     fetchPolicy: "no-cache",
-   }); 
+  const { data: optionsData, refetch: optionsRefetch } = useQuery(
+    SUBPROJECT_OPTIONS_QUERY,
+    {
+      variables: { projectId: projectId },
+      fetchPolicy: "no-cache",
+    }
+  );
 
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);

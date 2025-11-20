@@ -15,7 +15,7 @@ const ParentProjectHeader = ({
   hasChildren,
 }) => {
   return (
-    <Box sx={{ px: 2, pb: 2 }}>
+    <Box sx={{ px: 0, py: 1 }}>
       <Typography variant="body2" sx={{ color: "text.secondary", mb: 0.5 }}>
         Parent project
       </Typography>
@@ -35,5 +35,3 @@ const ParentProjectHeader = ({
 };
 
 export default ParentProjectHeader;
-
-
