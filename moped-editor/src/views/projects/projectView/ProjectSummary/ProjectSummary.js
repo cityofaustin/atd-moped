@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink as RouterLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "src/views/projects/projectView/ProjectSummary/ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "src/views/projects/projectView/ProjectSummary/ProjectSummaryStatusUpdate";
@@ -10,7 +10,6 @@ import {
   CircularProgress,
   Card,
   Typography,
-  Box,
 } from "@mui/material";
 
 import ProjectSummaryProjectWebsite from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectWebsite";
