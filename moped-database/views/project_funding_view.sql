@@ -1,11 +1,11 @@
--- Most recent migration: moped-database/migrations/default/1761074353404_ecapris_funding/up.sql
+-- Most recent migration: moped-database/migrations/default/1736291471358_add_proj_fund_view/up.sql
 
 CREATE OR REPLACE VIEW project_funding_view AS SELECT
     mp.project_id,
     mpf.proj_funding_id,
     mpf.funding_amount,
     mpf.funding_description,
-    mpf.fdu AS fund_dept_unit,
+    mpf.fund_dept_unit,
     mpf.created_at,
     mpf.updated_at,
     mfs.funding_source_name,
