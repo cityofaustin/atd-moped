@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import LinkIcon from "@mui/icons-material/Link";
 import { v4 as uuidv4 } from "uuid";
 
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -45,12 +45,23 @@ const useColumns = ({
         headerName: "Full name",
         field: "project_name_full",
         editable: true,
-        width: 250,
+        flex: 1,
+        minWidth: 250,
         renderCell: ({ row }) => (
-          <RenderFieldLink
-            projectId={row?.project_id}
-            value={row?.project_name_full}
-          />
+          <Box
+            sx={{
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              overflow: "visible",
+              textOverflow: "unset",
+              lineHeight: 1.5,
+            }}
+          >
+            <RenderFieldLink
+              projectId={row?.project_id}
+              value={row?.project_name_full}
+            />
+          </Box>
         ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
@@ -118,6 +129,8 @@ const SubprojectsTable = ({
   projectId = null,
   refetchSummaryData,
   handleSnackbar,
+  isSubproject = false,
+  toolbarChildren = null,
 }) => {
   const { loading, data, refetch } = useQuery(SUBPROJECT_SUMMARY_QUERY, {
     variables: { projectId: projectId },
@@ -284,6 +297,10 @@ const SubprojectsTable = ({
 
   if (loading || !data) return <CircularProgress />;
 
+  const noSubprojectsLabel = isSubproject
+    ? "Subprojects cannot subprojects"
+    : "No subprojects to display";
+
   return (
     <>
       <DataGridPro
@@ -291,6 +308,7 @@ const SubprojectsTable = ({
         columns={dataGridColumns}
         rows={rows}
         autoHeight
+        getRowHeight={() => "auto"}
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
@@ -299,14 +317,16 @@ const SubprojectsTable = ({
         slotProps={{
           toolbar: {
             title: "Subprojects",
+            children: toolbarChildren,
             primaryActionButton: (
               <Button
                 variant="contained"
                 color="primary"
-                startIcon={<AddCircleIcon />}
+                startIcon={<LinkIcon />}
                 onClick={handleAddSubprojectClick}
+                disabled={isSubproject}
               >
-                Add Subproject
+                Link subproject
               </Button>
             ),
           },
@@ -316,7 +336,7 @@ const SubprojectsTable = ({
         onRowEditStop={handleRowEditStop(rows, setRows)}
         hideFooter
         disableRowSelectionOnClick
-        localeText={{ noRowsLabel: "No subprojects to display" }}
+        localeText={{ noRowsLabel: noSubprojectsLabel }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows

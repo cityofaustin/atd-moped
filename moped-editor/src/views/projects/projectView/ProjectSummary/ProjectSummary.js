@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { NavLink as RouterLink, useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "src/views/projects/projectView/ProjectSummary/ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "src/views/projects/projectView/ProjectSummary/ProjectSummaryStatusUpdate";
@@ -10,11 +10,11 @@ import {
   CircularProgress,
   Card,
   Typography,
+  Box,
 } from "@mui/material";
 
 import ProjectSummaryProjectWebsite from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectDescription";
-import ProjectSummaryParentProjectLink from "src/views/projects/projectView/ProjectSummary/ProjectSummaryParentProjectLink";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ProjectSummaryDataTrackerSignals from "src/views/projects/projectView/ProjectSummary/ProjectSummaryDataTrackerSignals";
 import ProjectSummaryWorkOrders from "src/views/projects/projectView/ProjectSummary/ProjectSummaryWorkOrders";
@@ -77,14 +77,6 @@ const ProjectSummary = ({
                   handleSnackbar={handleSnackbar}
                   listViewQuery={listViewQuery}
                 />
-                {data.moped_project[0]?.parent_project_id && (
-                  <ProjectSummaryParentProjectLink
-                    projectId={projectId}
-                    data={data}
-                    refetch={refetch}
-                    handleSnackbar={handleSnackbar}
-                  />
-                )}
                 {/*Status Update Component*/}
                 <ProjectSummaryStatusUpdate
                   projectId={projectId}
@@ -228,20 +220,47 @@ const ProjectSummary = ({
             </Grid>
 
             {/* Subprojects Section */}
-            {!data.moped_project[0].parent_project_id && (
-              <Grid item xs={12}>
-                <Card sx={{ height: "fit-content", p: 0 }}>
-                  {/* The `&:last-child` is used to remove the padding from the bottom of the Table making it flush with the card layout */}
-                  <CardContent sx={{ "&:last-child": { p: 0 } }}>
-                    <SubprojectsTable
-                      projectId={projectId}
-                      refetchSummaryData={refetch}
-                      handleSnackbar={handleSnackbar}
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              <Card sx={{ height: "fit-content", p: 0 }}>
+                {/* The `&:last-child` is used to remove the padding from the bottom of the Table making it flush with the card layout */}
+                <CardContent sx={{ "&:last-child": { p: 0 } }}>
+                  <SubprojectsTable
+                    projectId={projectId}
+                    refetchSummaryData={refetch}
+                    handleSnackbar={handleSnackbar}
+                    isSubproject={!!data.moped_project[0]?.parent_project_id}
+                    toolbarChildren={
+                      <Box sx={{ px: 2, pb: 2 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "text.secondary", mb: 0.5 }}
+                        >
+                          Parent project
+                        </Typography>
+                        {data.moped_project[0]?.parent_project_id ? (
+                          <RouterLink
+                            to={`/moped/projects/${data.moped_project[0]?.parent_project_id}`}
+                          >
+                            <Typography variant="body1" color="primary">
+                              {
+                                data.moped_project[0]?.moped_project
+                                  ?.project_name_full
+                              }
+                            </Typography>
+                          </RouterLink>
+                        ) : data?.childProjects?.length > 0 ? (
+                          <Typography variant="body1">
+                            This is a parent project
+                          </Typography>
+                        ) : (
+                          <Typography variant="body1">None</Typography>
+                        )}
+                      </Box>
+                    }
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
