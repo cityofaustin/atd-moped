@@ -1,3 +1,6 @@
+-- Drop combined_project_funding_view
+DROP VIEW IF EXISTS combined_project_funding_view;
+
 -- Remove funding sync flag from projects table
 ALTER TABLE moped_project
 DROP COLUMN should_sync_ecapris_funding;
@@ -18,9 +21,3 @@ DROP INDEX IF EXISTS idx_moped_proj_funding_program_id;
 
 -- Drop ecapris_subproject_funding table
 DROP TABLE IF EXISTS public.ecapris_subproject_funding;
-
--- Drop combined_project_funding_view
-DROP VIEW IF EXISTS combined_project_funding_view;
-
--- Restore previous view to use fund_dept_unit column
-DROP VIEW IF EXISTS project_funding_view;
