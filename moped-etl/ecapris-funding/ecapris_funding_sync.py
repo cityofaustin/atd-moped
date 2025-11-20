@@ -12,20 +12,20 @@ from process.logging import get_logger
 from process.queries import GRAPHQL_QUERIES
 from process.request import make_hasura_request
 
-SO_WEB = os.getenv("SO_WEB")
-SO_TOKEN = os.getenv("SO_TOKEN")
-SO_USER = os.getenv("SO_USER")
-SO_PASS = os.getenv("SO_PASS")
+SOCRATA_ENDPOINT = os.getenv("SOCRATA_ENDPOINT")
+SOCRATA_TOKEN = os.getenv("SOCRATA_TOKEN")
+SOCRATA_API_KEY_ID = os.getenv("SOCRATA_API_KEY_ID")
+SOCRATA_API_KEY_SECRET = os.getenv("SOCRATA_API_KEY_SECRET")
 FUNDING_DATASET_IDENTIFIER = os.getenv("FUNDING_DATASET_IDENTIFIER")
 CHUNK_SIZE = os.getenv("CHUNK_SIZE", 500)
 
 
 def get_socrata_client():
     return sodapy.Socrata(
-        SO_WEB,
-        SO_TOKEN,
-        username=SO_USER,
-        password=SO_PASS,
+        SOCRATA_ENDPOINT,
+        SOCRATA_TOKEN,
+        username=SOCRATA_API_KEY_ID,
+        password=SOCRATA_API_KEY_SECRET,
         timeout=60,
     )
 
