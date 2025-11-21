@@ -331,7 +331,7 @@ const SubprojectsTable = ({
   if (loading || !data) return <CircularProgress />;
 
   const noSubprojectsLabel = isSubproject
-    ? "Subprojects cannot subprojects"
+    ? "Projects with a parent cannot have their own subprojects"
     : "No subprojects to display";
 
   return (
