@@ -380,6 +380,9 @@ const SubprojectsTable = ({
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        confirmationText="Are you sure you want to unlink this subproject?"
+        actionButtonText="Unlink"
+        actionButtonIcon={<LinkOffIcon />}
       />
     </>
   );
