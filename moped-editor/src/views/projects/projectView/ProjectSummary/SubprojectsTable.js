@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 import { Box, Button, CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
-import LinkIcon from "@mui/icons-material/Link";
+import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { v4 as uuidv4 } from "uuid";
 
@@ -349,13 +349,13 @@ const SubprojectsTable = ({
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{
           toolbar: {
-            title: "Subprojects",
+            title: "Related Projects",
             children: toolbarChildren,
             primaryActionButton: (
               <Button
                 variant="contained"
                 color="primary"
-                startIcon={<LinkIcon />}
+                startIcon={<AddLinkIcon />}
                 onClick={handleAddSubprojectClick}
                 disabled={isSubproject}
               >
