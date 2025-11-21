@@ -54,7 +54,7 @@ def build_knack_project_from_moped_project(moped_project_record, is_test=False):
     Parameters:
         moped_project_record (dict): A moped project as returned by Hasura
         is_test (bool): Whether or not this is a test run and should patch a
-                        complatible Knack signal record id
+                        compatible Knack signal record id
 
     Returns:
         Dictionary: A Knack project record
@@ -71,6 +71,7 @@ def build_knack_project_from_moped_project(moped_project_record, is_test=False):
         "field_4133": moped_project_record["project_id"],
         "field_3857": moped_project_record["project_name"],
         "field_4922": moped_project_record["is_deleted"],
+        "field_5137": moped_project_record["project_name_secondary"],
         "field_4136": phase_name,
         "field_3861": signals,
         "field_4162": make_moped_project_url(moped_project_record["project_id"]),
