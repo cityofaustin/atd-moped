@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { Box, Button, CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import LinkIcon from "@mui/icons-material/Link";
+import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { v4 as uuidv4 } from "uuid";
 
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -32,6 +33,7 @@ const useColumns = ({
   handleDeleteOpen,
   handleSaveClick,
   handleCancelClick,
+  deleteIcon,
 }) =>
   useMemo(() => {
     return [
@@ -137,6 +139,7 @@ const useColumns = ({
             handleCancelClick={handleCancelClick}
             handleDeleteOpen={handleDeleteOpen}
             handleSaveClick={handleSaveClick}
+            deleteIcon={deleteIcon}
           />
         ),
       },
@@ -148,6 +151,7 @@ const useColumns = ({
     handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
+    deleteIcon,
   ]);
 
 const SubprojectsTable = ({
@@ -321,6 +325,7 @@ const SubprojectsTable = ({
     handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
+    deleteIcon: <LinkOffIcon sx={{ fontSize: 24 }} />,
   });
 
   if (loading || !data) return <CircularProgress />;
