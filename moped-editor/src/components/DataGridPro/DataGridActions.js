@@ -21,6 +21,7 @@ import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
  * @param {Function} handleDeleteClick - handles delete button click
  * @param {Function} handleSaveClick - handles save button click
  * @param {Function} handleEditClick - handles edit button click, optional
+ * @param {React.ReactNode} deleteIcon - custom delete icon, defaults to DeleteOutlineIcon
  * @return {JSX.Element}
  */
 
@@ -32,6 +33,7 @@ const DataGridActions = ({
   handleDeleteOpen,
   handleSaveClick,
   handleEditClick,
+  deleteIcon,
 }) => {
   const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -79,6 +81,10 @@ const DataGridActions = ({
       />,
     ];
   }
+  const DeleteIcon = deleteIcon || (
+    <DeleteOutlineIcon sx={defaultEditColumnIconStyle} />
+  );
+
   return [
     // only render edit button if we were passed an edit handler and are not currently in edit mode
     handleEditClick && (
@@ -92,7 +98,7 @@ const DataGridActions = ({
       />
     ),
     <GridActionsCellItem
-      icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
+      icon={DeleteIcon}
       label="Delete"
       key="delete"
       onClick={handleDeleteOpen(id)}

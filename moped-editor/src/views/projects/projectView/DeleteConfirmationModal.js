@@ -14,10 +14,16 @@ const DeleteConfirmationModal = ({
   isDeleteConfirmationOpen,
   setIsDeleteConfirmationOpen,
   children,
+  confirmationText,
+  actionButtonText = "Delete",
+  actionButtonIcon,
 }) => {
   const handleDeleteClose = () => {
     setIsDeleteConfirmationOpen(false);
   };
+
+  const defaultConfirmationText = `Are you sure you want to delete this ${type}?`;
+  const ActionIcon = actionButtonIcon || <DeleteIcon />;
 
   return (
     <span>
@@ -30,7 +36,7 @@ const DeleteConfirmationModal = ({
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {`Are you sure you want to delete this ${type}?`}
+            {confirmationText || defaultConfirmationText}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -40,13 +46,13 @@ const DeleteConfirmationModal = ({
           <Button
             color="primary"
             variant="contained"
-            startIcon={<DeleteIcon />}
+            startIcon={ActionIcon}
             onClick={() => {
               submitDelete();
               // closing the confirmation modal should happen after the delete mutation completes
             }}
           >
-            <span>Delete</span>
+            <span>{actionButtonText}</span>
           </Button>
         </DialogActions>
       </Dialog>

@@ -14,7 +14,6 @@ import {
 
 import ProjectSummaryProjectWebsite from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectDescription";
-import ProjectSummaryParentProjectLink from "src/views/projects/projectView/ProjectSummary/ProjectSummaryParentProjectLink";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ProjectSummaryDataTrackerSignals from "src/views/projects/projectView/ProjectSummary/ProjectSummaryDataTrackerSignals";
 import ProjectSummaryWorkOrders from "src/views/projects/projectView/ProjectSummary/ProjectSummaryWorkOrders";
@@ -26,6 +25,7 @@ import ProjectSummaryComponentWorkTypes from "src/views/projects/projectView/Pro
 
 import SubprojectsTable from "src/views/projects/projectView/ProjectSummary/SubprojectsTable";
 import TagsSection from "src/views/projects/projectView/ProjectSummary/TagsSection";
+import ParentProjectHeader from "src/views/projects/projectView/ProjectSummary/ParentProjectHeader";
 
 import {
   PROJECT_UPDATE_SPONSOR,
@@ -77,14 +77,6 @@ const ProjectSummary = ({
                   handleSnackbar={handleSnackbar}
                   listViewQuery={listViewQuery}
                 />
-                {data.moped_project[0]?.parent_project_id && (
-                  <ProjectSummaryParentProjectLink
-                    projectId={projectId}
-                    data={data}
-                    refetch={refetch}
-                    handleSnackbar={handleSnackbar}
-                  />
-                )}
                 {/*Status Update Component*/}
                 <ProjectSummaryStatusUpdate
                   projectId={projectId}
@@ -228,20 +220,31 @@ const ProjectSummary = ({
             </Grid>
 
             {/* Subprojects Section */}
-            {!data.moped_project[0].parent_project_id && (
-              <Grid item xs={12}>
-                <Card sx={{ height: "fit-content", p: 0 }}>
-                  {/* The `&:last-child` is used to remove the padding from the bottom of the Table making it flush with the card layout */}
-                  <CardContent sx={{ "&:last-child": { p: 0 } }}>
-                    <SubprojectsTable
-                      projectId={projectId}
-                      refetchSummaryData={refetch}
-                      handleSnackbar={handleSnackbar}
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              <Card sx={{ height: "fit-content", p: 0 }}>
+                {/* The `&:last-child` is used to remove the padding from the bottom of the Table making it flush with the card layout */}
+                <CardContent sx={{ "&:last-child": { p: 0 } }}>
+                  <SubprojectsTable
+                    projectId={projectId}
+                    refetchSummaryData={refetch}
+                    handleSnackbar={handleSnackbar}
+                    isSubproject={!!data.moped_project[0]?.parent_project_id}
+                    toolbarChildren={
+                      <ParentProjectHeader
+                        parentProjectId={
+                          data.moped_project[0]?.parent_project_id
+                        }
+                        parentProjectName={
+                          data.moped_project[0]?.moped_project
+                            ?.project_name_full
+                        }
+                        hasChildren={data?.childProjects?.length > 0}
+                      />
+                    }
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

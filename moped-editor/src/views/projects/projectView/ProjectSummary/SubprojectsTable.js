@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AddLinkIcon from "@mui/icons-material/AddLink";
+import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { v4 as uuidv4 } from "uuid";
 
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -32,6 +33,7 @@ const useColumns = ({
   handleDeleteOpen,
   handleSaveClick,
   handleCancelClick,
+  deleteIcon,
 }) =>
   useMemo(() => {
     return [
@@ -40,17 +42,44 @@ const useColumns = ({
         field: "project_id",
         editable: false,
         width: 75,
+        renderCell: ({ row }) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            {row?.project_id}
+          </Box>
+        ),
       },
       {
         headerName: "Full name",
         field: "project_name_full",
         editable: true,
-        width: 250,
+        flex: 1,
+        minWidth: 250,
         renderCell: ({ row }) => (
-          <RenderFieldLink
-            projectId={row?.project_id}
-            value={row?.project_name_full}
-          />
+          <Box
+            sx={{
+              py: 1,
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              overflow: "visible",
+              textOverflow: "unset",
+              lineHeight: 1.5,
+            }}
+          >
+            <RenderFieldLink
+              projectId={row?.project_id}
+              value={row?.project_name_full}
+            />
+          </Box>
         ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
@@ -73,17 +102,26 @@ const useColumns = ({
         // valueGetter allows us to derive from a nested field which will be used for sorting/filtering
         valueGetter: (value) =>
           value?.[0]?.moped_phase?.phase_name || "Unknown",
-        renderCell: ({ row }) =>
-          // only render a badge once we exit edit mode and there is a phase
-          row.moped_proj_phases ? (
-            <ProjectStatusBadge
-              phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
-              phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
-              condensed
-            />
-          ) : (
-            <div />
-          ),
+        renderCell: ({ row }) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            {row.moped_proj_phases ? (
+              <ProjectStatusBadge
+                phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+                phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
+                condensed
+              />
+            ) : (
+              <div />
+            )}
+          </Box>
+        ),
       },
       {
         headerName: "",
@@ -101,6 +139,7 @@ const useColumns = ({
             handleCancelClick={handleCancelClick}
             handleDeleteOpen={handleDeleteOpen}
             handleSaveClick={handleSaveClick}
+            deleteIcon={deleteIcon}
           />
         ),
       },
@@ -112,12 +151,15 @@ const useColumns = ({
     handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
+    deleteIcon,
   ]);
 
 const SubprojectsTable = ({
   projectId = null,
   refetchSummaryData,
   handleSnackbar,
+  isSubproject = false,
+  toolbarChildren = null,
 }) => {
   const { loading, data, refetch } = useQuery(SUBPROJECT_SUMMARY_QUERY, {
     variables: { projectId: projectId },
@@ -125,10 +167,13 @@ const SubprojectsTable = ({
   });
 
   // separate query for options for the lookup autocomplete component
-  const { data: optionsData, refetch: optionsRefetch } = useQuery(SUBPROJECT_OPTIONS_QUERY, {
-     variables: { projectId: projectId },
-     fetchPolicy: "no-cache",
-   }); 
+  const { data: optionsData, refetch: optionsRefetch } = useQuery(
+    SUBPROJECT_OPTIONS_QUERY,
+    {
+      variables: { projectId: projectId },
+      fetchPolicy: "no-cache",
+    }
+  );
 
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
@@ -280,9 +325,14 @@ const SubprojectsTable = ({
     handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
+    deleteIcon: <LinkOffIcon sx={{ fontSize: 24 }} />,
   });
 
   if (loading || !data) return <CircularProgress />;
+
+  const noSubprojectsLabel = isSubproject
+    ? "Projects with a parent cannot have their own subprojects"
+    : "No subprojects to display";
 
   return (
     <>
@@ -291,6 +341,7 @@ const SubprojectsTable = ({
         columns={dataGridColumns}
         rows={rows}
         autoHeight
+        getRowHeight={() => "auto"}
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
@@ -298,15 +349,17 @@ const SubprojectsTable = ({
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{
           toolbar: {
-            title: "Subprojects",
+            title: "Related Projects",
+            children: toolbarChildren,
             primaryActionButton: (
               <Button
                 variant="contained"
                 color="primary"
-                startIcon={<AddCircleIcon />}
+                startIcon={<AddLinkIcon />}
                 onClick={handleAddSubprojectClick}
+                disabled={isSubproject}
               >
-                Add Subproject
+                Link subproject
               </Button>
             ),
           },
@@ -316,7 +369,7 @@ const SubprojectsTable = ({
         onRowEditStop={handleRowEditStop(rows, setRows)}
         hideFooter
         disableRowSelectionOnClick
-        localeText={{ noRowsLabel: "No subprojects to display" }}
+        localeText={{ noRowsLabel: noSubprojectsLabel }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows
@@ -327,6 +380,9 @@ const SubprojectsTable = ({
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        confirmationText="Are you sure you want to unlink this subproject?"
+        actionButtonText="Unlink"
+        actionButtonIcon={<LinkOffIcon />}
       />
     </>
   );
