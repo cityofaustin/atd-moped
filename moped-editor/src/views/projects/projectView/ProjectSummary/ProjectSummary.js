@@ -25,7 +25,6 @@ import ProjectSummaryComponentWorkTypes from "src/views/projects/projectView/Pro
 
 import SubprojectsTable from "src/views/projects/projectView/ProjectSummary/SubprojectsTable";
 import TagsSection from "src/views/projects/projectView/ProjectSummary/TagsSection";
-import ParentProjectHeader from "src/views/projects/projectView/ProjectSummary/ParentProjectHeader";
 
 import {
   PROJECT_UPDATE_SPONSOR,
@@ -229,18 +228,6 @@ const ProjectSummary = ({
                     refetchSummaryData={refetch}
                     handleSnackbar={handleSnackbar}
                     isSubproject={!!data.moped_project[0]?.parent_project_id}
-                    toolbarChildren={
-                      <ParentProjectHeader
-                        parentProjectId={
-                          data.moped_project[0]?.parent_project_id
-                        }
-                        parentProjectName={
-                          data.moped_project[0]?.moped_project
-                            ?.project_name_full
-                        }
-                        hasChildren={data?.childProjects?.length > 0}
-                      />
-                    }
                   />
                 </CardContent>
               </Card>
