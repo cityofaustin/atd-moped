@@ -152,13 +152,14 @@ def find_synced_moped_projects(last_run_date, is_test=False):
     return synced_projects
 
 
-def update_knack_project_from_moped_project(moped_project_record, is_test=False):
+def update_knack_project_from_moped_project(moped_project_record, is_test=False, dry_run=True):
     """
     Update a Knack project record already synced to Data Tracker from a Moped project record
 
     Parameters:
         moped_project_record (dict): A Moped project record
-        is_test (boolean): test flag added to add a complatible Knack signal record id to payload
+        is_test (boolean): test flag added to add a compatible Knack signal record id to payload
+        dry_run (boolean): if true, if true, do not update record but print what would be updated
 
     Returns:
         String: Knack record ID of updated record
@@ -202,11 +203,12 @@ def main(args):
             }
         )
 
-        # Update Moped project with Knack record ID of created record
-        logger.info(
-            f"Updating Moped project {moped_project_id} with Knack ID {knack_record_id}"
-        )
-        update_moped_project_knack_id(moped_project_id, knack_record_id)
+        if not args.dry_run:
+            # Update Moped project with Knack record ID of created record
+            logger.info(
+                f"Updating Moped project {moped_project_id} with Knack ID {knack_record_id}"
+            )
+            update_moped_project_knack_id(moped_project_id, knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(

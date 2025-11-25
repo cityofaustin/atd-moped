@@ -31,9 +31,7 @@ that you create in the testing steps.
 
 #### Testing by running the script locally
 
-Testing the sync process outside of the production environment requires a few steps since the
-we don't want to test on production and the unique signal IDs differ between the production app
-and test copies. The steps are as follows:
+Testing the sync process outside of the production environment requires a few steps since we don't want to test on production and the unique signal IDs differ between the production app and test copies. The steps are as follows:
 
 1. Start the local instance of the Moped Hasura cluster from a production snapshot or using the seed data
 2. Create a new project in Moped and set the environment variable called TEST_MOPED_PROJECT_ID to the
@@ -64,6 +62,8 @@ or through the Moped Editor
 11. Run the sync script again with the last timestamp that you used. You should see the script
 log an update of the Knack record that you created earlier. Check the row in the test
 Data Tracker app and you should see that the title has been updated with your edit
+
+Alternately, you can run the script with the dry run flag `--dry-run`
 
 #### Backfilling a new column
 
