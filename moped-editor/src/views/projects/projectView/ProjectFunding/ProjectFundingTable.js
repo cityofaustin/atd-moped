@@ -66,7 +66,8 @@ const useFdusArray = (projectFunding) =>
 const fduAutocompleteProps = {
   getOptionLabel: (option) =>
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value, option) => value.id === option.id,
+  isOptionEqualToValue: (value, option) =>
+    value?.ecapris_funding_id === option?.ecapris_funding_id,
 };
 
 /** Hook that provides memoized column settings */
@@ -163,7 +164,7 @@ const useColumns = ({
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
-            name={"fdu"}
+            name={"ecapris_funding"}
             options={dataFduOptions?.ecapris_subproject_funding}
             fullWidthPopper={true}
             autocompleteProps={fduAutocompleteProps}
@@ -346,6 +347,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
         funding_status_id: null,
         fdu: null,
         unit_long_name: null,
+        ecapris_funding_id: null,
         funding_amount: null,
         isNew: true,
         proj_funding_id: id,
@@ -442,6 +444,8 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     updateProjectFundingData.fdu = updatedRow.fdu?.fdu || null;
     updateProjectFundingData.unit_long_name =
       updatedRow.fdu?.unit_long_name || null;
+    updateProjectFundingData.ecapris_funding_id =
+      updatedRow.fdu?.ecapris_funding_id || null;
 
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;

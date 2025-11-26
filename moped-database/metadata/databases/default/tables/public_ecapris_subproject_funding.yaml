@@ -5,6 +5,7 @@ select_permissions:
   - role: moped-admin
     permission:
       columns:
+        - fao_id
         - fdu
         - id
         - unit_long_name
@@ -13,6 +14,7 @@ select_permissions:
   - role: moped-editor
     permission:
       columns:
+        - fao_id
         - fdu
         - id
         - unit_long_name
@@ -21,6 +23,7 @@ select_permissions:
   - role: moped-viewer
     permission:
       columns:
+        - fao_id
         - fdu
         - id
         - unit_long_name

@@ -7,6 +7,7 @@ export const FUNDING_QUERY = gql`
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       proj_funding_id
+      ecapris_funding_id
       created_by_user_id
       created_at
       fdu
@@ -48,6 +49,7 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
   query EcaprisFdu {
     ecapris_subproject_funding {
       id
+      ecapris_funding_id: fao_id
       fdu
       unit_long_name
     }
@@ -77,7 +79,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
         unit_long_name: $unit_long_name
       }
     ) {
-      affected_rows
+      proj_funding_id
     }
   }
 `;
