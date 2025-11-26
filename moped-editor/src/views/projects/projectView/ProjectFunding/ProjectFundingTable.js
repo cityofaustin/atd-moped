@@ -439,11 +439,9 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
       updateProjectFundingData.moped_fund_program?.funding_program_id || null;
     delete updateProjectFundingData.moped_fund_program;
 
-    updateProjectFundingData.fdu = updateProjectFundingData.fdu?.fdu || null;
+    updateProjectFundingData.fdu = updatedRow.fdu?.fdu || null;
     updateProjectFundingData.unit_long_name =
-      updateProjectFundingData.fdu?.unit_long_name || null;
-
-    console.log("updatedRow", updatedRow);
+      updatedRow.fdu?.unit_long_name || null;
 
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;
@@ -465,7 +463,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
           .then((response) => {
             // replace the temporary row id with the one proj funding id from the record creation
             const record_id =
-              response.dataProjectFunding.insert_moped_proj_funding.returning[0]
+              response.data.insert_moped_proj_funding.returning[0]
                 .proj_funding_id;
             updatedRow.proj_funding_id = record_id;
           })

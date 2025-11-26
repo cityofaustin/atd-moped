@@ -73,8 +73,8 @@ export const UPDATE_PROJECT_FUNDING = gql`
         funding_program_id: $funding_program_id
         funding_source_id: $funding_source_id
         funding_status_id: $funding_status_id
-        dept_unit: $dept_unit
-        fund: $fund
+        fdu: $fdu
+        unit_long_name: $unit_long_name
       }
     ) {
       affected_rows
