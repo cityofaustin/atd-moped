@@ -167,7 +167,10 @@ const useColumns = ({
             name={"ecapris_funding"}
             options={dataFduOptions?.ecapris_subproject_funding}
             fullWidthPopper={true}
-            autocompleteProps={fduAutocompleteProps}
+            autocompleteProps={{
+              ...fduAutocompleteProps,
+              value: props?.row?.ecapris_subproject_funding,
+            }}
           />
         ),
       },

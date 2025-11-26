@@ -26,6 +26,12 @@ export const FUNDING_QUERY = gql`
       }
       funding_status_id
       is_deleted
+      ecapris_subproject_funding {
+        id
+        ecapris_funding_id: fao_id
+        fdu
+        unit_long_name
+      }
     }
     moped_project(where: { project_id: { _eq: $projectId } }) {
       ecapris_subproject_id
@@ -48,7 +54,6 @@ export const FUNDING_QUERY = gql`
 export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
   query EcaprisFdu {
     ecapris_subproject_funding {
-      id
       ecapris_funding_id: fao_id
       fdu
       unit_long_name
