@@ -4,7 +4,11 @@ import ProjectFundingTable from "src/views/projects/projectView/ProjectFunding/P
 import ProjectWorkActivitiesTable from "src/views/projects/projectView/ProjectWorkActivity/ProjectWorkActivityTable";
 import { useParams } from "react-router-dom";
 
-const ProjectFunding = ({ handleSnackbar, refetch: refetchProjectSummary }) => {
+const ProjectFunding = ({
+  handleSnackbar,
+  refetch: refetchProjectSummary,
+  eCaprisSubprojectId = null,
+}) => {
   const { projectId } = useParams();
   return (
     <Grid container spacing={4}>
@@ -13,6 +17,7 @@ const ProjectFunding = ({ handleSnackbar, refetch: refetchProjectSummary }) => {
           projectId={projectId}
           handleSnackbar={handleSnackbar}
           refetchProjectSummary={refetchProjectSummary}
+          eCaprisSubprojectId={eCaprisSubprojectId}
         />
       </Grid>
       <Grid item xs={12}>

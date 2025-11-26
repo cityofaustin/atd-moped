@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
 import {
-  FUNDING_QUERY,
+  COMBINED_FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
@@ -231,7 +231,11 @@ const useColumns = ({
     usingShiftKey,
   ]);
 
-const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
+const ProjectFundingTable = ({
+  handleSnackbar,
+  refetchProjectSummary,
+  eCaprisSubprojectId = null,
+}) => {
   const apiRef = useGridApiRef();
 
   /** Params Hook
@@ -239,16 +243,28 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
    * */
   const { projectId } = useParams();
 
+  /* Query Moped and eCAPRIS funding with matching filters */
+  const queryVariables = eCaprisSubprojectId
+    ? {
+        projectFundingConditions: {
+          _or: [
+            { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
+            { project_id: { _eq: Number(projectId) } },
+          ],
+        },
+      }
+    : {
+        projectFundingConditions: {
+          project_id: { _eq: Number(projectId) },
+        },
+      };
+
   const {
     loading: loadingProjectFunding,
     data: dataProjectFunding,
     refetch,
-  } = useQuery(FUNDING_QUERY, {
-    // sending a null projectId will cause a graphql error
-    // id 0 used when creating a new project, no project funding will be returned
-    variables: {
-      projectId: projectId ?? 0,
-    },
+  } = useQuery(COMBINED_FUNDING_QUERY, {
+    variables: { ...queryVariables },
     fetchPolicy: "no-cache",
   });
 

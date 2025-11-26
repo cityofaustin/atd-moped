@@ -1,5 +1,23 @@
 import { gql } from "@apollo/client";
 
+export const COMBINED_FUNDING_QUERY = gql`
+  query GetCombinedProjectFunding(
+    $projectFundingConditions: combined_project_funding_view_bool_exp!
+  ) {
+    combined_project_funding_view(where: $projectFundingConditions) {
+      id
+      fdu
+      amount
+      description
+      program_name
+      source_name
+      status_name
+      ecapris_funding_id: fao_id
+      is_synced_from_ecapris
+    }
+  }
+`;
+
 export const FUNDING_QUERY = gql`
   query ProjectFunding($projectId: Int) {
     moped_proj_funding(
