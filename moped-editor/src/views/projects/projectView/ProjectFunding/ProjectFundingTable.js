@@ -32,6 +32,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
+import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
@@ -76,6 +77,7 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
+  usingShiftKey,
 }) =>
   useMemo(() => {
     return [
@@ -170,6 +172,23 @@ const useColumns = ({
         ),
       },
       {
+        headerName: "Unit Long Name",
+        field: "unit_long_name",
+        editable: true, // this is to be able to use the renderEditCell option to update the related phase
+        // during editing -- the input field is always disabled
+        width: 150,
+        renderEditCell: (props) => (
+          <ViewOnlyTextField
+            {...props}
+            value={props.row.moped_proj_funding?.unit_long_name}
+            usingShiftKey={usingShiftKey}
+            previousColumnField="description"
+            nextColumnField="date_estimate"
+            valueIdName="related_phase_id"
+          />
+        ),
+      },
+      {
         headerName: "Amount",
         field: "funding_amount",
         width: 100,
@@ -205,6 +224,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    usingShiftKey,
   ]);
 
 const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
@@ -235,6 +255,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [usingShiftKey, setUsingShiftKey] = useState(false);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -261,6 +282,9 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     (params, event) => {
       if (params.cellMode === GridRowModes.Edit) {
         if (event.key === "Tab") {
+          // Track whether the shift key is being used in combination with tab
+          setUsingShiftKey(event.shiftKey);
+
           const columnFields = gridColumnFieldsSelector(apiRef).filter(
             (field) =>
               apiRef.current.isCellEditable(
@@ -481,6 +505,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    usingShiftKey,
   });
 
   if (loading || !data) return <CircularProgress />;
