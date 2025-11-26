@@ -41,12 +41,15 @@ export const FUNDING_QUERY = gql`
       funding_status_id
       funding_status_name
     }
-    moped_funds(
-      order_by: { fund_id: asc }
-      where: { is_deleted: { _eq: false } }
-    ) {
-      fund_id
-      fund_name
+  }
+`;
+
+export const ECAPRIS_FDU_QUERY = gql`
+  query EcaprisFdu {
+    ecapris_subproject_funding {
+      id
+      fdu
+      unit_long_name
     }
   }
 `;

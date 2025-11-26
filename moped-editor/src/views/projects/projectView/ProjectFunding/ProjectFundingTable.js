@@ -20,6 +20,7 @@ import {
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
+  ECAPRIS_FDU_QUERY,
 } from "src/queries/funding";
 
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
@@ -62,16 +63,16 @@ const useFdusArray = (projectFunding) =>
   }, [projectFunding]);
 
 // object to pass to the Fund column's LookupAutocomplete component
-const fundAutocompleteProps = {
+const fduAutocompleteProps = {
   getOptionLabel: (option) =>
-    option.fund_id ? `${option.fund_id} | ${option.fund_name}` : "",
-  isOptionEqualToValue: (value, option) =>
-    value.fund_id === option.fund_id && value.fund_name === option.fund_name,
+    option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
+  isOptionEqualToValue: (value, option) => value.id === option.id,
 };
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
   data,
+  dataFdus,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -151,23 +152,17 @@ const useColumns = ({
         ),
       },
       {
-        headerName: "Fund",
-        field: "fund",
+        headerName: "FDU",
+        field: "fdu",
         width: 200,
         editable: true,
-        valueFormatter: (value) =>
-          !!value?.fund_name ? `${value?.fund_id} | ${value?.fund_name}` : "",
-        sortComparator: (v1, v2) =>
-          `${v1?.fund_id} | ${v1?.fund_name}`.localeCompare(
-            `${v2?.fund_id} | ${v2?.fund_name}`
-          ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
-            name={"fund"}
-            options={data.moped_funds}
+            name={"fdu"}
+            options={dataFdus?.ecapris_subproject_funding}
             fullWidthPopper={true}
-            autocompleteProps={fundAutocompleteProps}
+            autocompleteProps={fduAutocompleteProps}
           />
         ),
       },
@@ -241,6 +236,10 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     variables: {
       projectId: projectId ?? 0,
     },
+    fetchPolicy: "no-cache",
+  });
+
+  const { loading: loadingFdus, data: dataFdus } = useQuery(ECAPRIS_FDU_QUERY, {
     fetchPolicy: "no-cache",
   });
 
@@ -331,7 +330,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
         funding_description: null,
         funding_status_id: null,
         fund: null,
-        dept_unit: null,
+        unit_long_name: null,
         funding_amount: null,
         isNew: true,
         proj_funding_id: id,
@@ -500,6 +499,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
 
   const dataGridColumns = useColumns({
     data,
+    dataFdus,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

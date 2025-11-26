@@ -1,3 +1,28 @@
 table:
   name: ecapris_subproject_funding
   schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - fdu
+        - id
+        - unit_long_name
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - fdu
+        - id
+        - unit_long_name
+      filter: {}
+    comment: ""
+  - role: moped-viewer
+    permission:
+      columns:
+        - fdu
+        - id
+        - unit_long_name
+      filter: {}
+    comment: ""
