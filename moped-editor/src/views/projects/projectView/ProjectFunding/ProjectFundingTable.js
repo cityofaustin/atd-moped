@@ -21,7 +21,6 @@ import {
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
 } from "src/queries/funding";
-import { useSocrataJson } from "src/utils/socrataHelpers";
 
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -49,12 +48,6 @@ const toolbarSx = {
   }),
 };
 
-/*
- * Transportation Project Financial Codes
- */
-const SOCRATA_ENDPOINT =
-  "https://data.austintexas.gov/resource/bgrt-2m2z.json?$limit=999999";
-
 // memoized hook to concatanate fund dept and unit ids into an fdu string
 const useFdusArray = (projectFunding) =>
   useMemo(() => {
@@ -75,16 +68,6 @@ const fundAutocompleteProps = {
     value.fund_id === option.fund_id && value.fund_name === option.fund_name,
 };
 
-// object to pass to the Dept Unit column's LookupAutocomplete component
-const deptunitAutocompleteProps = {
-  getOptionLabel: (option) =>
-    !!option.dept
-      ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
-      : "",
-  isOptionEqualToValue: (value, option) =>
-    value.unit_long_name === option.unit_long_name,
-};
-
 /** Hook that provides memoized column settings */
 const useColumns = ({
   data,
@@ -93,7 +76,6 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
-  deptUnitData,
 }) =>
   useMemo(() => {
     return [
@@ -188,32 +170,6 @@ const useColumns = ({
         ),
       },
       {
-        headerName: "Dept-unit",
-        field: "dept_unit",
-        width: 225,
-        editable: true,
-        valueFormatter: (value) =>
-          !!value?.unit_long_name
-            ? `${value?.dept} | ${value?.unit} |
-              ${value?.unit_long_name}`
-            : "",
-        sortComparator: (v1, v2) =>
-          `${v1?.dept} | ${v1?.unit} |
-              ${v1?.unit_long_name}`.localeCompare(
-            `${v2?.dept} | ${v2?.unit} |
-              ${v2?.unit_long_name}`
-          ),
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"dept_unit"}
-            options={deptUnitData}
-            autocompleteProps={deptunitAutocompleteProps}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
         headerName: "Amount",
         field: "funding_amount",
         width: 100,
@@ -249,7 +205,6 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    deptUnitData,
   ]);
 
 const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
@@ -268,8 +223,6 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     },
     fetchPolicy: "no-cache",
   });
-  const { data: deptUnitData, error: socrataError } =
-    useSocrataJson(SOCRATA_ENDPOINT);
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
@@ -528,10 +481,8 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    deptUnitData,
   });
 
-  if (socrataError) console.error(socrataError);
   if (loading || !data) return <CircularProgress />;
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
