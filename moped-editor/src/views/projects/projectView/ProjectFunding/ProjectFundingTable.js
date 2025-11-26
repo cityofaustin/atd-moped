@@ -344,7 +344,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
         funding_program_id: null,
         funding_description: null,
         funding_status_id: null,
-        fund: null,
+        fdu: null,
         unit_long_name: null,
         funding_amount: null,
         isNew: true,
@@ -438,6 +438,12 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     updateProjectFundingData.funding_program_id =
       updateProjectFundingData.moped_fund_program?.funding_program_id || null;
     delete updateProjectFundingData.moped_fund_program;
+
+    updateProjectFundingData.fdu = updateProjectFundingData.fdu?.fdu || null;
+    updateProjectFundingData.unit_long_name =
+      updateProjectFundingData.fdu?.unit_long_name || null;
+
+    console.log("updatedRow", updatedRow);
 
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;

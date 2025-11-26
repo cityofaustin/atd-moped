@@ -9,8 +9,8 @@ export const FUNDING_QUERY = gql`
       proj_funding_id
       created_by_user_id
       created_at
-      fund
-      dept_unit
+      fdu
+      unit_long_name
       funding_amount
       funding_description
       funding_program_id
@@ -62,11 +62,11 @@ export const UPDATE_PROJECT_FUNDING = gql`
     $funding_program_id: Int
     $funding_source_id: Int
     $funding_status_id: Int!
-    $dept_unit: jsonb
-    $fund: jsonb
+    $fdu: String
+    $unit_long_name: String
   ) {
-    update_moped_proj_funding(
-      where: { proj_funding_id: { _eq: $proj_funding_id } }
+    update_moped_proj_funding_by_pk(
+      pk_columns: { proj_funding_id: $proj_funding_id }
       _set: {
         funding_amount: $funding_amount
         funding_description: $funding_description
