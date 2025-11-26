@@ -20,7 +20,7 @@ import {
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
-  ECAPRIS_FDU_QUERY,
+  ECAPRIS_FDU_OPTIONS_QUERY,
 } from "src/queries/funding";
 
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
@@ -71,8 +71,8 @@ const fduAutocompleteProps = {
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
-  data,
-  dataFdus,
+  dataProjectFunding,
+  dataFduOptions,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -94,7 +94,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
-            options={data["moped_fund_sources"]}
+            options={dataProjectFunding["moped_fund_sources"]}
             fullWidthPopper={true}
           />
         ),
@@ -111,7 +111,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
-            options={data["moped_fund_programs"]}
+            options={dataProjectFunding["moped_fund_programs"]}
             fullWidthPopper={true}
           />
         ),
@@ -130,24 +130,28 @@ const useColumns = ({
         width: 200,
         valueFormatter: (value) =>
           getLookupValueByID(
-            data["moped_fund_status"],
+            dataProjectFunding["moped_fund_status"],
             "funding_status",
             value
           ),
         sortComparator: (v1, v2) =>
           getLookupValueByID(
-            data["moped_fund_status"],
+            dataProjectFunding["moped_fund_status"],
             "funding_status",
             v1
           ).localeCompare(
-            getLookupValueByID(data["moped_fund_status"], "funding_status", v2)
+            getLookupValueByID(
+              dataProjectFunding["moped_fund_status"],
+              "funding_status",
+              v2
+            )
           ),
         renderEditCell: (props) => (
           <LookupSelectComponent
             {...props}
             name={"funding_status"}
             defaultValue={1}
-            data={data.moped_fund_status}
+            data={dataProjectFunding.moped_fund_status}
           />
         ),
       },
@@ -160,7 +164,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"fdu"}
-            options={dataFdus?.ecapris_subproject_funding}
+            options={dataFduOptions?.ecapris_subproject_funding}
             fullWidthPopper={true}
             autocompleteProps={fduAutocompleteProps}
           />
@@ -213,7 +217,8 @@ const useColumns = ({
       },
     ];
   }, [
-    data,
+    dataProjectFunding,
+    dataFduOptions,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -230,7 +235,11 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
    * */
   const { projectId } = useParams();
 
-  const { loading, data, refetch } = useQuery(FUNDING_QUERY, {
+  const {
+    loading: loadingProjectFunding,
+    data: dataProjectFunding,
+    refetch,
+  } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
     // id 0 used when creating a new project, no project funding will be returned
     variables: {
@@ -239,9 +248,12 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     fetchPolicy: "no-cache",
   });
 
-  const { loading: loadingFdus, data: dataFdus } = useQuery(ECAPRIS_FDU_QUERY, {
-    fetchPolicy: "no-cache",
-  });
+  const { loading: loadingFduOptions, data: dataFduOptions } = useQuery(
+    ECAPRIS_FDU_OPTIONS_QUERY,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
@@ -269,13 +281,16 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     []
   );
 
-  const fdusArray = useFdusArray(data?.moped_proj_funding);
+  const fdusArray = useFdusArray(dataProjectFunding?.moped_proj_funding);
 
   useEffect(() => {
-    if (data && data.moped_proj_funding.length > 0) {
-      setRows(data.moped_proj_funding);
+    if (
+      dataProjectFunding &&
+      dataProjectFunding.moped_proj_funding.length > 0
+    ) {
+      setRows(dataProjectFunding.moped_proj_funding);
     }
-  }, [data]);
+  }, [dataProjectFunding]);
 
   const handleTabKeyDown = React.useCallback(
     (params, event) => {
@@ -444,7 +459,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
           .then((response) => {
             // replace the temporary row id with the one proj funding id from the record creation
             const record_id =
-              response.data.insert_moped_proj_funding.returning[0]
+              response.dataProjectFunding.insert_moped_proj_funding.returning[0]
                 .proj_funding_id;
             updatedRow.proj_funding_id = record_id;
           })
@@ -498,8 +513,8 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   }, [refetch, refetchProjectSummary]);
 
   const dataGridColumns = useColumns({
-    data,
-    dataFdus,
+    dataProjectFunding,
+    dataFduOptions,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -508,9 +523,9 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     usingShiftKey,
   });
 
-  if (loading || !data) return <CircularProgress />;
+  if (loadingProjectFunding || !dataProjectFunding) return <CircularProgress />;
 
-  const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
+  const eCaprisID = dataProjectFunding?.moped_project[0].ecapris_subproject_id;
 
   return (
     <>
@@ -567,7 +582,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                 <Grid item xs={3}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
-                    data={data}
+                    data={dataProjectFunding}
                     refetch={refetchFundingData}
                     handleSnackbar={handleSnackbar}
                     noWrapper

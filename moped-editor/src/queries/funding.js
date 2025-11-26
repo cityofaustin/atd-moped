@@ -44,7 +44,7 @@ export const FUNDING_QUERY = gql`
   }
 `;
 
-export const ECAPRIS_FDU_QUERY = gql`
+export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
   query EcaprisFdu {
     ecapris_subproject_funding {
       id
