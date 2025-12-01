@@ -232,17 +232,13 @@ const useColumns = ({
   ]);
 
 const ProjectFundingTable = ({
+  projectId,
   handleSnackbar,
   refetchProjectSummary,
   eCaprisSubprojectId = null,
   shouldSyncEcaprisFunding,
 }) => {
   const apiRef = useGridApiRef();
-
-  /** Params Hook
-   * @type {integer} projectId
-   * */
-  const { projectId } = useParams();
 
   /* Query Moped and eCAPRIS funding with matching filters */
   const queryVariables =
