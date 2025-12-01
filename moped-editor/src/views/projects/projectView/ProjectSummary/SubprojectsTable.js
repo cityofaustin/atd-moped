@@ -47,7 +47,6 @@ const useColumns = ({
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
               height: "100%",
               width: "100%",
             }}
@@ -387,6 +386,7 @@ const SubprojectsTable = ({
         rows={rows}
         autoHeight
         getRowHeight={() => "auto"}
+        density="comfortable"
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
