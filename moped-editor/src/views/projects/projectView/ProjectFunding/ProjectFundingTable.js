@@ -235,6 +235,7 @@ const ProjectFundingTable = ({
   handleSnackbar,
   refetchProjectSummary,
   eCaprisSubprojectId = null,
+  shouldSyncEcaprisFunding,
 }) => {
   const apiRef = useGridApiRef();
 
@@ -244,20 +245,21 @@ const ProjectFundingTable = ({
   const { projectId } = useParams();
 
   /* Query Moped and eCAPRIS funding with matching filters */
-  const queryVariables = eCaprisSubprojectId
-    ? {
-        projectFundingConditions: {
-          _or: [
-            { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
-            { project_id: { _eq: Number(projectId) } },
-          ],
-        },
-      }
-    : {
-        projectFundingConditions: {
-          project_id: { _eq: Number(projectId) },
-        },
-      };
+  const queryVariables =
+    eCaprisSubprojectId && shouldSyncEcaprisFunding
+      ? {
+          projectFundingConditions: {
+            _or: [
+              { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
+              { project_id: { _eq: Number(projectId) } },
+            ],
+          },
+        }
+      : {
+          projectFundingConditions: {
+            project_id: { _eq: Number(projectId) },
+          },
+        };
 
   console.log("queryVariables", queryVariables);
 

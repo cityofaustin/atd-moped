@@ -7,9 +7,14 @@ import { useParams } from "react-router-dom";
 const ProjectFunding = ({
   handleSnackbar,
   refetch: refetchProjectSummary,
-  eCaprisSubprojectId = null,
+  data: projectData,
 }) => {
   const { projectId } = useParams();
+  const eCaprisSubprojectId =
+    projectData?.moped_project?.[0]?.ecapris_subproject_id ?? null;
+  const shouldSyncEcaprisFunding =
+    projectData?.moped_project?.[0]?.shouldSyncEcaprisFunding ?? false;
+
   return (
     <Grid container spacing={4}>
       <Grid item xs={12}>
@@ -18,6 +23,7 @@ const ProjectFunding = ({
           handleSnackbar={handleSnackbar}
           refetchProjectSummary={refetchProjectSummary}
           eCaprisSubprojectId={eCaprisSubprojectId}
+          shouldSyncEcaprisFunding={shouldSyncEcaprisFunding}
         />
       </Grid>
       <Grid item xs={12}>
