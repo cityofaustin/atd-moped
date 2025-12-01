@@ -412,12 +412,15 @@ const ProjectFundingTable = ({
       // remove row from rows in state
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
-      const deletedRow = rows.find((row) => row.proj_funding_id === id);
+      const deletedRow = rows.find((row) => row.id === id);
+      const { proj_funding_id } = deletedRow;
+
+      debugger;
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
         deleteProjectFunding({
           variables: {
-            proj_funding_id: id,
+            proj_funding_id,
           },
         })
           .then(() => refetch())
@@ -458,7 +461,8 @@ const ProjectFundingTable = ({
 
     // preventing empty strings from being saved
     updateProjectFundingData.funding_amount =
-      updateProjectFundingData.funding_amount || null;
+      updateProjectFundingData.amount || null;
+    delete updateProjectFundingData.amount;
     updateProjectFundingData.funding_description =
       !updateProjectFundingData.funding_description ||
       updateProjectFundingData.funding_description.trim() === ""
@@ -482,9 +486,6 @@ const ProjectFundingTable = ({
       updatedRow.fdu?.unit_long_name || null;
     updateProjectFundingData.ecapris_funding_id =
       updatedRow.fdu?.ecapris_funding_id || null;
-
-    updateProjectFundingData.amount = updatedRow.funding_amount;
-    delete updateProjectFundingData.amount;
 
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;
