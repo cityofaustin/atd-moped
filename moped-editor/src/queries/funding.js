@@ -35,57 +35,6 @@ export const COMBINED_FUNDING_QUERY = gql`
   }
 `;
 
-export const FUNDING_QUERY = gql`
-  query ProjectFunding($projectId: Int) {
-    moped_proj_funding(
-      order_by: { proj_funding_id: asc }
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-    ) {
-      proj_funding_id
-      ecapris_funding_id
-      created_by_user_id
-      created_at
-      fdu
-      unit_long_name
-      funding_amount
-      funding_description
-      funding_program_id
-      moped_fund_program {
-        funding_program_id
-        funding_program_name
-      }
-      funding_source_id
-      moped_fund_source {
-        funding_source_id
-        funding_source_name
-      }
-      funding_status_id
-      is_deleted
-      ecapris_subproject_funding {
-        id
-        ecapris_funding_id: fao_id
-        fdu
-        unit_long_name
-      }
-    }
-    moped_project(where: { project_id: { _eq: $projectId } }) {
-      ecapris_subproject_id
-    }
-    moped_fund_sources(where: { is_deleted: { _eq: false } }) {
-      funding_source_id
-      funding_source_name
-    }
-    moped_fund_programs(where: { is_deleted: { _eq: false } }) {
-      funding_program_id
-      funding_program_name
-    }
-    moped_fund_status(where: { funding_status_id: { _neq: 0 } }) {
-      funding_status_id
-      funding_status_name
-    }
-  }
-`;
-
 export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
   query EcaprisFdu {
     ecapris_subproject_funding {

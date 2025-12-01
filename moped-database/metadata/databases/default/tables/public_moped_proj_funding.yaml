@@ -2,15 +2,6 @@ table:
   name: moped_proj_funding
   schema: public
 object_relationships:
-  - name: ecapris_subproject_funding
-    using:
-      manual_configuration:
-        column_mapping:
-          ecapris_funding_id: fao_id
-        insertion_order: null
-        remote_table:
-          name: ecapris_subproject_funding
-          schema: public
   - name: moped_fund_program
     using:
       foreign_key_constraint_on: funding_program_id
