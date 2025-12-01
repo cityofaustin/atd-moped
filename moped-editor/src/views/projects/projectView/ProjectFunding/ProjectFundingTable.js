@@ -190,6 +190,8 @@ const useColumns = ({
             handleDeleteOpen={handleDeleteOpen}
             handleSaveClick={handleSaveClick}
             handleEditClick={handleEditClick}
+            editDisabled={true}
+            deleteDisabled={true}
           />
         ),
       },

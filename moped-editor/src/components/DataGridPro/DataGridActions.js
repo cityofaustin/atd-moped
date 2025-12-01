@@ -21,6 +21,8 @@ import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
  * @param {Function} handleDeleteClick - handles delete button click
  * @param {Function} handleSaveClick - handles save button click
  * @param {Function} handleEditClick - handles edit button click, optional
+ * @param {Boolean} editDisabled - disables edit button when true, optional
+ * @param {Boolean} deleteDisabled - disables delete button when true, optional
  * @return {JSX.Element}
  */
 
@@ -32,6 +34,8 @@ const DataGridActions = ({
   handleDeleteOpen,
   handleSaveClick,
   handleEditClick,
+  editDisabled = false,
+  deleteDisabled = false,
 }) => {
   const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -89,6 +93,7 @@ const DataGridActions = ({
         className="textPrimary"
         onClick={handleEditClick(id)}
         color="inherit"
+        disabled={editDisabled}
       />
     ),
     <GridActionsCellItem
@@ -97,6 +102,7 @@ const DataGridActions = ({
       key="delete"
       onClick={handleDeleteOpen(id)}
       color="inherit"
+      disabled={deleteDisabled}
     />,
   ];
 };
