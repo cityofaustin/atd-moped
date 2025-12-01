@@ -6,6 +6,7 @@ export const COMBINED_FUNDING_QUERY = gql`
   ) {
     combined_project_funding_view(where: $projectFundingConditions) {
       id
+      proj_funding_id: original_id
       fdu
       amount
       description

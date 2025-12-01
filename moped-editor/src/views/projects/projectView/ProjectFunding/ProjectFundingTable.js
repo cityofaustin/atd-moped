@@ -35,6 +35,7 @@ import ProjectSummaryProjectECapris from "src/views/projects/projectView/Project
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import { update } from "lodash";
 
 // Pass this object as `sx` to the toolbar slotProps.
 const toolbarSx = {
@@ -375,10 +376,7 @@ const ProjectFundingTable = ({
         moped_fund_source: null,
         moped_fund_program: null,
         moped_fund_status: null,
-        // funding_source_id: null,
-        // funding_program_id: null,
         funding_description: null,
-        // funding_status_id: null,
         fdu: null,
         unit_long_name: null,
         ecapris_funding_id: null,
@@ -475,11 +473,18 @@ const ProjectFundingTable = ({
       updateProjectFundingData.moped_fund_program?.funding_program_id || null;
     delete updateProjectFundingData.moped_fund_program;
 
+    updateProjectFundingData.funding_status_id =
+      updateProjectFundingData.moped_fund_status?.funding_status_id || null;
+    delete updateProjectFundingData.moped_fund_status;
+
     updateProjectFundingData.fdu = updatedRow.fdu?.fdu || null;
     updateProjectFundingData.unit_long_name =
       updatedRow.fdu?.unit_long_name || null;
     updateProjectFundingData.ecapris_funding_id =
       updatedRow.fdu?.ecapris_funding_id || null;
+
+    updateProjectFundingData.amount = updatedRow.funding_amount;
+    delete updateProjectFundingData.amount;
 
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;
