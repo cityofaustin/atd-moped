@@ -110,7 +110,7 @@ const useColumns = ({
         field: "moped_fund_source",
         width: 200,
         editable: true,
-        valueGetter: (value) => value?.funding_source_name,
+        valueFormatter: (value) => value?.funding_source_name,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -125,7 +125,7 @@ const useColumns = ({
         field: "moped_fund_program",
         width: 200,
         editable: true,
-        valueGetter: (value) => value?.funding_program_name,
+        valueFormatter: (value) => value?.funding_program_name,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -147,13 +147,14 @@ const useColumns = ({
         field: "moped_fund_status",
         editable: true,
         width: 200,
-        valueGetter: (value) => value?.funding_status_name,
+        valueFormatter: (value) => value?.funding_status_name,
         renderEditCell: (props) => (
-          <LookupSelectComponent
+          <LookupAutocompleteComponent
             {...props}
             name={"funding_status"}
             defaultValue={1}
-            data={dataProjectFunding.moped_fund_status}
+            options={dataProjectFunding["moped_fund_status"]}
+            fullWidthPopper={true}
           />
         ),
       },
@@ -372,10 +373,12 @@ const ProjectFundingTable = ({
       {
         id,
         moped_fund_source: null,
-        funding_source_id: null,
-        funding_program_id: null,
+        moped_fund_program: null,
+        moped_fund_status: null,
+        // funding_source_id: null,
+        // funding_program_id: null,
         funding_description: null,
-        funding_status_id: null,
+        // funding_status_id: null,
         fdu: null,
         unit_long_name: null,
         ecapris_funding_id: null,
