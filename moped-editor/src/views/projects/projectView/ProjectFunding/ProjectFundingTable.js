@@ -88,9 +88,9 @@ const useColumns = ({
         field: "source_name",
         width: 200,
         editable: true,
-        valueFormatter: (value) => value?.funding_source_name,
-        sortComparator: (v1, v2) =>
-          v1.funding_source_name.localeCompare(v2.funding_source_name),
+        // valueFormatter: (value) => value?.funding_source_name,
+        // sortComparator: (v1, v2) =>
+        //   v1.funding_source_name.localeCompare(v2.funding_source_name),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -105,9 +105,9 @@ const useColumns = ({
         field: "program_name",
         width: 200,
         editable: true,
-        valueFormatter: (value) => value?.funding_program_name,
-        sortComparator: (v1, v2) =>
-          v1.funding_program_name.localeCompare(v2.funding_program_name),
+        // valueFormatter: (value) => value?.funding_program_name,
+        // sortComparator: (v1, v2) =>
+        //   v1.funding_program_name.localeCompare(v2.funding_program_name),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -129,24 +129,24 @@ const useColumns = ({
         field: "status_name",
         editable: true,
         width: 200,
-        valueFormatter: (value) =>
-          getLookupValueByID(
-            dataProjectFunding["moped_fund_status"],
-            "funding_status",
-            value
-          ),
-        sortComparator: (v1, v2) =>
-          getLookupValueByID(
-            dataProjectFunding["moped_fund_status"],
-            "funding_status",
-            v1
-          ).localeCompare(
-            getLookupValueByID(
-              dataProjectFunding["moped_fund_status"],
-              "funding_status",
-              v2
-            )
-          ),
+        // valueFormatter: (value) =>
+        //   getLookupValueByID(
+        //     dataProjectFunding["moped_fund_status"],
+        //     "funding_status",
+        //     value
+        //   ),
+        // sortComparator: (v1, v2) =>
+        //   getLookupValueByID(
+        //     dataProjectFunding["moped_fund_status"],
+        //     "funding_status",
+        //     v1
+        //   ).localeCompare(
+        //     getLookupValueByID(
+        //       dataProjectFunding["moped_fund_status"],
+        //       "funding_status",
+        //       v2
+        //     )
+        //   ),
         renderEditCell: (props) => (
           <LookupSelectComponent
             {...props}
@@ -611,7 +611,7 @@ const ProjectFundingTable = ({
                 <Grid item xs={3}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
-                    data={dataProjectFunding}
+                    eCaprisSubprojectId={eCaprisSubprojectId}
                     refetch={refetchFundingData}
                     handleSnackbar={handleSnackbar}
                     noWrapper

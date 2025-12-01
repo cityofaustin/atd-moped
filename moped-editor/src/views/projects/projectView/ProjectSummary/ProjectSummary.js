@@ -177,7 +177,9 @@ const ProjectSummary = ({
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     loading={loading}
-                    data={data}
+                    eCaprisSubprojectId={
+                      data?.moped_project?.[0]?.ecapris_subproject_id
+                    }
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
