@@ -11,6 +11,9 @@ select_permissions:
         - ecapris_subproject_id
         - fao_id
         - fdu
+        - funding_program_id
+        - funding_source_id
+        - funding_status_id
         - id
         - is_synced_from_ecapris
         - original_id
@@ -31,6 +34,9 @@ select_permissions:
         - ecapris_subproject_id
         - fao_id
         - fdu
+        - funding_program_id
+        - funding_source_id
+        - funding_status_id
         - id
         - is_synced_from_ecapris
         - original_id
@@ -51,6 +57,9 @@ select_permissions:
         - ecapris_subproject_id
         - fao_id
         - fdu
+        - funding_program_id
+        - funding_source_id
+        - funding_status_id
         - id
         - is_synced_from_ecapris
         - original_id

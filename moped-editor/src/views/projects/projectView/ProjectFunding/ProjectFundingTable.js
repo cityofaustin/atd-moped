@@ -48,24 +48,48 @@ const toolbarSx = {
   }),
 };
 
-// memoized hook to concatanate fund dept and unit ids into an fdu string
-const useFdusArray = (projectFunding) =>
-  useMemo(() => {
-    if (!projectFunding) {
-      return [];
-    }
-    return projectFunding.map(
-      (record) =>
-        `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
-    );
-  }, [projectFunding]);
-
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
   getOptionLabel: (option) =>
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
   isOptionEqualToValue: (value, option) =>
     value?.ecapris_funding_id === option?.ecapris_funding_id,
+};
+
+const transformFundingRecords = (viewRecords, lookupData) => {
+  const {
+    moped_fund_sources,
+    moped_fund_programs,
+    moped_fund_status: moped_fund_statuses,
+  } = lookupData;
+
+  return viewRecords.map((record) => {
+    // Reconstruct lookup objects for editing
+    const moped_fund_source = record.funding_source_id
+      ? moped_fund_sources.find(
+          (s) => s.funding_source_id === record.funding_source_id
+        )
+      : null;
+
+    const moped_fund_program = record.funding_program_id
+      ? moped_fund_programs.find(
+          (p) => p.funding_program_id === record.funding_program_id
+        )
+      : null;
+
+    const moped_fund_status = record.funding_status_id
+      ? moped_fund_statuses.find(
+          (s) => s.funding_status_id === record.funding_status_id
+        )
+      : null;
+
+    return {
+      ...record,
+      moped_fund_source,
+      moped_fund_program,
+      moped_fund_status,
+    };
+  });
 };
 
 /** Hook that provides memoized column settings */
@@ -83,9 +107,10 @@ const useColumns = ({
     return [
       {
         headerName: "Source",
-        field: "source_name",
+        field: "moped_fund_source",
         width: 200,
         editable: true,
+        valueGetter: (value) => value?.funding_source_name,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -97,9 +122,10 @@ const useColumns = ({
       },
       {
         headerName: "Program",
-        field: "program_name",
+        field: "moped_fund_program",
         width: 200,
         editable: true,
+        valueGetter: (value) => value?.funding_program_name,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -118,9 +144,10 @@ const useColumns = ({
       },
       {
         headerName: "Status",
-        field: "status_name",
+        field: "moped_fund_status",
         editable: true,
         width: 200,
+        valueGetter: (value) => value?.funding_status_name,
         renderEditCell: (props) => (
           <LookupSelectComponent
             {...props}
@@ -233,8 +260,6 @@ const ProjectFundingTable = ({
           },
         };
 
-  console.log("queryVariables", queryVariables);
-
   const {
     loading: loadingProjectFunding,
     data: dataProjectFunding,
@@ -243,6 +268,22 @@ const ProjectFundingTable = ({
     variables: { ...queryVariables },
     fetchPolicy: "no-cache",
   });
+
+  const tableFundingRows = useMemo(() => {
+    const fundingRows = dataProjectFunding?.combined_project_funding_view;
+
+    if (!fundingRows || fundingRows.length === 0) return [];
+
+    const fundingRowsWithRelatedLookups = transformFundingRecords(
+      fundingRows,
+      dataProjectFunding
+    );
+    return fundingRowsWithRelatedLookups;
+  }, [dataProjectFunding]);
+
+  const fdusArray = useMemo(() => {
+    return tableFundingRows.map((row) => row.fdu) || [];
+  }, [tableFundingRows]);
 
   const { loading: loadingFduOptions, data: dataFduOptions } = useQuery(
     ECAPRIS_FDU_OPTIONS_QUERY,
@@ -277,18 +318,11 @@ const ProjectFundingTable = ({
     []
   );
 
-  const fdusArray = useFdusArray(
-    dataProjectFunding?.combined_project_funding_view
-  );
-
   useEffect(() => {
-    if (
-      dataProjectFunding &&
-      dataProjectFunding.combined_project_funding_view.length > 0
-    ) {
-      setRows(dataProjectFunding.combined_project_funding_view);
+    if (tableFundingRows && tableFundingRows.length > 0) {
+      setRows(tableFundingRows);
     }
-  }, [dataProjectFunding]);
+  }, [tableFundingRows]);
 
   const handleTabKeyDown = React.useCallback(
     (params, event) => {

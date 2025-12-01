@@ -20,8 +20,11 @@ CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     moped_proj_funding.funding_amount AS amount,
     moped_proj_funding.funding_description AS description,
     moped_fund_sources.funding_source_name AS source_name,
+    moped_proj_funding.funding_source_id,
     moped_fund_status.funding_status_name AS status_name,
+    moped_proj_funding.funding_status_id,
     moped_fund_programs.funding_program_name AS program_name,
+    moped_proj_funding.funding_program_id,
     NULL::integer AS fao_id,
     NULL::text AS ecapris_subproject_id,
     FALSE AS is_synced_from_ecapris
@@ -42,8 +45,11 @@ SELECT
     ecapris_subproject_funding.app AS amount,
     'Synced from eCAPRIS'::text AS description,
     NULL::text AS source_name,
+    NULL::integer AS funding_source_id,
     'Set up'::text AS status_name,
+    NULL::integer AS funding_status_id,
     NULL::text AS program_name,
+    NULL::integer AS funding_program_id,
     ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id,
     TRUE AS is_synced_from_ecapris
