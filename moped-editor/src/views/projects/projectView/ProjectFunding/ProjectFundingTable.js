@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
@@ -34,7 +33,6 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
-import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
@@ -88,9 +86,6 @@ const useColumns = ({
         field: "source_name",
         width: 200,
         editable: true,
-        // valueFormatter: (value) => value?.funding_source_name,
-        // sortComparator: (v1, v2) =>
-        //   v1.funding_source_name.localeCompare(v2.funding_source_name),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -105,9 +100,6 @@ const useColumns = ({
         field: "program_name",
         width: 200,
         editable: true,
-        // valueFormatter: (value) => value?.funding_program_name,
-        // sortComparator: (v1, v2) =>
-        //   v1.funding_program_name.localeCompare(v2.funding_program_name),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -129,24 +121,6 @@ const useColumns = ({
         field: "status_name",
         editable: true,
         width: 200,
-        // valueFormatter: (value) =>
-        //   getLookupValueByID(
-        //     dataProjectFunding["moped_fund_status"],
-        //     "funding_status",
-        //     value
-        //   ),
-        // sortComparator: (v1, v2) =>
-        //   getLookupValueByID(
-        //     dataProjectFunding["moped_fund_status"],
-        //     "funding_status",
-        //     v1
-        //   ).localeCompare(
-        //     getLookupValueByID(
-        //       dataProjectFunding["moped_fund_status"],
-        //       "funding_status",
-        //       v2
-        //     )
-        //   ),
         renderEditCell: (props) => (
           <LookupSelectComponent
             {...props}

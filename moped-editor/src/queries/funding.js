@@ -14,6 +14,7 @@ export const COMBINED_FUNDING_QUERY = gql`
       status_name
       ecapris_funding_id: fao_id
       is_synced_from_ecapris
+      unit_long_name
     }
   }
 `;
