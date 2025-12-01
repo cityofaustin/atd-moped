@@ -18,6 +18,7 @@ select_permissions:
         - project_id
         - source_name
         - status_name
+        - unit_long_name
         - updated_at
       filter: {}
     comment: ""
@@ -37,6 +38,7 @@ select_permissions:
         - project_id
         - source_name
         - status_name
+        - unit_long_name
         - updated_at
       filter: {}
     comment: ""
@@ -56,6 +58,7 @@ select_permissions:
         - project_id
         - source_name
         - status_name
+        - unit_long_name
         - updated_at
       filter: {}
     comment: ""

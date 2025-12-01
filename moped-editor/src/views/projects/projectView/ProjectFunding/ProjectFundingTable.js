@@ -85,7 +85,7 @@ const useColumns = ({
     return [
       {
         headerName: "Source",
-        field: "moped_fund_source",
+        field: "source_name",
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
@@ -102,7 +102,7 @@ const useColumns = ({
       },
       {
         headerName: "Program",
-        field: "moped_fund_program",
+        field: "program_name",
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_program_name,
@@ -119,14 +119,14 @@ const useColumns = ({
       },
       {
         headerName: "Description",
-        field: "funding_description",
+        field: "description",
         width: 200,
         editable: true,
         renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Status",
-        field: "funding_status_id",
+        field: "status_name",
         editable: true,
         width: 200,
         valueFormatter: (value) =>
@@ -193,7 +193,7 @@ const useColumns = ({
       },
       {
         headerName: "Amount",
-        field: "funding_amount",
+        field: "amount",
         width: 100,
         editable: true,
         valueFormatter: (value) => currencyFormatter.format(value),
@@ -259,6 +259,8 @@ const ProjectFundingTable = ({
         },
       };
 
+  console.log("queryVariables", queryVariables);
+
   const {
     loading: loadingProjectFunding,
     data: dataProjectFunding,
@@ -301,14 +303,16 @@ const ProjectFundingTable = ({
     []
   );
 
-  const fdusArray = useFdusArray(dataProjectFunding?.moped_proj_funding);
+  const fdusArray = useFdusArray(
+    dataProjectFunding?.combined_project_funding_view
+  );
 
   useEffect(() => {
     if (
       dataProjectFunding &&
-      dataProjectFunding.moped_proj_funding.length > 0
+      dataProjectFunding.combined_project_funding_view.length > 0
     ) {
-      setRows(dataProjectFunding.moped_proj_funding);
+      setRows(dataProjectFunding.combined_project_funding_view);
     }
   }, [dataProjectFunding]);
 
@@ -552,8 +556,6 @@ const ProjectFundingTable = ({
 
   if (loadingProjectFunding || !dataProjectFunding) return <CircularProgress />;
 
-  const eCaprisID = dataProjectFunding?.moped_project[0].ecapris_subproject_id;
-
   return (
     <>
       <DataGridPro
@@ -563,7 +565,7 @@ const ProjectFundingTable = ({
         autoHeight
         columns={dataGridColumns}
         rows={rows}
-        getRowId={(row) => row.proj_funding_id}
+        getRowId={(row) => row.id}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowEditStop={handleRowEditStop(rows, setRows)}
@@ -584,7 +586,7 @@ const ProjectFundingTable = ({
         slotProps={{
           toolbar: {
             title: "Funding sources",
-            primaryActionButton: !!eCaprisID ? (
+            primaryActionButton: !!eCaprisSubprojectId ? (
               <ButtonDropdownMenu
                 buttonWrapperStyle={toolbarSx.fundingButton}
                 addAction={handleAddRecordClick}
@@ -629,7 +631,7 @@ const ProjectFundingTable = ({
       <SubprojectFundingModal
         isDialogOpen={isDialogOpen}
         handleDialogClose={handleSubprojectDialogClose}
-        eCaprisID={eCaprisID}
+        eCaprisID={eCaprisSubprojectId}
         fdusArray={fdusArray}
         addProjectFunding={addProjectFunding}
         projectId={projectId}
