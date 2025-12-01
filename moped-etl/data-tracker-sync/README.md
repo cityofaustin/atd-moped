@@ -63,7 +63,11 @@ or through the Moped Editor
 log an update of the Knack record that you created earlier. Check the row in the test
 Data Tracker app and you should see that the title has been updated with your edit
 
-Alternately, you can run the script with the dry run flag `--dry-run`
+Alternately, you can run the script with with the dry run flag `--dry-run`.
+```bash
+docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app atddocker/atd-moped-etl-data-tracker-sync python data_tracker_sync.py --date <your timestamp> --dry-run
+```
+
 
 #### Backfilling a new column
 
