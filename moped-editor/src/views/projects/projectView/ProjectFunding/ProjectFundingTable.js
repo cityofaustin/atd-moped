@@ -182,7 +182,7 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        renderCell: ({ id }) => (
+        renderCell: ({ id, row }) => (
           <DataGridActions
             id={id}
             rowModesModel={rowModesModel}
@@ -190,8 +190,8 @@ const useColumns = ({
             handleDeleteOpen={handleDeleteOpen}
             handleSaveClick={handleSaveClick}
             handleEditClick={handleEditClick}
-            editDisabled={true}
-            deleteDisabled={true}
+            editDisabled={row.ecapris_subproject_id != null}
+            deleteDisabled={row.ecapris_subproject_id != null}
           />
         ),
       },
