@@ -13,7 +13,7 @@ const ProjectFunding = ({
   const eCaprisSubprojectId =
     projectData?.moped_project?.[0]?.ecapris_subproject_id ?? null;
   const shouldSyncEcaprisFunding =
-    projectData?.moped_project?.[0]?.shouldSyncEcaprisFunding ?? false;
+    projectData?.moped_project?.[0]?.should_sync_ecapris_funding ?? false;
 
   return (
     <Grid container spacing={4}>
