@@ -64,9 +64,7 @@ const useColumns = ({
         renderCell: ({ row }) => (
           <Box
             sx={{
-              py: 1,
               display: "flex",
-              alignItems: "center",
               height: "100%",
               whiteSpace: "normal",
               wordBreak: "break-word",
@@ -106,7 +104,6 @@ const useColumns = ({
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
               height: "100%",
               width: "100%",
             }}
