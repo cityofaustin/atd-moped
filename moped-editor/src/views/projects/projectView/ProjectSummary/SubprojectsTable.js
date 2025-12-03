@@ -287,8 +287,8 @@ const SubprojectsTable = ({
         refetch();
         refetchSummaryData(); // Refresh subprojects in summary map
         const successMessage = isSubproject
-          ? "Parent project removed"
-          : "Subproject removed";
+          ? "Parent project unlinked"
+          : "Subproject unlinked";
         handleSnackbar(true, successMessage, "success");
       })
       .then(() => setIsDeleteConfirmationOpen(false))
@@ -426,7 +426,7 @@ const SubprojectsTable = ({
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         confirmationText={
           isSubproject
-            ? "Are you sure you want to unlink this parent project?"
+            ? "Are you sure you want to unlink the parent project?"
             : "Are you sure you want to unlink this subproject?"
         }
         actionButtonText="Unlink"
