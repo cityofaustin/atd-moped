@@ -26,7 +26,6 @@ import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFund
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
-import LookupSelectComponent from "src/components/LookupSelectComponent";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
@@ -35,7 +34,6 @@ import ProjectSummaryProjectECapris from "src/views/projects/projectView/Project
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
-import { update } from "lodash";
 
 // Pass this object as `sx` to the toolbar slotProps.
 const toolbarSx = {
@@ -57,40 +55,93 @@ const fduAutocompleteProps = {
     value?.ecapris_funding_id === option?.ecapris_funding_id,
 };
 
-const transformFundingRecords = (viewRecords, lookupData) => {
+const transformDatabaseToGrid = (fundingRecords, lookupData) => {
   const {
     moped_fund_sources,
     moped_fund_programs,
     moped_fund_status: moped_fund_statuses,
   } = lookupData;
 
-  return viewRecords.map((record) => {
-    // Reconstruct lookup objects for editing
-    const moped_fund_source = record.funding_source_id
+  return fundingRecords.map((record) => {
+    // Reconstruct lookup objects for editing in autocomplete components
+    const fund_source = record.funding_source_id
       ? moped_fund_sources.find(
           (s) => s.funding_source_id === record.funding_source_id
         )
       : null;
 
-    const moped_fund_program = record.funding_program_id
+    const fund_program = record.funding_program_id
       ? moped_fund_programs.find(
           (p) => p.funding_program_id === record.funding_program_id
         )
       : null;
 
-    const moped_fund_status = record.funding_status_id
+    const fund_status = record.funding_status_id
       ? moped_fund_statuses.find(
           (s) => s.funding_status_id === record.funding_status_id
         )
       : null;
 
+    // Remove fields unneeded in the data grid row
+    const {
+      funding_source_id,
+      funding_status_id,
+      funding_program_id,
+      ...tableRecord
+    } = record;
+
     return {
-      ...record,
-      moped_fund_source,
-      moped_fund_program,
-      moped_fund_status,
+      ...tableRecord,
+      fund_source,
+      fund_program,
+      fund_status,
     };
   });
+};
+
+const transformGridToDatabase = (gridRecord) => {
+  // Extract the lookup ids from the selected lookup objects
+  const funding_source_id = gridRecord.fund_source
+    ? gridRecord.fund_source.funding_source_id
+    : null;
+  const funding_program_id = gridRecord.fund_program
+    ? gridRecord.fund_program.funding_program_id
+    : null;
+  const funding_status_id = gridRecord.fund_status
+    ? gridRecord.fund_status.funding_status_id
+    : null;
+  const fdu = gridRecord.fdu ? gridRecord.fdu.fdu : null;
+  const unit_long_name = gridRecord.fdu ? gridRecord.fdu.unit_long_name : null;
+  const ecapris_funding_id = gridRecord.fdu
+    ? gridRecord.fdu.ecapris_funding_id
+    : null;
+
+  const {
+    id,
+    __typename,
+    is_synced_from_ecapris,
+    status_name,
+    program_name,
+    source_name,
+    fund_program,
+    fund_source,
+    fund_status,
+    ecapris_subproject_id,
+    proj_funding_id,
+    isNew,
+    ...dbFields
+  } = gridRecord;
+
+  return {
+    ...dbFields,
+    funding_source_id,
+    funding_program_id,
+    // If no new funding status is selected, the default should be used
+    funding_status_id: funding_status_id ? funding_status_id : 1,
+    fdu,
+    unit_long_name,
+    ecapris_funding_id,
+  };
 };
 
 /** Hook that provides memoized column settings */
@@ -108,7 +159,7 @@ const useColumns = ({
     return [
       {
         headerName: "Source",
-        field: "moped_fund_source",
+        field: "fund_source",
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
@@ -123,7 +174,7 @@ const useColumns = ({
       },
       {
         headerName: "Program",
-        field: "moped_fund_program",
+        field: "fund_program",
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_program_name,
@@ -138,14 +189,14 @@ const useColumns = ({
       },
       {
         headerName: "Description",
-        field: "description",
+        field: "funding_description",
         width: 200,
         editable: true,
         renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Status",
-        field: "moped_fund_status",
+        field: "fund_status",
         editable: true,
         width: 200,
         valueFormatter: (value) => value?.funding_status_name,
@@ -188,7 +239,7 @@ const useColumns = ({
             {...props}
             value={props.row.moped_proj_funding?.unit_long_name}
             usingShiftKey={usingShiftKey}
-            previousColumnField="description"
+            previousColumnField="funding_description"
             nextColumnField="date_estimate"
             valueIdName="related_phase_id"
           />
@@ -196,7 +247,7 @@ const useColumns = ({
       },
       {
         headerName: "Amount",
-        field: "amount",
+        field: "funding_amount",
         width: 100,
         editable: true,
         valueFormatter: (value) => currencyFormatter.format(value),
@@ -276,7 +327,7 @@ const ProjectFundingTable = ({
 
     if (!fundingRows || fundingRows.length === 0) return [];
 
-    const fundingRowsWithRelatedLookups = transformFundingRecords(
+    const fundingRowsWithRelatedLookups = transformDatabaseToGrid(
       fundingRows,
       dataProjectFunding
     );
@@ -373,9 +424,9 @@ const ProjectFundingTable = ({
     setRows((oldRows) => [
       {
         id,
-        moped_fund_source: null,
-        moped_fund_program: null,
-        moped_fund_status: null,
+        fund_source: null,
+        fund_program: null,
+        fund_status: null,
         funding_description: null,
         fdu: null,
         unit_long_name: null,
@@ -388,7 +439,7 @@ const ProjectFundingTable = ({
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "moped_fund_source" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "fund_source" },
     }));
   };
 
@@ -415,7 +466,6 @@ const ProjectFundingTable = ({
       const deletedRow = rows.find((row) => row.id === id);
       const { proj_funding_id } = deletedRow;
 
-      debugger;
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
         deleteProjectFunding({
@@ -455,52 +505,15 @@ const ProjectFundingTable = ({
 
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
-    const updateProjectFundingData = { ...updatedRow };
-    // Remove unexpected variables
-    delete updateProjectFundingData.__typename;
-
-    // preventing empty strings from being saved
-    updateProjectFundingData.funding_amount =
-      updateProjectFundingData.amount || null;
-    delete updateProjectFundingData.amount;
-    updateProjectFundingData.funding_description =
-      !updateProjectFundingData.funding_description ||
-      updateProjectFundingData.funding_description.trim() === ""
-        ? null
-        : updateProjectFundingData.funding_description;
-
-    updateProjectFundingData.funding_source_id =
-      updateProjectFundingData.moped_fund_source?.funding_source_id || null;
-    delete updateProjectFundingData.moped_fund_source;
-
-    updateProjectFundingData.funding_program_id =
-      updateProjectFundingData.moped_fund_program?.funding_program_id || null;
-    delete updateProjectFundingData.moped_fund_program;
-
-    updateProjectFundingData.funding_status_id =
-      updateProjectFundingData.moped_fund_status?.funding_status_id || null;
-    delete updateProjectFundingData.moped_fund_status;
-
-    updateProjectFundingData.fdu = updatedRow.fdu?.fdu || null;
-    updateProjectFundingData.unit_long_name =
-      updatedRow.fdu?.unit_long_name || null;
-    updateProjectFundingData.ecapris_funding_id =
-      updatedRow.fdu?.ecapris_funding_id || null;
+    const mutationData = transformGridToDatabase(updatedRow);
 
     if (updatedRow.isNew) {
-      delete updateProjectFundingData.isNew;
-      delete updateProjectFundingData.id;
-      delete updateProjectFundingData.proj_funding_id;
-
       return (
         addProjectFunding({
           variables: {
             objects: {
-              ...updateProjectFundingData,
-              project_id: projectId,
-              // If no new funding status is selected, the default should be used
-              funding_status_id:
-                updateProjectFundingData.funding_status_id || 1,
+              ...mutationData,
+              project_id: Number(projectId),
             },
           },
         })
@@ -533,7 +546,10 @@ const ProjectFundingTable = ({
       } else {
         return (
           updateProjectFunding({
-            variables: updateProjectFundingData,
+            variables: {
+              ...mutationData,
+              proj_funding_id: updatedRow.proj_funding_id,
+            },
           })
             .then(() => {
               refetch();

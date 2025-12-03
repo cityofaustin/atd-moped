@@ -8,8 +8,8 @@ export const COMBINED_FUNDING_QUERY = gql`
       id
       proj_funding_id: original_id
       fdu
-      amount
-      description
+      funding_amount: amount
+      funding_description: description
       program_name
       funding_program_id
       source_name
