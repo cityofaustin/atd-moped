@@ -508,7 +508,7 @@ const ProjectFundingTable = ({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-    const editedRow = rows.find((row) => row.proj_funding_id === id);
+    const editedRow = rows.find((row) => row.id === id);
     if (editedRow.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
@@ -598,7 +598,8 @@ const ProjectFundingTable = ({
     usingShiftKey,
   });
 
-  if (loadingProjectFunding || !dataProjectFunding) return <CircularProgress />;
+  if (loadingProjectFunding || loadingFduOptions || !dataProjectFunding)
+    return <CircularProgress />;
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -612,6 +613,7 @@ const ProjectFundingTable = ({
         editMode="row"
         rowModesModel={rowModesModel}
         onRowEditStop={handleRowEditStop(rows, setRows)}
+        isCellEditable={(params) => !params.row.is_synced_from_ecapris}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={(error) => console.error(error)}
