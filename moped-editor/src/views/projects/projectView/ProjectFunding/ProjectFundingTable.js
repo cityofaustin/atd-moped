@@ -270,8 +270,8 @@ const useColumns = ({
             handleDeleteOpen={handleDeleteOpen}
             handleSaveClick={handleSaveClick}
             handleEditClick={handleEditClick}
-            editDisabled={row.ecapris_subproject_id != null}
-            deleteDisabled={row.ecapris_subproject_id != null}
+            editDisabled={row.is_synced_from_ecapris}
+            deleteDisabled={row.is_synced_from_ecapris}
           />
         ),
       },
