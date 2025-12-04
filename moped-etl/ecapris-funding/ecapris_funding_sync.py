@@ -59,6 +59,7 @@ def main(args):
                 "program": record.get("program"),
                 "created_by_user_id": 1,
                 "updated_by_user_id": 1,
+                "fdu_status": record.get("fdu_status"),
             }
         )
 

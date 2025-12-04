@@ -21,6 +21,30 @@ export const SUBPROJECT_SUMMARY_QUERY = gql`
   }
 `;
 
+export const PARENT_PROJECT_SUMMARY_QUERY = gql`
+  query ParentProjectSummary($projectId: Int) {
+    parentProject: moped_project(
+      where: {
+        project_id: { _eq: $projectId }
+        is_deleted: { _eq: false }
+      }
+    ) {
+      parent_project_id
+      moped_project {
+        project_name
+        project_name_full
+        project_id
+        moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+          moped_phase {
+            phase_name
+            phase_key
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const SUBPROJECT_OPTIONS_QUERY = gql`
   query SubprojectOptions($projectId: Int) {
     subprojectOptions: moped_project(

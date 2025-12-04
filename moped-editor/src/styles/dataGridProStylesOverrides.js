@@ -9,6 +9,15 @@ const dataGridProStyleOverrides = {
   "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
     py: "8px",
   },
+  // Ensure vertical centering even when cells auto-grow for wrapped content
+  "& .MuiDataGrid-cell": {
+    alignItems: "center",
+  },
+  "& .MuiDataGrid-cellContent": {
+    display: "flex",
+    alignItems: "center",
+    height: "100%",
+  },
   // mui datagrid defaults to using palette.background.default from the theme as the color for the container backgrounds
   "&.MuiDataGrid-root": {
     "--DataGrid-containerBackground": "#fff",
