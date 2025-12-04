@@ -87,20 +87,29 @@ const transformDatabaseToGrid = (fundingRecords, lookupData) => {
         )
       : null;
 
+    const fduOption = {
+      fdu: record.fdu,
+      ecapris_funding_id: record.ecapris_funding_id,
+    };
+
     // Remove fields unneeded in the data grid row
     const {
       funding_source_id,
       funding_status_id,
       funding_program_id,
+      fdu,
+      ecapris_funding_id,
       ...tableRecord
     } = record;
 
     // Return new record with lookup objects for autocomplete components
+    console.log(tableRecord);
     return {
       ...tableRecord,
       fund_source,
       fund_program,
       fund_status,
+      fdu: fduOption,
     };
   });
 };
@@ -226,6 +235,7 @@ const useColumns = ({
         field: "fdu",
         width: 200,
         editable: true,
+        valueFormatter: (value) => value?.fdu,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -234,8 +244,10 @@ const useColumns = ({
             fullWidthPopper={true}
             autocompleteProps={{
               ...fduAutocompleteProps,
-              value: props?.row?.ecapris_subproject_funding,
+              value: props?.row?.fdu,
             }}
+            dependentFieldName="unit_long_name"
+            setDependentFieldValue={(newValue) => newValue.unit_long_name}
           />
         ),
       },
@@ -248,11 +260,10 @@ const useColumns = ({
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
-            value={props.row.moped_proj_funding?.unit_long_name}
+            value={props.row.unit_long_name}
             usingShiftKey={usingShiftKey}
-            previousColumnField="funding_description"
-            nextColumnField="date_estimate"
-            valueIdName="related_phase_id"
+            previousColumnField="fdu"
+            nextColumnField="amount"
           />
         ),
       },
