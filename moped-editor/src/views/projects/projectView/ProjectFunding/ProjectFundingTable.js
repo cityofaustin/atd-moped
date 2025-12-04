@@ -55,6 +55,11 @@ const fduAutocompleteProps = {
     value?.ecapris_funding_id === option?.ecapris_funding_id,
 };
 
+/** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
+ * @param {Array} fundingRecords - array of funding records from the database
+ * @param {Object} lookupData - object containing lookup arrays from the database
+ * @return {Array} - array of transformed funding records for data grid
+ */
 const transformDatabaseToGrid = (fundingRecords, lookupData) => {
   const {
     moped_fund_sources,
@@ -90,6 +95,7 @@ const transformDatabaseToGrid = (fundingRecords, lookupData) => {
       ...tableRecord
     } = record;
 
+    // Return new record with lookup objects for autocomplete components
     return {
       ...tableRecord,
       fund_source,
@@ -99,6 +105,10 @@ const transformDatabaseToGrid = (fundingRecords, lookupData) => {
   });
 };
 
+/** Transforms DataGrid row to database funding record format for mutations
+ * @param {Object} gridRecord - DataGrid row object
+ * @return {Object} - transformed funding record for database mutation
+ */
 const transformGridToDatabase = (gridRecord) => {
   // Extract the lookup ids from the selected lookup objects
   const funding_source_id = gridRecord.fund_source
@@ -129,11 +139,12 @@ const transformGridToDatabase = (gridRecord) => {
     ecapris_subproject_id,
     proj_funding_id,
     isNew,
-    ...dbFields
+    ...databaseFields
   } = gridRecord;
 
+  // Return the database fields along with the extracted lookup ids
   return {
-    ...dbFields,
+    ...databaseFields,
     funding_source_id,
     funding_program_id,
     // If no new funding status is selected, the default should be used
@@ -590,12 +601,11 @@ const ProjectFundingTable = ({
   if (loadingProjectFunding || !dataProjectFunding) return <CircularProgress />;
 
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         apiRef={apiRef}
         ref={apiRef}
-        autoHeight
         columns={dataGridColumns}
         rows={rows}
         getRowId={(row) => row.id}
@@ -671,7 +681,7 @@ const ProjectFundingTable = ({
         handleSnackbar={handleSnackbar}
         refetch={refetch}
       />
-    </>
+    </div>
   );
 };
 

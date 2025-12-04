@@ -47,7 +47,7 @@ SELECT
     NULL::text AS source_name,
     NULL::integer AS funding_source_id,
     'Set up'::text AS status_name,
-    NULL::integer AS funding_status_id,
+    5 AS funding_status_id,
     NULL::text AS program_name,
     NULL::integer AS funding_program_id,
     ecapris_subproject_funding.fao_id,
