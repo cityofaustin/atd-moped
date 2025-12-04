@@ -28,6 +28,7 @@ KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
 def find_unsynced_moped_projects(is_test=False):
     """
     Find a list of Moped projects that have not been synced to Data Tracker
+    (Projects where the knack_project_id is null)
 
     Parameters:
         is_test (boolean): test flag added to query a defined project ID
@@ -55,7 +56,9 @@ def find_unsynced_moped_projects(is_test=False):
     return unsynced_projects
 
 
-def create_knack_project_from_moped_project(moped_project_record, is_test=False, dry_run=True):
+def create_knack_project_from_moped_project(
+    moped_project_record, is_test=False, dry_run=True
+):
     """
     Create a Knack project record to sync a Moped project to Data Tracker
 
@@ -72,7 +75,7 @@ def create_knack_project_from_moped_project(moped_project_record, is_test=False,
     )
 
     if dry_run:
-        logger.debug(f"[DRY RUN] Would create Knack record: {knack_project_record}")
+        logger.info(f"[DRY RUN] Would create Knack record: {knack_project_record}")
         return "DRY RUN - no knack id created"
     else:
         created = knackpy.api.record(
@@ -152,7 +155,9 @@ def find_synced_moped_projects(last_run_date, is_test=False):
     return synced_projects
 
 
-def update_knack_project_from_moped_project(moped_project_record, is_test=False, dry_run=True):
+def update_knack_project_from_moped_project(
+    moped_project_record, is_test=False, dry_run=True
+):
     """
     Update a Knack project record already synced to Data Tracker from a Moped project record
 
@@ -172,16 +177,20 @@ def update_knack_project_from_moped_project(moped_project_record, is_test=False,
     )
     knack_project_record["id"] = moped_project_record["knack_project_id"]
 
-    updated = knackpy.api.record(
-        app_id=KNACK_DATA_TRACKER_APP_ID,
-        api_key=KNACK_DATA_TRACKER_API_KEY,
-        method="update",
-        data=knack_project_record,
-        obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
-    )
+    if not dry_run:
+        updated = knackpy.api.record(
+            app_id=KNACK_DATA_TRACKER_APP_ID,
+            api_key=KNACK_DATA_TRACKER_API_KEY,
+            method="update",
+            data=knack_project_record,
+            obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
+        )
 
-    knack_record_id = updated["id"]
-    return knack_record_id
+        knack_record_id = updated["id"]
+        return knack_record_id
+
+    logger.info(f"[DRY RUN] would update project {knack_project_record}")
+    return "DRY RUN"
 
 
 def main(args):
@@ -210,7 +219,7 @@ def main(args):
             )
             update_moped_project_knack_id(moped_project_id, knack_record_id)
 
-    # Find all projects that are synced to Data Tracker to update them
+    # Find all projects that have been last updated since provided timestamp
     synced_moped_projects = find_synced_moped_projects(
         last_run_date=args.date, is_test=args.test
     )
@@ -226,17 +235,27 @@ def main(args):
 
         moped_project_id = project["project_id"]
         knack_record_id = update_knack_project_from_moped_project(
-            moped_project_record=project, is_test=args.test
+            moped_project_record=project, is_test=args.test, dry_run=args.dry_run
         )
         updated_knack_records.append(
             {"moped_project_id": moped_project_id, "knack_record_id": knack_record_id}
         )
 
-    logger.info(f"Done syncing.")
-    logger.info(f"Created {len(created_knack_records)} new Knack records")
-    logger.debug(f"Records created: {created_knack_records}")
-    logger.info(f"Updated {len(updated_knack_records)} existing Knack records")
-    logger.debug(f"Updated Knack records: {updated_knack_records}")
+        logger.info(f"Done syncing.")
+    if not args.dry_run:
+        logger.info(f"Created {len(created_knack_records)} new Knack records")
+        logger.debug(f"Records created: {created_knack_records}")
+        logger.info(f"Updated {len(updated_knack_records)} existing Knack records")
+        logger.debug(f"Updated Knack records: {updated_knack_records}")
+    else:
+        logger.info(
+            f"[DRY RUN] {len(created_knack_records)} new Knack records to create"
+        )
+        logger.debug(f"[DRY RUN] Records to create: {created_knack_records}")
+        logger.info(
+            f"[DRY RUN] {len(updated_knack_records)} existing Knack records to update"
+        )
+        logger.debug(f"[DRY RUN] Knack records to update: {updated_knack_records}")
 
 
 if __name__ == "__main__":
@@ -265,8 +284,8 @@ if __name__ == "__main__":
     logger = get_logger(name="moped-knack-sync", level=log_level)
     if args.dry_run:
         logger.info(
-        f"Starting sync in DRY RUN mode. Creating Knack records for Moped projects not synced and updating synced Knack records with latest project data from Moped since {args.date}."
-    )
+            f"Starting sync in DRY RUN mode. Creating Knack records for Moped projects not synced and updating synced Knack records with latest project data from Moped since {args.date}."
+        )
     else:
         logger.info(
             f"Starting sync. Creating Knack records for Moped projects not synced and updating synced Knack records with latest project data from Moped since {args.date}."

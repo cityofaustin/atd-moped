@@ -37,7 +37,7 @@ Testing the sync process outside of the production environment requires a few st
 2. Create a new project in Moped and set the environment variable called TEST_MOPED_PROJECT_ID to the
 Moped project ID
 3. Get a ISO 8601 timestamp (like `2024-01-22T22:53:57+0000` for example) for the current 
-UTC time and set the `--start` argument to that timestamp. You can use:
+UTC time and set the `--date` argument to that timestamp. You can use:
 ```js
 const dateObj = new Date();
 dateObj.toISOString();
