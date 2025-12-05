@@ -103,7 +103,6 @@ const transformDatabaseToGrid = (fundingRecords, lookupData) => {
     } = record;
 
     // Return new record with lookup objects for autocomplete components
-    console.log(tableRecord);
     return {
       ...tableRecord,
       fund_source,
