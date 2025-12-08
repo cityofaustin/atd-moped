@@ -251,7 +251,7 @@ const useColumns = ({
         ),
       },
       {
-        headerName: "Unit Long Name",
+        headerName: "Unit Name",
         field: "unit_long_name",
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
         // during editing -- the input field is always disabled

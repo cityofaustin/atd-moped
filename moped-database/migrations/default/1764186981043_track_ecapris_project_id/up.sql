@@ -4,7 +4,7 @@ ADD COLUMN ecapris_subproject_id text,
 ADD COLUMN is_manual boolean GENERATED ALWAYS AS (ecapris_subproject_id IS NULL) STORED;
 
 COMMENT ON COLUMN public.moped_proj_funding.ecapris_subproject_id IS 'eCapris subproject ID number associated with imported or synced eCAPRIS FDU';
-COMMENT ON COLUMN public.moped_proj_funding.is_manual IS 'Determines if FDU was imported or synced by eCAPRIS subproject ID association';
+COMMENT ON COLUMN public.moped_proj_funding.is_manual IS 'eCAPRIS subproject ID is null, indicating this record was manually created in Moped and not imported or synced from an eCAPRIS subproject';
 
 -- Drop existing view and replace with modified definition
 DROP VIEW IF EXISTS combined_project_funding_view;
