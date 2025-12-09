@@ -31,7 +31,6 @@ import LookupSelectComponent from "src/components/LookupSelectComponent";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -566,24 +565,26 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
         slotProps={{
           toolbar: {
             title: "Funding sources",
-            primaryActionButton: !!eCaprisID ? (
-              <ButtonDropdownMenu
-                buttonWrapperStyle={toolbarSx.fundingButton}
-                addAction={handleAddRecordClick}
-                openActionDialog={setIsDialogOpen}
-                parentButtonText="Add Funding Source"
-                firstOptionText="New funding source"
-                secondOptionText="From eCapris"
-              />
-            ) : (
+            primaryActionButton: (
               <Button
-                sx={toolbarSx.fundingButton}
                 variant="contained"
                 color="primary"
-                startIcon={<AddCircleIcon />}
                 onClick={handleAddRecordClick}
+                startIcon={<AddCircleIcon />}
+                // className={buttonWrapperStyle}
               >
-                Add Funding Source
+                {"Add Manually"}
+              </Button>
+            ),
+            secondaryActionButton: (
+              <Button
+                variant="outlined"
+                onClick={() => setIsDialogOpen(true)}
+                startIcon={<AddCircleIcon />}
+                disabled={!eCaprisID}
+                // className={buttonWrapperStyle}
+              >
+                {"Import from eCapris"}
               </Button>
             ),
             children: (
