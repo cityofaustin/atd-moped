@@ -5,18 +5,9 @@ import os
 
 TEST_KNACK_SIGNAL_RECORD_ID = os.getenv("TEST_KNACK_SIGNAL_RECORD_ID")
 
-MOPED_TO_KNACK_FIELD_MAP = {
-    "project_id": "field_4133",
-    "project_name": "field_3857",
-    "current_phase_name": "field_4136",
-    "signals_connection": "field_3861",
-    "moped_url_object": "field_4162",
-}
-
-
 def build_signal_list_from_moped_record(moped_project_record):
     """
-    Build a list of signal IDs connected to a moped projet record
+    Build a list of signal IDs connected to a moped project record
 
     Parameters:
         moped_project_record (dict): A moped project as returned by Hasura
@@ -54,7 +45,7 @@ def build_knack_project_from_moped_project(moped_project_record, is_test=False):
     Parameters:
         moped_project_record (dict): A moped project as returned by Hasura
         is_test (bool): Whether or not this is a test run and should patch a
-                        complatible Knack signal record id
+                        compatible Knack signal record id
 
     Returns:
         Dictionary: A Knack project record
@@ -71,6 +62,7 @@ def build_knack_project_from_moped_project(moped_project_record, is_test=False):
         "field_4133": moped_project_record["project_id"],
         "field_3857": moped_project_record["project_name"],
         "field_4922": moped_project_record["is_deleted"],
+        "field_5137": moped_project_record["project_name_secondary"],
         "field_4136": phase_name,
         "field_3861": signals,
         "field_4162": make_moped_project_url(moped_project_record["project_id"]),
