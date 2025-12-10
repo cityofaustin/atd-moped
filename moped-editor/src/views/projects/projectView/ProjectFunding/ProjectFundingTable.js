@@ -246,7 +246,7 @@ const useColumns = ({
               value: props?.row?.fdu,
             }}
             dependentFieldName="unit_long_name"
-            setDependentFieldValue={(newValue) => newValue.unit_long_name}
+            setDependentFieldValue={(newValue) => newValue?.unit_long_name}
           />
         ),
       },
