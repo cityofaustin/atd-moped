@@ -91,6 +91,7 @@ const transformDatabaseToGrid = (fundingRecords, lookupData) => {
       ? {
           fdu: record.fdu,
           ecapris_funding_id: record.ecapris_funding_id,
+          unit_long_name: record.unit_long_name,
         }
       : null;
 
@@ -103,6 +104,8 @@ const transformDatabaseToGrid = (fundingRecords, lookupData) => {
       ecapris_funding_id,
       ...tableRecord
     } = record;
+
+    console.log("record:", record);
 
     // Return new record with lookup objects for autocomplete components
     return {
