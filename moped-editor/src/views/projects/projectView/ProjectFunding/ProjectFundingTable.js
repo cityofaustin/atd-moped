@@ -627,7 +627,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                 </Grid>
                 <Grid item container xs={2} justifyContent={"flex-end"}>
                   <Tooltip
-                    placement="top"
+                    placement="bottom"
                     title={
                       !eCaprisID
                         ? "Add eCAPRIS subproject ID to enable syncing"
