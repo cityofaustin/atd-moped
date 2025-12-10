@@ -4,7 +4,14 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { Button, CircularProgress, Grid } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Tooltip,
+} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGridPro,
@@ -35,18 +42,6 @@ import ProjectSummaryProjectECapris from "src/views/projects/projectView/Project
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
-
-// Pass this object as `sx` to the toolbar slotProps.
-const toolbarSx = {
-  fundingButton: {
-    position: "absolute",
-    top: "1rem",
-    right: "1rem",
-  },
-  toolbarTitle: (theme) => ({
-    marginBottom: theme.spacing(1),
-  }),
-};
 
 /*
  * Transportation Project Financial Codes
@@ -584,11 +579,18 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                 disabled={!eCaprisID}
                 // className={buttonWrapperStyle}
               >
-                {"Import from eCapris"}
+                {"Import from eCAPRIS"}
               </Button>
             ),
             children: (
-              <Grid>
+              <Grid
+                container
+                direction="row"
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <Grid item xs={3}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
@@ -597,6 +599,31 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                     handleSnackbar={handleSnackbar}
                     noWrapper
                   />
+                </Grid>
+                <Grid item container xs={2} justifyContent={"flex-end"}>
+                  <Tooltip
+                    placement="top"
+                    title={
+                      !eCaprisID
+                        ? "Add eCAPRIS subproject ID to enable syncing"
+                        : null
+                    }
+                  >
+                    <FormControlLabel
+                      label="Sync from eCAPRIS"
+                      control={
+                        <Switch
+                          variant="standard"
+                          type="checkbox"
+                          color="primary"
+                          disabled={!eCaprisID}
+                          // checked={value}
+                          // onChange={onChange}
+                          inputProps={{ "aria-label": "primary checkbox" }}
+                        />
+                      }
+                    />
+                  </Tooltip>
                 </Grid>
               </Grid>
             ),
