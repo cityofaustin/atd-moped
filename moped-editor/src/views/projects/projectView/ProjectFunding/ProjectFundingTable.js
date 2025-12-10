@@ -591,7 +591,6 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                 color="primary"
                 onClick={handleAddRecordClick}
                 startIcon={<AddCircleIcon />}
-                // className={buttonWrapperStyle}
               >
                 {"Add Manually"}
               </Button>
@@ -602,7 +601,6 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                 onClick={() => setIsDialogOpen(true)}
                 startIcon={<AddCircleIcon />}
                 disabled={!eCaprisID}
-                // className={buttonWrapperStyle}
               >
                 {"Import from eCAPRIS"}
               </Button>
