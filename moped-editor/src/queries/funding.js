@@ -28,6 +28,7 @@ export const FUNDING_QUERY = gql`
     }
     moped_project(where: { project_id: { _eq: $projectId } }) {
       ecapris_subproject_id
+      should_sync_ecapris_funding
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id

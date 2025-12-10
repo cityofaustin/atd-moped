@@ -28,6 +28,7 @@ import {
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
 } from "src/queries/funding";
+import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
@@ -268,6 +269,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
@@ -529,6 +531,29 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   if (loading || !data) return <CircularProgress />;
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
+  const shouldSyncECaprisFunding =
+    data?.moped_project[0].should_sync_ecapris_funding;
+
+  const handleECaprisSwitch = () => {
+    updateShouldSyncECapris({
+      variables: {
+        projectId: projectId,
+        shouldSync: !shouldSyncECaprisFunding,
+      },
+    })
+      .then(() => {
+        handleSnackbar(true, "eCAPRIS sync status updated", "success");
+      })
+      .catch((error) =>
+        handleSnackbar(
+          true,
+          "Error updating eCAPRIS sync status",
+          "error",
+          error
+        )
+      );
+    refetchFundingData();
+  };
 
   return (
     <>
@@ -617,8 +642,8 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                           type="checkbox"
                           color="primary"
                           disabled={!eCaprisID}
-                          // checked={value}
-                          // onChange={onChange}
+                          checked={shouldSyncECaprisFunding}
+                          onChange={handleECaprisSwitch}
                           inputProps={{ "aria-label": "primary checkbox" }}
                         />
                       }
