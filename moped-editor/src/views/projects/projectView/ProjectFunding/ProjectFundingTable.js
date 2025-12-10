@@ -4,7 +4,14 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { Button, CircularProgress, Grid } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Tooltip,
+} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGridPro,
@@ -21,6 +28,7 @@ import {
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
 } from "src/queries/funding";
+import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
@@ -31,23 +39,10 @@ import LookupSelectComponent from "src/components/LookupSelectComponent";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
-
-// Pass this object as `sx` to the toolbar slotProps.
-const toolbarSx = {
-  fundingButton: {
-    position: "absolute",
-    top: "1rem",
-    right: "1rem",
-  },
-  toolbarTitle: (theme) => ({
-    marginBottom: theme.spacing(1),
-  }),
-};
 
 /*
  * Transportation Project Financial Codes
@@ -274,6 +269,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
@@ -535,6 +531,29 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   if (loading || !data) return <CircularProgress />;
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
+  const shouldSyncECaprisFunding =
+    data?.moped_project[0].should_sync_ecapris_funding;
+
+  const handleECaprisSwitch = () => {
+    updateShouldSyncECapris({
+      variables: {
+        projectId: projectId,
+        shouldSync: !shouldSyncECaprisFunding,
+      },
+    })
+      .then(() => {
+        handleSnackbar(true, "eCAPRIS sync status updated", "success");
+        refetchFundingData();
+      })
+      .catch((error) =>
+        handleSnackbar(
+          true,
+          "Error updating eCAPRIS sync status",
+          "error",
+          error
+        )
+      );
+  };
 
   return (
     <>
@@ -566,28 +585,35 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
         slotProps={{
           toolbar: {
             title: "Funding sources",
-            primaryActionButton: !!eCaprisID ? (
-              <ButtonDropdownMenu
-                buttonWrapperStyle={toolbarSx.fundingButton}
-                addAction={handleAddRecordClick}
-                openActionDialog={setIsDialogOpen}
-                parentButtonText="Add Funding Source"
-                firstOptionText="New funding source"
-                secondOptionText="From eCapris"
-              />
-            ) : (
+            primaryActionButton: (
               <Button
-                sx={toolbarSx.fundingButton}
                 variant="contained"
                 color="primary"
-                startIcon={<AddCircleIcon />}
                 onClick={handleAddRecordClick}
+                startIcon={<AddCircleIcon />}
               >
-                Add Funding Source
+                {"Add Manually"}
+              </Button>
+            ),
+            secondaryActionButton: (
+              <Button
+                variant="outlined"
+                onClick={() => setIsDialogOpen(true)}
+                startIcon={<AddCircleIcon />}
+                disabled={!eCaprisID}
+              >
+                {"Import from eCAPRIS"}
               </Button>
             ),
             children: (
-              <Grid>
+              <Grid
+                container
+                direction="row"
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <Grid item xs={3}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
@@ -596,6 +622,31 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                     handleSnackbar={handleSnackbar}
                     noWrapper
                   />
+                </Grid>
+                <Grid item container xs={2} justifyContent={"flex-end"}>
+                  <Tooltip
+                    placement="bottom"
+                    title={
+                      !eCaprisID
+                        ? "Add eCAPRIS subproject ID to enable syncing"
+                        : null
+                    }
+                  >
+                    <FormControlLabel
+                      label="Sync from eCAPRIS"
+                      control={
+                        <Switch
+                          variant="standard"
+                          type="checkbox"
+                          color="primary"
+                          disabled={!eCaprisID}
+                          checked={shouldSyncECaprisFunding}
+                          onChange={handleECaprisSwitch}
+                          inputProps={{ "aria-label": "primary checkbox" }}
+                        />
+                      }
+                    />
+                  </Tooltip>
                 </Grid>
               </Grid>
             ),
