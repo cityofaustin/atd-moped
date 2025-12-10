@@ -76,7 +76,7 @@ def create_knack_project_from_moped_project(
 
     if dry_run:
         logger.info(f"[DRY RUN] Would create Knack record: {knack_project_record}")
-        return "DRY RUN - no knack id created"
+        return None
     else:
         created = knackpy.api.record(
             app_id=KNACK_DATA_TRACKER_APP_ID,
@@ -190,7 +190,7 @@ def update_knack_project_from_moped_project(
         return knack_record_id
 
     logger.info(f"[DRY RUN] would update project {knack_project_record}")
-    return "DRY RUN"
+    return moped_project_record["knack_project_id"]
 
 
 def main(args):
