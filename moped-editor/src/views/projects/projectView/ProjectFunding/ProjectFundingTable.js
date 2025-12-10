@@ -543,6 +543,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
     })
       .then(() => {
         handleSnackbar(true, "eCAPRIS sync status updated", "success");
+        refetchFundingData();
       })
       .catch((error) =>
         handleSnackbar(
@@ -552,7 +553,6 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
           error
         )
       );
-    refetchFundingData();
   };
 
   return (
