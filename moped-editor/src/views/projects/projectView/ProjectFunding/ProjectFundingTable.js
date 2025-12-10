@@ -87,10 +87,12 @@ const transformDatabaseToGrid = (fundingRecords, lookupData) => {
         )
       : null;
 
-    const fduOption = {
-      fdu: record.fdu,
-      ecapris_funding_id: record.ecapris_funding_id,
-    };
+    const fduOption = record.fdu
+      ? {
+          fdu: record.fdu,
+          ecapris_funding_id: record.ecapris_funding_id,
+        }
+      : null;
 
     // Remove fields unneeded in the data grid row
     const {
@@ -354,6 +356,7 @@ const ProjectFundingTable = ({
     );
     return fundingRowsWithRelatedLookups;
   }, [dataProjectFunding]);
+  console.log(tableFundingRows);
 
   const fdusArray = useMemo(() => {
     return tableFundingRows.map((row) => row.fdu) || [];
