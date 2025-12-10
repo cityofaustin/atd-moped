@@ -1,4 +1,13 @@
--- Most recent migration: moped-database/migrations/default/1764186981043_track_ecapris_project_id/up.sql
+-- Drop new moped_proj_funding table columns and indexes
+DROP INDEX IF EXISTS idx_moped_proj_funding_is_manual;
+DROP INDEX IF EXISTS idx_moped_proj_funding_ecapris_subproject_id;
+
+ALTER TABLE moped_proj_funding
+DROP COLUMN IF EXISTS is_manual,
+DROP COLUMN IF EXISTS ecapris_subproject_id;
+
+-- Restore previous definition of combined_project_funding_view
+DROP VIEW IF EXISTS combined_project_funding_view;
 
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
@@ -7,15 +16,11 @@ CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     moped_proj_funding.updated_at,
     moped_proj_funding.project_id,
     moped_proj_funding.fdu,
-    moped_proj_funding.unit_long_name,
     moped_proj_funding.funding_amount AS amount,
     moped_proj_funding.funding_description AS description,
     moped_fund_sources.funding_source_name AS source_name,
-    moped_proj_funding.funding_source_id,
     moped_fund_status.funding_status_name AS status_name,
-    moped_proj_funding.funding_status_id,
     moped_fund_programs.funding_program_name AS program_name,
-    moped_proj_funding.funding_program_id,
     NULL::integer AS fao_id,
     NULL::text AS ecapris_subproject_id,
     FALSE AS is_synced_from_ecapris
@@ -32,15 +37,11 @@ SELECT
     ecapris_subproject_funding.updated_at,
     NULL::integer AS project_id,
     ecapris_subproject_funding.fdu,
-    ecapris_subproject_funding.unit_long_name,
     ecapris_subproject_funding.app AS amount,
     'Synced from eCAPRIS'::text AS description,
     NULL::text AS source_name,
-    NULL::integer AS funding_source_id,
     'Set up'::text AS status_name,
-    5 AS funding_status_id,
     NULL::text AS program_name,
-    NULL::integer AS funding_program_id,
     ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id,
     TRUE AS is_synced_from_ecapris
