@@ -68,7 +68,7 @@ def create_knack_project_from_moped_project(
         dry_run (boolean): if true, do not create record but print what would be created
 
     Returns:
-        String: Knack record ID of created record
+        String: Knack record ID of created record or None if running in DRY RUN mode
     """
     knack_project_record = build_knack_project_from_moped_project(
         moped_project_record=moped_project_record, is_test=is_test
