@@ -356,7 +356,6 @@ const ProjectFundingTable = ({
     );
     return fundingRowsWithRelatedLookups;
   }, [dataProjectFunding]);
-  console.log(tableFundingRows);
 
   const fdusArray = useMemo(() => {
     return tableFundingRows.map((row) => row.fdu) || [];
