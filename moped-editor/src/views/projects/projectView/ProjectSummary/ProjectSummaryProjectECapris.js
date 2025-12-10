@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Box, Grid, TextField, Typography } from "@mui/material";
 
 import ExternalLink from "src/components/ExternalLink";
-import ProjectSummaryLabel from "./ProjectSummaryLabel";
-import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
+import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 
 import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
-} from "../../../../queries/project";
+} from "src/queries/project";
 import { useMutation } from "@apollo/client";
 import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
