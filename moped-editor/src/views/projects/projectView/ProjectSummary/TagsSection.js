@@ -119,7 +119,7 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
     >
       <Toolbar sx={{ paddingRight: "3px" }} disableGutters={true}>
         <Typography variant="h2" color="primary" sx={{ flexGrow: 1 }}>
-          Tags
+          Project tags
         </Typography>
         <Button
           variant="contained"
