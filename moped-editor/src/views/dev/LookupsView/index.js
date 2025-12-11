@@ -83,11 +83,6 @@ const LookupsView = () => {
     <ApolloErrorHandler error={error}>
       <Page title="Moped Data Dictionary">
         <Container maxWidth="xl">
-          <Grid container spacing={3} sx={{ marginTop: 3 }}>
-            <Grid item xs={12}>
-              <Typography variant="h1">Moped Data Dictionary</Typography>
-            </Grid>
-          </Grid>
           <Grid
             container
             spacing={3}
@@ -95,6 +90,9 @@ const LookupsView = () => {
             component={Paper}
             ref={refs._scroll_to_top}
           >
+            <Grid item xs={12}>
+              <Typography variant="h1">Data dictionary</Typography>
+            </Grid>
             {SETTINGS.map((recordType) => (
               <Grid item key={recordType.key} sx={{ marginBottom: 3 }}>
                 <Button
