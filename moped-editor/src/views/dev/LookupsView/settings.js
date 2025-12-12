@@ -237,7 +237,7 @@ export const SETTINGS = [
   },
   {
     key: "moped_tags",
-    label: "Tags",
+    label: "Project tags",
     columns: [
       {
         key: "id",

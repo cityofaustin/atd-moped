@@ -41,7 +41,7 @@ const DashboardLayout = () => {
       </Box>
       <Box
         sx={{
-          flex: "1 1 auto", // Take remaining space after static AppBar in TopBar
+          flex: "1 1 auto", // Take remaining space after sticky AppBar in TopBar
           overflow: "auto",
           display: "flex",
           flexDirection: "column",

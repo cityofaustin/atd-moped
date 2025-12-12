@@ -447,7 +447,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
   project_tags: {
     name: "project_tags",
     label: "Project tags",
-    placeholder: "Tags",
+    placeholder: "Project tags",
     type: "string",
     lookup: {
       table_name: "moped_tags",
