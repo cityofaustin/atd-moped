@@ -86,7 +86,7 @@ const LookupsView = () => {
           <Grid
             container
             spacing={3}
-            sx={{ marginTop: 3 }}
+            sx={{ marginTop: 3, scrollMarginTop: 24 }}
             component={Paper}
             ref={refs._scroll_to_top}
           >
