@@ -10,6 +10,7 @@ select_permissions:
         - id
         - unit_long_name
         - fdu_status
+        - ecapris_subproject_id
       filter: {}
     comment: ""
   - role: moped-editor
@@ -20,6 +21,7 @@ select_permissions:
         - id
         - unit_long_name
         - fdu_status
+        - ecapris_subproject_id
       filter: {}
     comment: ""
   - role: moped-viewer
@@ -30,5 +32,6 @@ select_permissions:
         - id
         - unit_long_name
         - fdu_status
+        - ecapris_subproject_id
       filter: {}
     comment: ""

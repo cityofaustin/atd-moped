@@ -10,8 +10,14 @@ import {
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
-import { useSocrataJson } from "src/utils/socrataHelpers";
+import { useMutation, useQuery } from "@apollo/client";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+
+import { useSocrataJson } from "src/utils/socrataHelpers";
+
+import {
+ECAPRIS_SUBPROJECT_FDU_QUERY
+} from "src/queries/funding";
 
 const PAGE_SIZE = 10;
 
@@ -49,11 +55,26 @@ const SubprojectFundingModal = ({
   handleSnackbar,
   refetch,
 }) => {
-  const { data } = useSocrataJson(
-    `https://data.austintexas.gov/resource/jega-nqf6.json?sp_number_txt=${eCaprisID}&$limit=9999`
+
+  console.log(eCaprisID)
+
+  const { data: hi } = useSocrataJson(
+ `https://data.austintexas.gov/resource/jega-nqf6.json?sp_number_txt=${eCaprisID}&$limit=9999`
   );
+
+    const {
+      loading,
+      data,
+      // refetch,
+    } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
+      variables: { ecapris_subproject_id: eCaprisID },
+      fetchPolicy: "no-cache",
+    });
+
+    console.log(data, hi)
+
   // Filter the list of fdus to remove one(s) already on funding sources table
-  const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
+  const filteredData = data && data.length ? data.filter((fdu) => !fdusArray.includes(fdu.fdu)) : [];
 
   const [selectedFdus, setSelectedFdus] = useState([]);
 
