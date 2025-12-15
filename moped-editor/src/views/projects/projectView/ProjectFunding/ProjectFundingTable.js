@@ -637,12 +637,10 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
                       control={
                         <Switch
                           variant="standard"
-                          type="checkbox"
                           color="primary"
                           disabled={!eCaprisID}
                           checked={shouldSyncECaprisFunding}
                           onChange={handleECaprisSwitch}
-                          inputProps={{ "aria-label": "primary checkbox" }}
                         />
                       }
                     />
