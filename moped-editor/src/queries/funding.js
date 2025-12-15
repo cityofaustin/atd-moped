@@ -53,6 +53,7 @@ export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
       fdu
       unit_long_name
       fdu_status
+      amount: app
     }
   }
 `;

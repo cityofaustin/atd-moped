@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import {
   Button,
   Box,
@@ -15,15 +15,19 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 import { useSocrataJson } from "src/utils/socrataHelpers";
 
-import {
-ECAPRIS_SUBPROJECT_FDU_QUERY
-} from "src/queries/funding";
+import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
 
 const PAGE_SIZE = 10;
 
 const useColumns = () =>
   useMemo(() => {
     return [
+      {
+        headerName: "Fao",
+        field: "ecapris_funding_id",
+        display: "flex",
+        flex: 1,
+      },
       {
         headerName: "FDU",
         field: "fdu",
@@ -38,7 +42,7 @@ const useColumns = () =>
       },
       {
         headerName: "Status",
-        field: "dept_unit_status",
+        field: "fdu_status",
         display: "flex",
         flex: 1,
       },
@@ -55,26 +59,34 @@ const SubprojectFundingModal = ({
   handleSnackbar,
   refetch,
 }) => {
-
-  console.log(eCaprisID)
+  console.log(eCaprisID);
 
   const { data: hi } = useSocrataJson(
- `https://data.austintexas.gov/resource/jega-nqf6.json?sp_number_txt=${eCaprisID}&$limit=9999`
+    `https://data.austintexas.gov/resource/jega-nqf6.json?sp_number_txt=${eCaprisID}&$limit=9999`
   );
 
-    const {
-      loading,
-      data,
-      // refetch,
-    } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
-      variables: { ecapris_subproject_id: eCaprisID },
-      fetchPolicy: "no-cache",
-    });
+  const { loading, data } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
+    variables: { ecapris_subproject_id: eCaprisID },
+    fetchPolicy: "no-cache",
+  });
 
-    console.log(data, hi)
+  console.log(data?.ecapris_subproject_funding);
 
   // Filter the list of fdus to remove one(s) already on funding sources table
-  const filteredData = data && data.length ? data.filter((fdu) => !fdusArray.includes(fdu.fdu)) : [];
+  const filteredData =
+    data && data.length
+      ? data.filter((fdu) => !fdusArray.includes(fdu.fdu))
+      : [];
+
+  // rows and rowModesModel used in DataGrid
+  const [rows, setRows] = useState([]);
+
+  // sets the data grid row data when query data is fetched
+  useEffect(() => {
+    if (data && data.ecapris_subproject_funding.length > 0) {
+      setRows(data.ecapris_subproject_funding);
+    }
+  }, [data]);
 
   const [selectedFdus, setSelectedFdus] = useState([]);
 
@@ -154,7 +166,7 @@ const SubprojectFundingModal = ({
         }}
         variant="h4"
       >
-       {` Import from eCAPRIS subproject id ${eCaprisID}`}
+        {` Import from eCAPRIS subproject id ${eCaprisID}`}
         <IconButton onClick={() => handleDialogClose()} size="large">
           <CloseIcon />
         </IconButton>
@@ -165,7 +177,7 @@ const SubprojectFundingModal = ({
           autoHeight
           columns={dataGridColumns}
           disableColumnMenu
-          rows={filteredData}
+          rows={rows}
           getRowId={(row) => row.fdu}
           density="comfortable"
           getRowHeight={() => "auto"}
@@ -182,6 +194,7 @@ const SubprojectFundingModal = ({
           onProcessRowUpdateError={(error) =>
             handleSnackbar(true, "Error updating table", "error", error)
           }
+          isRowSelectable={(thing) => !fdusArray.includes(thing.id)}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
