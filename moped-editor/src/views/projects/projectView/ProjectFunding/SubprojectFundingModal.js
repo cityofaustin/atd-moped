@@ -154,7 +154,7 @@ const SubprojectFundingModal = ({
         }}
         variant="h4"
       >
-        Subproject funding sources
+       {` Import from eCAPRIS subproject id ${eCaprisID}`}
         <IconButton onClick={() => handleDialogClose()} size="large">
           <CloseIcon />
         </IconButton>
