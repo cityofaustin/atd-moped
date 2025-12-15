@@ -29,23 +29,10 @@ import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
-
-// Pass this object as `sx` to the toolbar slotProps.
-const toolbarSx = {
-  fundingButton: {
-    position: "absolute",
-    top: "1rem",
-    right: "1rem",
-  },
-  toolbarTitle: (theme) => ({
-    marginBottom: theme.spacing(1),
-  }),
-};
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -644,24 +631,24 @@ const ProjectFundingTable = ({
         slotProps={{
           toolbar: {
             title: "Funding sources",
-            primaryActionButton: !!eCaprisSubprojectId ? (
-              <ButtonDropdownMenu
-                buttonWrapperStyle={toolbarSx.fundingButton}
-                addAction={handleAddRecordClick}
-                openActionDialog={setIsDialogOpen}
-                parentButtonText="Add Funding Source"
-                firstOptionText="New funding source"
-                secondOptionText="From eCapris"
-              />
-            ) : (
+            primaryActionButton: (
               <Button
-                sx={toolbarSx.fundingButton}
                 variant="contained"
                 color="primary"
-                startIcon={<AddCircleIcon />}
                 onClick={handleAddRecordClick}
+                startIcon={<AddCircleIcon />}
               >
-                Add Funding Source
+                {"Add Manually"}
+              </Button>
+            ),
+            secondaryActionButton: (
+              <Button
+                variant="outlined"
+                onClick={() => setIsDialogOpen(true)}
+                startIcon={<AddCircleIcon />}
+                disabled={!eCaprisSubprojectId}
+              >
+                {"Import from eCAPRIS"}
               </Button>
             ),
             children: (
