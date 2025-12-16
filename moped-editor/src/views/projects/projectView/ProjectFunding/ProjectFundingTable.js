@@ -665,20 +665,7 @@ const ProjectFundingTable = ({
         slotProps={{
           toolbar: {
             title: "Funding sources",
-<<<<<<< HEAD
             primaryActionButton: (
-=======
-            primaryActionButton: !!eCaprisSubprojectId ? (
-              <ButtonDropdownMenu
-                buttonWrapperStyle={toolbarSx.fundingButton}
-                addAction={handleAddRecordClick}
-                openActionDialog={setIsDialogOpen}
-                parentButtonText="Add Funding Source"
-                firstOptionText="New funding source"
-                secondOptionText="From eCapris"
-              />
-            ) : (
->>>>>>> funding-collector
               <Button
                 variant="contained"
                 color="primary"
