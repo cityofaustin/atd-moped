@@ -20,7 +20,6 @@ export const COMBINED_FUNDING_QUERY = gql`
       is_synced_from_ecapris
       unit_long_name
       ecapris_subproject_id
-      should_sync_ecapris_funding
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id
