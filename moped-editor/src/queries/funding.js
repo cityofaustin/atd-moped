@@ -1,32 +1,24 @@
 import { gql } from "@apollo/client";
 
-export const FUNDING_QUERY = gql`
-  query ProjectFunding($projectId: Int) {
-    moped_proj_funding(
-      order_by: { proj_funding_id: asc }
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-    ) {
-      proj_funding_id
-      created_by_user_id
-      created_at
-      fund
-      dept_unit
-      funding_amount
-      funding_description
+export const COMBINED_FUNDING_QUERY = gql`
+  query GetCombinedProjectFunding(
+    $projectFundingConditions: combined_project_funding_view_bool_exp!
+  ) {
+    combined_project_funding_view(where: $projectFundingConditions) {
+      id
+      proj_funding_id: original_id
+      fdu
+      funding_amount: amount
+      funding_description: description
+      program_name
       funding_program_id
-      moped_fund_program {
-        funding_program_id
-        funding_program_name
-      }
+      source_name
       funding_source_id
-      moped_fund_source {
-        funding_source_id
-        funding_source_name
-      }
+      status_name
       funding_status_id
-      is_deleted
-    }
-    moped_project(where: { project_id: { _eq: $projectId } }) {
+      ecapris_funding_id: fao_id
+      is_synced_from_ecapris
+      unit_long_name
       ecapris_subproject_id
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
@@ -41,12 +33,15 @@ export const FUNDING_QUERY = gql`
       funding_status_id
       funding_status_name
     }
-    moped_funds(
-      order_by: { fund_id: asc }
-      where: { is_deleted: { _eq: false } }
-    ) {
-      fund_id
-      fund_name
+  }
+`;
+
+export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
+  query EcaprisFdu {
+    ecapris_subproject_funding {
+      ecapris_funding_id: fao_id
+      fdu
+      unit_long_name
     }
   }
 `;
@@ -59,22 +54,22 @@ export const UPDATE_PROJECT_FUNDING = gql`
     $funding_program_id: Int
     $funding_source_id: Int
     $funding_status_id: Int!
-    $dept_unit: jsonb
-    $fund: jsonb
+    $fdu: String
+    $unit_long_name: String
   ) {
-    update_moped_proj_funding(
-      where: { proj_funding_id: { _eq: $proj_funding_id } }
+    update_moped_proj_funding_by_pk(
+      pk_columns: { proj_funding_id: $proj_funding_id }
       _set: {
         funding_amount: $funding_amount
         funding_description: $funding_description
         funding_program_id: $funding_program_id
         funding_source_id: $funding_source_id
         funding_status_id: $funding_status_id
-        dept_unit: $dept_unit
-        fund: $fund
+        fdu: $fdu
+        unit_long_name: $unit_long_name
       }
     ) {
-      affected_rows
+      proj_funding_id
     }
   }
 `;
