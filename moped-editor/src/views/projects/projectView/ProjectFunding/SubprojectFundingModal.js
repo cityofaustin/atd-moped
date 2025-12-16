@@ -65,12 +65,6 @@ const SubprojectFundingModal = ({
 
   console.log(data?.ecapris_subproject_funding);
 
-  // Filter the list of fdus to remove one(s) already on funding sources table
-  const filteredData =
-    data && data.length
-      ? data.filter((fdu) => !fdusArray.includes(fdu.fdu))
-      : [];
-
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
 
@@ -137,11 +131,11 @@ const SubprojectFundingModal = ({
   const handleRowSelection = useCallback(
     (selectedRows) => {
       const selectedFduRecords = selectedRows.map((fdu) =>
-        filteredData.find((record) => record.fdu === fdu)
+        rows.find((record) => record.fdu === fdu)
       );
       setSelectedFdus(selectedFduRecords);
     },
-    [filteredData]
+    [rows]
   );
 
   return (
