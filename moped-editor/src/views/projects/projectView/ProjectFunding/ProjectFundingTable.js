@@ -610,15 +610,13 @@ const ProjectFundingTable = ({
   if (loadingProjectFunding || loadingFduOptions || !dataProjectFunding)
     return <CircularProgress />;
 
-  const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
-  const shouldSyncECaprisFunding =
-    data?.moped_project[0].should_sync_ecapris_funding;
+  console.log(dataProjectFunding)
 
   const handleECaprisSwitch = () => {
     updateShouldSyncECapris({
       variables: {
         projectId: projectId,
-        shouldSync: !shouldSyncECaprisFunding,
+        shouldSync: !shouldSyncEcaprisFunding,
       },
     })
       .then(() => {
@@ -680,7 +678,7 @@ const ProjectFundingTable = ({
                 variant="outlined"
                 onClick={() => setIsDialogOpen(true)}
                 startIcon={<AddCircleIcon />}
-                disabled={!eCaprisID}
+                disabled={!eCaprisSubprojectId}
               >
                 {"Import from eCAPRIS"}
               </Button>
@@ -707,7 +705,7 @@ const ProjectFundingTable = ({
                   <Tooltip
                     placement="bottom"
                     title={
-                      !eCaprisID
+                      !eCaprisSubprojectId
                         ? "Add eCAPRIS subproject ID to enable syncing"
                         : null
                     }
@@ -718,8 +716,8 @@ const ProjectFundingTable = ({
                         <Switch
                           variant="standard"
                           color="primary"
-                          disabled={!eCaprisID}
-                          checked={shouldSyncECaprisFunding}
+                          disabled={!eCaprisSubprojectId}
+                          checked={shouldSyncEcaprisFunding}
                           onChange={handleECaprisSwitch}
                         />
                       }
