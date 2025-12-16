@@ -1,4 +1,13 @@
--- Most recent migration: moped-database/migrations/default/1764186981043_track_ecapris_project_id/up.sql
+-- Update moped_proj_funding table with information about what eCAPRIS subproject id was used for import
+ALTER TABLE moped_proj_funding
+ADD COLUMN ecapris_subproject_id text,
+ADD COLUMN is_manual boolean GENERATED ALWAYS AS (ecapris_subproject_id IS NULL) STORED;
+
+COMMENT ON COLUMN public.moped_proj_funding.ecapris_subproject_id IS 'eCapris subproject ID number associated with imported or synced eCAPRIS FDU';
+COMMENT ON COLUMN public.moped_proj_funding.is_manual IS 'eCAPRIS subproject ID is null, indicating this record was manually created in Moped and not imported or synced from an eCAPRIS subproject';
+
+-- Drop existing view and replace with modified definition
+DROP VIEW IF EXISTS combined_project_funding_view;
 
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,

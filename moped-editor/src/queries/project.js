@@ -35,6 +35,7 @@ export const SUMMARY_QUERY = gql`
       interim_project_id
       is_deleted
       should_sync_ecapris_statuses
+      should_sync_ecapris_funding
       moped_project {
         project_name
         project_name_full
