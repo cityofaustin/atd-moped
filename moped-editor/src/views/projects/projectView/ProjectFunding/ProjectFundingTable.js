@@ -3,7 +3,14 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { Button, CircularProgress, Grid } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Tooltip,
+} from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGridPro,
@@ -21,6 +28,7 @@ import {
   DELETE_PROJECT_FUNDING,
   ECAPRIS_FDU_OPTIONS_QUERY,
 } from "src/queries/funding";
+import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
 
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -359,6 +367,7 @@ const ProjectFundingTable = ({
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
@@ -601,6 +610,29 @@ const ProjectFundingTable = ({
   if (loadingProjectFunding || loadingFduOptions || !dataProjectFunding)
     return <CircularProgress />;
 
+  console.log(dataProjectFunding)
+
+  const handleECaprisSwitch = () => {
+    updateShouldSyncECapris({
+      variables: {
+        projectId: projectId,
+        shouldSync: !shouldSyncEcaprisFunding,
+      },
+    })
+      .then(() => {
+        handleSnackbar(true, "eCAPRIS sync status updated", "success");
+        refetchFundingData();
+      })
+      .catch((error) =>
+        handleSnackbar(
+          true,
+          "Error updating eCAPRIS sync status",
+          "error",
+          error
+        )
+      );
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <DataGridPro
@@ -652,7 +684,14 @@ const ProjectFundingTable = ({
               </Button>
             ),
             children: (
-              <Grid>
+              <Grid
+                container
+                direction="row"
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <Grid item xs={3}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
@@ -661,6 +700,29 @@ const ProjectFundingTable = ({
                     handleSnackbar={handleSnackbar}
                     noWrapper
                   />
+                </Grid>
+                <Grid item container xs={2} justifyContent={"flex-end"}>
+                  <Tooltip
+                    placement="bottom"
+                    title={
+                      !eCaprisSubprojectId
+                        ? "Add eCAPRIS subproject ID to enable syncing"
+                        : null
+                    }
+                  >
+                    <FormControlLabel
+                      label="Sync from eCAPRIS"
+                      control={
+                        <Switch
+                          variant="standard"
+                          color="primary"
+                          disabled={!eCaprisSubprojectId}
+                          checked={shouldSyncEcaprisFunding}
+                          onChange={handleECaprisSwitch}
+                        />
+                      }
+                    />
+                  </Tooltip>
                 </Grid>
               </Grid>
             ),

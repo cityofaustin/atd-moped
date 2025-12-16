@@ -196,6 +196,7 @@ select_permissions:
         - public_process_status_id
         - should_sync_ecapris_funding
         - should_sync_ecapris_statuses
+        - should_sync_ecapris_funding
         - updated_at
       filter: {}
       allow_aggregations: true
@@ -220,6 +221,7 @@ select_permissions:
         - public_process_status_id
         - should_sync_ecapris_funding
         - should_sync_ecapris_statuses
+        - should_sync_ecapris_funding
         - updated_at
       filter: {}
       allow_aggregations: true
@@ -244,6 +246,7 @@ select_permissions:
         - public_process_status_id
         - should_sync_ecapris_funding
         - should_sync_ecapris_statuses
+        - should_sync_ecapris_funding
         - updated_at
       filter: {}
       allow_aggregations: true
@@ -266,6 +269,7 @@ update_permissions:
         - project_website
         - public_process_status_id
         - should_sync_ecapris_statuses
+        - should_sync_ecapris_funding
         - updated_at
       filter: {}
       check: {}
@@ -289,6 +293,7 @@ update_permissions:
         - project_website
         - public_process_status_id
         - should_sync_ecapris_statuses
+        - should_sync_ecapris_funding
         - updated_at
       filter: {}
       check: {}
