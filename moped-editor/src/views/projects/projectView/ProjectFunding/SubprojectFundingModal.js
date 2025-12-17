@@ -59,14 +59,11 @@ const SubprojectFundingModal = ({
   handleSnackbar,
   refetch,
 }) => {
-  console.log(eCaprisID);
 
   const { data } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
     variables: { ecapris_subproject_id: eCaprisID },
     fetchPolicy: "no-cache",
   });
-
-  console.log(data?.ecapris_subproject_funding);
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -87,9 +84,8 @@ const SubprojectFundingModal = ({
     // format record to match generic records added
     selectedFdus.forEach((fdu) => {
       const fduRecord = {};
-      fduRecord.ecapris_funding_id = fdu.ecapris_funding_id;
+      fduRecord.ecapris_funding_id = fdu.ecapris_funding_id; // fao_id
       fduRecord.ecapris_subproject_id = eCaprisID;
-      // fduRecord.fund_dept_unit = fdu.fdu;
       fduRecord.fdu = fdu.fdu;
       fduRecord.project_id = projectId;
       fduRecord.funding_amount = fdu.amount;
