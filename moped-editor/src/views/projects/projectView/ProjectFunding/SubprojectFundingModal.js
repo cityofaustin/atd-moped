@@ -93,8 +93,8 @@ const SubprojectFundingModal = ({
       fduRecord.fdu = fdu.fdu;
       fduRecord.project_id = projectId;
       fduRecord.funding_amount = fdu.amount;
-      // funding status 2 is "Confirmed"
-      fduRecord.funding_status_id = 2;
+      // funding status 5 is "Set Up"
+      fduRecord.funding_status_id = 5;
       newFunds.push(fduRecord);
     });
 
