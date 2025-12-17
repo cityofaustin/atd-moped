@@ -13,18 +13,13 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import { useQuery } from "@apollo/client";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
+import { currencyFormatter } from "src/utils/numberFormatters";
 
 const PAGE_SIZE = 10;
 
 const useColumns = () =>
   useMemo(() => {
     return [
-      {
-        headerName: "Fao",
-        field: "ecapris_funding_id",
-        display: "flex",
-        flex: 1,
-      },
       {
         headerName: "FDU",
         field: "fdu",
@@ -42,6 +37,14 @@ const useColumns = () =>
         field: "fdu_status",
         display: "flex",
         flex: 1,
+      },
+      {
+        headerName: "Amount",
+        field: "amount",
+        display: "flex",
+        flex: 1,
+        valueFormatter: (value) => currencyFormatter.format(value),
+        type: "currency",
       },
     ];
   }, []);
