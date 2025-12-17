@@ -81,95 +81,100 @@ const LookupsView = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Page title="Moped Data Dictionary">
+      <Page title="Data Dictionary">
         <Container maxWidth="xl">
-          <Grid container spacing={3} sx={{ marginTop: 3 }}>
-            <Grid item xs={12}>
-              <Typography variant="h1">Moped Data Dictionary</Typography>
-            </Grid>
-          </Grid>
-          <Grid
-            container
-            spacing={3}
-            sx={{ marginTop: 3 }}
-            component={Paper}
-            ref={refs._scroll_to_top}
-          >
-            {SETTINGS.map((recordType) => (
-              <Grid item key={recordType.key} sx={{ marginBottom: 3 }}>
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  component={Link}
-                  to={createRecordKeyHash(recordType.key)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToTable(recordType.key, refs);
-                    history.replace(createRecordKeyHash(recordType.key));
-                  }}
-                >
-                  {recordType.label}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-          {SETTINGS.map((recordType) => (
+          <Paper sx={{ paddingLeft: 3 }}>
             <Grid
               container
               spacing={3}
-              sx={{ marginTop: 3 }}
-              component={Paper}
-              key={recordType.key}
-              ref={refs[recordType.key]}
+              sx={{ marginTop: 3, scrollMarginTop: 24 }}
+              ref={refs._scroll_to_top}
             >
               <Grid item xs={12}>
-                <Grid container direction="row" alignItems="center">
-                  <Grid item>
-                    <Typography variant="h2">{recordType.label}</Typography>
-                  </Grid>
+                <Typography variant="h1" color="primary">
+                  Data dictionary
+                </Typography>
+              </Grid>
+              {SETTINGS.map((recordType) => (
+                <Grid item key={recordType.key} sx={{ marginBottom: 3 }}>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    component={Link}
+                    to={createRecordKeyHash(recordType.key)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToTable(recordType.key, refs);
+                      history.replace(createRecordKeyHash(recordType.key));
+                    }}
+                  >
+                    {recordType.label}
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
 
-                  <Grid item>
-                    <Tooltip title="Link to this table">
-                      <IconButton
-                        component={Link}
-                        to={createRecordKeyHash(recordType.key)}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToTable(recordType.key, refs);
-                          history.replace(createRecordKeyHash(recordType.key));
-                        }}
-                        size="large"
-                      >
-                        <LinkIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
-                  <Grid item>
-                    <Tooltip title="Return to top of page">
-                      <IconButton
-                        component={Link}
-                        to={"#"}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToTable("_scroll_to_top", refs);
-                          history.replace("");
-                        }}
-                        size="large"
-                      >
-                        <ArrowUpwardIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <RecordTable
-                      rows={data?.[recordType.key]}
-                      columns={recordType.columns}
-                      loading={loading}
-                    />
+          {SETTINGS.map((recordType) => (
+            <Paper sx={{ paddingLeft: 3 }}>
+              <Grid
+                container
+                spacing={3}
+                sx={{ marginTop: 3 }}
+                key={recordType.key}
+                ref={refs[recordType.key]}
+              >
+                <Grid item xs={12}>
+                  <Grid container direction="row" alignItems="center">
+                    <Grid item>
+                      <Typography variant="h2">{recordType.label}</Typography>
+                    </Grid>
+
+                    <Grid item>
+                      <Tooltip title="Link to this table">
+                        <IconButton
+                          component={Link}
+                          to={createRecordKeyHash(recordType.key)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            scrollToTable(recordType.key, refs);
+                            history.replace(
+                              createRecordKeyHash(recordType.key)
+                            );
+                          }}
+                          size="large"
+                        >
+                          <LinkIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                    <Grid item>
+                      <Tooltip title="Return to top of page">
+                        <IconButton
+                          component={Link}
+                          to={"#"}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            scrollToTable("_scroll_to_top", refs);
+                            history.replace("");
+                          }}
+                          size="large"
+                        >
+                          <ArrowUpwardIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <RecordTable
+                        rows={data?.[recordType.key]}
+                        columns={recordType.columns}
+                        loading={loading}
+                      />
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+            </Paper>
           ))}
         </Container>
       </Page>
