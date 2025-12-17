@@ -115,6 +115,7 @@ const SubprojectFundingModal = ({
     handleDialogClose,
     projectId,
     refetch,
+    eCaprisID,
     selectedFdus,
     handleSnackbar,
   ]);
