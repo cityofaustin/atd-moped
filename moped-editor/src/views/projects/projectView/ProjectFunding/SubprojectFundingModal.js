@@ -84,20 +84,12 @@ const SubprojectFundingModal = ({
     // format record to match generic records added
     selectedFdus.forEach((fdu) => {
       const fduRecord = {};
-      fduRecord.dept_unit = {
-        dept: fdu.dept,
-        dept_id: fdu.dept_id,
-        dept_unit_id: fdu.dept_unit_id,
-        dept_unit_status: fdu.dept_unit_status,
-        unit: fdu.unit,
-        unit_long_name: fdu.unit_long_name,
-        unit_short_name: fdu.unit_short_name,
-      };
-      fduRecord.fund = {
-        fund_id: fdu.fund,
-        fund_name: fdu.fundname.toUpperCase(),
-      };
+      fduRecord.ecapris_funding_id = fdu.ecapris_funding_id;
+      fduRecord.ecapris_subproject_id = eCaprisID;
+      // fduRecord.fund_dept_unit = fdu.fdu;
+      fduRecord.fdu = fdu.fdu;
       fduRecord.project_id = projectId;
+      fduRecord.funding_amount = fdu.amount;
       // funding status 2 is "Confirmed"
       fduRecord.funding_status_id = 2;
       newFunds.push(fduRecord);
@@ -181,7 +173,9 @@ const SubprojectFundingModal = ({
           onProcessRowUpdateError={(error) =>
             handleSnackbar(true, "Error updating table", "error", error)
           }
-          isRowSelectable={(thing) => !fdusArray.includes(thing.id)}
+          isRowSelectable={(row) =>
+            !fdusArray.some((fdu) => fdu.fdu === row.id)
+          }
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
