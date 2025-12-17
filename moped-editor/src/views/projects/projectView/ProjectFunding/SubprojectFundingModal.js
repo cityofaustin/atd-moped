@@ -59,7 +59,6 @@ const SubprojectFundingModal = ({
   handleSnackbar,
   refetch,
 }) => {
-
   const { data } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
     variables: { ecapris_subproject_id: eCaprisID },
     fetchPolicy: "no-cache",
@@ -89,6 +88,7 @@ const SubprojectFundingModal = ({
       fduRecord.fdu = fdu.fdu;
       fduRecord.project_id = projectId;
       fduRecord.funding_amount = fdu.amount;
+      fduRecord.unit_long_name = fdu.unit_long_name;
       // funding status 5 is "Set Up"
       fduRecord.funding_status_id = 5;
       newFunds.push(fduRecord);
