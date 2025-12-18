@@ -5,6 +5,7 @@ import os
 
 TEST_KNACK_SIGNAL_RECORD_ID = os.getenv("TEST_KNACK_SIGNAL_RECORD_ID")
 
+
 def build_signal_list_from_moped_record(moped_project_record):
     """
     Build a list of signal IDs connected to a moped project record
@@ -62,7 +63,7 @@ def build_knack_project_from_moped_project(moped_project_record, is_test=False):
         "field_4133": moped_project_record["project_id"],
         "field_3857": moped_project_record["project_name"],
         "field_4922": moped_project_record["is_deleted"],
-        "field_5137": moped_project_record["project_name_secondary"],
+        "field_5159": moped_project_record["project_name_secondary"],
         "field_4136": phase_name,
         "field_3861": signals,
         "field_4162": make_moped_project_url(moped_project_record["project_id"]),
