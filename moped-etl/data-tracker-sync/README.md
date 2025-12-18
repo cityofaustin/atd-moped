@@ -31,15 +31,13 @@ that you create in the testing steps.
 
 #### Testing by running the script locally
 
-Testing the sync process outside of the production environment requires a few steps since the
-we don't want to test on production and the unique signal IDs differ between the production app
-and test copies. The steps are as follows:
+Testing the sync process outside of the production environment requires a few steps since we don't want to test on production and the unique signal IDs differ between the production app and test copies. The steps are as follows:
 
 1. Start the local instance of the Moped Hasura cluster from a production snapshot or using the seed data
 2. Create a new project in Moped and set the environment variable called TEST_MOPED_PROJECT_ID to the
 Moped project ID
 3. Get a ISO 8601 timestamp (like `2024-01-22T22:53:57+0000` for example) for the current 
-UTC time and set the `--start` argument to that timestamp. You can use:
+UTC time and set the `--date` argument to that timestamp. You can use:
 ```js
 const dateObj = new Date();
 dateObj.toISOString();
@@ -64,6 +62,12 @@ or through the Moped Editor
 11. Run the sync script again with the last timestamp that you used. You should see the script
 log an update of the Knack record that you created earlier. Check the row in the test
 Data Tracker app and you should see that the title has been updated with your edit
+
+Alternately, you can run the script with with the dry run flag `--dry-run`.
+```bash
+docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app atddocker/atd-moped-etl-data-tracker-sync python data_tracker_sync.py --date <your timestamp> --dry-run
+```
+
 
 #### Backfilling a new column
 
