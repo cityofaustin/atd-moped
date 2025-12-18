@@ -46,6 +46,18 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
   }
 `;
 
+export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
+  query EcaprisFduSubproject($ecapris_subproject_id: String!) {
+    ecapris_subproject_funding(where: {ecapris_subproject_id: {_eq: $ecapris_subproject_id}}) {
+      ecapris_funding_id: fao_id
+      fdu
+      unit_long_name
+      fdu_status
+      amount: app
+    }
+  }
+`;
+
 export const UPDATE_PROJECT_FUNDING = gql`
   mutation UpdateProjectFunding(
     $proj_funding_id: Int!
