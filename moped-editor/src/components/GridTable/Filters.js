@@ -8,7 +8,6 @@ import {
   IconButton,
   Grow,
   Typography,
-  Box,
 } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
