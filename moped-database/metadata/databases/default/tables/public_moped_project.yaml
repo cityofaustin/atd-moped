@@ -265,6 +265,7 @@ update_permissions:
         - project_sponsor
         - project_website
         - public_process_status_id
+        - should_sync_ecapris_funding
         - should_sync_ecapris_statuses
         - updated_at
       filter: {}
@@ -288,6 +289,7 @@ update_permissions:
         - project_sponsor
         - project_website
         - public_process_status_id
+        - should_sync_ecapris_funding
         - should_sync_ecapris_statuses
         - updated_at
       filter: {}
