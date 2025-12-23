@@ -320,15 +320,15 @@ const ProjectFundingTable = ({
     eCaprisSubprojectId && shouldSyncEcaprisFunding
       ? {
           projectFundingConditions: {
-            _or: [
-              { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
-              { project_id: { _eq: Number(projectId) } },
-            ],
+            project_id: { _eq: Number(projectId) },
           },
         }
       : {
           projectFundingConditions: {
-            project_id: { _eq: Number(projectId) },
+            _and: [
+              { project_id: { _eq: Number(projectId) } },
+              { is_synced_from_ecapris: { _eq: false } },
+            ],
           },
         };
 
@@ -367,7 +367,9 @@ const ProjectFundingTable = ({
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
-  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC);
+  const [updateShouldSyncECapris] = useMutation(
+    PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
+  );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
@@ -609,8 +611,6 @@ const ProjectFundingTable = ({
 
   if (loadingProjectFunding || loadingFduOptions || !dataProjectFunding)
     return <CircularProgress />;
-
-  console.log(dataProjectFunding)
 
   const handleECaprisSwitch = () => {
     updateShouldSyncECapris({
