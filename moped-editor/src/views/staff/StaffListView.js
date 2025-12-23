@@ -93,47 +93,44 @@ const StaffListView = () => {
 
   return (
     <Page title="Staff" sx={{ maxWidth: "100%" }}>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Box
-          sx={{
-            maxWidth: "100%",
-            minHeight: "100%",
-            padding: 3,
-          }}
-        >
-          <Card>
-            <DataGridPro
-              sx={dataGridProStyleOverrides}
-              disableRowSelectionOnClick
-              rows={data?.moped_users}
-              columns={staffColumns}
-              getRowId={(row) => row.user_id}
-              slots={{ toolbar: DataGridToolbar }}
-              slotProps={{
-                toolbar: {
-                  title: "Staff",
-                  primaryActionButton: <AddUserButton />,
-                  secondaryActionButton: (
-                    <CopyMugUsersButton users={data?.moped_users} />
-                  ),
-                  children: <GridToolbar showQuickFilter />,
+      <Box
+        sx={{
+          maxWidth: "100%",
+          minHeight: "100%",
+          padding: 3,
+        }}
+      >
+        <Card>
+          <DataGridPro
+            sx={dataGridProStyleOverrides}
+            disableRowSelectionOnClick
+            rows={data?.moped_users}
+            columns={staffColumns}
+            getRowId={(row) => row.user_id}
+            slots={{ toolbar: DataGridToolbar }}
+            slotProps={{
+              toolbar: {
+                title: "Staff",
+                primaryActionButton: <AddUserButton />,
+                secondaryActionButton: (
+                  <CopyMugUsersButton users={data?.moped_users} />
+                ),
+                children: <GridToolbar showQuickFilter />,
+              },
+            }}
+            initialState={{
+              filter: {
+                filterModel: {
+                  items: [
+                    { field: "is_deleted", operator: "equals", value: "Yes" },
+                  ],
                 },
-              }}
-              initialState={{
-                filter: {
-                  filterModel: {
-                    items: [
-                      { field: "is_deleted", operator: "equals", value: "Yes" },
-                    ],
-                  },
-                },
-              }}
-            />
-          </Card>
-        </Box>
-      )}
+              },
+            }}
+            loading={loading || !data}
+          />
+        </Card>
+      </Box>
     </Page>
   );
 };

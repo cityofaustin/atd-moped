@@ -419,8 +419,6 @@ const ProjectMilestones = ({
     }
   };
 
-  if (loading || !data) return <CircularProgress />;
-
   // Hide Milestone template dialog
   const handleTemplateModalClose = () => {
     setIsDialogOpen(false);
@@ -468,6 +466,7 @@ const ProjectMilestones = ({
             ),
           },
         }}
+        loading={loading || !data}
       />
       <MilestoneTemplateModal
         isDialogOpen={isDialogOpen}

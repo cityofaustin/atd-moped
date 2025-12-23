@@ -245,8 +245,6 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     storageKey: "workActivityTableColumnConfig",
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <>
       <DataGridPro
@@ -284,6 +282,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           },
         }}
         onCellDoubleClick={doubleClickListener}
+        loading={loading || !data}
       />
 
       {editActivity && (
