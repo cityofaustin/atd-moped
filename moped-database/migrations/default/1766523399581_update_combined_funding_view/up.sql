@@ -47,10 +47,10 @@ FROM ecapris_subproject_funding
 INNER JOIN moped_project ON ecapris_subproject_funding.ecapris_subproject_id = moped_project.ecapris_subproject_id
 WHERE NOT (EXISTS (
         SELECT 1
-        FROM moped_proj_funding AS mpf
-        WHERE mpf.fdu = ecapris_subproject_funding.fdu
-            AND mpf.project_id = moped_project.project_id
-            AND mpf.is_deleted = FALSE
+        FROM moped_proj_funding
+        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu
+            AND moped_proj_funding.project_id = moped_project.project_id
+            AND moped_proj_funding.is_deleted = FALSE
     ));
 
 -- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
