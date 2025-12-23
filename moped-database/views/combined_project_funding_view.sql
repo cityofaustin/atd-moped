@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1764186981043_track_ecapris_project_id/up.sql
+-- Most recent migration: moped-database/migrations/default/1766523399581_update_combined_funding_view/up.sql
 
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
@@ -26,15 +26,15 @@ LEFT JOIN moped_fund_programs ON moped_proj_funding.funding_program_id = moped_f
 WHERE moped_proj_funding.is_deleted = FALSE
 UNION ALL
 SELECT
-    'ecapris_'::text || ecapris_subproject_funding.id AS id,
+    (('ecapris_'::text || ecapris_subproject_funding.id) || '_moped_'::text) || moped_project.project_id AS id,
     ecapris_subproject_funding.id AS original_id,
     ecapris_subproject_funding.created_at,
     ecapris_subproject_funding.updated_at,
-    NULL::integer AS project_id,
+    moped_project.project_id,
     ecapris_subproject_funding.fdu,
     ecapris_subproject_funding.unit_long_name,
     ecapris_subproject_funding.app AS amount,
-    'Synced from eCAPRIS'::text AS description,
+    NULL::text AS description,
     NULL::text AS source_name,
     NULL::integer AS funding_source_id,
     'Set up'::text AS status_name,
@@ -45,8 +45,9 @@ SELECT
     ecapris_subproject_funding.ecapris_subproject_id,
     TRUE AS is_synced_from_ecapris
 FROM ecapris_subproject_funding
+JOIN moped_project ON ecapris_subproject_funding.ecapris_subproject_id = moped_project.ecapris_subproject_id
 WHERE NOT (EXISTS (
         SELECT 1
-        FROM moped_proj_funding
-        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.is_deleted = FALSE
+        FROM moped_proj_funding mpf
+        WHERE mpf.fdu = ecapris_subproject_funding.fdu AND mpf.project_id = moped_project.project_id AND mpf.is_deleted = FALSE
     ));
