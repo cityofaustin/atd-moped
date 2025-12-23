@@ -33,7 +33,7 @@ SELECT
     ecapris_subproject_funding.fdu,
     ecapris_subproject_funding.unit_long_name,
     ecapris_subproject_funding.app AS amount,
-    'Synced from eCAPRIS'::text AS description,
+    NULL AS description,
     NULL::text AS source_name,
     NULL::integer AS funding_source_id,
     'Set up'::text AS status_name,
@@ -52,3 +52,96 @@ WHERE NOT (EXISTS (
             AND mpf.project_id = moped_project.project_id
             AND mpf.is_deleted = FALSE
     ));
+
+-- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
+DO $$
+BEGIN
+    IF EXISTS (
+    SELECT 1 
+    FROM pg_trigger 
+    WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
+        ALTER TABLE moped_proj_funding 
+        DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+    ELSE
+    RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'update_moped_proj_funding_and_project_audit_fields'
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
+        ALTER TABLE moped_proj_funding 
+        DISABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'set_moped_project_updated_at'
+        AND tgrelid = 'moped_project'::regclass
+    ) THEN
+        ALTER TABLE moped_project 
+        DISABLE TRIGGER "set_moped_project_updated_at";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+END $$;
+
+-- Populate new fdu column based on existing fund_dept_unit data if available and 
+-- populate unit_long_name from dept_unit JSONB
+-- Note: fund_dept_unit is a generated column that is null if fund or dept_unit is null
+UPDATE moped_proj_funding
+SET
+    fdu = fund_dept_unit,
+    unit_long_name = (dept_unit ->> 'unit_long_name')
+WHERE fund_dept_unit IS NOT NULL;
+
+-- Mark all existing funding records as legacy before eCAPRIS sync integration launches
+UPDATE moped_proj_funding
+SET is_legacy_funding_record = TRUE;
+
+-- Re-enable Hasura triggers
+DO $$
+BEGIN
+    IF EXISTS (
+    SELECT 1 
+    FROM pg_trigger 
+    WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
+        ALTER TABLE moped_proj_funding 
+        ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
+    ELSE
+    RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'update_moped_proj_funding_and_project_audit_fields'
+        AND tgrelid = 'moped_proj_funding'::regclass
+    ) THEN
+        ALTER TABLE moped_proj_funding 
+        ENABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = 'set_moped_project_updated_at'
+        AND tgrelid = 'moped_project'::regclass
+    ) THEN
+        ALTER TABLE moped_project 
+        ENABLE TRIGGER "set_moped_project_updated_at";
+    ELSE
+        RAISE NOTICE 'Trigger does not exist, skipping';
+    END IF;
+END $$;
