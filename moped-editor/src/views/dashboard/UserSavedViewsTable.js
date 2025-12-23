@@ -236,8 +236,6 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
     handleEditClick,
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <>
       <DataGridPro
@@ -256,6 +254,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No saved views to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
+        loading={loading || !data}
       />
       <DeleteConfirmationModal
         type={"saved view"}

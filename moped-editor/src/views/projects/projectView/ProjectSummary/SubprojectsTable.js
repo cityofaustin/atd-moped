@@ -365,8 +365,6 @@ const SubprojectsTable = ({
     deleteIcon: <LinkOffIcon sx={{ fontSize: 24 }} />,
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   const noRelatedProjectsLabel = isSubproject
     ? "No parent project set"
     : "No subprojects to display";
@@ -415,6 +413,7 @@ const SubprojectsTable = ({
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows
         }}
+        loading={loading || !data}
       />
       <DeleteConfirmationModal
         type={isSubproject ? "parent project" : "subproject"}

@@ -272,8 +272,6 @@ const DashboardView = () => {
     handleSnackbar,
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <ActivityMetrics eventName="dashboard_load">
       <Page title={"Dashboard"}>
@@ -322,9 +320,7 @@ const DashboardView = () => {
                       })}
                     </Tabs>
                   </AppBar>
-                  {loading ? (
-                    <CircularProgress />
-                  ) : TABS[activeTab].label === "Saved views" ? (
+                  {TABS[activeTab].label === "Saved views" ? (
                     <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
                     <DataGridPro
@@ -341,6 +337,7 @@ const DashboardView = () => {
                       localeText={{
                         noRowsLabel: "No projects to display",
                       }}
+                      loading={loading || !data}
                     />
                   )}
                 </Grid>

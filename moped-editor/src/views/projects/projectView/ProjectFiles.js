@@ -454,9 +454,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
     fileTypesObject,
   });
 
-  // If no data or loading show progress circle
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <>
       <DataGridPro
@@ -500,6 +497,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
             ),
           },
         }}
+        loading={loading || !data}
       />
       <FileUploadDialogSingle
         title={"Add file"}

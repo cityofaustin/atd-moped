@@ -277,6 +277,7 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
         onProcessRowUpdateError={(error) =>
           handleSnackbar(true, "Error updating table", "error", error)
         }
+        loading={loading || !data}
       />
       {editPhase && (
         <ProjectPhaseDialog
