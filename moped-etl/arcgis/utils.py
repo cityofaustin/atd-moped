@@ -110,9 +110,8 @@ def delete_all_features(feature_type):
     }
     res = resilient_layer_request(endpoint, data=data)
     response_data = res.json()
-    try:
-        assert response_data["success"]
-    except AssertionError:
+
+    if not response_data.get("success"):
         raise Exception(f"Delete features failed: {response_data}")
 
 
@@ -135,9 +134,8 @@ def delete_features_by_project_ids(feature_type, project_ids):
     }
     res = resilient_layer_request(endpoint, data=data)
     response_data = res.json()
-    try:
-        assert response_data["success"]
-    except AssertionError:
+
+    if not response_data.get("success"):
         raise Exception(f"Delete features failed: {response_data}")
 
 
