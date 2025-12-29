@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { CheckCircle, ContentCopy } from "@mui/icons-material";
 
@@ -12,22 +13,42 @@ import { CheckCircle, ContentCopy } from "@mui/icons-material";
 /**
  * Button component which copies a link to clipboard
  * @param {string} linkToCopy - the link URL to be copied to clipboard
+ * @param {string} copyButtonText - text to display on the button before copying
+ * @param {string} copiedButtonText - text to display on the button after copying for feedback
  * @param {object} buttonProps - MUI Button props
  * @returns
  */
-const CopyLinkButton = ({ linkToCopy, buttonProps }) => {
+const CopyLinkButton = ({
+  linkToCopy,
+  copyButtonText = "Copy Link",
+  copiedButtonText = "Copied!",
+  buttonProps,
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (copied) {
+      const timeout = setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [copied]);
+
   const handleCopyClick = () => {
     navigator.clipboard.writeText(linkToCopy);
+    setCopied(true);
   };
 
   return (
     <Button
-      variant="outlined"
       size="small"
       onClick={handleCopyClick}
       {...buttonProps}
+      startIcon={<ContentCopy />}
     >
-      Copy Link
+      {copied ? copiedButtonText : copyButtonText}
     </Button>
   );
 };

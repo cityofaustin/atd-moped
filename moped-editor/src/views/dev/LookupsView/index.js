@@ -10,7 +10,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
-import LinkIcon from "@mui/icons-material/Link";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
@@ -21,7 +20,7 @@ import CopyLinkButton from "src/components/CopyLinkButton";
 /**
  * Converts a record key (e.g. moped_phases) into a URL hash, (e.g. #moped-phases)
  */
-const createRecordKeyHash = (recordKey) => `#${recordKey.replace("_", "-")}`;
+const createRecordKeyHash = (recordKey) => `#${recordKey.replaceAll("_", "-")}`;
 
 /**
  * Scroll to a page element based on its key
@@ -52,8 +51,6 @@ const LookupsView = () => {
    */
   const history = createBrowserHistory();
 
-  let { pathname } = useLocation();
-
   /**
    * Create a ref index for every table element on the page so that we can scroll to them
    * */
@@ -73,12 +70,12 @@ const LookupsView = () => {
    * Use the record hash from the URL, if present. This only happens once after
    * data fetch.
    * */
-  const { hash: recordKeyHash } = useLocation();
+  let { hash: recordKeyHash, pathname } = useLocation();
   useEffect(() => {
     if (!recordKeyHash || loading) {
       return;
     }
-    const recordKey = recordKeyHash.replace("#", "").replace("-", "_");
+    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
     scrollToTable(recordKey, refs);
   }, [recordKeyHash, loading, refs]);
 
@@ -158,22 +155,8 @@ const LookupsView = () => {
                         <CopyLinkButton
                           linkToCopy={`${
                             window.location.origin
-                          }/${createRecordKeyHash(recordType.key)}`}
+                          }${pathname}${createRecordKeyHash(recordType.key)}`}
                         />
-                        {/* <IconButton
-                          component={Link}
-                          to={createRecordKeyHash(recordType.key)}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            scrollToTable(recordType.key, refs);
-                            history.replace(
-                              createRecordKeyHash(recordType.key)
-                            );
-                          }}
-                          size="large"
-                        >
-                          <LinkIcon fontSize="small" />
-                        </IconButton> */}
                       </Tooltip>
                     </Grid>
                     <Grid item xs={12}>
