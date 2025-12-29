@@ -9,7 +9,12 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 import { useMutation } from "@apollo/client";
-import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
+import {
+  fieldBox,
+  fieldGridItem,
+  fieldLabel,
+  fieldLabelText,
+} from "src/styles/reusableStyles";
 import CopyLinkButton from "src/components/CopyLinkButton";
 
 /**
@@ -156,14 +161,20 @@ const ProjectSummaryProjectECapris = ({
           </>
         )}
         {!editMode && (
-          <Stack direction="row" spacing={1} alignItems="left">
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={!eCapris && { flex: 1 }} // Grow hoverable input to fill space if no eCAPRIS id
+          >
             <ProjectSummaryLabel
               text={eCapris ? eCapris : ""}
               onClickEdit={() => setEditMode(true)}
             />
-            <CopyLinkButton
-              linkToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
-            />
+            {eCapris ? (
+              <CopyLinkButton
+                linkToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+              />
+            ) : null}
           </Stack>
         )}
       </Box>

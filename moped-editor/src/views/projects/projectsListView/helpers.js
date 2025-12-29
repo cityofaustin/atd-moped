@@ -1,14 +1,17 @@
 import { useMemo } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import CopyLinkButton from "src/components/CopyLinkButton";
 import parse from "html-react-parser";
 import { formatDateType, FormattedDateString } from "src/utils/dateAndTime";
-import ExternalLink from "../../../components/ExternalLink";
-import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
-import RenderSignalLink from "../../../components/RenderSignalLink";
-import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
-import { substantialCompletionDateTooltipText } from "../../../constants/projects";
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import RenderSignalLink from "src/components/RenderSignalLink";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "src/views/projects/projectsListView/ProjectsListViewQueryConf";
+import { substantialCompletionDateTooltipText } from "src/constants/projects";
 import theme from "src/theme";
+import { Typography } from "@mui/material";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {
@@ -229,10 +232,16 @@ export const useColumns = ({ hiddenColumns }) => {
         field: "ecapris_subproject_id",
         width: COLUMN_WIDTHS.small,
         renderCell: ({ row }) => (
-          <ExternalLink
-            text={row.ecapris_subproject_id}
-            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${row.ecapris_subproject_id}`}
-          />
+          <Stack direction="row" spacing={1} alignItems="flex-start">
+            <Typography variant="body2">{row.ecapris_subproject_id}</Typography>
+            {row.ecapris_subproject_id ? (
+              <CopyLinkButton
+                linkToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${row.ecapris_subproject_id}`}
+                iconOnly
+                iconProps={{ fontSize: "small" }}
+              />
+            ) : null}
+          </Stack>
         ),
       },
       {

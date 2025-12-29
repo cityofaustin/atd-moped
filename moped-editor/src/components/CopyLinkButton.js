@@ -13,6 +13,7 @@ import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
  * @param {string} copyButtonText - text to display on the button before copying
  * @param {string} copiedButtonText - text to display on the button after copying for feedback
  * @param {object} buttonProps - MUI Button props
+ * @param {object} iconProps - MUI IconButton props
  * @param {number} timeoutDuration - duration in milliseconds before resetting copied state
  * @param {boolean} iconOnly - if true, renders an IconButton instead of a Button
  * @returns {JSX.Element} A button which copies a link to clipboard
@@ -22,12 +23,17 @@ const CopyLinkButton = ({
   copyButtonText = "Copy Link",
   copiedButtonText = "Copied!",
   buttonProps,
+  iconProps,
   timeoutDuration = 2000,
   iconOnly = false,
 }) => {
   const [copied, setCopied] = useState(false);
   const buttonText = copied ? copiedButtonText : copyButtonText;
-  const startIcon = copied ? <CheckCircleOutline /> : <ContentCopyOutlined />;
+  const startIcon = copied ? (
+    <CheckCircleOutline {...iconProps} />
+  ) : (
+    <ContentCopyOutlined {...iconProps} />
+  );
 
   const handleCopyClick = async () => {
     try {
