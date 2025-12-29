@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import CopyLinkButton from "src/components/CopyLinkButton";
 import parse from "html-react-parser";
 import { formatDateType, FormattedDateString } from "src/utils/dateAndTime";
@@ -10,7 +11,6 @@ import RenderSignalLink from "src/components/RenderSignalLink";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "src/views/projects/projectsListView/ProjectsListViewQueryConf";
 import { substantialCompletionDateTooltipText } from "src/constants/projects";
 import theme from "src/theme";
-import { Typography } from "@mui/material";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {

@@ -3,6 +3,7 @@ import { Box, Grid, Stack, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
+import CopyLinkButton from "src/components/CopyLinkButton";
 
 import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
@@ -10,7 +11,6 @@ import {
 } from "src/queries/project";
 import { useMutation } from "@apollo/client";
 import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
-import CopyLinkButton from "src/components/CopyLinkButton";
 
 /**
  * Custom wrapper for the eCapris edit field
@@ -159,7 +159,7 @@ const ProjectSummaryProjectECapris = ({
           <Stack
             direction="row"
             spacing={1}
-            sx={!eCapris && { flex: 1 }} // Grow hoverable input to fill space if no eCAPRIS id
+            sx={!eCapris && { flex: 1 }} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
             <ProjectSummaryLabel
               text={eCapris ? eCapris : ""}
