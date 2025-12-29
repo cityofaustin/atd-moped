@@ -227,7 +227,7 @@ export const useColumns = ({ hiddenColumns }) => {
           renderSplitListDisplayBlock(row, "project_partners"),
       },
       {
-        headerName: "eCapris ID",
+        headerName: "eCAPRIS ID",
         field: "ecapris_subproject_id",
         width: COLUMN_WIDTHS.small,
         renderCell: ({ row }) => (
