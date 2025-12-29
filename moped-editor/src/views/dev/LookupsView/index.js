@@ -151,13 +151,11 @@ const LookupsView = () => {
                       </Tooltip>
                     </Grid>
                     <Grid item>
-                      <Tooltip title="Link to this table">
-                        <CopyLinkButton
-                          linkToCopy={`${
-                            window.location.origin
-                          }${pathname}${createRecordKeyHash(recordType.key)}`}
-                        />
-                      </Tooltip>
+                      <CopyLinkButton
+                        linkToCopy={`${
+                          window.location.origin
+                        }${pathname}${createRecordKeyHash(recordType.key)}`}
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <RecordTable

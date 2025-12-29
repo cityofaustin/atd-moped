@@ -4,9 +4,6 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
 
-// TODO:
-// Button is outside ProjectSummaryLabel component so hover states don't overlap
-
 /**
  * Button component which copies a link to clipboard
  * @param {string} linkToCopy - the link URL to be copied to clipboard
