@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
 
 // TODO:
@@ -15,6 +17,7 @@ import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
  * @param {string} copiedButtonText - text to display on the button after copying for feedback
  * @param {object} buttonProps - MUI Button props
  * @param {number} timeoutDuration - duration in milliseconds before resetting copied state
+ * @param {boolean} iconOnly - if true, renders an IconButton instead of a Button
  * @returns {JSX.Element} A button which copies a link to clipboard
  */
 const CopyLinkButton = ({
@@ -23,8 +26,11 @@ const CopyLinkButton = ({
   copiedButtonText = "Copied!",
   buttonProps,
   timeoutDuration = 2000,
+  iconOnly = false,
 }) => {
   const [copied, setCopied] = useState(false);
+  const buttonText = copied ? copiedButtonText : copyButtonText;
+  const startIcon = copied ? <CheckCircleOutline /> : <ContentCopyOutlined />;
 
   const handleCopyClick = async () => {
     try {
@@ -46,18 +52,33 @@ const CopyLinkButton = ({
     }
   }, [copied, timeoutDuration]);
 
+  if (iconOnly) {
+    return (
+      <Tooltip title={copied ? copiedButtonText : copyButtonText}>
+        <IconButton
+          size="small"
+          onClick={handleCopyClick}
+          aria-label={copied ? copiedButtonText : copyButtonText}
+          {...buttonProps}
+        >
+          {startIcon}
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
   return (
     <Button
       size="small"
       onClick={handleCopyClick}
-      startIcon={copied ? <CheckCircleOutline /> : <ContentCopyOutlined />}
+      startIcon={startIcon}
       sx={{ minWidth: 100, justifyContent: "flex-start" }}
       aria-label={
         copied ? copiedButtonText : `${copyButtonText}: ${linkToCopy}`
       }
       {...buttonProps}
     >
-      {copied ? copiedButtonText : copyButtonText}
+      {buttonText}
     </Button>
   );
 };

@@ -11,6 +11,8 @@ import {
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
+import { Copy } from "react-feather";
+import CopyLinkButton from "src/components/CopyLinkButton";
 
 /**
  * Custom wrapper for the eCapris edit field
@@ -156,19 +158,18 @@ const ProjectSummaryProjectECapris = ({
           </>
         )}
         {!editMode && (
-          <ProjectSummaryLabel
-            text={
-              (eCapris && (
-                <ExternalLink
-                  text={eCapris}
-                  url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
-                  stopPropagation
-                />
-              )) ||
-              ""
-            }
-            onClickEdit={() => setEditMode(true)}
-          />
+          <>
+            <ProjectSummaryLabel
+              text={eCapris ? eCapris : ""}
+              onClickEdit={() => setEditMode(true)}
+            />
+            <CopyLinkButton
+              linkToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+              buttonProps={{ sx: { ml: 1 }, disabled: !eCapris }}
+              copyButtonText="Copy eCAPRIS Link"
+              copiedButtonText="eCAPRIS Link Copied"
+            />
+          </>
         )}
       </Box>
     </WrapperComponent>
