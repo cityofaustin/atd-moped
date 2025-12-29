@@ -14,38 +14,48 @@ import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
  * @param {string} copyButtonText - text to display on the button before copying
  * @param {string} copiedButtonText - text to display on the button after copying for feedback
  * @param {object} buttonProps - MUI Button props
- * @returns
+ * @param {number} timeoutDuration - duration in milliseconds before resetting copied state
+ * @returns {JSX.Element} A button which copies a link to clipboard
  */
 const CopyLinkButton = ({
   linkToCopy,
   copyButtonText = "Copy Link",
   copiedButtonText = "Copied!",
   buttonProps,
+  timeoutDuration = 2000,
 }) => {
   const [copied, setCopied] = useState(false);
 
+  const handleCopyClick = async () => {
+    try {
+      await navigator.clipboard.writeText(linkToCopy);
+      setCopied(true);
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+    }
+  };
+
+  /* Reset copied state after timeout */
   useEffect(() => {
     if (copied) {
       const timeout = setTimeout(() => {
         setCopied(false);
-      }, 2000);
+      }, timeoutDuration);
 
       return () => clearTimeout(timeout);
     }
-  }, [copied]);
-
-  const handleCopyClick = () => {
-    navigator.clipboard.writeText(linkToCopy);
-    setCopied(true);
-  };
+  }, [copied, timeoutDuration]);
 
   return (
     <Button
       size="small"
       onClick={handleCopyClick}
-      {...buttonProps}
       startIcon={copied ? <CheckCircleOutline /> : <ContentCopyOutlined />}
-      sx={{ minWidth: 100, justifyContent: "left", ...buttonProps?.sx }}
+      sx={{ minWidth: 100, justifyContent: "flex-start" }}
+      aria-label={
+        copied ? copiedButtonText : `${copyButtonText}: ${linkToCopy}`
+      }
+      {...buttonProps}
     >
       {copied ? copiedButtonText : copyButtonText}
     </Button>
