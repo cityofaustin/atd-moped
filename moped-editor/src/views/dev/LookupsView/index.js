@@ -16,6 +16,7 @@ import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
 import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
+import CopyLinkButton from "src/components/CopyLinkButton";
 
 /**
  * Converts a record key (e.g. moped_phases) into a URL hash, (e.g. #moped-phases)
@@ -50,6 +51,8 @@ const LookupsView = () => {
    * See // https://github.com/remix-run/react-router/issues/8908
    */
   const history = createBrowserHistory();
+
+  let { pathname } = useLocation();
 
   /**
    * Create a ref index for every table element on the page so that we can scroll to them
@@ -125,28 +128,14 @@ const LookupsView = () => {
                 ref={refs[recordType.key]}
               >
                 <Grid item xs={12}>
-                  <Grid container direction="row" alignItems="center">
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                  >
                     <Grid item>
                       <Typography variant="h2">{recordType.label}</Typography>
-                    </Grid>
-
-                    <Grid item>
-                      <Tooltip title="Link to this table">
-                        <IconButton
-                          component={Link}
-                          to={createRecordKeyHash(recordType.key)}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            scrollToTable(recordType.key, refs);
-                            history.replace(
-                              createRecordKeyHash(recordType.key)
-                            );
-                          }}
-                          size="large"
-                        >
-                          <LinkIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
                     </Grid>
                     <Grid item>
                       <Tooltip title="Return to top of page">
@@ -162,6 +151,29 @@ const LookupsView = () => {
                         >
                           <ArrowUpwardIcon fontSize="small" />
                         </IconButton>
+                      </Tooltip>
+                    </Grid>
+                    <Grid item>
+                      <Tooltip title="Link to this table">
+                        <CopyLinkButton
+                          linkToCopy={`${
+                            window.location.origin
+                          }/${createRecordKeyHash(recordType.key)}`}
+                        />
+                        {/* <IconButton
+                          component={Link}
+                          to={createRecordKeyHash(recordType.key)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            scrollToTable(recordType.key, refs);
+                            history.replace(
+                              createRecordKeyHash(recordType.key)
+                            );
+                          }}
+                          size="large"
+                        >
+                          <LinkIcon fontSize="small" />
+                        </IconButton> */}
                       </Tooltip>
                     </Grid>
                     <Grid item xs={12}>

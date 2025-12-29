@@ -8,15 +8,25 @@ import { CheckCircle, ContentCopy } from "@mui/icons-material";
 // Button is outside ProjectSummaryLabel component so hover states don't overlap
 // Button text updates from "COPY LINK" to "COPIED!" when clicked for feedback
 // Button icon updates from ContentCopy to CheckCircle when clicked
-// Replace link icon buttons in data dictionary with this component and move to be after "navigate to top" button
 
-const CopyLinkButton = ({ linkToCopy }) => {
+/**
+ * Button component which copies a link to clipboard
+ * @param {string} linkToCopy - the link URL to be copied to clipboard
+ * @param {object} buttonProps - MUI Button props
+ * @returns
+ */
+const CopyLinkButton = ({ linkToCopy, buttonProps }) => {
   const handleCopyClick = () => {
     navigator.clipboard.writeText(linkToCopy);
   };
 
   return (
-    <Button variant="outlined" onClick={handleCopyClick}>
+    <Button
+      variant="outlined"
+      size="small"
+      onClick={handleCopyClick}
+      {...buttonProps}
+    >
       Copy Link
     </Button>
   );
