@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Box, Grid, Stack, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
@@ -156,18 +156,15 @@ const ProjectSummaryProjectECapris = ({
           </>
         )}
         {!editMode && (
-          <>
+          <Stack direction="row" spacing={1} alignItems="left">
             <ProjectSummaryLabel
               text={eCapris ? eCapris : ""}
               onClickEdit={() => setEditMode(true)}
             />
             <CopyLinkButton
               linkToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
-              buttonProps={{ sx: { ml: 1 }, disabled: !eCapris }}
-              copyButtonText="Copy eCAPRIS Link"
-              copiedButtonText="eCAPRIS Link Copied"
             />
-          </>
+          </Stack>
         )}
       </Box>
     </WrapperComponent>
