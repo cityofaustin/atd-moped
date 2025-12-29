@@ -9,12 +9,7 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 import { useMutation } from "@apollo/client";
-import {
-  fieldBox,
-  fieldGridItem,
-  fieldLabel,
-  fieldLabelText,
-} from "src/styles/reusableStyles";
+import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 import CopyLinkButton from "src/components/CopyLinkButton";
 
 /**
