@@ -5,9 +5,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
 
 // TODO:
-// Update eCAPRIS subproject field to show the subproject id that is no longer a clickable link
-// Update eCAPRIS subproject field with a clickable copy button with ContentCopy start icon
-// Button copies eCAPRIS url in existing link code to the clipboard so it can be pasted in another tab (see CopyMugUsersButton for example code or VZ code)
 // Button is outside ProjectSummaryLabel component so hover states don't overlap
 
 /**
@@ -58,7 +55,7 @@ const CopyLinkButton = ({
         <IconButton
           size="small"
           onClick={handleCopyClick}
-          aria-label={copied ? copiedButtonText : copyButtonText}
+          aria-label={buttonText}
           {...buttonProps}
         >
           {startIcon}
@@ -73,9 +70,7 @@ const CopyLinkButton = ({
       onClick={handleCopyClick}
       startIcon={startIcon}
       sx={{ minWidth: 100, justifyContent: "flex-start" }}
-      aria-label={
-        copied ? copiedButtonText : `${copyButtonText}: ${linkToCopy}`
-      }
+      aria-label={buttonText}
       {...buttonProps}
     >
       {buttonText}
