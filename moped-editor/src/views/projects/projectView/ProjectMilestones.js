@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import isEqual from "lodash/isEqual";
+import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
 import { CircularProgress } from "@mui/material";

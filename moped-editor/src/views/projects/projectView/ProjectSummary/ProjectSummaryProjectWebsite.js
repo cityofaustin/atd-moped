@@ -96,7 +96,7 @@ const ProjectSummaryProjectWebsite = ({
               id="moped-project-website"
               label={null}
               onChange={handleProjectWebsiteChange}
-              value={website}
+              value={website ?? ""}
               error={!isWebsiteValid}
               helperText={!isWebsiteValid ? "Website is not a valid URL" : null}
             />

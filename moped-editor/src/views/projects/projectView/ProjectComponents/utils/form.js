@@ -9,7 +9,6 @@ import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
-import { get } from "lodash";
 
 /**
  * Allows the component work type to be defaulted to `New` -
@@ -401,8 +400,8 @@ export const useResetDependentFieldOnParentFieldChange = ({
     // keep update from firing if the parent value hasn't changed
     if (comparisonVariable) {
       if (
-        get(parentValue, comparisonVariable) ===
-        get(previousParentFormValue, comparisonVariable)
+        parentValue?.[comparisonVariable] ===
+        previousParentFormValue?.[comparisonVariable]
       )
         return;
     } else if (parentValue === previousParentFormValue) {
