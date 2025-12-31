@@ -38,7 +38,6 @@ const ViewOnlyTextField = ({
       } else {
         apiRef.current.setCellFocus(id, nextColumnField);
       }
-      ref.current.focus();
     }
   }, [
     apiRef,
