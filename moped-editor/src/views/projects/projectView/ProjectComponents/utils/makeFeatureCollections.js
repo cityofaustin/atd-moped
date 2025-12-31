@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { featureTableFieldMap } from "./makeFeatures";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash.clonedeep";
 import { addDrawnFeatureProperties } from "./features";
 
 /**
