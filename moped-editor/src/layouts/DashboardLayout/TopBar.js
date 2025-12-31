@@ -3,7 +3,6 @@ import { Link as RouterLink } from "react-router-dom";
 import {
   AppBar,
   Box,
-  Hidden,
   Toolbar,
   Tabs,
   Tab,
@@ -80,7 +79,7 @@ const TopBar = ({ className, ...rest }) => {
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
-        <Hidden mdDown>
+        <Box sx={{ display: { xs: "none", md: "contents" } }}>
           <Box>
             <Tabs
               sx={{ marginLeft: (theme) => theme.spacing(1.5) }}
@@ -123,23 +122,24 @@ const TopBar = ({ className, ...rest }) => {
           <Box sx={{ marginRight: (theme) => theme.spacing(1) }}>
             <CanAddProjectButton />
           </Box>
-        </Hidden>
-        <Hidden mdUp>
-          <Box flexGrow={1} />
+        </Box>
+        <Box
+          sx={{
+            display: { xs: "flex", md: "none" },
+            flexGrow: 1,
+            justifyContent: "flex-end",
+          }}
+        >
           <NavigationSearchInput />
-        </Hidden>
-        <Hidden mdDown>
-          <Box>
-            <DropdownMenu
-              handleDropdownClick={handleDropdownClick}
-              handleDropdownClose={handleDropdownClose}
-              dropdownAnchorEl={dropdownAnchorEl}
-            />
-          </Box>
-        </Hidden>
-        <Hidden mdUp>
           <MobileDropdownMenu />
-        </Hidden>
+        </Box>
+        <Box sx={{ display: { xs: "none", md: "contents" } }}>
+          <DropdownMenu
+            handleDropdownClick={handleDropdownClick}
+            handleDropdownClose={handleDropdownClose}
+            dropdownAnchorEl={dropdownAnchorEl}
+          />
+        </Box>
       </Toolbar>
     </AppBar>
   );

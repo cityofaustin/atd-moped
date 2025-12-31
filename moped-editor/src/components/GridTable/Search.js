@@ -10,7 +10,6 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import Hidden from "@mui/material/Hidden";
 import Icon from "@mui/material/Icon";
 import ListRoundedIcon from "@mui/icons-material/ListRounded";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
@@ -222,7 +221,10 @@ const Search = ({
                 <div>
                   {queryConfig.showExport && (
                     <>
-                      <Hidden smUp>
+                      <Box
+                        component="span"
+                        sx={{ display: { xs: "inline", md: "none" } }}
+                      >
                         <Button
                           variant="contained"
                           color="primary"
@@ -232,7 +234,7 @@ const Search = ({
                         >
                           Search
                         </Button>
-                      </Hidden>
+                      </Box>
                       <ToggleButtonGroup
                         sx={toggleButtonGroup}
                         value={showMapView === true ? "map" : "list"} // Highlight selected button
@@ -256,7 +258,12 @@ const Search = ({
                         variant="outlined"
                         color="primary"
                       >
-                        <Hidden smDown>Download</Hidden>
+                        <Box
+                          component="span"
+                          sx={{ display: { xs: "none", sm: "inline" } }}
+                        >
+                          Download
+                        </Box>
                       </Button>
                     </>
                   )}
