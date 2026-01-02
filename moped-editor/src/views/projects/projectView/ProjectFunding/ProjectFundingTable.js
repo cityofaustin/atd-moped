@@ -610,8 +610,6 @@ const ProjectFundingTable = ({
   if (loadingProjectFunding || loadingFduOptions || !dataProjectFunding)
     return <CircularProgress />;
 
-  console.log(dataProjectFunding)
-
   const handleECaprisSwitch = () => {
     updateShouldSyncECapris({
       variables: {
