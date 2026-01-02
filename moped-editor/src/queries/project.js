@@ -911,6 +911,17 @@ export const PROJECT_UPDATE_ECAPRIS_SYNC = gql`
   }
 `;
 
+export const PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC = gql`
+  mutation UpdateProjectECaprisFundingSync($projectId: Int!, $shouldSync: Boolean!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { should_sync_ecapris_funding: $shouldSync }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 export const UPDATE_PROJECT_NAMES_QUERY = gql`
   mutation UpdateProjectName(
     $projectId: Int!
