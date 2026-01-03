@@ -14,6 +14,9 @@ export const ProjectActivityLogTableMaps = {
       should_sync_ecapris_statuses: {
         label: "eCAPRIS status sync",
       },
+      should_sync_ecapris_funding: {
+        label: "eCAPRIS funding sync",
+      },
       current_status: {
         label: "current status",
       },
@@ -535,6 +538,12 @@ export const ProjectActivityLogTableMaps = {
       },
       dept_unit: {
         label: "department unit",
+      },
+      fdu: {
+        label: "FDU",
+      },
+      unit_long_name: {
+        label: "unit name",
       },
     },
   },
