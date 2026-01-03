@@ -81,14 +81,71 @@ export const formatProjectActivity = (change, lookupList) => {
   }
 
   // Check for eCAPRIS-related field changes using the fields array
-  const hasEcaprisSyncChange = changedFields.includes(
+  const hasEcaprisStatusSyncChange = changedFields.includes(
     "should_sync_ecapris_statuses"
   );
+  const hasEcaprisFundingSyncChange = changedFields.includes(
+    "should_sync_ecapris_funding"
+  );
   const hasEcaprisIdChange = changedFields.includes("ecapris_subproject_id");
-  const hasEcaprisSyncAndIdChanges = hasEcaprisSyncChange && hasEcaprisIdChange;
 
-  // Handle eCAPRIS sync changes (only sync field changed)
-  if (hasEcaprisSyncChange && !hasEcaprisIdChange) {
+  // Handle eCAPRIS funding sync changes (only funding sync field changed)
+  if (
+    hasEcaprisFundingSyncChange &&
+    !hasEcaprisStatusSyncChange &&
+    !hasEcaprisIdChange
+  ) {
+    const newFundingSyncValue = changeData.new.should_sync_ecapris_funding;
+    const oldFundingSyncValue = changeData.old.should_sync_ecapris_funding;
+    const newEcaprisId = changeData.new.ecapris_subproject_id;
+    const oldEcaprisId = changeData.old.ecapris_subproject_id;
+
+    // Skip rendering activity row when syncing state changes but no eCAPRIS ID is set.
+    if (!newEcaprisId && !oldEcaprisId) {
+      return { changeIcon: null, changeText: null };
+    }
+
+    // Funding sync enabled
+    const isFundingSyncEnabled =
+      newFundingSyncValue === true && oldFundingSyncValue === false;
+    if (isFundingSyncEnabled) {
+      changeIcon = <SyncIcon />;
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Enabled eCAPRIS subproject funding sync from ",
+            style: null,
+          },
+          { text: newEcaprisId, style: "boldText" },
+        ],
+      };
+    }
+
+    // Funding sync disabled
+    const isFundingSyncDisabled =
+      newFundingSyncValue === false && oldFundingSyncValue === true;
+    if (isFundingSyncDisabled) {
+      changeIcon = <SyncDisabledIcon />;
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Disabled eCAPRIS subproject funding sync from ",
+            style: null,
+          },
+          { text: oldEcaprisId, style: "boldText" },
+        ],
+      };
+    }
+  }
+
+  // Handle eCAPRIS status sync changes (only status sync field changed)
+  if (
+    hasEcaprisStatusSyncChange &&
+    !hasEcaprisFundingSyncChange &&
+    !hasEcaprisIdChange
+  ) {
     const newSyncValue = changeData.new.should_sync_ecapris_statuses;
     const oldSyncValue = changeData.old.should_sync_ecapris_statuses;
     const newEcaprisId = changeData.new.ecapris_subproject_id;
@@ -109,7 +166,7 @@ export const formatProjectActivity = (change, lookupList) => {
         changeIcon,
         changeText: [
           {
-            text: "Enabled eCAPRIS subproject status sync for ",
+            text: "Enabled eCAPRIS subproject status sync from ",
             style: null,
           },
           { text: newEcaprisId, style: "boldText" },
@@ -125,7 +182,7 @@ export const formatProjectActivity = (change, lookupList) => {
         changeIcon,
         changeText: [
           {
-            text: "Disabled eCAPRIS subproject status sync for ",
+            text: "Disabled eCAPRIS subproject status sync from ",
             style: null,
           },
           { text: oldEcaprisId, style: "boldText" },
@@ -134,62 +191,95 @@ export const formatProjectActivity = (change, lookupList) => {
     }
   }
 
-  // Handle eCAPRIS ID changes when sync is enabled (only ID field changed)
-  if (hasEcaprisIdChange && !hasEcaprisSyncChange) {
-    const syncEnabled = changeData.new.should_sync_ecapris_statuses;
+  // Handle eCAPRIS ID changes (only ID field changed, no sync field changes)
+  if (
+    hasEcaprisIdChange &&
+    !hasEcaprisStatusSyncChange &&
+    !hasEcaprisFundingSyncChange
+  ) {
+    const statusSyncEnabled = changeData.new.should_sync_ecapris_statuses;
+    const fundingSyncEnabled = changeData.new.should_sync_ecapris_funding;
     const oldEcaprisId = changeData.old.ecapris_subproject_id;
     const newEcaprisId = changeData.new.ecapris_subproject_id;
 
-    // eCAPRIS ID changed while sync is enabled
-    if (
-      syncEnabled === true &&
-      oldEcaprisId &&
-      newEcaprisId &&
-      oldEcaprisId !== newEcaprisId
-    ) {
-      changeIcon = <SyncIcon />;
-      return {
-        changeIcon,
-        changeText: [
-          {
-            text: "Updated eCAPRIS subproject ID and statuses sync from ",
-            style: null,
-          },
-          { text: oldEcaprisId, style: "boldText" },
-          { text: " to ", style: null },
-          { text: newEcaprisId, style: "boldText" },
-        ],
-      };
+    // eCAPRIS ID changed while at least one sync is enabled
+    if (oldEcaprisId && newEcaprisId && oldEcaprisId !== newEcaprisId) {
+      // Determine which syncs are enabled
+      const enabledSyncs = [];
+      if (statusSyncEnabled) enabledSyncs.push("status");
+      if (fundingSyncEnabled) enabledSyncs.push("funding");
+
+      if (enabledSyncs.length > 0) {
+        changeIcon = <SyncIcon />;
+        const syncText = enabledSyncs.join(" and ");
+        return {
+          changeIcon,
+          changeText: [
+            {
+              text: `Updated eCAPRIS subproject ID from `,
+              style: null,
+            },
+            { text: oldEcaprisId, style: "boldText" },
+            { text: " to ", style: null },
+            { text: newEcaprisId, style: "boldText" },
+            { text: ` with ${syncText} sync enabled`, style: null },
+          ],
+        };
+      } else {
+        // No syncs enabled, just show ID change
+        return {
+          changeIcon,
+          changeText: [
+            {
+              text: `Updated eCAPRIS subproject ID from `,
+              style: null,
+            },
+            { text: oldEcaprisId, style: "boldText" },
+            { text: " to ", style: null },
+            { text: newEcaprisId, style: "boldText" },
+          ],
+        };
+      }
     }
   }
 
-  // Handle cases where both eCAPRIS fields changed in the same update
-  if (hasEcaprisSyncAndIdChanges) {
-    const newSyncValue = changeData.new.should_sync_ecapris_statuses;
+  // Handle cases where eCAPRIS ID and one or both sync fields changed together
+  if (
+    hasEcaprisIdChange &&
+    (hasEcaprisStatusSyncChange || hasEcaprisFundingSyncChange)
+  ) {
+    const newStatusSyncValue = changeData.new.should_sync_ecapris_statuses;
+    const newFundingSyncValue = changeData.new.should_sync_ecapris_funding;
     const newEcaprisId = changeData.new.ecapris_subproject_id;
     const oldEcaprisId = changeData.old.ecapris_subproject_id;
 
-    // Both sync enabled and eCAPRIS ID set
-    if (newSyncValue === true && newEcaprisId) {
+    // Determine which syncs are enabled
+    const enabledSyncs = [];
+    if (newStatusSyncValue) enabledSyncs.push("status");
+    if (newFundingSyncValue) enabledSyncs.push("funding");
+
+    // eCAPRIS ID set (was null or empty before) and sync(s) enabled
+    if (newEcaprisId && !oldEcaprisId && enabledSyncs.length > 0) {
       changeIcon = <SyncIcon />;
+      const syncText = enabledSyncs.join(" and ");
       return {
         changeIcon,
         changeText: [
           {
-            text: "Set eCAPRIS subproject ID to  ",
+            text: "Set eCAPRIS subproject ID to ",
             style: null,
           },
           { text: newEcaprisId, style: "boldText" },
           {
-            text: " and enabled status sync ",
+            text: ` and enabled ${syncText} sync`,
             style: null,
           },
         ],
       };
     }
 
-    // Both sync disabled and eCAPRIS ID removed
-    if (newSyncValue === false && !newEcaprisId && oldEcaprisId) {
+    // eCAPRIS ID removed and sync(s) disabled
+    if (!newEcaprisId && oldEcaprisId) {
       changeIcon = <SyncDisabledIcon />;
       return {
         changeIcon,
@@ -200,11 +290,32 @@ export const formatProjectActivity = (change, lookupList) => {
           },
           { text: oldEcaprisId, style: "boldText" },
           {
-            text: " and disabled status sync ",
+            text: " and disabled status and funding sync",
             style: null,
           },
         ],
       };
+    }
+
+    // eCAPRIS ID changed (both old and new exist)
+    if (newEcaprisId && oldEcaprisId && newEcaprisId !== oldEcaprisId) {
+      if (enabledSyncs.length > 0) {
+        changeIcon = <SyncIcon />;
+        const syncText = enabledSyncs.join(" and ");
+        return {
+          changeIcon,
+          changeText: [
+            {
+              text: `Updated eCAPRIS subproject ID from `,
+              style: null,
+            },
+            { text: oldEcaprisId, style: "boldText" },
+            { text: " to ", style: null },
+            { text: newEcaprisId, style: "boldText" },
+            { text: ` with ${syncText} sync enabled`, style: null },
+          ],
+        };
+      }
     }
   }
 
