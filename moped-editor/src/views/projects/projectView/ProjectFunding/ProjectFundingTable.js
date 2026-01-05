@@ -367,7 +367,9 @@ const ProjectFundingTable = ({
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
-  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC);
+  const [updateShouldSyncECapris] = useMutation(
+    PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
+  );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
