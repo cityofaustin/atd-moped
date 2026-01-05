@@ -80,7 +80,7 @@ export const formatProjectActivity = (change, lookupList) => {
     };
   }
 
-  // Check for eCAPRIS-related field changes using the fields array
+  // Check for eCAPRIS-related field changes
   const hasEcaprisStatusSyncChange = changedFields.includes(
     "should_sync_ecapris_statuses"
   );
@@ -89,49 +89,65 @@ export const formatProjectActivity = (change, lookupList) => {
   );
   const hasEcaprisIdChange = changedFields.includes("ecapris_subproject_id");
 
-  // Handle eCAPRIS funding sync changes (only funding sync field changed)
-  if (
-    hasEcaprisFundingSyncChange &&
-    !hasEcaprisStatusSyncChange &&
-    !hasEcaprisIdChange
-  ) {
-    const newFundingSyncValue = changeData.new.should_sync_ecapris_funding;
-    const oldFundingSyncValue = changeData.old.should_sync_ecapris_funding;
-    const newEcaprisId = changeData.new.ecapris_subproject_id;
-    const oldEcaprisId = changeData.old.ecapris_subproject_id;
+  // Extract eCAPRIS-related values
+  const oldEcaprisId = changeData.old.ecapris_subproject_id;
+  const newEcaprisId = changeData.new.ecapris_subproject_id;
+  const statusSyncEnabled = changeData.new.should_sync_ecapris_statuses;
+  const fundingSyncEnabled = changeData.new.should_sync_ecapris_funding;
 
-    // Skip rendering activity row when syncing state changes but no eCAPRIS ID is set.
+  // Helper to build enabled syncs text (e.g., "status", "funding", or "status and funding")
+  const getEnabledSyncsText = () => {
+    const syncs = [];
+    if (statusSyncEnabled) syncs.push("status");
+    if (fundingSyncEnabled) syncs.push("funding");
+    return syncs.join(" and ");
+  };
+
+  // Helper to determine if a sync field was toggled on or off
+  const wasSyncToggled = (field) => {
+    const newVal = changeData.new[field];
+    const oldVal = changeData.old[field];
+    if (newVal === true && oldVal === false) return "enabled";
+    if (newVal === false && oldVal === true) return "disabled";
+    return null;
+  };
+
+  // Handle single sync toggle (status OR funding, not both, and no ID change)
+  const onlyEcaprisSyncToggled =
+    (hasEcaprisStatusSyncChange || hasEcaprisFundingSyncChange) &&
+    !(hasEcaprisStatusSyncChange && hasEcaprisFundingSyncChange) &&
+    !hasEcaprisIdChange;
+
+  if (onlyEcaprisSyncToggled) {
+    // Skip if no eCAPRIS ID is set
     if (!newEcaprisId && !oldEcaprisId) {
       return { changeIcon: null, changeText: null };
     }
 
-    // Funding sync enabled
-    const isFundingSyncEnabled =
-      newFundingSyncValue === true && oldFundingSyncValue === false;
-    if (isFundingSyncEnabled) {
-      changeIcon = <SyncIcon />;
+    const syncType = hasEcaprisStatusSyncChange ? "status" : "funding";
+    const syncField = hasEcaprisStatusSyncChange
+      ? "should_sync_ecapris_statuses"
+      : "should_sync_ecapris_funding";
+    const toggleState = wasSyncToggled(syncField);
+
+    if (toggleState === "enabled") {
       return {
-        changeIcon,
+        changeIcon: <SyncIcon />,
         changeText: [
           {
-            text: "Enabled eCAPRIS subproject funding sync from ",
+            text: `Enabled eCAPRIS subproject ${syncType} sync from `,
             style: null,
           },
           { text: newEcaprisId, style: "boldText" },
         ],
       };
     }
-
-    // Funding sync disabled
-    const isFundingSyncDisabled =
-      newFundingSyncValue === false && oldFundingSyncValue === true;
-    if (isFundingSyncDisabled) {
-      changeIcon = <SyncDisabledIcon />;
+    if (toggleState === "disabled") {
       return {
-        changeIcon,
+        changeIcon: <SyncDisabledIcon />,
         changeText: [
           {
-            text: "Disabled eCAPRIS subproject funding sync from ",
+            text: `Disabled eCAPRIS subproject ${syncType} sync from `,
             style: null,
           },
           { text: oldEcaprisId, style: "boldText" },
@@ -140,182 +156,54 @@ export const formatProjectActivity = (change, lookupList) => {
     }
   }
 
-  // Handle eCAPRIS status sync changes (only status sync field changed)
-  if (
-    hasEcaprisStatusSyncChange &&
-    !hasEcaprisFundingSyncChange &&
-    !hasEcaprisIdChange
-  ) {
-    const newSyncValue = changeData.new.should_sync_ecapris_statuses;
-    const oldSyncValue = changeData.old.should_sync_ecapris_statuses;
-    const newEcaprisId = changeData.new.ecapris_subproject_id;
-    const oldEcaprisId = changeData.old.ecapris_subproject_id;
+  // Handle eCAPRIS ID changes (with or without sync field changes)
+  if (hasEcaprisIdChange) {
+    const enabledSyncsText = getEnabledSyncsText();
+    const idWasSet = newEcaprisId && !oldEcaprisId;
+    const idWasRemoved = !newEcaprisId && oldEcaprisId;
+    const idWasChanged =
+      newEcaprisId && oldEcaprisId && newEcaprisId !== oldEcaprisId;
 
-    // Skip rendering activity row when syncing state changes but no eCAPRIS ID is set.
-    // This edge case should only occur through direct database updates since the UI
-    // prevents updating should_sync_ecapris_statuses without an eCAPRIS ID.
-    if (!newEcaprisId && !oldEcaprisId) {
-      return { changeIcon: null, changeText: null };
-    }
-
-    // Sync enabled
-    const isSyncEnabled = newSyncValue === true && oldSyncValue === false;
-    if (isSyncEnabled) {
-      changeIcon = <SyncIcon />;
+    // ID was set for the first time
+    if (idWasSet && enabledSyncsText) {
       return {
-        changeIcon,
+        changeIcon: <SyncIcon />,
         changeText: [
-          {
-            text: "Enabled eCAPRIS subproject status sync from ",
-            style: null,
-          },
+          { text: "Set eCAPRIS subproject ID to ", style: null },
           { text: newEcaprisId, style: "boldText" },
+          { text: ` and enabled ${enabledSyncsText} sync`, style: null },
         ],
       };
     }
 
-    // Sync disabled
-    const isSyncDisabled = newSyncValue === false && oldSyncValue === true;
-    if (isSyncDisabled) {
-      changeIcon = <SyncDisabledIcon />;
+    // ID was removed
+    if (idWasRemoved) {
       return {
-        changeIcon,
+        changeIcon: <SyncDisabledIcon />,
         changeText: [
-          {
-            text: "Disabled eCAPRIS subproject status sync from ",
-            style: null,
-          },
+          { text: "Removed eCAPRIS subproject ID ", style: null },
           { text: oldEcaprisId, style: "boldText" },
+          { text: " and disabled status and funding sync", style: null },
         ],
       };
     }
-  }
 
-  // Handle eCAPRIS ID changes (only ID field changed, no sync field changes)
-  if (
-    hasEcaprisIdChange &&
-    !hasEcaprisStatusSyncChange &&
-    !hasEcaprisFundingSyncChange
-  ) {
-    const statusSyncEnabled = changeData.new.should_sync_ecapris_statuses;
-    const fundingSyncEnabled = changeData.new.should_sync_ecapris_funding;
-    const oldEcaprisId = changeData.old.ecapris_subproject_id;
-    const newEcaprisId = changeData.new.ecapris_subproject_id;
-
-    // eCAPRIS ID changed while at least one sync is enabled
-    if (oldEcaprisId && newEcaprisId && oldEcaprisId !== newEcaprisId) {
-      // Determine which syncs are enabled
-      const enabledSyncs = [];
-      if (statusSyncEnabled) enabledSyncs.push("status");
-      if (fundingSyncEnabled) enabledSyncs.push("funding");
-
-      if (enabledSyncs.length > 0) {
-        changeIcon = <SyncIcon />;
-        const syncText = enabledSyncs.join(" and ");
-        return {
-          changeIcon,
-          changeText: [
-            {
-              text: `Updated eCAPRIS subproject ID from `,
-              style: null,
-            },
-            { text: oldEcaprisId, style: "boldText" },
-            { text: " to ", style: null },
-            { text: newEcaprisId, style: "boldText" },
-            { text: ` with ${syncText} sync enabled`, style: null },
-          ],
-        };
-      } else {
-        // No syncs enabled, just show ID change
-        return {
-          changeIcon,
-          changeText: [
-            {
-              text: `Updated eCAPRIS subproject ID from `,
-              style: null,
-            },
-            { text: oldEcaprisId, style: "boldText" },
-            { text: " to ", style: null },
-            { text: newEcaprisId, style: "boldText" },
-          ],
-        };
+    // ID was changed to a different value
+    if (idWasChanged) {
+      const changeText = [
+        { text: "Updated eCAPRIS subproject ID from ", style: null },
+        { text: oldEcaprisId, style: "boldText" },
+        { text: " to ", style: null },
+        { text: newEcaprisId, style: "boldText" },
+      ];
+      if (enabledSyncsText) {
+        changeText.push({
+          text: ` with ${enabledSyncsText} sync enabled`,
+          style: null,
+        });
+        return { changeIcon: <SyncIcon />, changeText };
       }
-    }
-  }
-
-  // Handle cases where eCAPRIS ID and one or both sync fields changed together
-  if (
-    hasEcaprisIdChange &&
-    (hasEcaprisStatusSyncChange || hasEcaprisFundingSyncChange)
-  ) {
-    const newStatusSyncValue = changeData.new.should_sync_ecapris_statuses;
-    const newFundingSyncValue = changeData.new.should_sync_ecapris_funding;
-    const newEcaprisId = changeData.new.ecapris_subproject_id;
-    const oldEcaprisId = changeData.old.ecapris_subproject_id;
-
-    // Determine which syncs are enabled
-    const enabledSyncs = [];
-    if (newStatusSyncValue) enabledSyncs.push("status");
-    if (newFundingSyncValue) enabledSyncs.push("funding");
-
-    // eCAPRIS ID set (was null or empty before) and sync(s) enabled
-    if (newEcaprisId && !oldEcaprisId && enabledSyncs.length > 0) {
-      changeIcon = <SyncIcon />;
-      const syncText = enabledSyncs.join(" and ");
-      return {
-        changeIcon,
-        changeText: [
-          {
-            text: "Set eCAPRIS subproject ID to ",
-            style: null,
-          },
-          { text: newEcaprisId, style: "boldText" },
-          {
-            text: ` and enabled ${syncText} sync`,
-            style: null,
-          },
-        ],
-      };
-    }
-
-    // eCAPRIS ID removed and sync(s) disabled
-    if (!newEcaprisId && oldEcaprisId) {
-      changeIcon = <SyncDisabledIcon />;
-      return {
-        changeIcon,
-        changeText: [
-          {
-            text: "Removed eCAPRIS subproject ID ",
-            style: null,
-          },
-          { text: oldEcaprisId, style: "boldText" },
-          {
-            text: " and disabled status and funding sync",
-            style: null,
-          },
-        ],
-      };
-    }
-
-    // eCAPRIS ID changed (both old and new exist)
-    if (newEcaprisId && oldEcaprisId && newEcaprisId !== oldEcaprisId) {
-      if (enabledSyncs.length > 0) {
-        changeIcon = <SyncIcon />;
-        const syncText = enabledSyncs.join(" and ");
-        return {
-          changeIcon,
-          changeText: [
-            {
-              text: `Updated eCAPRIS subproject ID from `,
-              style: null,
-            },
-            { text: oldEcaprisId, style: "boldText" },
-            { text: " to ", style: null },
-            { text: newEcaprisId, style: "boldText" },
-            { text: ` with ${syncText} sync enabled`, style: null },
-          ],
-        };
-      }
+      return { changeIcon, changeText };
     }
   }
 
