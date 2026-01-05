@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
-import isEqual from "lodash/isEqual";
+import isEqual from "lodash.isequal";
 
 // Material
 import { Button, CircularProgress, Grid } from "@mui/material";

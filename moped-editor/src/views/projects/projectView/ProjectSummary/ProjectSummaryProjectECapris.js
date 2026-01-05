@@ -137,7 +137,7 @@ const ProjectSummaryProjectECapris = ({
               id="moped-project-ecapris"
               label={null}
               onChange={handleProjectECaprisChange}
-              value={eCapris}
+              value={eCapris ?? ""}
               error={!isValidECaprisId(eCapris)}
               helperText={
                 !isValidECaprisId(eCapris)

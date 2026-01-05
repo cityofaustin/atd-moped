@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import MapGL, { NavigationControl } from "react-map-gl";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash.clonedeep";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import CreateComponentDrawTools from "./CreateComponentDrawTools";
