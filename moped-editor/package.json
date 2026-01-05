@@ -75,6 +75,7 @@
     "html-react-parser": "^1.4.14",
     "lexical": "^0.16.1",
     "lodash.clonedeep": "^4.5.0",
+    "lodash.get": "^4.4.2",
     "lodash.isequal": "^4.5.0",
     "mapbox-gl": "^3.0.1",
     "papaparse": "^5.4.1",
