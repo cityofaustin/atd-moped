@@ -532,8 +532,6 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   });
 
   if (socrataError) console.error(socrataError);
-  if (loading || !data) return <CircularProgress />;
-
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
   return (
@@ -601,6 +599,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
             ),
           },
         }}
+        loading={loading || !data}
       />
       <DeleteConfirmationModal
         type={"funding source"}
