@@ -15,7 +15,7 @@ import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
 import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
-import CopyTextButton from "src/components/CopyLinkButton";
+import CopyTextButton from "src/components/CopyTextButton";
 
 /**
  * Converts a record key (e.g. moped_phases) into a URL hash, (e.g. #moped-phases)
@@ -152,7 +152,8 @@ const LookupsView = () => {
                     </Grid>
                     <Grid item>
                       <CopyTextButton
-                        linkToCopy={`${
+                        copyButtonText="Copy link"
+                        textToCopy={`${
                           window.location.origin
                         }${pathname}${createRecordKeyHash(recordType.key)}`}
                       />

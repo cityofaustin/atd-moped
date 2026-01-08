@@ -3,7 +3,7 @@ import { Box, Grid, Stack, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
-import CopyLinkButton from "src/components/CopyLinkButton";
+import CopyTextButton from "src/components/CopyTextButton";
 
 import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
@@ -168,6 +168,10 @@ const ProjectSummaryProjectECapris = ({
             {eCapris ? (
               <CopyTextButton
                 textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+                copyButtonText="Copy eCAPRIS link"
+                buttonProps={{
+                  sx: { minWidth: 160, justifyContent: "flex-start" },
+                }}
               />
             ) : null}
           </Stack>

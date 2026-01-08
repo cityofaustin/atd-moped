@@ -588,7 +588,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
             ),
             children: (
               <Grid>
-                <Grid item xs={3}>
+                <Grid item>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     data={data}

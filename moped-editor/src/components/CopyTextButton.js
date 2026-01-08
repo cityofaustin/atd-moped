@@ -13,7 +13,7 @@ import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
  * @param {object} iconProps - MUI Icon props
  * @param {number} timeoutDuration - duration in milliseconds before resetting copied state
  * @param {boolean} iconOnly - if true, renders an IconButton instead of a Button
- * @returns {JSX.Element} A button which copies a link to clipboard
+ * @returns {JSX.Element}
  */
 const CopyTextButton = ({
   textToCopy,
