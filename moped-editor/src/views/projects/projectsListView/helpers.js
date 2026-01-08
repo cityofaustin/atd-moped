@@ -3,7 +3,7 @@ import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import CopyLinkButton from "src/components/CopyLinkButton";
+import CopyTextButton from "src/components/CopyLinkButton";
 import parse from "html-react-parser";
 import { formatDateType, FormattedDateString } from "src/utils/dateAndTime";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
@@ -234,8 +234,8 @@ export const useColumns = ({ hiddenColumns }) => {
           <Stack direction="row" spacing={1} alignItems="flex-start">
             <Typography variant="body2">{row.ecapris_subproject_id}</Typography>
             {row.ecapris_subproject_id ? (
-              <CopyLinkButton
-                linkToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${row.ecapris_subproject_id}`}
+              <CopyTextButton
+                textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${row.ecapris_subproject_id}`}
                 iconOnly
                 iconProps={{ fontSize: "small" }}
               />

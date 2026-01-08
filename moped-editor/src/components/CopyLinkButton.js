@@ -5,8 +5,8 @@ import Tooltip from "@mui/material/Tooltip";
 import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
 
 /**
- * Button component which copies a link to clipboard
- * @param {string} linkToCopy - the link URL to be copied to clipboard
+ * Button component which copies text to clipboard
+ * @param {string} textToCopy - the text to be copied to clipboard
  * @param {string} copyButtonText - text to display on the button before copying
  * @param {string} copiedButtonText - text to display on the button after copying for feedback
  * @param {object} buttonProps - MUI Button props
@@ -15,9 +15,9 @@ import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
  * @param {boolean} iconOnly - if true, renders an IconButton instead of a Button
  * @returns {JSX.Element} A button which copies a link to clipboard
  */
-const CopyLinkButton = ({
-  linkToCopy,
-  copyButtonText = "Copy Link",
+const CopyTextButton = ({
+  textToCopy,
+  copyButtonText = "Copy to Clipboard",
   copiedButtonText = "Copied!",
   buttonProps,
   iconProps,
@@ -34,7 +34,7 @@ const CopyLinkButton = ({
 
   const handleCopyClick = async () => {
     try {
-      await navigator.clipboard.writeText(linkToCopy);
+      await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
     } catch (err) {
       console.error("Failed to copy to clipboard:", err);
@@ -81,4 +81,4 @@ const CopyLinkButton = ({
   );
 };
 
-export default CopyLinkButton;
+export default CopyTextButton;

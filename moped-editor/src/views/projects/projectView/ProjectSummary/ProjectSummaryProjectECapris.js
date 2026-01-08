@@ -166,8 +166,8 @@ const ProjectSummaryProjectECapris = ({
               onClickEdit={() => setEditMode(true)}
             />
             {eCapris ? (
-              <CopyLinkButton
-                linkToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+              <CopyTextButton
+                textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
               />
             ) : null}
           </Stack>
