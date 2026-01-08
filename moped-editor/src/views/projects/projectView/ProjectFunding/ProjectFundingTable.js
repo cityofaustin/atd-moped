@@ -320,15 +320,15 @@ const ProjectFundingTable = ({
     eCaprisSubprojectId && shouldSyncEcaprisFunding
       ? {
           projectFundingConditions: {
-            _or: [
-              { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
-              { project_id: { _eq: Number(projectId) } },
-            ],
+            project_id: { _eq: Number(projectId) },
           },
         }
       : {
           projectFundingConditions: {
-            project_id: { _eq: Number(projectId) },
+            _and: [
+              { project_id: { _eq: Number(projectId) } },
+              { is_synced_from_ecapris: { _eq: false } },
+            ],
           },
         };
 
