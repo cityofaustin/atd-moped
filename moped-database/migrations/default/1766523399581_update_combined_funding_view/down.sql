@@ -49,3 +49,6 @@ WHERE NOT (EXISTS (
         FROM moped_proj_funding
         WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.is_deleted = FALSE
     ));
+
+-- Drop trigger enable/disable helper function
+DROP FUNCTION IF EXISTS public.manage_trigger (text, regclass, boolean);

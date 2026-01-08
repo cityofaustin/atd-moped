@@ -53,44 +53,43 @@ WHERE NOT (EXISTS (
             AND moped_proj_funding.is_deleted = FALSE
     ));
 
+-- Create helper to turn triggers on or off as needed
+CREATE OR REPLACE FUNCTION manage_trigger(
+    trigger_name text,
+    table_name regclass,
+    should_enable boolean DEFAULT FALSE
+)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    trigger_action text := CASE WHEN should_enable THEN 'ENABLE' ELSE 'DISABLE' END;
+BEGIN
+    -- Check if trigger exists to support local start from seed data and also avoid errors
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = trigger_name
+        AND tgrelid = table_name
+    ) THEN
+        EXECUTE format('ALTER TABLE %s %s TRIGGER %I', 
+            table_name, 
+            trigger_action, 
+            trigger_name
+        );
+        RAISE NOTICE '% trigger % on table %', trigger_action, trigger_name, table_name;
+    ELSE
+        RAISE NOTICE 'Trigger % does not exist on table %, skipping', trigger_name, table_name;
+    END IF;
+END;
+$$;
+
 -- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
 DO $$
 BEGIN
-    IF EXISTS (
-    SELECT 1 
-    FROM pg_trigger 
-    WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
-        AND tgrelid = 'moped_proj_funding'::regclass
-    ) THEN
-        ALTER TABLE moped_proj_funding 
-        DISABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
-    ELSE
-    RAISE NOTICE 'Trigger does not exist, skipping';
-    END IF;
-
-    IF EXISTS (
-        SELECT 1 
-        FROM pg_trigger 
-        WHERE tgname = 'update_moped_proj_funding_and_project_audit_fields'
-        AND tgrelid = 'moped_proj_funding'::regclass
-    ) THEN
-        ALTER TABLE moped_proj_funding 
-        DISABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
-    ELSE
-        RAISE NOTICE 'Trigger does not exist, skipping';
-    END IF;
-
-    IF EXISTS (
-        SELECT 1 
-        FROM pg_trigger 
-        WHERE tgname = 'set_moped_project_updated_at'
-        AND tgrelid = 'moped_project'::regclass
-    ) THEN
-        ALTER TABLE moped_project 
-        DISABLE TRIGGER "set_moped_project_updated_at";
-    ELSE
-        RAISE NOTICE 'Trigger does not exist, skipping';
-    END IF;
+    PERFORM manage_trigger('notify_hasura_activity_log_moped_proj_funding_UPDATE', 'moped_proj_funding', FALSE);
+    PERFORM manage_trigger('update_moped_proj_funding_and_project_audit_fields', 'moped_proj_funding', FALSE);
+    PERFORM manage_trigger('set_moped_project_updated_at', 'moped_project', FALSE);
 END $$;
 
 -- Populate new fdu column based on existing fund_dept_unit data if available and 
@@ -109,39 +108,9 @@ SET is_legacy_funding_record = TRUE;
 -- Re-enable Hasura triggers
 DO $$
 BEGIN
-    IF EXISTS (
-    SELECT 1 
-    FROM pg_trigger 
-    WHERE tgname = 'notify_hasura_activity_log_moped_proj_funding_UPDATE'
-        AND tgrelid = 'moped_proj_funding'::regclass
-    ) THEN
-        ALTER TABLE moped_proj_funding 
-        ENABLE TRIGGER "notify_hasura_activity_log_moped_proj_funding_UPDATE";
-    ELSE
-    RAISE NOTICE 'Trigger does not exist, skipping';
-    END IF;
-
-    IF EXISTS (
-        SELECT 1 
-        FROM pg_trigger 
-        WHERE tgname = 'update_moped_proj_funding_and_project_audit_fields'
-        AND tgrelid = 'moped_proj_funding'::regclass
-    ) THEN
-        ALTER TABLE moped_proj_funding 
-        ENABLE TRIGGER "update_moped_proj_funding_and_project_audit_fields";
-    ELSE
-        RAISE NOTICE 'Trigger does not exist, skipping';
-    END IF;
-
-    IF EXISTS (
-        SELECT 1 
-        FROM pg_trigger 
-        WHERE tgname = 'set_moped_project_updated_at'
-        AND tgrelid = 'moped_project'::regclass
-    ) THEN
-        ALTER TABLE moped_project 
-        ENABLE TRIGGER "set_moped_project_updated_at";
-    ELSE
-        RAISE NOTICE 'Trigger does not exist, skipping';
-    END IF;
+    PERFORM manage_trigger('notify_hasura_activity_log_moped_proj_funding_UPDATE', 'moped_proj_funding', TRUE);
+    PERFORM manage_trigger('update_moped_proj_funding_and_project_audit_fields', 'moped_proj_funding', TRUE);
+    PERFORM manage_trigger('set_moped_project_updated_at', 'moped_project', TRUE);
 END $$;
+
+COMMENT ON FUNCTION public.manage_trigger(text, regclass, boolean) IS 'Safely enables or disables a trigger on a table, checking for existence first to avoid errors.';
