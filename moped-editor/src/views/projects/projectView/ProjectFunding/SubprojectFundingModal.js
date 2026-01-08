@@ -64,15 +64,7 @@ const SubprojectFundingModal = ({
     fetchPolicy: "no-cache",
   });
 
-  // rows and rowModesModel used in DataGrid
-  const [rows, setRows] = useState([]);
-
-  // sets the data grid row data when query data is fetched
-  useEffect(() => {
-    if (data && data.ecapris_subproject_funding.length > 0) {
-      setRows(data.ecapris_subproject_funding);
-    }
-  }, [data]);
+  const rows = data?.ecapris_subproject_funding ?? [];
 
   const [selectedFdus, setSelectedFdus] = useState([]);
 
@@ -145,7 +137,7 @@ const SubprojectFundingModal = ({
         }}
         variant="h4"
       >
-        {` Import from eCAPRIS subproject id ${eCaprisID}`}
+        {` Import from eCAPRIS subproject ID ${eCaprisID}`}
         <IconButton onClick={() => handleDialogClose()} size="large">
           <CloseIcon />
         </IconButton>

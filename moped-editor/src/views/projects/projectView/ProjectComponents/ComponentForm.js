@@ -357,7 +357,7 @@ const ComponentForm = ({
         <Grid item xs={12}>
           <ControlledAutocomplete
             id="tags"
-            label="Tags"
+            label="Component tags"
             multiple
             options={componentTagsOptions}
             getOptionLabel={getOptionLabel}
