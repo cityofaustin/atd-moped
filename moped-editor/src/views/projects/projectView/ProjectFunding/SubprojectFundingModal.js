@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -49,6 +49,11 @@ const useColumns = () =>
     ];
   }, []);
 
+const useRows = (data) =>
+  useMemo(() => {
+    return data?.ecapris_subproject_funding ?? [];
+  }, [data]);
+
 const SubprojectFundingModal = ({
   isDialogOpen,
   handleDialogClose,
@@ -64,7 +69,7 @@ const SubprojectFundingModal = ({
     fetchPolicy: "no-cache",
   });
 
-  const rows = data?.ecapris_subproject_funding ?? [];
+  const rows = useRows(data);
 
   const [selectedFdus, setSelectedFdus] = useState([]);
 
