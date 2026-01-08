@@ -735,16 +735,18 @@ const ProjectFundingTable = ({
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-      <SubprojectFundingModal
-        isDialogOpen={isDialogOpen}
-        handleDialogClose={handleSubprojectDialogClose}
-        eCaprisID={eCaprisSubprojectId}
-        fdusArray={fdusArray}
-        addProjectFunding={addProjectFunding}
-        projectId={projectId}
-        handleSnackbar={handleSnackbar}
-        refetch={refetch}
-      />
+      {eCaprisSubprojectId && (
+        <SubprojectFundingModal
+          isDialogOpen={isDialogOpen}
+          handleDialogClose={handleSubprojectDialogClose}
+          eCaprisID={eCaprisSubprojectId}
+          fdusArray={fdusArray}
+          addProjectFunding={addProjectFunding}
+          projectId={projectId}
+          handleSnackbar={handleSnackbar}
+          refetch={refetch}
+        />
+      )}
     </div>
   );
 };
