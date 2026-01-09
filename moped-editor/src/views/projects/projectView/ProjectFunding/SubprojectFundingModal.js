@@ -171,7 +171,7 @@ const SubprojectFundingModal = ({
             handleSnackbar(true, "Error updating table", "error", error)
           }
           isRowSelectable={(row) =>
-            !fdusArray.some((fdu) => fdu.fdu === row.id)
+            !fdusArray.some((fdu) => fdu?.fdu === row.id)
           }
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
