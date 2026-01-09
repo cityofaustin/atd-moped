@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1764186981043_track_ecapris_project_id/up.sql
+-- Most recent migration: moped-database/migrations/default/1767973659237_add_is_manual_funding_view/up.sql
 
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
@@ -18,7 +18,8 @@ CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     moped_proj_funding.funding_program_id,
     NULL::integer AS fao_id,
     NULL::text AS ecapris_subproject_id,
-    FALSE AS is_synced_from_ecapris
+    FALSE AS is_synced_from_ecapris,
+    moped_proj_funding.is_manual
 FROM moped_proj_funding
 LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
 LEFT JOIN moped_fund_sources ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
@@ -43,7 +44,8 @@ SELECT
     NULL::integer AS funding_program_id,
     ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id,
-    TRUE AS is_synced_from_ecapris
+    TRUE AS is_synced_from_ecapris,
+    FALSE AS is_manual
 FROM ecapris_subproject_funding
 WHERE NOT (EXISTS (
         SELECT 1
