@@ -14,13 +14,22 @@ UPDATE moped_fund_programs
 SET funding_program_name = 'Transit Enhancement Program'
 WHERE funding_program_name = 'Local Transit - Local Transit Enhancement';
 
--- Restore project funding records with existing program value to new program value
+-- Restore updated project funding records with existing program value to new program value
+WITH
+updated_program AS (
+    SELECT funding_program_id
+    FROM
+        moped_fund_programs
+    WHERE
+        funding_program_name = '2018 Interlocal Agreement'
+)
+
 UPDATE moped_proj_funding
 SET
-    funding_program_id = (
-        SELECT funding_program_id
-        FROM moped_fund_programs
-        WHERE funding_program_name = '2018 Interlocal Agreement'
-    )
-FROM moped_fund_programs
-WHERE moped_fund_programs.funding_program_name = 'Local Transit - Local Transit Enhancement';
+    funding_program_id = updated_program.funding_program_id
+FROM
+    updated_program,
+    moped_fund_programs
+WHERE
+    moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
+    AND moped_fund_programs.funding_program_name = 'Local Transit - Local Transit Enhancement';
