@@ -14,6 +14,30 @@ UPDATE moped_fund_programs
 SET funding_program_name = 'Transit Enhancement Program'
 WHERE funding_program_name = 'Local Transit - Local Transit Enhancement';
 
+UPDATE moped_fund_programs
+SET funding_program_name = 'Regional Mobility'
+WHERE funding_program_name = 'Regional';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Safe Routes to School'
+WHERE funding_program_name = 'Safe Routes';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Traffic Signals'
+WHERE funding_program_name = 'Signals';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Intersection Safety'
+WHERE funding_program_name = 'Vision Zero - Major Safety';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Pedestrian Crossing'
+WHERE funding_program_name = 'Vision Zero - Pedestrian Safety';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Speed Management'
+WHERE funding_program_name = 'Vision Zero - Speed Management';
+
 -- Restore updated project funding records with existing program value to new program value
 WITH
 updated_program AS (

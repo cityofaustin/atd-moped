@@ -35,10 +35,48 @@ SELECT 'Street Programs' WHERE NOT EXISTS (
         WHERE funding_program_name = 'Street Programs'
     );
 
+INSERT INTO moped_fund_programs (funding_program_name)
+SELECT 'Vision Zero - Major Safety' WHERE NOT EXISTS (
+        SELECT 1 FROM moped_fund_programs
+        WHERE funding_program_name = 'Vision Zero - Major Safety'
+    );
+
+INSERT INTO moped_fund_programs (funding_program_name)
+SELECT 'Vision Zero - Pedestrian Safety' WHERE NOT EXISTS (
+        SELECT 1 FROM moped_fund_programs
+        WHERE funding_program_name = 'Vision Zero - Pedestrian Safety'
+    );
+
+INSERT INTO moped_fund_programs (funding_program_name)
+SELECT 'Vision Zero - Signal Safety' WHERE NOT EXISTS (
+        SELECT 1 FROM moped_fund_programs
+        WHERE funding_program_name = 'Vision Zero - Signal Safety'
+    );
+
+INSERT INTO moped_fund_programs (funding_program_name)
+SELECT 'Vision Zero - Systemic Safety' WHERE NOT EXISTS (
+        SELECT 1 FROM moped_fund_programs
+        WHERE funding_program_name = 'Vision Zero - Systemic Safety'
+    );
+
+-- Add sources
+INSERT INTO moped_fund_sources (funding_source_name)
+SELECT 'Highway Safety Improvements' WHERE NOT EXISTS (
+        SELECT 1 FROM moped_fund_sources
+        WHERE funding_source_name = 'Highway Safety Improvements'
+    );
+
+
 -- Soft delete programs no longer needed
 UPDATE moped_fund_programs
 SET is_deleted = TRUE
-WHERE funding_program_name = 'Operating Fund' OR funding_program_name = 'Large CIP' OR funding_program_name = '2018 Interlocal Agreement';
+WHERE funding_program_name = 'Operating Fund'
+    OR funding_program_name = 'Large CIP'
+    OR funding_program_name = '2018 Interlocal Agreement'
+    OR funding_program_name = 'Intersection Safety'
+    OR funding_program_name = 'Pedestrian Crossing'
+    OR funding_program_name = 'Highway Safety Improvements'
+    OR funding_program_name = 'IH35';
 
 -- Rename programs
 UPDATE moped_fund_programs
@@ -56,6 +94,22 @@ WHERE funding_program_name = 'Regional Mobility';
 UPDATE moped_fund_programs
 SET funding_program_name = 'Safe Routes'
 WHERE funding_program_name = 'Safe Routes to School';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Signals'
+WHERE funding_program_name = 'Traffic Signals';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Vision Zero - Major Safety'
+WHERE funding_program_name = 'Intersection Safety';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Vision Zero - Pedestrian Safety'
+WHERE funding_program_name = 'Pedestrian Crossing';
+
+UPDATE moped_fund_programs
+SET funding_program_name = 'Vision Zero - Speed Management'
+WHERE funding_program_name = 'Speed Management';
 
 -- Update project funding records with existing program value to new program value
 WITH
