@@ -10,6 +10,7 @@ const OverrideFundingDialog = ({
   fundingRecord,
   onSubmitCallback,
   handleSnackbar,
+  projectId
 }) => {
   return (
     <Dialog open onClose={onClose} fullWidth scroll="body">
@@ -30,6 +31,9 @@ const OverrideFundingDialog = ({
         <OverrideFundingForm
           fundingRecord={fundingRecord}
           handleSnackbar={handleSnackbar}
+          onSubmitCallback={onSubmitCallback}
+          projectId={projectId}
+          onClose={onClose}
         />
       </DialogContent>
     </Dialog>

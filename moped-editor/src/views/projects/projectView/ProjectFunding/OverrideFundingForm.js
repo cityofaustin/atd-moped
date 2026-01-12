@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
@@ -7,29 +6,51 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { currencyFormatter } from "src/utils/numberFormatters";
-import {
-  UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE,
-  ADD_PROJECT_PHASE_AND_STATUS_UPDATE,
-} from "src/queries/project";
+import { ADD_PROJECT_FUNDING } from "src/queries/funding";
+import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 
 const OverrideFundingForm = ({
   fundingRecord,
+  projectId,
   onSubmitCallback,
   handleSnackbar,
+  onClose,
 }) => {
   const {
     handleSubmit,
     control,
-    formState: { isDirty, errors: formErrors },
+    formState: { isDirty },
   } = useForm({
     defaultValues: {
       funding_amount: fundingRecord?.funding_amount ?? 0,
-      fdu_description: "",
+      description: "",
     },
   });
 
+  const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
+
   const onSubmit = (data) => {
-    console.log(data);
+    const transformedRecord = transformGridToDatabase(fundingRecord);
+    transformedRecord.funding_description = data.description;
+    transformedRecord.funding_amount = data.funding_amount;
+
+    addProjectFunding({
+      variables: {
+        objects: {
+          ...transformedRecord,
+          ecapris_subproject_id: fundingRecord.ecapris_subproject_id,
+          project_id: Number(projectId),
+        },
+      },
+    })
+      .then(() => {
+        handleSnackbar(true, "Funding source added", "success");
+        onSubmitCallback();
+        onClose();
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error adding work activity", "error", error);
+      });
   };
 
   return (
@@ -47,7 +68,7 @@ const OverrideFundingForm = ({
               inputMode="numeric"
             />
             <FormHelperText>
-              eCapris amount:{" "}
+              eCapris appropriated amount:{" "}
               {currencyFormatter.format(fundingRecord.funding_amount)}{" "}
             </FormHelperText>
           </FormControl>
@@ -59,7 +80,7 @@ const OverrideFundingForm = ({
               label="Description"
               multiline
               rows={2}
-              name="fdu_description"
+              name="description"
               control={control}
               size="small"
             />
