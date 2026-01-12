@@ -198,7 +198,7 @@ export const formatProjectActivity = (change, lookupList) => {
       ];
       if (enabledSyncsText) {
         changeText.push({
-          text: ` with ${enabledSyncsText} sync enabled`,
+          text: ` and enabled ${enabledSyncsText} sync`,
           style: null,
         });
         return { changeIcon: <SyncIcon />, changeText };
