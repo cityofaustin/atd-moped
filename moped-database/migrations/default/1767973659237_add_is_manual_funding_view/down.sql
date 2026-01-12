@@ -1,3 +1,5 @@
+DROP VIEW IF EXISTS combined_project_funding_view;
+
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
     moped_proj_funding.proj_funding_id AS original_id,
