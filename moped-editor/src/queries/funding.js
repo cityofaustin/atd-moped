@@ -18,6 +18,7 @@ export const COMBINED_FUNDING_QUERY = gql`
       funding_status_id
       ecapris_funding_id: fao_id
       is_synced_from_ecapris
+      is_manual
       unit_long_name
       ecapris_subproject_id
     }

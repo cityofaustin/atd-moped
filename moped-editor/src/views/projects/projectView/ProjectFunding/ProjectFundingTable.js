@@ -10,8 +10,11 @@ import {
   Grid,
   Switch,
   Tooltip,
+  IconButton,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   DataGridPro,
   GridRowModes,
@@ -41,6 +44,7 @@ import ProjectSummaryProjectECapris from "src/views/projects/projectView/Project
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -170,6 +174,7 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
+  setOverrideFundingRecord,
   usingShiftKey,
 }) =>
   useMemo(() => {
@@ -281,18 +286,36 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        renderCell: ({ id, row }) => (
-          <DataGridActions
-            id={id}
-            rowModesModel={rowModesModel}
-            handleCancelClick={handleCancelClick}
-            handleDeleteOpen={handleDeleteOpen}
-            handleSaveClick={handleSaveClick}
-            handleEditClick={handleEditClick}
-            editDisabled={row.is_synced_from_ecapris}
-            deleteDisabled={row.is_synced_from_ecapris}
-          />
-        ),
+        renderCell: ({ id, row }) =>
+          row.is_synced_from_ecapris ? (
+            <>
+              <IconButton
+                aria-label="edit"
+                sx={{ color: "inherit" }}
+                onClick={() => setOverrideFundingRecord(row)}
+              >
+                <EditOutlinedIcon />
+              </IconButton>
+              <IconButton
+                aria-label="delete"
+                sx={{ color: "inherit" }}
+                disabled
+              >
+                <DeleteOutlineIcon />
+              </IconButton>
+            </>
+          ) : (
+            <DataGridActions
+              id={id}
+              rowModesModel={rowModesModel}
+              handleCancelClick={handleCancelClick}
+              handleDeleteOpen={handleDeleteOpen}
+              handleSaveClick={handleSaveClick}
+              handleEditClick={handleEditClick}
+              editDisabled={row.is_synced_from_ecapris}
+              deleteDisabled={row.is_synced_from_ecapris}
+            />
+          ),
       },
     ];
   }, [
@@ -303,6 +326,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    setOverrideFundingRecord,
     usingShiftKey,
   ]);
 
@@ -372,6 +396,7 @@ const ProjectFundingTable = ({
   );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -392,6 +417,11 @@ const ProjectFundingTable = ({
     },
     []
   );
+
+  // Open activity edit modal when double clicking in a cell
+  const doubleClickListener = (params) => {
+    setOverrideFundingRecord(params.row);
+  };
 
   useEffect(() => {
     if (tableFundingRows && tableFundingRows.length > 0) {
@@ -606,6 +636,7 @@ const ProjectFundingTable = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    setOverrideFundingRecord,
     usingShiftKey,
   });
 
@@ -655,6 +686,7 @@ const ProjectFundingTable = ({
         getRowHeight={() => "auto"}
         hideFooter
         onCellKeyDown={handleTabKeyDown}
+        onCellDoubleClick={doubleClickListener}
         localeText={{ noRowsLabel: "No funding sources" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
@@ -745,6 +777,13 @@ const ProjectFundingTable = ({
           projectId={projectId}
           handleSnackbar={handleSnackbar}
           refetch={refetch}
+        />
+      )}
+      {overrideFundingRecord && (
+        <OverrideFundingDialog
+          fundingRecord={overrideFundingRecord}
+          onClose={() => setOverrideFundingRecord(null)}
+          handleSnackbar={handleSnackbar}
         />
       )}
     </div>
