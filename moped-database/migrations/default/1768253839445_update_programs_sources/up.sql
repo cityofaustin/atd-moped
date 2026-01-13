@@ -162,3 +162,6 @@ FROM
 WHERE
     moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
     AND (moped_fund_programs.funding_program_name = 'Mitigation Fees' OR moped_fund_programs.funding_program_name = 'Traffic Mitigation Fees');
+
+-- TODO: Add trigger to attempt assigning program foreign key on insert/update of eCAPRIS funding records
+-- TODO: Add trigger to attemp assigning source foreign key on insert/update of eCAPRIS funding records
