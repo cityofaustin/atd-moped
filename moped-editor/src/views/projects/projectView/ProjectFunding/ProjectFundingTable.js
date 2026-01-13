@@ -369,7 +369,7 @@ const ProjectFundingTable = ({
     []
   );
 
-  // Open activity edit modal when double clicking in a cell of a record from ecapris
+  // Open funding override modal when double clicking in a cell of a record from ecapris
   const doubleClickListener = (params) => {
     if (!params.row.is_manual) {
       setOverrideFundingRecord(params.row);
