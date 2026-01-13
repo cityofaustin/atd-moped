@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -87,7 +87,10 @@ const SubprojectFundingModal = ({
     fetchPolicy: "no-cache",
   });
 
-  const rows = data?.ecapris_subproject_funding ?? [];
+  const rows = useMemo(
+    () => data?.ecapris_subproject_funding ?? [],
+    [data?.ecapris_subproject_funding]
+  );
 
   const [selectedFdus, setSelectedFdus] = useState([]);
 
