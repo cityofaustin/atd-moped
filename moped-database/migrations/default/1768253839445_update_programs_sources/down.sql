@@ -57,3 +57,6 @@ FROM
 WHERE
     moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
     AND moped_fund_programs.funding_program_name = 'Local Transit - Local Transit Enhancement';
+
+-- Can't undo Mitigation Fee and Traffic Mitigation Fees reassignment to Developer Transportation Improvements Program
+-- because we don't know which of the two original programs to assign back to.

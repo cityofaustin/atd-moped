@@ -59,6 +59,12 @@ SELECT 'Vision Zero - Systemic Safety' WHERE NOT EXISTS (
         WHERE funding_program_name = 'Vision Zero - Systemic Safety'
     );
 
+INSERT INTO moped_fund_programs (funding_program_name)
+SELECT 'Developer Transportation Improvements Program' WHERE NOT EXISTS (
+        SELECT 1 FROM moped_fund_programs
+        WHERE funding_program_name = 'Developer Transportation Improvements Program'
+    );
+
 -- Add sources
 INSERT INTO moped_fund_sources (funding_source_name)
 SELECT 'Highway Safety Improvements' WHERE NOT EXISTS (
@@ -76,7 +82,14 @@ WHERE funding_program_name = 'Operating Fund'
     OR funding_program_name = 'Intersection Safety'
     OR funding_program_name = 'Pedestrian Crossing'
     OR funding_program_name = 'Highway Safety Improvements'
-    OR funding_program_name = 'IH35';
+    OR funding_program_name = 'IH35'
+    OR funding_program_name = 'Mitigation Fees'
+    OR funding_program_name = 'Traffic Mitigation Fees'
+    OR funding_program_name = 'Project Development'
+    OR funding_program_name = 'Sidewalk Fee in Lieu'
+    OR funding_program_name = 'Sidewalk Rehab'
+    OR funding_program_name = 'Street & Bridge Operations'
+    OR funding_program_name = 'Transportation Enhancements 2009 Grant';
 
 -- Rename programs
 UPDATE moped_fund_programs
@@ -130,3 +143,22 @@ FROM
 WHERE
     moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
     AND moped_fund_programs.funding_program_name = '2018 Interlocal Agreement';
+
+WITH
+updated_program AS (
+    SELECT funding_program_id
+    FROM
+        moped_fund_programs
+    WHERE
+        funding_program_name = 'Developer Transportation Improvements Program'
+)
+
+UPDATE moped_proj_funding
+SET
+    funding_program_id = updated_program.funding_program_id
+FROM
+    updated_program,
+    moped_fund_programs
+WHERE
+    moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
+    AND (moped_fund_programs.funding_program_name = 'Mitigation Fees' OR moped_fund_programs.funding_program_name = 'Traffic Mitigation Fees');
