@@ -31,6 +31,7 @@ const OverrideFundingForm = ({
 
   const onSubmit = (data) => {
     const transformedRecord = transformGridToDatabase(fundingRecord);
+    // override record with data from form
     transformedRecord.funding_description = data.description;
     transformedRecord.funding_amount = data.funding_amount;
 
@@ -49,7 +50,7 @@ const OverrideFundingForm = ({
         onClose();
       })
       .catch((error) => {
-        handleSnackbar(true, "Error adding work activity", "error", error);
+        handleSnackbar(true, "Error adding funding source", "error", error);
       });
   };
 
