@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { Button, CircularProgress, Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGridPro,

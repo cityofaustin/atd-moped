@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Card, CircularProgress } from "@mui/material";
+import { Box, Card } from "@mui/material";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import { useQuery } from "@apollo/client";
 import { DataGridPro, GridToolbar } from "@mui/x-data-grid-pro";

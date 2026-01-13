@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 
-import { Button, CircularProgress, Link, Typography } from "@mui/material";
+import { Button, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";

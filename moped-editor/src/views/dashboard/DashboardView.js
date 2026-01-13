@@ -7,7 +7,6 @@ import {
   AppBar,
   Box,
   Card,
-  CircularProgress,
   Container,
   Grid,
   Link,

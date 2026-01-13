@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
-import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import Link from "@mui/material/Link";
 
