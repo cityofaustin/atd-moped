@@ -26,7 +26,7 @@ const OverrideFundingForm = ({
   } = useForm({
     defaultValues: {
       funding_amount: fundingRecord?.funding_amount ?? 0,
-      description: "",
+      description: fundingRecord?.funding_description ?? "",
     },
   });
 
@@ -36,7 +36,9 @@ const OverrideFundingForm = ({
     variables: { fdu: fundingRecord.fdu.fdu },
   });
 
-  const appropriatedFunding = fduData.ecapris_subproject_funding[0]["amount"];
+  const appropriatedFunding = fduData?.ecapris_subproject_funding
+    ? fduData.ecapris_subproject_funding[0]["amount"]
+    : 0;
 
   const onSubmit = (data) => {
     const transformedRecord = transformGridToDatabase(fundingRecord);
