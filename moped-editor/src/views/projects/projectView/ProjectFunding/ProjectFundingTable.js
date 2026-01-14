@@ -238,7 +238,18 @@ const useColumns = ({
         editable: false,
         type: "actions",
         renderCell: ({ id, row }) =>
-          row.is_synced_from_ecapris ? (
+          row.is_manual ? (
+            <DataGridActions
+              id={id}
+              rowModesModel={rowModesModel}
+              handleCancelClick={handleCancelClick}
+              handleDeleteOpen={handleDeleteOpen}
+              handleSaveClick={handleSaveClick}
+              handleEditClick={handleEditClick}
+              editDisabled={row.is_synced_from_ecapris}
+              deleteDisabled={row.is_synced_from_ecapris}
+            />
+          ) : (
             <>
               <IconButton
                 aria-label="edit"
@@ -255,17 +266,6 @@ const useColumns = ({
                 <DeleteOutlineIcon />
               </IconButton>
             </>
-          ) : (
-            <DataGridActions
-              id={id}
-              rowModesModel={rowModesModel}
-              handleCancelClick={handleCancelClick}
-              handleDeleteOpen={handleDeleteOpen}
-              handleSaveClick={handleSaveClick}
-              handleEditClick={handleEditClick}
-              editDisabled={row.is_synced_from_ecapris}
-              deleteDisabled={row.is_synced_from_ecapris}
-            />
           ),
       },
     ];

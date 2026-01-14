@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -6,7 +6,10 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { currencyFormatter } from "src/utils/numberFormatters";
-import { ADD_PROJECT_FUNDING } from "src/queries/funding";
+import {
+  ADD_PROJECT_FUNDING,
+  ECAPRIS_SUBPROJECT_FDU_QUERY,
+} from "src/queries/funding";
 import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 
 const OverrideFundingForm = ({
@@ -28,6 +31,14 @@ const OverrideFundingForm = ({
   });
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
+
+  const { data: subprojectData } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
+    variables: { ecapris_subproject_id: fundingRecord.ecapris_subproject_id }
+  });
+
+  console.log(fundingRecord.ecapris_subproject_id)
+
+  console.log(subprojectData)
 
   const onSubmit = (data) => {
     const transformedRecord = transformGridToDatabase(fundingRecord);
