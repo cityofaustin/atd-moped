@@ -116,12 +116,11 @@ const LookupsView = () => {
           </Paper>
 
           {SETTINGS.map((recordType) => (
-            <Paper sx={{ paddingLeft: 3 }}>
+            <Paper sx={{ paddingLeft: 3 }} key={recordType.key}>
               <Grid
                 container
                 spacing={3}
                 sx={{ marginTop: 3 }}
-                key={recordType.key}
                 ref={refs[recordType.key]}
               >
                 <Grid item xs={12}>

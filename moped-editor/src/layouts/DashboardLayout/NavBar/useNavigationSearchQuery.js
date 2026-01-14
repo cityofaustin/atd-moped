@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client";
 import { NAVIGATION_SEARCH_QUERY_CONFIG } from "./NavigationSearchQueryConf";
 import { getSearchValue } from "src/utils/gridTableHelpers";
 
