@@ -45,7 +45,10 @@ import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
-import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
+import {
+  transformDatabaseToGrid,
+  transformGridToDatabase,
+} from "src/views/projects/projectView/ProjectFunding/helpers";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -53,67 +56,6 @@ const fduAutocompleteProps = {
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
   isOptionEqualToValue: (value, option) =>
     value?.ecapris_funding_id === option?.ecapris_funding_id,
-};
-
-/** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
- * @param {Array} fundingRecords - array of funding records from the database
- * @param {Object} lookupData - object containing lookup arrays from the database
- * @return {Array} - array of transformed funding records for data grid
- */
-const transformDatabaseToGrid = (fundingRecords, lookupData) => {
-  const {
-    moped_fund_sources,
-    moped_fund_programs,
-    moped_fund_status: moped_fund_statuses,
-  } = lookupData;
-
-  return fundingRecords.map((record) => {
-    // Reconstruct lookup objects for editing in autocomplete components
-    const fund_source = record.funding_source_id
-      ? moped_fund_sources.find(
-          (s) => s.funding_source_id === record.funding_source_id
-        )
-      : null;
-
-    const fund_program = record.funding_program_id
-      ? moped_fund_programs.find(
-          (p) => p.funding_program_id === record.funding_program_id
-        )
-      : null;
-
-    const fund_status = record.funding_status_id
-      ? moped_fund_statuses.find(
-          (s) => s.funding_status_id === record.funding_status_id
-        )
-      : null;
-
-    const fduOption = record.fdu
-      ? {
-          fdu: record.fdu,
-          ecapris_funding_id: record.ecapris_funding_id,
-          unit_long_name: record.unit_long_name,
-        }
-      : null;
-
-    // Remove fields unneeded in the data grid row
-    const {
-      funding_source_id,
-      funding_status_id,
-      funding_program_id,
-      fdu,
-      ecapris_funding_id,
-      ...tableRecord
-    } = record;
-
-    // Return new record with lookup objects for autocomplete components
-    return {
-      ...tableRecord,
-      fund_source,
-      fund_program,
-      fund_status,
-      fdu: fduOption,
-    };
-  });
 };
 
 /** Hook that provides memoized column settings */
