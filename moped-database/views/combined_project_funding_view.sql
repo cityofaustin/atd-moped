@@ -17,7 +17,7 @@ CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     moped_fund_programs.funding_program_name AS program_name,
     moped_proj_funding.funding_program_id,
     NULL::integer AS fao_id,
-    NULL::text AS ecapris_subproject_id,
+    moped_proj_funding.ecapris_subproject_id,
     FALSE AS is_synced_from_ecapris,
     moped_proj_funding.is_manual
 FROM moped_proj_funding
