@@ -8,7 +8,7 @@ import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import {
   ADD_PROJECT_FUNDING,
-  ECAPRIS_SUBPROJECT_FDU_QUERY,
+  ECAPRIS_SUBPROJECT_FUNDING_QUERY,
 } from "src/queries/funding";
 import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 
@@ -32,13 +32,11 @@ const OverrideFundingForm = ({
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
 
-  const { data: subprojectData } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
-    variables: { ecapris_subproject_id: fundingRecord.ecapris_subproject_id }
+  const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
+    variables: { fdu: fundingRecord.fdu.fdu },
   });
 
-  console.log(fundingRecord.ecapris_subproject_id)
-
-  console.log(subprojectData)
+  const appropriatedFunding = fduData.ecapris_subproject_funding[0]["amount"];
 
   const onSubmit = (data) => {
     const transformedRecord = transformGridToDatabase(fundingRecord);
@@ -81,7 +79,7 @@ const OverrideFundingForm = ({
             />
             <FormHelperText>
               eCapris appropriated amount:{" "}
-              {currencyFormatter.format(fundingRecord.funding_amount)}{" "}
+              {currencyFormatter.format(appropriatedFunding)}{" "}
             </FormHelperText>
           </FormControl>
         </Grid>
