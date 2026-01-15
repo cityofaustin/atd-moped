@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import isEqual from "lodash/isEqual";
+import isEqual from "lodash.isequal";
 
 // Material
 import {
@@ -692,7 +692,7 @@ const ProjectFundingTable = ({
                   alignItems: "center",
                 }}
               >
-                <Grid item xs={3}>
+                <Grid item xs={6} md={4}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}

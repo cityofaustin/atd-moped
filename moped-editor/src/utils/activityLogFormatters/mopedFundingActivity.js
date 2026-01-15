@@ -1,6 +1,6 @@
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
-import { isEqual } from "lodash";
+import isEqual from "lodash.isequal";
 
 const getFundingSourceIdText = (newRecord, fundingSources, fundingPrograms) => {
   if (!newRecord || !fundingSources || !fundingPrograms) {
