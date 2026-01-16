@@ -324,3 +324,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER match_ecapris_funding_keys_trigger
+BEFORE INSERT OR UPDATE ON ecapris_subproject_funding
+FOR EACH ROW
+EXECUTE FUNCTION match_ecapris_funding_to_source_and_programs_foreign_keys();
+
+COMMENT ON FUNCTION match_ecapris_funding_to_source_and_programs_foreign_keys() IS 'Attempts matching eCAPRIS funding data to Moped foreign keys using program/subprogram text and bond year.';
+COMMENT ON TRIGGER match_ecapris_funding_keys_trigger ON ecapris_subproject_funding IS 'Fires before INSERT or UPDATE on ecapris_subproject_funding to try populating funding_program_id and funding_source_id foreign keys.';
