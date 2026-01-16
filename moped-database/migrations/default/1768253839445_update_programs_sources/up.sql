@@ -42,12 +42,6 @@ SELECT 'Vision Zero - Signal Safety' WHERE NOT EXISTS (
     );
 
 INSERT INTO moped_fund_programs (funding_program_name)
-SELECT 'Vision Zero - Systemic Safety' WHERE NOT EXISTS (
-        SELECT 1 FROM moped_fund_programs
-        WHERE funding_program_name = 'Vision Zero - Systemic Safety'
-    );
-
-INSERT INTO moped_fund_programs (funding_program_name)
 SELECT 'Developer Transportation Improvements Program' WHERE NOT EXISTS (
         SELECT 1 FROM moped_fund_programs
         WHERE funding_program_name = 'Developer Transportation Improvements Program'
@@ -121,7 +115,7 @@ WHERE funding_program_name = 'Regional Mobility';
 
 UPDATE moped_fund_programs
 SET funding_program_name = 'Safe Routes'
-WHERE funding_program_name = 'Safe Routes to School';
+WHERE funding_program_name = 'Safe Routes to Schools';
 
 UPDATE moped_fund_programs
 SET funding_program_name = 'Signals'
