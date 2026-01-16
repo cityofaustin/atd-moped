@@ -3,7 +3,18 @@
 -- Restore programs
 UPDATE moped_fund_programs
 SET is_deleted = FALSE
-WHERE funding_program_name = 'Operating Fund' OR funding_program_name = 'Large CIP';
+WHERE funding_program_name = 'Operating Fund'
+    OR funding_program_name = 'Large CIP'
+    OR funding_program_name = '2018 Interlocal Agreement'
+    OR funding_program_name = 'Highway Safety Improvements'
+    OR funding_program_name = 'IH35'
+    OR funding_program_name = 'Mitigation Fees'
+    OR funding_program_name = 'Traffic Mitigation Fees'
+    OR funding_program_name = 'Project Development'
+    OR funding_program_name = 'Sidewalk Fee in Lieu'
+    OR funding_program_name = 'Sidewalk Rehab'
+    OR funding_program_name = 'Street & Bridge Operations'
+    OR funding_program_name = 'Transportation Enhancements 2009 Grant';;
 
 -- Restore renamed programs
 UPDATE moped_fund_programs
@@ -38,25 +49,5 @@ UPDATE moped_fund_programs
 SET funding_program_name = 'Speed Management'
 WHERE funding_program_name = 'Vision Zero - Speed Management';
 
--- Restore updated project funding records with existing program value to new program value
-WITH
-updated_program AS (
-    SELECT funding_program_id
-    FROM
-        moped_fund_programs
-    WHERE
-        funding_program_name = '2018 Interlocal Agreement'
-)
-
-UPDATE moped_proj_funding
-SET
-    funding_program_id = updated_program.funding_program_id
-FROM
-    updated_program,
-    moped_fund_programs
-WHERE
-    moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
-    AND moped_fund_programs.funding_program_name = 'Local Transit - Local Transit Enhancement';
-
--- Can't undo Mitigation Fee and Traffic Mitigation Fees reassignment to Developer Transportation Improvements Program
--- because we don't know which of the two original programs to assign back to.
+-- No down migration included for source and program updates. We can reference original values 
+-- in the activity log and make another up migration if we need to refine more.

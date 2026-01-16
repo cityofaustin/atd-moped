@@ -282,5 +282,45 @@ WHERE
     moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
     AND (moped_fund_programs.funding_program_name = 'Sidewalk Fee in Lieu');
 
--- TODO: Add trigger to attempt assigning program foreign key on insert/update of eCAPRIS funding records
--- TODO: Add trigger to attemp assigning source foreign key on insert/update of eCAPRIS funding records
+-- Add bond year to ecapris_subproject_funding table so we can try to match funding sources
+ALTER TABLE ecapris_subproject_funding
+ADD COLUMN bond_year INT4,
+ADD COLUMN funding_source_id INT4 REFERENCES moped_fund_sources (funding_source_id),
+ADD COLUMN funding_program_id INT4 REFERENCES moped_fund_programs (funding_program_id);
+
+COMMENT ON COLUMN public.ecapris_subproject_funding.bond_year IS 'The bond year associated with FDU funding record from eCAPRIS';
+
+-- Add trigger function and trigger to attempt assigning program foreign key on insert/update of eCAPRIS funding records
+CREATE OR REPLACE FUNCTION match_ecapris_funding_to_source_and_programs_foreign_keys()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Try matching funding program name to moped_fund_programs
+    IF NEW.program IS NOT NULL THEN
+        -- First try program + subprogram if subprogram exists
+        IF NEW.subprogram IS NOT NULL THEN
+            SELECT funding_program_id INTO NEW.funding_program_id
+            FROM moped_fund_programs
+            WHERE funding_program_name = NEW.program || ' - ' || NEW.subprogram
+            LIMIT 1;
+        END IF;
+        
+        -- If no match with subprogram (or no subprogram), try program-only
+        IF NEW.funding_program_id IS NULL THEN
+            SELECT funding_program_id INTO NEW.funding_program_id
+            FROM moped_fund_programs
+            WHERE funding_program_name = NEW.program
+            LIMIT 1;
+        END IF;
+    END IF;
+
+    -- Try matching funding bond year to moped_fund_sources formatted as "<year> Bond"
+   IF NEW.bond_year IS NOT NULL THEN
+        SELECT funding_source_id INTO NEW.funding_source_id
+        FROM moped_fund_sources
+        WHERE funding_source_name = NEW.bond_year::TEXT || ' Bond'
+        LIMIT 1;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
