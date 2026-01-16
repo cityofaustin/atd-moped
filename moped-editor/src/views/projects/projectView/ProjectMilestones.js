@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
-import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
@@ -419,12 +418,15 @@ const ProjectMilestones = ({
     }
   };
 
-  if (loading || !data) return <CircularProgress />;
-
   // Hide Milestone template dialog
   const handleTemplateModalClose = () => {
     setIsDialogOpen(false);
   };
+
+  // Only render if any row is in edit mode
+  const isEditing = Object.values(rowModesModel).some(
+    (mode) => mode.mode === GridRowModes.Edit
+  );
 
   return (
     <>
@@ -468,16 +470,19 @@ const ProjectMilestones = ({
             ),
           },
         }}
+        loading={loading || !data}
       />
-      <MilestoneTemplateModal
-        isDialogOpen={isDialogOpen}
-        handleDialogClose={handleTemplateModalClose}
-        milestoneNameLookup={milestoneNameLookup}
-        selectedMilestones={data.moped_proj_milestones}
-        projectId={projectId}
-        refetch={refetch}
-        handleSnackbar={handleSnackbar}
-      />
+      {isEditing && (
+        <MilestoneTemplateModal
+          isDialogOpen={isDialogOpen}
+          handleDialogClose={handleTemplateModalClose}
+          milestoneNameLookup={milestoneNameLookup}
+          selectedMilestones={data?.moped_proj_milestones}
+          projectId={projectId}
+          refetch={refetch}
+          handleSnackbar={handleSnackbar}
+        />
+      )}
       <DeleteConfirmationModal
         type={"milestone"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}

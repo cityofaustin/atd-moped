@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 
 // Material
-import { Button, CircularProgress, Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGridPro,
@@ -532,8 +532,6 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   });
 
   if (socrataError) console.error(socrataError);
-  if (loading || !data) return <CircularProgress />;
-
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
   return (
@@ -601,6 +599,7 @@ const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
             ),
           },
         }}
+        loading={loading || !data}
       />
       <DeleteConfirmationModal
         type={"funding source"}

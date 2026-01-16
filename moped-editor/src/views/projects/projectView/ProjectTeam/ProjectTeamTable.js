@@ -7,7 +7,6 @@ import {
   Button,
   Icon,
   Link,
-  CircularProgress,
   Typography,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -549,8 +548,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   const getRowIdMemoized = useCallback((row) => row.project_personnel_id, []);
 
-  if (loading || !data) return <CircularProgress />;
-
   const checkIfShiftKey = (params, event) => {
     if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
       setUsingShiftKey(event.shiftKey);
@@ -587,7 +584,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         hideFooter
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
-        loading={loading}
+        loading={loading || !data}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,

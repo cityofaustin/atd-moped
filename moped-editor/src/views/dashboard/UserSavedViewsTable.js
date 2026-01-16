@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
-import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import Link from "@mui/material/Link";
 
@@ -236,8 +235,6 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
     handleEditClick,
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <>
       <DataGridPro
@@ -256,6 +253,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No saved views to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
+        loading={loading || !data}
       />
       <DeleteConfirmationModal
         type={"saved view"}
