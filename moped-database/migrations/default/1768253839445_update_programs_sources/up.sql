@@ -283,6 +283,8 @@ ADD COLUMN funding_source_id INT4 REFERENCES moped_fund_sources (funding_source_
 ADD COLUMN funding_program_id INT4 REFERENCES moped_fund_programs (funding_program_id);
 
 COMMENT ON COLUMN public.ecapris_subproject_funding.bond_year IS 'The bond year associated with FDU funding record from eCAPRIS';
+COMMENT ON COLUMN public.ecapris_subproject_funding.funding_source_id IS 'Foreign key to moped_fund_sources matched by bond year from eCAPRIS funding record';
+COMMENT ON COLUMN public.ecapris_subproject_funding.funding_program_id IS 'Foreign key to moped_fund_programs matched by program/subprogram from eCAPRIS funding record';
 
 -- Add trigger function and trigger to attempt assigning program foreign key on insert/update of eCAPRIS funding records
 CREATE OR REPLACE FUNCTION match_ecapris_funding_to_source_and_programs_foreign_keys()

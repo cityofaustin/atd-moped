@@ -1,4 +1,4 @@
--- Soft delete added in future if needed
+-- Soft delete added sources and programs in future if needed
 
 -- Restore programs
 UPDATE moped_fund_programs
@@ -14,7 +14,7 @@ WHERE funding_program_name = 'Operating Fund'
     OR funding_program_name = 'Sidewalk Fee in Lieu'
     OR funding_program_name = 'Sidewalk Rehab'
     OR funding_program_name = 'Street & Bridge Operations'
-    OR funding_program_name = 'Transportation Enhancements 2009 Grant';;
+    OR funding_program_name = 'Transportation Enhancements 2009 Grant';
 
 -- Restore renamed programs
 UPDATE moped_fund_programs
@@ -30,7 +30,7 @@ SET funding_program_name = 'Regional Mobility'
 WHERE funding_program_name = 'Regional';
 
 UPDATE moped_fund_programs
-SET funding_program_name = 'Safe Routes to School'
+SET funding_program_name = 'Safe Routes to Schools'
 WHERE funding_program_name = 'Safe Routes';
 
 UPDATE moped_fund_programs
@@ -51,3 +51,13 @@ WHERE funding_program_name = 'Vision Zero - Speed Management';
 
 -- No down migration included for source and program updates. We can reference original values 
 -- in the activity log and make another up migration if we need to refine more.
+
+-- Drop trigger and then trigger function
+DROP TRIGGER IF EXISTS match_ecapris_funding_keys_trigger ON ecapris_subproject_funding;
+DROP FUNCTION IF EXISTS match_ecapris_funding_to_source_and_programs_foreign_keys ();
+
+-- Drop added columns from ecapris_subproject_funding
+ALTER TABLE ecapris_subproject_funding
+DROP COLUMN IF EXISTS bond_year,
+DROP COLUMN IF EXISTS funding_source_id,
+DROP COLUMN IF EXISTS funding_program_id;
