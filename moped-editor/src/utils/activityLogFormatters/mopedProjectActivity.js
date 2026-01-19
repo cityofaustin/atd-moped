@@ -2,7 +2,7 @@ import BeenhereOutlinedIcon from "@mui/icons-material/BeenhereOutlined";
 import SyncIcon from "@mui/icons-material/Sync";
 import SyncDisabledIcon from "@mui/icons-material/SyncDisabled";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
-import { isEqual } from "lodash";
+import isEqual from "lodash.isequal";
 
 export const formatProjectActivity = (change, lookupList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
