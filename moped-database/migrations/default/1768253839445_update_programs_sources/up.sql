@@ -1,8 +1,10 @@
--- Add programs available from program tagging that are not in Moped
+--
+-- ADD NEW PROGRAMS AND SOURCES FROM PROGRAM TAGGING
+--
 INSERT INTO moped_fund_programs (funding_program_name)
 SELECT 'Bridges & Structures' WHERE NOT EXISTS (
         SELECT 1 FROM moped_fund_programs
-        WHERE funding_program_name = 'Bridges & Structure'
+        WHERE funding_program_name = 'Bridges & Structures'
     );
 
 INSERT INTO moped_fund_programs (funding_program_name)
@@ -84,22 +86,6 @@ SELECT 'Private Development - Street Impact Fee' WHERE NOT EXISTS (
         WHERE funding_source_name = 'Private Development - Street Impact Fee'
     );
 
--- Soft delete programs no longer needed
-UPDATE moped_fund_programs
-SET is_deleted = TRUE
-WHERE funding_program_name = 'Operating Fund'
-    OR funding_program_name = 'Large CIP'
-    OR funding_program_name = '2018 Interlocal Agreement'
-    OR funding_program_name = 'Highway Safety Improvements'
-    OR funding_program_name = 'IH35'
-    OR funding_program_name = 'Mitigation Fees'
-    OR funding_program_name = 'Traffic Mitigation Fees'
-    OR funding_program_name = 'Project Development'
-    OR funding_program_name = 'Sidewalk Fee in Lieu'
-    OR funding_program_name = 'Sidewalk Rehab'
-    OR funding_program_name = 'Street & Bridge Operations'
-    OR funding_program_name = 'Transportation Enhancements 2009 Grant';
-
 -- Rename programs
 UPDATE moped_fund_programs
 SET funding_program_name = 'Corridor Program'
@@ -133,6 +119,9 @@ UPDATE moped_fund_programs
 SET funding_program_name = 'Vision Zero - Speed Management'
 WHERE funding_program_name = 'Speed Management';
 
+--
+-- UPDATE PROJECT FUNDING RECORDS TO NEW PROGRAMS AND SOURCES
+--
 -- Update 2018 Interlocal Agreement project funding records to new program and source
 -- 1. Update project funding records with 2018 Interlocal Agreement program with new Transit ILA 2018 source
 WITH
@@ -256,7 +245,7 @@ WHERE
     moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
     AND (moped_fund_programs.funding_program_name = 'Operating Fund');
 
--- Update project funding records with Operating Fund program to new ATPW Operating Fund source
+-- Update project funding records with Sidewalk Fee in Lieu program to new Private Development - Fee In Lieu source
 WITH
 updated_source AS (
     SELECT funding_source_id
@@ -276,6 +265,27 @@ WHERE
     moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
     AND (moped_fund_programs.funding_program_name = 'Sidewalk Fee in Lieu');
 
+--
+-- SOFT DELETE OLD PROGRAMS
+--
+UPDATE moped_fund_programs
+SET is_deleted = TRUE
+WHERE funding_program_name = 'Operating Fund'
+    OR funding_program_name = 'Large CIP'
+    OR funding_program_name = '2018 Interlocal Agreement'
+    OR funding_program_name = 'Highway Safety Improvements'
+    OR funding_program_name = 'IH35'
+    OR funding_program_name = 'Mitigation Fees'
+    OR funding_program_name = 'Traffic Mitigation Fees'
+    OR funding_program_name = 'Project Development'
+    OR funding_program_name = 'Sidewalk Fee in Lieu'
+    OR funding_program_name = 'Sidewalk Rehab'
+    OR funding_program_name = 'Street & Bridge Operations'
+    OR funding_program_name = 'Transportation Enhancements 2009 Grant';
+
+--
+-- ADD BOND YEAR, CREATE TRIGGER TO MATCH FUNDING PROGRAM AND SOURCE, AND UPDATE COMBINED FUNDING VIEW
+--
 -- Add bond year to ecapris_subproject_funding table so we can try to match funding sources
 ALTER TABLE ecapris_subproject_funding
 ADD COLUMN bond_year INT4,

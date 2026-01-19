@@ -1,6 +1,6 @@
--- Soft delete added sources and programs in future if needed
+-- New sources and programs will be soft-deleted in the future if needed
 
--- Restore programs
+-- Restore soft-deleted programs
 UPDATE moped_fund_programs
 SET is_deleted = FALSE
 WHERE funding_program_name = 'Operating Fund'
@@ -50,7 +50,7 @@ SET funding_program_name = 'Speed Management'
 WHERE funding_program_name = 'Vision Zero - Speed Management';
 
 -- No down migration included for source and program updates. We can reference original values 
--- in the activity log and make another up migration if we need to refine more.
+-- in the activity log and make another up migration if we need to refine more later.
 
 -- Drop trigger and then trigger function
 DROP TRIGGER IF EXISTS match_ecapris_funding_keys_trigger ON ecapris_subproject_funding;
