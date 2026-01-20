@@ -314,7 +314,6 @@ const ProjectFundingTable = ({
 
   // Open funding override modal when double clicking in a cell of a record from ecapris
   const doubleClickListener = (params) => {
-    console.log(params);
     if (!params.row.is_manual) {
       setOverrideFundingRecord(params.row);
       setRowModesModel((oldModel) => {
