@@ -316,12 +316,6 @@ const ProjectFundingTable = ({
   const doubleClickListener = (params) => {
     if (!params.row.is_manual) {
       setOverrideFundingRecord(params.row);
-      setRowModesModel((oldModel) => {
-        return {
-          ...oldModel,
-          [params.id]: { mode: GridRowModes.View },
-        };
-      });
     }
   };
 
@@ -367,9 +361,7 @@ const ProjectFundingTable = ({
   );
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    if (!overrideFundingRecord) {
-      setRowModesModel(newRowModesModel);
-    }
+    setRowModesModel(newRowModesModel);
   };
 
   // adds a blank row to the table and updates the row modes model
@@ -568,6 +560,20 @@ const ProjectFundingTable = ({
       );
   };
 
+  const isCellEditable = (params) => {
+    if (params.row.is_synced_from_ecapris) {
+      return false
+    } else {
+      // if record is not synced from ecapris, but is also not manual, it means its been overriden
+      // dont edit using data grid
+      if (!params.row.is_manual) {
+        return false
+      }
+      // records that are not synced from ecapris and are manual are editable
+      return true
+    }
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <DataGridPro
@@ -580,7 +586,7 @@ const ProjectFundingTable = ({
         editMode="row"
         rowModesModel={rowModesModel}
         onRowEditStop={handleRowEditStop(rows, setRows)}
-        isCellEditable={(params) => !params.row.is_synced_from_ecapris}
+        isCellEditable={isCellEditable}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={(error) => console.error(error)}
