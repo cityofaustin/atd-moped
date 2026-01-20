@@ -195,15 +195,15 @@ const useColumns = ({
             <>
               <IconButton
                 aria-label="edit"
-                sx={{ color: "inherit" }}
+                sx={{ color: "inherit", padding: "5px" }}
                 onClick={() => setOverrideFundingRecord(row)}
               >
                 <EditOutlinedIcon />
               </IconButton>
               <IconButton
                 aria-label="delete"
-                sx={{ color: "inherit" }}
-                disabled
+                sx={{ color: "inherit", padding: "5px" }}
+                disabled={!!row.is_synced_from_ecapris}
               >
                 <DeleteOutlineIcon />
               </IconButton>
