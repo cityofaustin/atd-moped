@@ -12,6 +12,7 @@ import {
   UPDATE_PROJECT_FUNDING,
 } from "src/queries/funding";
 import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
+import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
 
 const OverrideFundingForm = ({
   fundingRecord,
@@ -103,8 +104,9 @@ const OverrideFundingForm = ({
               name="funding_amount"
               control={control}
               size="small"
-              type="number"
+              type="text"
               inputMode="numeric"
+              onChangeHandler={amountOnChangeHandler}
             />
             <FormHelperText>
               eCapris appropriated amount:{" "}
