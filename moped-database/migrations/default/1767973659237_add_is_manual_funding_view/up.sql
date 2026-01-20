@@ -42,7 +42,8 @@ SELECT
     NULL::integer AS funding_program_id,
     ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id,
-    TRUE AS is_synced_from_ecapris
+    TRUE AS is_synced_from_ecapris,
+    FALSE AS is_manual
 FROM ecapris_subproject_funding
 INNER JOIN moped_project ON ecapris_subproject_funding.ecapris_subproject_id = moped_project.ecapris_subproject_id
 WHERE NOT (EXISTS (
