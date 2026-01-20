@@ -112,10 +112,6 @@ SET funding_program_name = 'Vision Zero - Major Safety'
 WHERE funding_program_name = 'Intersection Safety';
 
 UPDATE moped_fund_programs
-SET funding_program_name = 'Vision Zero - Pedestrian Safety'
-WHERE funding_program_name = 'Pedestrian Crossing';
-
-UPDATE moped_fund_programs
 SET funding_program_name = 'Vision Zero - Speed Management'
 WHERE funding_program_name = 'Speed Management';
 
