@@ -313,8 +313,15 @@ const ProjectFundingTable = ({
 
   // Open funding override modal when double clicking in a cell of a record from ecapris
   const doubleClickListener = (params) => {
+    console.log(params);
     if (!params.row.is_manual) {
       setOverrideFundingRecord(params.row);
+      setRowModesModel((oldModel) => {
+        return {
+          ...oldModel,
+          [params.id]: { mode: GridRowModes.View },
+        };
+      });
     }
   };
 
@@ -360,7 +367,9 @@ const ProjectFundingTable = ({
   );
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
+    if (!overrideFundingRecord) {
+      setRowModesModel(newRowModesModel);
+    }
   };
 
   // adds a blank row to the table and updates the row modes model
@@ -678,7 +687,8 @@ const ProjectFundingTable = ({
         <OverrideFundingDialog
           fundingRecord={overrideFundingRecord}
           projectId={projectId}
-          onSubmitCallback={refetch}
+          refetchFundingQuery={refetch}
+          setOverrideFundingRecord={setOverrideFundingRecord}
           onClose={() => setOverrideFundingRecord(null)}
           handleSnackbar={handleSnackbar}
         />

@@ -16,7 +16,8 @@ import { transformGridToDatabase } from "src/views/projects/projectView/ProjectF
 const OverrideFundingForm = ({
   fundingRecord,
   projectId,
-  onSubmitCallback,
+  refetchFundingQuery,
+  setOverrideFundingRecord,
   handleSnackbar,
   onClose,
 }) => {
@@ -65,7 +66,8 @@ const OverrideFundingForm = ({
       })
         .then(() => {
           handleSnackbar(true, "Funding source added", "success");
-          onSubmitCallback();
+          refetchFundingQuery();
+          setOverrideFundingRecord(null);
           onClose();
         })
         .catch((error) => {
@@ -80,7 +82,8 @@ const OverrideFundingForm = ({
       })
         .then(() => {
           handleSnackbar(true, "Funding source updated", "success");
-          onSubmitCallback();
+          refetchFundingQuery();
+          setOverrideFundingRecord(null);
           onClose();
         })
         .catch((error) => {

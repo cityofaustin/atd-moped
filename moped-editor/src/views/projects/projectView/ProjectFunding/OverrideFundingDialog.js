@@ -8,9 +8,10 @@ import OverrideFundingForm from "src/views/projects/projectView/ProjectFunding/O
 const OverrideFundingDialog = ({
   onClose,
   fundingRecord,
-  onSubmitCallback,
+  refetchFundingQuery,
+  setOverrideFundingRecord,
   handleSnackbar,
-  projectId
+  projectId,
 }) => {
   return (
     <Dialog open onClose={onClose} fullWidth scroll="body">
@@ -31,7 +32,8 @@ const OverrideFundingDialog = ({
         <OverrideFundingForm
           fundingRecord={fundingRecord}
           handleSnackbar={handleSnackbar}
-          onSubmitCallback={onSubmitCallback}
+          refetchFundingQuery={refetchFundingQuery}
+          setOverrideFundingRecord={setOverrideFundingRecord}
           projectId={projectId}
           onClose={onClose}
         />
