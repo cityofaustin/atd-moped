@@ -1,6 +1,6 @@
 import AssignmentIndIconOutlined from "@mui/icons-material/AssignmentIndOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
-import { isEqual } from "lodash";
+import isEqual from "lodash.isequal";
 
 export const formatContractsActivity = (change) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_work_activity"];

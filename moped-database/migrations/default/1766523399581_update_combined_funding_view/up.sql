@@ -1,5 +1,3 @@
-DROP VIEW IF EXISTS combined_project_funding_view;
-
 -- Update view to filter moped_proj_funding rows by project id
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
@@ -54,3 +52,65 @@ WHERE NOT (EXISTS (
             AND moped_proj_funding.project_id = moped_project.project_id
             AND moped_proj_funding.is_deleted = FALSE
     ));
+
+-- Create helper to turn triggers on or off as needed
+CREATE OR REPLACE FUNCTION manage_trigger(
+    trigger_name text,
+    table_name regclass,
+    should_enable boolean DEFAULT FALSE
+)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    trigger_action text := CASE WHEN should_enable THEN 'ENABLE' ELSE 'DISABLE' END;
+BEGIN
+    -- Check if trigger exists to support local start from seed data and also avoid errors
+    IF EXISTS (
+        SELECT 1 
+        FROM pg_trigger 
+        WHERE tgname = trigger_name
+        AND tgrelid = table_name
+    ) THEN
+        EXECUTE format('ALTER TABLE %s %s TRIGGER %I', 
+            table_name, 
+            trigger_action, 
+            trigger_name
+        );
+        RAISE NOTICE '% trigger % on table %', trigger_action, trigger_name, table_name;
+    ELSE
+        RAISE NOTICE 'Trigger % does not exist on table %, skipping', trigger_name, table_name;
+    END IF;
+END;
+$$;
+
+-- Disable Hasura triggers temporarily to allow direct updates to moped_proj_funding without generating activity log entries
+DO $$
+BEGIN
+    PERFORM manage_trigger('notify_hasura_activity_log_moped_proj_funding_UPDATE', 'moped_proj_funding', FALSE);
+    PERFORM manage_trigger('update_moped_proj_funding_and_project_audit_fields', 'moped_proj_funding', FALSE);
+    PERFORM manage_trigger('set_moped_project_updated_at', 'moped_project', FALSE);
+END $$;
+
+-- Populate new fdu column based on existing fund_dept_unit data if available and 
+-- populate unit_long_name from dept_unit JSONB
+-- Note: fund_dept_unit is a generated column that is null if fund or dept_unit is null
+UPDATE moped_proj_funding
+SET
+    fdu = fund_dept_unit,
+    unit_long_name = (dept_unit ->> 'unit_long_name')
+WHERE fund_dept_unit IS NOT NULL;
+
+-- Mark all existing funding records as legacy before eCAPRIS sync integration launches
+UPDATE moped_proj_funding
+SET is_legacy_funding_record = TRUE;
+
+-- Re-enable Hasura triggers
+DO $$
+BEGIN
+    PERFORM manage_trigger('notify_hasura_activity_log_moped_proj_funding_UPDATE', 'moped_proj_funding', TRUE);
+    PERFORM manage_trigger('update_moped_proj_funding_and_project_audit_fields', 'moped_proj_funding', TRUE);
+    PERFORM manage_trigger('set_moped_project_updated_at', 'moped_project', TRUE);
+END $$;
+
+COMMENT ON FUNCTION public.manage_trigger(text, regclass, boolean) IS 'Safely enables or disables a trigger on a table, checking for existence first to avoid errors.';

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import isEqual from "lodash/isEqual";
+import isEqual from "lodash.isequal";
 
 // Material
 import {
@@ -238,15 +238,15 @@ const ProjectFundingTable = ({
     eCaprisSubprojectId && shouldSyncEcaprisFunding
       ? {
           projectFundingConditions: {
-            _or: [
-              { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
-              { project_id: { _eq: Number(projectId) } },
-            ],
+            project_id: { _eq: Number(projectId) },
           },
         }
       : {
           projectFundingConditions: {
-            project_id: { _eq: Number(projectId) },
+            _and: [
+              { project_id: { _eq: Number(projectId) } },
+              { is_synced_from_ecapris: { _eq: false } },
+            ],
           },
         };
 
@@ -628,7 +628,7 @@ const ProjectFundingTable = ({
                   alignItems: "center",
                 }}
               >
-                <Grid item xs={3}>
+                <Grid item xs={6} md={4}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}

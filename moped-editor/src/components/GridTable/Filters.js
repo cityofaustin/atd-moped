@@ -5,7 +5,6 @@ import {
   TextField,
   FormControl,
   Grid,
-  Hidden,
   IconButton,
   Grow,
   Typography,
@@ -501,29 +500,37 @@ const Filters = ({
                 </FormControl>
               </Grid>
               <>
-                <Hidden mdDown>
-                  <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
-                    <IconButton
-                      sx={deleteButtonStyle}
-                      onClick={() => handleDeleteFilterButtonClick(filterIndex)}
-                      size="large"
-                    >
-                      <DeleteOutline sx={deleteIconStyle} />
-                    </IconButton>
-                  </Grid>
-                </Hidden>
-                <Hidden mdUp>
-                  <Grid item xs={12}>
-                    <Button
-                      fullWidth
-                      sx={deleteButtonStyle}
-                      variant="outlined"
-                      onClick={() => handleDeleteFilterButtonClick(filterIndex)}
-                    >
-                      <DeleteOutline />
-                    </Button>
-                  </Grid>
-                </Hidden>
+                <Grid
+                  item
+                  xs={12}
+                  md={1}
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                    textAlign: "center",
+                  }}
+                >
+                  <IconButton
+                    sx={deleteButtonStyle}
+                    onClick={() => handleDeleteFilterButtonClick(filterIndex)}
+                    size="large"
+                  >
+                    <DeleteOutline sx={deleteIconStyle} />
+                  </IconButton>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ display: { xs: "block", md: "none" } }}
+                >
+                  <Button
+                    fullWidth
+                    sx={deleteButtonStyle}
+                    variant="outlined"
+                    onClick={() => handleDeleteFilterButtonClick(filterIndex)}
+                  >
+                    <DeleteOutline />
+                  </Button>
+                </Grid>
               </>
             </Grid>
           </Grow>
@@ -555,11 +562,9 @@ const Filters = ({
             Reset
           </Button>
         </Grid>
-        <Hidden mdDown>
-          <Grid item xs={12} md={7}>
-            {""}
-          </Grid>
-        </Hidden>
+        <Grid item xs={12} md={7} sx={{ display: { xs: "none", md: "block" } }}>
+          {""}
+        </Grid>
         <Grid item xs={12} md={2}>
           <Button
             fullWidth

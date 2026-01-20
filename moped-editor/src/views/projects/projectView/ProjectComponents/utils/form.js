@@ -9,7 +9,7 @@ import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
-import { get } from "lodash";
+import get from "lodash.get";
 
 /**
  * Allows the component work type to be defaulted to `New` -

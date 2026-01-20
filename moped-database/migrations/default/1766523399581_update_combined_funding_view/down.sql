@@ -1,6 +1,4 @@
-DROP VIEW IF EXISTS combined_project_funding_view;
-
--- Update view to filter moped_proj_funding rows by project id
+-- Restore the previous version of the combined_project_funding_view
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
     moped_proj_funding.proj_funding_id AS original_id,
@@ -27,15 +25,15 @@ LEFT JOIN moped_fund_programs ON moped_proj_funding.funding_program_id = moped_f
 WHERE moped_proj_funding.is_deleted = FALSE
 UNION ALL
 SELECT
-    'ecapris_'::text || ecapris_subproject_funding.id || '_moped_' || moped_project.project_id AS id,
+    'ecapris_'::text || ecapris_subproject_funding.id AS id,
     ecapris_subproject_funding.id AS original_id,
     ecapris_subproject_funding.created_at,
     ecapris_subproject_funding.updated_at,
-    moped_project.project_id,
+    NULL::integer AS project_id,
     ecapris_subproject_funding.fdu,
     ecapris_subproject_funding.unit_long_name,
     ecapris_subproject_funding.app AS amount,
-    NULL AS description,
+    'Synced from eCAPRIS'::text AS description,
     NULL::text AS source_name,
     NULL::integer AS funding_source_id,
     'Set up'::text AS status_name,
@@ -46,11 +44,11 @@ SELECT
     ecapris_subproject_funding.ecapris_subproject_id,
     TRUE AS is_synced_from_ecapris
 FROM ecapris_subproject_funding
-INNER JOIN moped_project ON ecapris_subproject_funding.ecapris_subproject_id = moped_project.ecapris_subproject_id
 WHERE NOT (EXISTS (
         SELECT 1
         FROM moped_proj_funding
-        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu
-            AND moped_proj_funding.project_id = moped_project.project_id
-            AND moped_proj_funding.is_deleted = FALSE
+        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.is_deleted = FALSE
     ));
+
+-- Drop trigger enable/disable helper function
+DROP FUNCTION IF EXISTS public.manage_trigger (text, regclass, boolean);

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Box, Grid, Stack, TextField, Typography } from "@mui/material";
 
-import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
+import CopyTextButton from "src/components/CopyTextButton";
 
 import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
@@ -137,7 +137,7 @@ const ProjectSummaryProjectECapris = ({
               id="moped-project-ecapris"
               label={null}
               onChange={handleProjectECaprisChange}
-              value={eCapris}
+              value={eCapris ?? ""}
               error={!isValidECaprisId(eCapris)}
               helperText={
                 !isValidECaprisId(eCapris)
@@ -156,19 +156,25 @@ const ProjectSummaryProjectECapris = ({
           </>
         )}
         {!editMode && (
-          <ProjectSummaryLabel
-            text={
-              (eCapris && (
-                <ExternalLink
-                  text={eCapris}
-                  url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
-                  stopPropagation
-                />
-              )) ||
-              ""
-            }
-            onClickEdit={() => setEditMode(true)}
-          />
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={!eCapris ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
+          >
+            <ProjectSummaryLabel
+              text={eCapris ? eCapris : ""}
+              onClickEdit={() => setEditMode(true)}
+            />
+            {eCapris ? (
+              <CopyTextButton
+                textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+                copyButtonText="Copy eCAPRIS link"
+                buttonProps={{
+                  sx: { minWidth: 160, justifyContent: "flex-start" },
+                }}
+              />
+            ) : null}
+          </Stack>
         )}
       </Box>
     </WrapperComponent>
