@@ -382,6 +382,7 @@ const ProjectFundingTable = ({
         funding_amount: null,
         isNew: true,
         proj_funding_id: id,
+        is_manual: true,
       },
       ...oldRows,
     ]);
@@ -562,17 +563,17 @@ const ProjectFundingTable = ({
 
   const isCellEditable = (params) => {
     if (params.row.is_synced_from_ecapris) {
-      return false
+      return false;
     } else {
       // if record is not synced from ecapris, but is also not manual, it means its been overriden
       // dont edit using data grid
       if (!params.row.is_manual) {
-        return false
+        return false;
       }
       // records that are not synced from ecapris and are manual are editable
-      return true
+      return true;
     }
-  }
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -586,7 +587,7 @@ const ProjectFundingTable = ({
         editMode="row"
         rowModesModel={rowModesModel}
         onRowEditStop={handleRowEditStop(rows, setRows)}
-        isCellEditable={isCellEditable}
+        isCellEditable={(params) => isCellEditable(params)}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={(error) => console.error(error)}
