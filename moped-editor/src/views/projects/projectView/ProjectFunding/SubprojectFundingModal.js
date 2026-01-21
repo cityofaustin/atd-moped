@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -6,7 +6,9 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  Tooltip,
 } from "@mui/material";
+import { GridRow } from "@mui/x-data-grid-pro";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
@@ -16,6 +18,27 @@ import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
 const PAGE_SIZE = 10;
+
+/**
+ * Custom row component that shows a tooltip when the row is disabled
+ * (i.e., when the FDU is already present on the project)
+ */
+const CustomRow = (props) => {
+  const { fdusArray, ...rowProps } = props;
+  const isDisabled = fdusArray?.some((fdu) => fdu?.fdu === rowProps.rowId);
+
+  if (isDisabled) {
+    return (
+      <Tooltip title="FDU already present on project" placement="top" arrow>
+        <div>
+          <GridRow {...rowProps} />
+        </div>
+      </Tooltip>
+    );
+  }
+
+  return <GridRow {...rowProps} />;
+};
 
 const useColumns = () =>
   useMemo(() => {
@@ -64,7 +87,10 @@ const SubprojectFundingModal = ({
     fetchPolicy: "no-cache",
   });
 
-  const rows = data?.ecapris_subproject_funding ?? [];
+  const rows = useMemo(
+    () => data?.ecapris_subproject_funding ?? [],
+    [data?.ecapris_subproject_funding]
+  );
 
   const [selectedFdus, setSelectedFdus] = useState([]);
 
@@ -166,8 +192,10 @@ const SubprojectFundingModal = ({
             handleSnackbar(true, "Error updating table", "error", error)
           }
           isRowSelectable={(row) =>
-            !fdusArray.some((fdu) => fdu.fdu === row.id)
+            !fdusArray.some((fdu) => fdu?.fdu === row.id)
           }
+          slots={{ row: CustomRow }}
+          slotProps={{ row: { fdusArray } }}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
