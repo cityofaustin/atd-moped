@@ -32,6 +32,7 @@ const OverrideFundingForm = ({
     control,
     formState: { isDirty },
     watch,
+    setValue,
   } = useForm({
     defaultValues: {
       funding_amount: fundingRecord?.funding_amount ?? 0,
@@ -134,7 +135,24 @@ const OverrideFundingForm = ({
             control={control}
             render={({ field: { onChange, value } }) => (
               <FormControlLabel
-                control={<Switch checked={value} onChange={onChange} />}
+                control={
+                  <Switch
+                    checked={value}
+                    onChange={(e) => {
+                      // Check target value so we can restore previous amount if unchecking (if there is one)
+                      if (e.target.checked) {
+                        setValue("funding_amount", appropriatedFunding);
+                        onChange(e);
+                      } else {
+                        setValue(
+                          "funding_amount",
+                          fundingRecord.funding_amount ?? appropriatedFunding
+                        );
+                        onChange(e);
+                      }
+                    }}
+                  />
+                }
                 label="Use latest eCAPRIS appropriated amount"
               />
             )}
