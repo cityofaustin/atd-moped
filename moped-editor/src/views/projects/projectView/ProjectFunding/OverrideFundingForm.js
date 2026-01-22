@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { currencyFormatter } from "src/utils/numberFormatters";
@@ -13,6 +15,10 @@ import {
 } from "src/queries/funding";
 import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
+
+// TODO: Conditionally disabled amount input when "Use latest eCAPRIS appropriated amount" is checked
+// TODO: On submit, if checked, mutate funding_amount to appropriated amount from eCAPRIS to reset override flow
+// TODO: When checked, set funding_amount input to appropriated amount from eCAPRIS
 
 const OverrideFundingForm = ({
   fundingRecord,
@@ -32,6 +38,8 @@ const OverrideFundingForm = ({
       description: fundingRecord?.funding_description ?? "",
     },
   });
+
+  console.log(fundingRecord);
 
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
@@ -113,6 +121,12 @@ const OverrideFundingForm = ({
               {currencyFormatter.format(appropriatedFunding)}{" "}
             </FormHelperText>
           </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={<Switch defaultChecked />}
+            label="Use latest eCAPRIS appropriated amount"
+          />
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>

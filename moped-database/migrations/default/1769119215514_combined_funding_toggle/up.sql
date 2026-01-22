@@ -30,7 +30,8 @@ CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     moped_proj_funding.ecapris_funding_id AS fao_id,
     moped_proj_funding.ecapris_subproject_id,
     false AS is_synced_from_ecapris,
-    moped_proj_funding.is_manual
+    moped_proj_funding.is_manual,
+    moped_proj_funding.should_use_ecapris_amount
 FROM moped_proj_funding
 LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
 LEFT JOIN moped_fund_sources ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
@@ -57,7 +58,8 @@ SELECT
     ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id,
     true AS is_synced_from_ecapris,
-    false AS is_manual
+    false AS is_manual,
+    true AS should_use_ecapris_amount
 FROM ecapris_subproject_funding
 INNER JOIN moped_project ON ecapris_subproject_funding.ecapris_subproject_id = moped_project.ecapris_subproject_id
 WHERE NOT (EXISTS (
