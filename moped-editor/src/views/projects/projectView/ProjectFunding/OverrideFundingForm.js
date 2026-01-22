@@ -16,7 +16,6 @@ import {
 import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
 
-// TODO: Conditionally disabled amount input when "Use latest eCAPRIS appropriated amount" is checked
 // TODO: On submit, if checked, mutate funding_amount to appropriated amount from eCAPRIS to reset override flow
 // TODO: When checked, set funding_amount input to appropriated amount from eCAPRIS
 
@@ -66,6 +65,8 @@ const OverrideFundingForm = ({
     // override record with data from form
     transformedRecord.funding_description = data.description;
     transformedRecord.funding_amount = data.funding_amount;
+    transformedRecord.should_use_ecapris_amount =
+      data.should_use_ecapris_amount;
 
     if (isNewOverride) {
       mutate({

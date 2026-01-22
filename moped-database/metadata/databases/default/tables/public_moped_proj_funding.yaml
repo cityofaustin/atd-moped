@@ -28,6 +28,7 @@ insert_permissions:
         - funding_status_id
         - is_deleted
         - project_id
+        - should_use_ecapris_amount
         - unit_long_name
     comment: No insert permissions on audit fields
   - role: moped-editor
@@ -49,6 +50,7 @@ insert_permissions:
         - funding_status_id
         - is_deleted
         - project_id
+        - should_use_ecapris_amount
         - unit_long_name
     comment: No insert permissions on audit fields
 select_permissions:

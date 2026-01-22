@@ -84,6 +84,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
     $funding_status_id: Int!
     $fdu: String
     $unit_long_name: String
+    $should_use_ecapris_amount: Boolean
   ) {
     update_moped_proj_funding_by_pk(
       pk_columns: { proj_funding_id: $proj_funding_id }
@@ -95,6 +96,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
         funding_status_id: $funding_status_id
         fdu: $fdu
         unit_long_name: $unit_long_name
+        should_use_ecapris_amount: $should_use_ecapris_amount
       }
     ) {
       proj_funding_id
