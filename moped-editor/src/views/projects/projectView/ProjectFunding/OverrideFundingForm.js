@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -32,14 +32,18 @@ const OverrideFundingForm = ({
     handleSubmit,
     control,
     formState: { isDirty },
+    watch,
   } = useForm({
     defaultValues: {
       funding_amount: fundingRecord?.funding_amount ?? 0,
       description: fundingRecord?.funding_description ?? "",
+      should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
     },
   });
 
-  console.log(fundingRecord);
+  const [should_use_ecapris_amount] = watch(["should_use_ecapris_amount"]);
+
+  console.log(should_use_ecapris_amount);
 
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
@@ -115,17 +119,24 @@ const OverrideFundingForm = ({
               type="text"
               inputMode="numeric"
               onChangeHandler={amountOnChangeHandler}
+              disabled={should_use_ecapris_amount}
             />
             <FormHelperText>
               eCapris appropriated amount:{" "}
-              {currencyFormatter.format(appropriatedFunding)}{" "}
+              {currencyFormatter.format(appropriatedFunding)}
             </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControlLabel
-            control={<Switch defaultChecked />}
-            label="Use latest eCAPRIS appropriated amount"
+          <Controller
+            name="should_use_ecapris_amount"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormControlLabel
+                control={<Switch checked={value} onChange={onChange} />}
+                label="Use latest eCAPRIS appropriated amount"
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12}>
