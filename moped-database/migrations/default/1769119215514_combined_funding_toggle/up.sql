@@ -71,7 +71,9 @@ WHERE NOT (EXISTS (
         FROM moped_proj_funding
         WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.project_id = moped_project.project_id AND moped_proj_funding.is_deleted = false
     ));
-    
+
+-- Most recent migration: moped-database/migrations/default/1748534889273_add_author_to_plv/up.sql
+
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
@@ -86,29 +88,30 @@ CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
 
 funding_sources_lookup AS (
     SELECT
-        cfv.project_id,
-        string_agg(DISTINCT cfv.source_name, ', '::text ORDER BY cfv.source_name) AS funding_source_name,
-        string_agg(DISTINCT cfv.program_name, ', '::text ORDER BY cfv.program_name) AS funding_program_names,
+        mpf.project_id,
+        string_agg(DISTINCT mfs.funding_source_name, ', '::text ORDER BY mfs.funding_source_name) AS funding_source_name,
+        string_agg(DISTINCT mfp.funding_program_name, ', '::text ORDER BY mfp.funding_program_name) AS funding_program_names,
         string_agg(
             DISTINCT
             CASE
-                WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
-                WHEN cfv.source_name IS NOT null THEN cfv.source_name
-                WHEN cfv.program_name IS NOT null THEN cfv.program_name
+                WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
+                WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                 ELSE null::text
             END, ', '::text ORDER BY (
                 CASE
-                    WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
-                    WHEN cfv.source_name IS NOT null THEN cfv.source_name
-                    WHEN cfv.program_name IS NOT null THEN cfv.program_name
+                    WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
+                    WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                    WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                     ELSE null::text
                 END
             )
         ) AS funding_source_and_program_names
-    FROM combined_project_funding_view cfv
-    JOIN moped_project ON cfv.project_id = moped_project.project_id
-    WHERE cfv.is_synced_from_ecapris = false OR moped_project.should_sync_ecapris_funding = true AND moped_project.ecapris_subproject_id IS NOT null AND cfv.is_synced_from_ecapris = true
-    GROUP BY cfv.project_id
+    FROM moped_proj_funding mpf
+    LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
+    LEFT JOIN moped_fund_programs mfp ON mpf.funding_program_id = mfp.funding_program_id
+    WHERE mpf.is_deleted = false
+    GROUP BY mpf.project_id
 ),
 
 child_project_lookup AS (
@@ -353,7 +356,7 @@ WHERE (combined_project_notes_view.project_id = mp.project_id OR mp.should_sync_
 ORDER BY combined_project_notes_view.created_at DESC
 LIMIT 1) proj_status_update ON true
 WHERE mp.is_deleted = false
-GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, proj_status_update.author, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;
+GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, proj_status_update.author, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;    
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
