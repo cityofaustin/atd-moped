@@ -26,7 +26,6 @@ const validationSchema = ({ appropriatedFunding }) =>
         "lessThanAppropriated",
         `Amount cannot exceed appropriated amount of ${currencyFormatter.format(appropriatedFunding)}`,
         function (value) {
-          console.log({ value, appropriatedFunding });
           return value <= appropriatedFunding;
         }
       )
