@@ -70,7 +70,7 @@ const OverrideFundingForm = ({
   const isNewOverride =
     fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
 
-  const [mutate] = useMutation(
+  const [mutate, mutationState] = useMutation(
     isNewOverride ? ADD_PROJECT_FUNDING : UPDATE_PROJECT_FUNDING
   );
 
@@ -127,6 +127,7 @@ const OverrideFundingForm = ({
           <FormControl fullWidth>
             <ControlledTextInput
               fullWidth
+              autoFocus
               label="Amount"
               name="funding_amount"
               control={control}
@@ -137,7 +138,7 @@ const OverrideFundingForm = ({
               disabled={should_use_ecapris_amount}
             />
             <FormHelperText>
-              eCapris appropriated amount:{" "}
+              eCAPRIS appropriated amount:{" "}
               {currencyFormatter.format(appropriatedFunding)}
             </FormHelperText>
             {errors.funding_amount ? (
@@ -196,7 +197,7 @@ const OverrideFundingForm = ({
             variant="contained"
             color="primary"
             type="submit"
-            disabled={!isDirty}
+            disabled={!isDirty || mutationState.loading}
           >
             Save
           </Button>

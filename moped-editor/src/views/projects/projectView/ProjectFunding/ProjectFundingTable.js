@@ -587,7 +587,7 @@ const ProjectFundingTable = ({
         editMode="row"
         rowModesModel={rowModesModel}
         onRowEditStop={handleRowEditStop(rows, setRows)}
-        isCellEditable={(params) => isCellEditable(params)}
+        isCellEditable={isCellEditable}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={(error) => console.error(error)}
