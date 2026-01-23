@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -15,9 +16,22 @@ import {
 } from "src/queries/funding";
 import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
+import * as yup from "yup";
 
-// TODO: On submit, if checked, mutate funding_amount to appropriated amount from eCAPRIS to reset override flow
-// TODO: When checked, set funding_amount input to appropriated amount from eCAPRIS
+const validationSchema = ({ appropriatedFunding }) =>
+  yup.object().shape({
+    funding_amount: yup
+      .number()
+      .test(
+        "lessThanAppropriated",
+        `Amount cannot exceed appropriated amount of ${currencyFormatter.format(appropriatedFunding)}`,
+        function (value) {
+          console.log({ value, appropriatedFunding });
+          return value <= appropriatedFunding;
+        }
+      )
+      .nullable(),
+  });
 
 const OverrideFundingForm = ({
   fundingRecord,
@@ -27,10 +41,18 @@ const OverrideFundingForm = ({
   handleSnackbar,
   onClose,
 }) => {
+  const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
+    variables: { fdu: fundingRecord?.fdu?.fdu },
+  });
+
+  const appropriatedFunding = fduData?.ecapris_subproject_funding
+    ? fduData.ecapris_subproject_funding[0]["amount"]
+    : 0;
+
   const {
     handleSubmit,
     control,
-    formState: { isDirty },
+    formState: { isDirty, errors },
     watch,
     setValue,
   } = useForm({
@@ -39,11 +61,11 @@ const OverrideFundingForm = ({
       description: fundingRecord?.funding_description ?? "",
       should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
     },
+    resolver: yupResolver(validationSchema({ appropriatedFunding })),
+    mode: "onChange",
   });
 
   const [should_use_ecapris_amount] = watch(["should_use_ecapris_amount"]);
-
-  console.log(should_use_ecapris_amount);
 
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
@@ -52,14 +74,6 @@ const OverrideFundingForm = ({
   const [mutate] = useMutation(
     isNewOverride ? ADD_PROJECT_FUNDING : UPDATE_PROJECT_FUNDING
   );
-
-  const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
-    variables: { fdu: fundingRecord?.fdu?.fdu },
-  });
-
-  const appropriatedFunding = fduData?.ecapris_subproject_funding
-    ? fduData.ecapris_subproject_funding[0]["amount"]
-    : 0;
 
   const onSubmit = (data) => {
     const transformedRecord = transformGridToDatabase(fundingRecord);
@@ -127,6 +141,11 @@ const OverrideFundingForm = ({
               eCapris appropriated amount:{" "}
               {currencyFormatter.format(appropriatedFunding)}
             </FormHelperText>
+            {errors.funding_amount ? (
+              <FormHelperText error>
+                {errors.funding_amount?.message}
+              </FormHelperText>
+            ) : null}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
