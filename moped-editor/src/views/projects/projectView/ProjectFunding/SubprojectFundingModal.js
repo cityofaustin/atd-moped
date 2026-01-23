@@ -72,11 +72,6 @@ const useColumns = () =>
     ];
   }, []);
 
-const useRows = (data) =>
-  useMemo(() => {
-    return data?.ecapris_subproject_funding ?? [];
-  }, [data]);
-
 const SubprojectFundingModal = ({
   isDialogOpen,
   handleDialogClose,

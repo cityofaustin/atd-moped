@@ -100,6 +100,7 @@ const OverrideFundingForm = ({
           <FormControl fullWidth>
             <ControlledTextInput
               fullWidth
+              autoFocus
               label="Amount"
               name="funding_amount"
               control={control}
