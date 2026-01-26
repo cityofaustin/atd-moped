@@ -23,7 +23,7 @@ const OverrideFundingDialog = ({
         }}
         variant="h4"
       >
-        <span>{`Override eCAPRIS FDU ${fundingRecord?.fdu?.fdu}`}</span>
+        <span>{`Override eCAPRIS FDU ${fundingRecord.fdu.fdu}`}</span>
         <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
