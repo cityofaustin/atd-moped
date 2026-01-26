@@ -15,6 +15,7 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - id
+        - is_manual
         - is_synced_from_ecapris
         - original_id
         - program_name
@@ -38,6 +39,7 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - id
+        - is_manual
         - is_synced_from_ecapris
         - original_id
         - program_name
@@ -61,6 +63,7 @@ select_permissions:
         - funding_source_id
         - funding_status_id
         - id
+        - is_manual
         - is_synced_from_ecapris
         - original_id
         - program_name
