@@ -10,8 +10,11 @@ import {
   Grid,
   Switch,
   Tooltip,
+  IconButton,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   DataGridPro,
   GridRowModes,
@@ -41,6 +44,11 @@ import ProjectSummaryProjectECapris from "src/views/projects/projectView/Project
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
+import {
+  transformDatabaseToGrid,
+  transformGridToDatabase,
+} from "src/views/projects/projectView/ProjectFunding/helpers";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -48,117 +56,6 @@ const fduAutocompleteProps = {
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
   isOptionEqualToValue: (value, option) =>
     value?.ecapris_funding_id === option?.ecapris_funding_id,
-};
-
-/** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
- * @param {Array} fundingRecords - array of funding records from the database
- * @param {Object} lookupData - object containing lookup arrays from the database
- * @return {Array} - array of transformed funding records for data grid
- */
-const transformDatabaseToGrid = (fundingRecords, lookupData) => {
-  const {
-    moped_fund_sources,
-    moped_fund_programs,
-    moped_fund_status: moped_fund_statuses,
-  } = lookupData;
-
-  return fundingRecords.map((record) => {
-    // Reconstruct lookup objects for editing in autocomplete components
-    const fund_source = record.funding_source_id
-      ? moped_fund_sources.find(
-          (s) => s.funding_source_id === record.funding_source_id
-        )
-      : null;
-
-    const fund_program = record.funding_program_id
-      ? moped_fund_programs.find(
-          (p) => p.funding_program_id === record.funding_program_id
-        )
-      : null;
-
-    const fund_status = record.funding_status_id
-      ? moped_fund_statuses.find(
-          (s) => s.funding_status_id === record.funding_status_id
-        )
-      : null;
-
-    const fduOption = record.fdu
-      ? {
-          fdu: record.fdu,
-          ecapris_funding_id: record.ecapris_funding_id,
-          unit_long_name: record.unit_long_name,
-        }
-      : null;
-
-    // Remove fields unneeded in the data grid row
-    const {
-      funding_source_id,
-      funding_status_id,
-      funding_program_id,
-      fdu,
-      ecapris_funding_id,
-      ...tableRecord
-    } = record;
-
-    // Return new record with lookup objects for autocomplete components
-    return {
-      ...tableRecord,
-      fund_source,
-      fund_program,
-      fund_status,
-      fdu: fduOption,
-    };
-  });
-};
-
-/** Transforms DataGrid row to database funding record format for mutations
- * @param {Object} gridRecord - DataGrid row object
- * @return {Object} - transformed funding record for database mutation
- */
-const transformGridToDatabase = (gridRecord) => {
-  // Extract the lookup ids from the selected lookup objects
-  const funding_source_id = gridRecord.fund_source
-    ? gridRecord.fund_source.funding_source_id
-    : null;
-  const funding_program_id = gridRecord.fund_program
-    ? gridRecord.fund_program.funding_program_id
-    : null;
-  const funding_status_id = gridRecord.fund_status
-    ? gridRecord.fund_status.funding_status_id
-    : null;
-  const fdu = gridRecord.fdu ? gridRecord.fdu.fdu : null;
-  const unit_long_name = gridRecord.fdu ? gridRecord.fdu.unit_long_name : null;
-  const ecapris_funding_id = gridRecord.fdu
-    ? gridRecord.fdu.ecapris_funding_id
-    : null;
-
-  const {
-    id,
-    __typename,
-    is_synced_from_ecapris,
-    status_name,
-    program_name,
-    source_name,
-    fund_program,
-    fund_source,
-    fund_status,
-    ecapris_subproject_id,
-    proj_funding_id,
-    isNew,
-    ...databaseFields
-  } = gridRecord;
-
-  // Return the database fields along with the extracted lookup ids
-  return {
-    ...databaseFields,
-    funding_source_id,
-    funding_program_id,
-    // If no new funding status is selected, the default should be used
-    funding_status_id: funding_status_id ? funding_status_id : 1,
-    fdu,
-    unit_long_name,
-    ecapris_funding_id,
-  };
 };
 
 /** Hook that provides memoized column settings */
@@ -170,6 +67,7 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
+  setOverrideFundingRecord,
   usingShiftKey,
 }) =>
   useMemo(() => {
@@ -281,18 +179,37 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        renderCell: ({ id, row }) => (
-          <DataGridActions
-            id={id}
-            rowModesModel={rowModesModel}
-            handleCancelClick={handleCancelClick}
-            handleDeleteOpen={handleDeleteOpen}
-            handleSaveClick={handleSaveClick}
-            handleEditClick={handleEditClick}
-            editDisabled={row.is_synced_from_ecapris}
-            deleteDisabled={row.is_synced_from_ecapris}
-          />
-        ),
+        renderCell: ({ id, row }) =>
+          row.is_manual ? (
+            <DataGridActions
+              id={id}
+              rowModesModel={rowModesModel}
+              handleCancelClick={handleCancelClick}
+              handleDeleteOpen={handleDeleteOpen}
+              handleSaveClick={handleSaveClick}
+              handleEditClick={handleEditClick}
+              editDisabled={row.is_synced_from_ecapris}
+              deleteDisabled={row.is_synced_from_ecapris}
+            />
+          ) : (
+            <>
+              <IconButton
+                aria-label="edit"
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={() => setOverrideFundingRecord(row)}
+              >
+                <EditOutlinedIcon />
+              </IconButton>
+              <IconButton
+                aria-label="delete"
+                sx={{ color: "inherit", padding: "5px" }}
+                disabled={!!row.is_synced_from_ecapris}
+                onClick={handleDeleteOpen(id)}
+              >
+                <DeleteOutlineIcon />
+              </IconButton>
+            </>
+          ),
       },
     ];
   }, [
@@ -303,6 +220,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    setOverrideFundingRecord,
     usingShiftKey,
   ]);
 
@@ -372,6 +290,7 @@ const ProjectFundingTable = ({
   );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -392,6 +311,13 @@ const ProjectFundingTable = ({
     },
     []
   );
+
+  // Open funding override modal when double clicking in a cell of a record from ecapris
+  const doubleClickListener = (params) => {
+    if (!params.row.is_manual) {
+      setOverrideFundingRecord(params.row);
+    }
+  };
 
   useEffect(() => {
     if (tableFundingRows && tableFundingRows.length > 0) {
@@ -456,6 +382,7 @@ const ProjectFundingTable = ({
         funding_amount: null,
         isNew: true,
         proj_funding_id: id,
+        is_manual: true,
       },
       ...oldRows,
     ]);
@@ -606,6 +533,7 @@ const ProjectFundingTable = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    setOverrideFundingRecord,
     usingShiftKey,
   });
 
@@ -633,6 +561,20 @@ const ProjectFundingTable = ({
       );
   };
 
+  const isCellEditable = (params) => {
+    if (params.row.is_synced_from_ecapris) {
+      return false;
+    } else {
+      // if record is not synced from ecapris, but is also not manual, it means its been overriden
+      // dont edit using data grid
+      if (!params.row.is_manual) {
+        return false;
+      }
+      // records that are not synced from ecapris and are manual are editable
+      return true;
+    }
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <DataGridPro
@@ -645,7 +587,7 @@ const ProjectFundingTable = ({
         editMode="row"
         rowModesModel={rowModesModel}
         onRowEditStop={handleRowEditStop(rows, setRows)}
-        isCellEditable={(params) => !params.row.is_synced_from_ecapris}
+        isCellEditable={isCellEditable}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={(error) => console.error(error)}
@@ -655,6 +597,7 @@ const ProjectFundingTable = ({
         getRowHeight={() => "auto"}
         hideFooter
         onCellKeyDown={handleTabKeyDown}
+        onCellDoubleClick={doubleClickListener}
         localeText={{ noRowsLabel: "No funding sources" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
@@ -745,6 +688,16 @@ const ProjectFundingTable = ({
           projectId={projectId}
           handleSnackbar={handleSnackbar}
           refetch={refetch}
+        />
+      )}
+      {overrideFundingRecord && (
+        <OverrideFundingDialog
+          fundingRecord={overrideFundingRecord}
+          projectId={projectId}
+          refetchFundingQuery={refetch}
+          setOverrideFundingRecord={setOverrideFundingRecord}
+          onClose={() => setOverrideFundingRecord(null)}
+          handleSnackbar={handleSnackbar}
         />
       )}
     </div>
