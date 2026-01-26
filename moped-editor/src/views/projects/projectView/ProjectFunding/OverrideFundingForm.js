@@ -197,7 +197,8 @@ const OverrideFundingForm = ({
             variant="contained"
             color="primary"
             type="submit"
-            disabled={!isDirty || mutationState.loading}
+            // Disable save button if editing and no changes made or mutation is loading
+            disabled={(!isNewOverride && !isDirty) || mutationState.loading}
           >
             Save
           </Button>
