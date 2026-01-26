@@ -1,14 +1,6 @@
--- Only include down migration steps for schema changes. For source and program updates,
--- we can reference original values in the activity log and make another up migration if 
--- we need to refine more later.
-
--- Drop trigger and then trigger function
-DROP TRIGGER IF EXISTS match_ecapris_funding_keys_trigger ON ecapris_subproject_funding;
-DROP FUNCTION IF EXISTS match_ecapris_funding_to_source_and_programs_foreign_keys ();
-
--- Revert combined funding view to previous version without eCAPRIS source and program info
 DROP VIEW IF EXISTS combined_project_funding_view;
 
+-- Update view to filter moped_proj_funding rows by project id
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
     moped_proj_funding.proj_funding_id AS original_id,
@@ -25,10 +17,9 @@ CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     moped_proj_funding.funding_status_id,
     moped_fund_programs.funding_program_name AS program_name,
     moped_proj_funding.funding_program_id,
-    moped_proj_funding.ecapris_funding_id AS fao_id,
-    moped_proj_funding.ecapris_subproject_id,
-    FALSE AS is_synced_from_ecapris,
-    moped_proj_funding.is_manual
+    NULL::integer AS fao_id,
+    NULL::text AS ecapris_subproject_id,
+    FALSE AS is_synced_from_ecapris
 FROM moped_proj_funding
 LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
 LEFT JOIN moped_fund_sources ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
@@ -53,8 +44,7 @@ SELECT
     NULL::integer AS funding_program_id,
     ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id,
-    TRUE AS is_synced_from_ecapris,
-    FALSE AS is_manual
+    TRUE AS is_synced_from_ecapris
 FROM ecapris_subproject_funding
 INNER JOIN moped_project ON ecapris_subproject_funding.ecapris_subproject_id = moped_project.ecapris_subproject_id
 WHERE NOT (EXISTS (
@@ -64,9 +54,3 @@ WHERE NOT (EXISTS (
             AND moped_proj_funding.project_id = moped_project.project_id
             AND moped_proj_funding.is_deleted = FALSE
     ));
-
--- Drop added columns from ecapris_subproject_funding
-ALTER TABLE ecapris_subproject_funding
-DROP COLUMN IF EXISTS bond_year,
-DROP COLUMN IF EXISTS funding_source_id,
-DROP COLUMN IF EXISTS funding_program_id;

@@ -1,14 +1,3 @@
--- Only include down migration steps for schema changes. For source and program updates,
--- we can reference original values in the activity log and make another up migration if 
--- we need to refine more later.
-
--- Drop trigger and then trigger function
-DROP TRIGGER IF EXISTS match_ecapris_funding_keys_trigger ON ecapris_subproject_funding;
-DROP FUNCTION IF EXISTS match_ecapris_funding_to_source_and_programs_foreign_keys ();
-
--- Revert combined funding view to previous version without eCAPRIS source and program info
-DROP VIEW IF EXISTS combined_project_funding_view;
-
 CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
     'moped_'::text || moped_proj_funding.proj_funding_id AS id,
     moped_proj_funding.proj_funding_id AS original_id,
@@ -64,9 +53,3 @@ WHERE NOT (EXISTS (
             AND moped_proj_funding.project_id = moped_project.project_id
             AND moped_proj_funding.is_deleted = FALSE
     ));
-
--- Drop added columns from ecapris_subproject_funding
-ALTER TABLE ecapris_subproject_funding
-DROP COLUMN IF EXISTS bond_year,
-DROP COLUMN IF EXISTS funding_source_id,
-DROP COLUMN IF EXISTS funding_program_id;

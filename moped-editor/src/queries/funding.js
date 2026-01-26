@@ -18,6 +18,7 @@ export const COMBINED_FUNDING_QUERY = gql`
       funding_status_id
       ecapris_funding_id: fao_id
       is_synced_from_ecapris
+      is_manual
       unit_long_name
       ecapris_subproject_id
     }
@@ -49,6 +50,18 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
 export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
   query EcaprisFduSubproject($ecapris_subproject_id: String!) {
     ecapris_subproject_funding(where: {ecapris_subproject_id: {_eq: $ecapris_subproject_id}}) {
+      ecapris_funding_id: fao_id
+      fdu
+      unit_long_name
+      fdu_status
+      amount: app
+    }
+  }
+`;
+
+export const ECAPRIS_SUBPROJECT_FUNDING_QUERY = gql`
+  query EcaprisFduSubproject($fdu: String!) {
+    ecapris_subproject_funding(where: {fdu: {_eq: $fdu}}) {
       ecapris_funding_id: fao_id
       fdu
       unit_long_name
