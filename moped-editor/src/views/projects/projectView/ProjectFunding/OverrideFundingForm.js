@@ -124,6 +124,36 @@ const OverrideFundingForm = ({
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Grid container spacing={2}>
         <Grid item xs={12}>
+          <Controller
+            name="should_use_ecapris_amount"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormControlLabel
+                control={
+                  <Switch
+                    // Invert value for switch so that "on" means we are overriding and NOT using eCAPRIS amount
+                    checked={!value}
+                    onChange={(e) => {
+                      // Check target value so we can restore previous amount if unchecking (if there is one)
+                      if (e.target.checked) {
+                        setValue(
+                          "funding_amount",
+                          fundingRecord.funding_amount ?? appropriatedFunding
+                        );
+                        onChange(false);
+                      } else {
+                        setValue("funding_amount", appropriatedFunding);
+                        onChange(true);
+                      }
+                    }}
+                  />
+                }
+                label="Override eCAPRIS appropriated amount"
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12}>
           <FormControl fullWidth>
             <ControlledTextInput
               fullWidth
@@ -147,35 +177,6 @@ const OverrideFundingForm = ({
               </FormHelperText>
             ) : null}
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <Controller
-            name="should_use_ecapris_amount"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={value}
-                    onChange={(e) => {
-                      // Check target value so we can restore previous amount if unchecking (if there is one)
-                      if (e.target.checked) {
-                        setValue("funding_amount", appropriatedFunding);
-                        onChange(e);
-                      } else {
-                        setValue(
-                          "funding_amount",
-                          fundingRecord.funding_amount ?? appropriatedFunding
-                        );
-                        onChange(e);
-                      }
-                    }}
-                  />
-                }
-                label="Use latest eCAPRIS appropriated amount"
-              />
-            )}
-          />
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
