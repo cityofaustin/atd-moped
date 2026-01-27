@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1769119215514_combined_funding_toggle/up.sql
+-- Most recent migration: moped-database/migrations/default/1768857880373_plv_combined_funding/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -14,30 +14,29 @@ CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
 
 funding_sources_lookup AS (
     SELECT
-        mpf.project_id,
-        string_agg(DISTINCT mfs.funding_source_name, ', '::text ORDER BY mfs.funding_source_name) AS funding_source_name,
-        string_agg(DISTINCT mfp.funding_program_name, ', '::text ORDER BY mfp.funding_program_name) AS funding_program_names,
+        cfv.project_id,
+        string_agg(DISTINCT cfv.source_name, ', '::text ORDER BY cfv.source_name) AS funding_source_name,
+        string_agg(DISTINCT cfv.program_name, ', '::text ORDER BY cfv.program_name) AS funding_program_names,
         string_agg(
             DISTINCT
             CASE
-                WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
-                WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
-                WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
+                WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
+                WHEN cfv.source_name IS NOT null THEN cfv.source_name
+                WHEN cfv.program_name IS NOT null THEN cfv.program_name
                 ELSE null::text
             END, ', '::text ORDER BY (
                 CASE
-                    WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
-                    WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
-                    WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
+                    WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
+                    WHEN cfv.source_name IS NOT null THEN cfv.source_name
+                    WHEN cfv.program_name IS NOT null THEN cfv.program_name
                     ELSE null::text
                 END
             )
         ) AS funding_source_and_program_names
-    FROM moped_proj_funding mpf
-    LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
-    LEFT JOIN moped_fund_programs mfp ON mpf.funding_program_id = mfp.funding_program_id
-    WHERE mpf.is_deleted = false
-    GROUP BY mpf.project_id
+    FROM combined_project_funding_view cfv
+    JOIN moped_project ON cfv.project_id = moped_project.project_id
+    WHERE cfv.is_synced_from_ecapris = false OR moped_project.should_sync_ecapris_funding = true AND moped_project.ecapris_subproject_id IS NOT null AND cfv.is_synced_from_ecapris = true
+    GROUP BY cfv.project_id
 ),
 
 child_project_lookup AS (

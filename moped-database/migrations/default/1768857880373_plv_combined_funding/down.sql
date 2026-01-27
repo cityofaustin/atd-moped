@@ -1,78 +1,6 @@
---
--- ADD NEW COLUMN TO TOGGLE USING ECAPRIS AMOUNTS IN COMBINED FUNDING VIEW
---
-ALTER TABLE moped_proj_funding ADD COLUMN should_use_ecapris_amount BOOLEAN NOT NULL DEFAULT FALSE;
-
-COMMENT ON COLUMN moped_proj_funding.should_use_ecapris_amount IS 'Indicates whether the funding record should use values from eCapris in combined view';
-
--- Drop and replace combined view and dependencies
 DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
 DROP VIEW IF EXISTS component_arcgis_online_view;
 DROP VIEW IF EXISTS project_list_view;
-DROP VIEW IF EXISTS combined_project_funding_view;
-
-CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
-    'moped_'::TEXT || moped_proj_funding.proj_funding_id AS id,
-    moped_proj_funding.proj_funding_id AS original_id,
-    moped_proj_funding.created_at,
-    moped_proj_funding.updated_at,
-    moped_proj_funding.project_id,
-    moped_proj_funding.fdu,
-    moped_proj_funding.unit_long_name,
-    CASE 
-        WHEN moped_proj_funding.should_use_ecapris_amount = true AND ecapris_subproject_funding.fao_id IS NOT NULL 
-        THEN ecapris_subproject_funding.app 
-        ELSE moped_proj_funding.funding_amount 
-    END AS amount,
-    moped_proj_funding.funding_description AS description,
-    moped_fund_sources.funding_source_name AS source_name,
-    moped_proj_funding.funding_source_id,
-    moped_fund_status.funding_status_name AS status_name,
-    moped_proj_funding.funding_status_id,
-    moped_fund_programs.funding_program_name AS program_name,
-    moped_proj_funding.funding_program_id,
-    moped_proj_funding.ecapris_funding_id AS fao_id,
-    moped_proj_funding.ecapris_subproject_id,
-    FALSE AS is_synced_from_ecapris,
-    moped_proj_funding.is_manual,
-    moped_proj_funding.should_use_ecapris_amount
-FROM moped_proj_funding
-LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
-LEFT JOIN moped_fund_sources ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
-LEFT JOIN moped_fund_programs ON moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
-LEFT JOIN ecapris_subproject_funding ON moped_proj_funding.ecapris_funding_id = ecapris_subproject_funding.fao_id
-WHERE moped_proj_funding.is_deleted = FALSE
-UNION ALL
-SELECT
-    (('ecapris_'::TEXT || ecapris_subproject_funding.id) || '_moped_'::TEXT) || moped_project.project_id AS id,
-    ecapris_subproject_funding.id AS original_id,
-    ecapris_subproject_funding.created_at,
-    ecapris_subproject_funding.updated_at,
-    moped_project.project_id,
-    ecapris_subproject_funding.fdu,
-    ecapris_subproject_funding.unit_long_name,
-    ecapris_subproject_funding.app AS amount,
-    NULL::TEXT AS description,
-    moped_fund_sources.funding_source_name AS source_name,
-    ecapris_subproject_funding.funding_source_id,
-    'Set up'::TEXT AS status_name,
-    5 AS funding_status_id,
-    moped_fund_programs.funding_program_name AS program_name,
-    ecapris_subproject_funding.funding_program_id,
-    ecapris_subproject_funding.fao_id,
-    ecapris_subproject_funding.ecapris_subproject_id,
-    TRUE AS is_synced_from_ecapris,
-    FALSE AS is_manual,
-    true AS should_use_ecapris_amount
-FROM ecapris_subproject_funding
-LEFT JOIN moped_fund_sources ON ecapris_subproject_funding.funding_source_id = moped_fund_sources.funding_source_id
-LEFT JOIN moped_fund_programs ON ecapris_subproject_funding.funding_program_id = moped_fund_programs.funding_program_id
-INNER JOIN moped_project ON ecapris_subproject_funding.ecapris_subproject_id = moped_project.ecapris_subproject_id
-WHERE NOT (EXISTS (
-        SELECT 1
-        FROM moped_proj_funding
-        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.project_id = moped_project.project_id AND moped_proj_funding.is_deleted = FALSE
-    ));
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -88,36 +16,30 @@ CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
 
 funding_sources_lookup AS (
     SELECT
-        cfv.project_id,
-        string_agg(DISTINCT cfv.source_name, ', '::text ORDER BY cfv.source_name) AS funding_source_name,
-        string_agg(DISTINCT cfv.program_name, ', '::text ORDER BY cfv.program_name) AS funding_program_names,
+        mpf.project_id,
+        string_agg(DISTINCT mfs.funding_source_name, ', '::text ORDER BY mfs.funding_source_name) AS funding_source_name,
+        string_agg(DISTINCT mfp.funding_program_name, ', '::text ORDER BY mfp.funding_program_name) AS funding_program_names,
         string_agg(
             DISTINCT
             CASE
-                WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
-                WHEN cfv.source_name IS NOT null THEN cfv.source_name
-                WHEN cfv.program_name IS NOT null THEN cfv.program_name
+                WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
+                WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                 ELSE null::text
             END, ', '::text ORDER BY (
                 CASE
-                    WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
-                    WHEN cfv.source_name IS NOT null THEN cfv.source_name
-                    WHEN cfv.program_name IS NOT null THEN cfv.program_name
+                    WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
+                    WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                    WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                     ELSE null::text
                 END
             )
         ) AS funding_source_and_program_names
-    FROM combined_project_funding_view AS cfv
-    INNER JOIN moped_project ON cfv.project_id = moped_project.project_id
-    WHERE (
-        -- Always include manual funding records
-        cfv.is_synced_from_ecapris = false
-        -- Include eCAPRIS funding if sync is enabled and project has ecapris_subproject_id
-        OR (moped_project.should_sync_ecapris_funding = true
-            AND moped_project.ecapris_subproject_id IS NOT null
-            AND cfv.is_synced_from_ecapris = true)
-    )
-    GROUP BY cfv.project_id
+    FROM moped_proj_funding AS mpf
+    LEFT JOIN moped_fund_sources AS mfs ON mpf.funding_source_id = mfs.funding_source_id
+    LEFT JOIN moped_fund_programs AS mfp ON mpf.funding_program_id = mfp.funding_program_id
+    WHERE mpf.is_deleted = false
+    GROUP BY mpf.project_id
 ),
 
 child_project_lookup AS (

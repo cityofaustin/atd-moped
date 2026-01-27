@@ -5,7 +5,6 @@ import isEqual from "lodash.isequal";
 // Material
 import {
   Button,
-  CircularProgress,
   FormControlLabel,
   Grid,
   Switch,
@@ -320,9 +319,7 @@ const ProjectFundingTable = ({
   };
 
   useEffect(() => {
-    if (tableFundingRows && tableFundingRows.length > 0) {
-      setRows(tableFundingRows);
-    }
+    setRows(tableFundingRows);
   }, [tableFundingRows]);
 
   const handleTabKeyDown = React.useCallback(
@@ -537,9 +534,6 @@ const ProjectFundingTable = ({
     usingShiftKey,
   });
 
-  if (loadingProjectFunding || loadingFduOptions || !dataProjectFunding)
-    return <CircularProgress />;
-
   const handleECaprisSwitch = () => {
     updateShouldSyncECapris({
       variables: {
@@ -579,6 +573,9 @@ const ProjectFundingTable = ({
     <div style={{ display: "flex", flexDirection: "column" }}>
       <DataGridPro
         sx={dataGridProStyleOverrides}
+        loading={
+          loadingProjectFunding || loadingFduOptions || !dataProjectFunding
+        }
         apiRef={apiRef}
         ref={apiRef}
         columns={dataGridColumns}
