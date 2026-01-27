@@ -6,7 +6,7 @@ import {
   GridToolbarContainer,
   GridToolbarFilterButton,
 } from "@mui/x-data-grid-pro";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 
 /**
  * Custom toolbar for MUI DataGridPro for consistent titles, spacing, and layout
@@ -52,7 +52,7 @@ const DataGridToolbar = ({
                   underline="none"
                   sx={{ ml: 1, display: "flex", alignItems: "center" }}
                 >
-                  <HelpOutlineOutlinedIcon color="primary" fontSize="medium" />
+                  <MenuBookOutlined color="primary" fontSize="medium" />
                 </Link>
               </Tooltip>
             ) : null}
