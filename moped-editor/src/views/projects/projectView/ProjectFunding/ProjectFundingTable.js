@@ -626,6 +626,8 @@ const ProjectFundingTable = ({
                 {"Import from eCAPRIS"}
               </Button>
             ),
+            documentationLink:
+              "https://atd-dts.gitbook.io/moped-documentation/user-guides/add-funding-to-a-project",
             children: (
               <Grid
                 container
