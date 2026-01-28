@@ -10,6 +10,7 @@ import {
   Switch,
   Tooltip,
   IconButton,
+  Typography,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -129,7 +130,23 @@ const useColumns = ({
         field: "fdu",
         width: 200,
         editable: true,
-        valueFormatter: (value) => value?.fdu,
+        renderCell: ({ row, value }) =>
+          row.is_synced_from_ecapris ? (
+            <>
+              <span>{value?.fdu}</span>
+              <Typography
+                variant="body2"
+                color="primary.main"
+                sx={{
+                  fontWeight: 500,
+                }}
+              >
+                SYNCED FROM ECAPRIS
+              </Typography>
+            </>
+          ) : (
+            value?.fdu
+          ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
