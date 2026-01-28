@@ -12,13 +12,5 @@ CREATE OR REPLACE VIEW project_funding_view AS SELECT
     combined_project_funding_view.program_name AS funding_program_name,
     combined_project_funding_view.status_name AS funding_status_name
 FROM moped_project
-INNER JOIN combined_project_funding_view ON moped_project.project_id = combined_project_funding_view.project_id
-WHERE moped_project.is_deleted = FALSE
-AND (
-    -- Always include manual funding records
-    combined_project_funding_view.is_synced_from_ecapris = FALSE
-    -- Include eCAPRIS funding if sync is enabled and project has ecapris_subproject_id
-    OR (moped_project.should_sync_ecapris_funding = TRUE
-        AND moped_project.ecapris_subproject_id IS NOT NULL
-        AND combined_project_funding_view.is_synced_from_ecapris = TRUE)
-);
+JOIN combined_project_funding_view ON moped_project.project_id = combined_project_funding_view.project_id
+WHERE moped_project.is_deleted = false AND (combined_project_funding_view.is_synced_from_ecapris = false OR moped_project.should_sync_ecapris_funding = true AND moped_project.ecapris_subproject_id IS NOT null AND combined_project_funding_view.is_synced_from_ecapris = true);
