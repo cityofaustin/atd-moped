@@ -1,4 +1,8 @@
--- Most recent migration: moped-database/migrations/default/1769625360454_add_combined_project_funding_view/up.sql
+-- Update project_funding_view to use combined_project_funding_view
+-- This allows the view to include both manual and eCAPRIS synced funding records
+-- based on whether syncing is enabled for each project
+
+DROP VIEW IF EXISTS project_funding_view;
 
 CREATE OR REPLACE VIEW project_funding_view AS SELECT
     moped_project.project_id,
