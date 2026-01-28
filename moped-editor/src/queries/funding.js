@@ -6,7 +6,7 @@ export const COMBINED_FUNDING_QUERY = gql`
   ) {
     combined_project_funding_view(
       where: $projectFundingConditions
-      order_by: { id: asc }
+      order_by: { id: desc }
     ) {
       id
       proj_funding_id: original_id
