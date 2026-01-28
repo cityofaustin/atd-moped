@@ -639,7 +639,7 @@ const ProjectFundingTable = ({
                 variant="outlined"
                 onClick={() => setIsDialogOpen(true)}
                 startIcon={<AddCircleIcon />}
-                disabled={!eCaprisSubprojectId}
+                disabled={!eCaprisSubprojectId || isEditMode}
               >
                 {"Import from eCAPRIS"}
               </Button>
@@ -668,7 +668,9 @@ const ProjectFundingTable = ({
                     title={
                       !eCaprisSubprojectId
                         ? "Add eCAPRIS subproject ID to enable syncing"
-                        : null
+                        : isEditMode
+                          ? "Save or cancel current edits first"
+                          : null
                     }
                   >
                     <FormControlLabel
@@ -677,7 +679,7 @@ const ProjectFundingTable = ({
                         <Switch
                           variant="standard"
                           color="primary"
-                          disabled={!eCaprisSubprojectId}
+                          disabled={!eCaprisSubprojectId || isEditMode}
                           checked={shouldSyncEcaprisFunding}
                           onChange={handleECaprisSwitch}
                         />
