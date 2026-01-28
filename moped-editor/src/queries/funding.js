@@ -4,7 +4,10 @@ export const COMBINED_FUNDING_QUERY = gql`
   query GetCombinedProjectFunding(
     $projectFundingConditions: combined_project_funding_view_bool_exp!
   ) {
-    combined_project_funding_view(where: $projectFundingConditions) {
+    combined_project_funding_view(
+      where: $projectFundingConditions
+      order_by: { id: asc }
+    ) {
       id
       proj_funding_id: original_id
       fdu

@@ -5,7 +5,6 @@ import isEqual from "lodash.isequal";
 // Material
 import {
   Button,
-  CircularProgress,
   FormControlLabel,
   Grid,
   Switch,
