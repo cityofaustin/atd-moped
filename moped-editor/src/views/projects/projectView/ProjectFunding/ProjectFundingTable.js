@@ -517,6 +517,7 @@ const ProjectFundingTable = ({
     }
   };
 
+
   const refetchFundingData = useCallback(() => {
     refetch();
     refetchProjectSummary();

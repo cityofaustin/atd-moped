@@ -34,6 +34,24 @@ const validationSchema = ({ appropriatedFunding }) =>
       .nullable(),
   });
 
+const formatSourceLabel = (lookup, sourceId) => {
+  const fundingSourceRecord = lookup.find(
+    (s) => s.funding_source_id === sourceId
+  );
+  return fundingSourceRecord && fundingSourceRecord.funding_source_name
+    ? fundingSourceRecord.funding_source_name
+    : "-";
+};
+
+const formatProgramLabel = (lookup, sourceId) => {
+  const fundingSourceRecord = lookup.find(
+    (s) => s.funding_program_id === sourceId
+  );
+  return fundingSourceRecord && fundingSourceRecord.funding_program_name
+    ? fundingSourceRecord.funding_program_name
+    : "-";
+};
+
 const OverrideFundingForm = ({
   fundingRecord,
   projectId,
@@ -50,6 +68,14 @@ const OverrideFundingForm = ({
   const appropriatedFunding = fduData?.ecapris_subproject_funding
     ? fduData.ecapris_subproject_funding[0]["amount"]
     : 0;
+
+  const ecaprisSourceId = fduData?.ecapris_subproject_funding
+    ? fduData.ecapris_subproject_funding[0]["funding_source_id"]
+    : null;
+
+  const ecaprisProgramId = fduData?.ecapris_subproject_funding
+    ? fduData.ecapris_subproject_funding[0]["funding_program_id"]
+    : null;
 
   const {
     handleSubmit,
@@ -217,6 +243,13 @@ const OverrideFundingForm = ({
                   : null
               }
             />
+            <FormHelperText>
+              eCAPRIS source:{" "}
+              {formatSourceLabel(
+                dataProjectFunding["moped_fund_sources"],
+                ecaprisSourceId
+              )}
+            </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={12}>
@@ -242,6 +275,13 @@ const OverrideFundingForm = ({
                   : null
               }
             />
+                        <FormHelperText>
+              eCAPRIS program:{" "}
+              {formatProgramLabel(
+                dataProjectFunding["moped_fund_programs"],
+                ecaprisProgramId
+              )}
+            </FormHelperText>
           </FormControl>
         </Grid>
       </Grid>
