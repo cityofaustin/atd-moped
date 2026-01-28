@@ -34,21 +34,12 @@ const validationSchema = ({ appropriatedFunding }) =>
       .nullable(),
   });
 
-const formatSourceLabel = (lookup, sourceId) => {
-  const fundingSourceRecord = lookup.find(
-    (s) => s.funding_source_id === sourceId
+const renderECaprisLabel = (lookup, recordId, recordType) => {
+  const fundingRecord = lookup.find(
+    (s) => s[`funding_${recordType}_id`] === recordId
   );
-  return fundingSourceRecord && fundingSourceRecord.funding_source_name
-    ? fundingSourceRecord.funding_source_name
-    : "-";
-};
-
-const formatProgramLabel = (lookup, sourceId) => {
-  const fundingSourceRecord = lookup.find(
-    (s) => s.funding_program_id === sourceId
-  );
-  return fundingSourceRecord && fundingSourceRecord.funding_program_name
-    ? fundingSourceRecord.funding_program_name
+  return fundingRecord && fundingRecord[`funding_${recordType}_name`]
+    ? fundingRecord[`funding_${recordType}_name`]
     : "-";
 };
 
@@ -245,9 +236,10 @@ const OverrideFundingForm = ({
             />
             <FormHelperText>
               eCAPRIS source:{" "}
-              {formatSourceLabel(
+              {renderECaprisLabel(
                 dataProjectFunding["moped_fund_sources"],
-                ecaprisSourceId
+                ecaprisSourceId,
+                "source"
               )}
             </FormHelperText>
           </FormControl>
@@ -275,11 +267,12 @@ const OverrideFundingForm = ({
                   : null
               }
             />
-                        <FormHelperText>
+            <FormHelperText>
               eCAPRIS program:{" "}
-              {formatProgramLabel(
+              {renderECaprisLabel(
                 dataProjectFunding["moped_fund_programs"],
-                ecaprisProgramId
+                ecaprisProgramId,
+                "program"
               )}
             </FormHelperText>
           </FormControl>
