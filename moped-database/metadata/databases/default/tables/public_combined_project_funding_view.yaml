@@ -20,6 +20,7 @@ select_permissions:
         - original_id
         - program_name
         - project_id
+        - should_use_ecapris_amount
         - source_name
         - status_name
         - unit_long_name
@@ -44,6 +45,7 @@ select_permissions:
         - original_id
         - program_name
         - project_id
+        - should_use_ecapris_amount
         - source_name
         - status_name
         - unit_long_name
@@ -68,6 +70,7 @@ select_permissions:
         - original_id
         - program_name
         - project_id
+        - should_use_ecapris_amount
         - source_name
         - status_name
         - unit_long_name

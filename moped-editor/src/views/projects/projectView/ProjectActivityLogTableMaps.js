@@ -545,6 +545,9 @@ export const ProjectActivityLogTableMaps = {
       unit_long_name: {
         label: "unit name",
       },
+      should_use_ecapris_amount: {
+        label: "usage of eCAPRIS amount",
+      },
     },
   },
   moped_project_types: {
