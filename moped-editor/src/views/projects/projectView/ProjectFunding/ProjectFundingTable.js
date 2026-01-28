@@ -82,7 +82,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
-            options={dataProjectFunding["moped_fund_sources"]}
+            options={dataProjectFunding?.moped_fund_sources ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -97,7 +97,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
-            options={dataProjectFunding["moped_fund_programs"]}
+            options={dataProjectFunding?.moped_fund_programs ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -120,7 +120,7 @@ const useColumns = ({
             {...props}
             name={"funding_status"}
             defaultValue={1}
-            options={dataProjectFunding["moped_fund_status"]}
+            options={dataProjectFunding?.moped_fund_status ?? []}
             fullWidthPopper={true}
           />
         ),
