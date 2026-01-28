@@ -1,5 +1,6 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Box, Typography, Stack, Tooltip } from "@mui/material";
+import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import {
   GridToolbarColumnsButton,
@@ -45,15 +46,27 @@ const DataGridToolbar = ({
             </Typography>
             {documentationLink ? (
               <Tooltip title="View documentation">
-                <Link
-                  component={RouterLink}
-                  to={documentationLink}
-                  target="_blank"
-                  underline="none"
-                  sx={{ ml: 1, display: "flex", alignItems: "center" }}
+                <Button
+                  sx={{ ml: 1, minWidth: 3 }}
+                  color="inherit"
+                  size="small"
                 >
-                  <MenuBookOutlined color="primary" fontSize="medium" />
-                </Link>
+                  <Link
+                    component={RouterLink}
+                    to={documentationLink}
+                    target="_blank"
+                    underline="none"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <MenuBookOutlined
+                      sx={{ color: "text.secondary" }}
+                      fontSize="small"
+                    />
+                  </Link>
+                </Button>
               </Tooltip>
             ) : null}
           </Box>
