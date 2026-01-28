@@ -63,6 +63,7 @@ const OverrideFundingForm = ({
       description: fundingRecord.funding_description ?? "",
       should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
       funding_source_id: fundingRecord.fund_source.funding_source_id,
+      funding_program_id: fundingRecord.fund_program.funding_program_id,
     },
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",
@@ -86,6 +87,7 @@ const OverrideFundingForm = ({
     transformedRecord.should_use_ecapris_amount =
       data.should_use_ecapris_amount;
     transformedRecord.funding_source_id = data.funding_source_id;
+    transformedRecord.funding_program_id = data.funding_program_id;
 
     const payload = isNewOverride
       ? {
@@ -211,6 +213,31 @@ const OverrideFundingForm = ({
                 value
                   ? dataProjectFunding["moped_fund_sources"].find(
                       (s) => s.funding_source_id === value
+                    )
+                  : null
+              }
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <ControlledAutocomplete
+              control={control}
+              name="funding_program_id"
+              label="Program"
+              options={dataProjectFunding["moped_fund_programs"]}
+              filterOptions={filterOptions}
+              getOptionLabel={(option) => option?.funding_program_name || ""}
+              onChangeHandler={(fund_source, field) => {
+                return field.onChange(fund_source.funding_program_id || null);
+              }}
+              isOptionEqualToValue={(option, selectedOption) =>
+                option.funding_program_id === selectedOption.funding_program_id
+              }
+              valueHandler={(value) =>
+                value
+                  ? dataProjectFunding["moped_fund_programs"].find(
+                      (s) => s.funding_program_id === value
                     )
                   : null
               }
