@@ -221,7 +221,7 @@ const OverrideFundingForm = ({
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_source_name || ""}
               onChangeHandler={(fund_source, field) => {
-                return field.onChange(fund_source.funding_source_id || null);
+                return field.onChange(fund_source?.funding_source_id || null);
               }}
               isOptionEqualToValue={(option, selectedOption) =>
                 option.funding_source_id === selectedOption.funding_source_id
@@ -254,7 +254,7 @@ const OverrideFundingForm = ({
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_program_name || ""}
               onChangeHandler={(fund_source, field) => {
-                return field.onChange(fund_source.funding_program_id || null);
+                return field.onChange(fund_source?.funding_program_id || null);
               }}
               isOptionEqualToValue={(option, selectedOption) =>
                 option.funding_program_id === selectedOption.funding_program_id
