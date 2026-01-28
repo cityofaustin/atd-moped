@@ -8,7 +8,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
+import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import { currencyFormatter } from "src/utils/numberFormatters";
+import { filterOptions } from "src/utils/autocompleteHelpers";
 import {
   ADD_PROJECT_FUNDING,
   ECAPRIS_SUBPROJECT_FUNDING_QUERY,
@@ -39,6 +41,7 @@ const OverrideFundingForm = ({
   setOverrideFundingRecord,
   handleSnackbar,
   onClose,
+  dataProjectFunding,
 }) => {
   const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
     variables: { fdu: fundingRecord.fdu.fdu },
@@ -59,6 +62,7 @@ const OverrideFundingForm = ({
       funding_amount: fundingRecord.funding_amount ?? 0,
       description: fundingRecord.funding_description ?? "",
       should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
+      funding_source_id: fundingRecord.fund_source.funding_source_id,
     },
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",
@@ -81,6 +85,7 @@ const OverrideFundingForm = ({
     transformedRecord.funding_amount = data.funding_amount;
     transformedRecord.should_use_ecapris_amount =
       data.should_use_ecapris_amount;
+    transformedRecord.funding_source_id = data.funding_source_id;
 
     const payload = isNewOverride
       ? {
@@ -184,6 +189,31 @@ const OverrideFundingForm = ({
               name="description"
               control={control}
               size="small"
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <ControlledAutocomplete
+              control={control}
+              name="funding_source_id"
+              label="Source"
+              options={dataProjectFunding["moped_fund_sources"]}
+              filterOptions={filterOptions}
+              getOptionLabel={(option) => option?.funding_source_name || ""}
+              onChangeHandler={(fund_source, field) => {
+                return field.onChange(fund_source.funding_source_id || null);
+              }}
+              isOptionEqualToValue={(option, selectedOption) =>
+                option.funding_source_id === selectedOption.funding_source_id
+              }
+              valueHandler={(value) =>
+                value
+                  ? dataProjectFunding["moped_fund_sources"].find(
+                      (s) => s.funding_source_id === value
+                    )
+                  : null
+              }
             />
           </FormControl>
         </Grid>

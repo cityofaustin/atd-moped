@@ -696,6 +696,7 @@ const ProjectFundingTable = ({
           setOverrideFundingRecord={setOverrideFundingRecord}
           onClose={() => setOverrideFundingRecord(null)}
           handleSnackbar={handleSnackbar}
+          dataProjectFunding={dataProjectFunding}
         />
       )}
     </div>
