@@ -82,42 +82,38 @@ const OverrideFundingForm = ({
     transformedRecord.should_use_ecapris_amount =
       data.should_use_ecapris_amount;
 
-    if (isNewOverride) {
-      mutate({
-        variables: {
+    const payload = isNewOverride
+      ? {
           objects: {
             ...transformedRecord,
             ecapris_subproject_id: fundingRecord.ecapris_subproject_id,
             project_id: Number(projectId),
           },
-        },
-      })
-        .then(() => {
-          handleSnackbar(true, "Funding source added", "success");
-          refetchFundingQuery();
-          setOverrideFundingRecord(null);
-          onClose();
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error adding funding source", "error", error);
-        });
-    } else {
-      mutate({
-        variables: {
+        }
+      : {
           ...transformedRecord,
           proj_funding_id: fundingRecord.proj_funding_id,
-        },
+        };
+
+    const snackbarVerb = isNewOverride ? "add" : "updat";
+
+    mutate({
+      variables: payload,
+    })
+      .then(() => {
+        handleSnackbar(true, `Funding source ${snackbarVerb}ed`, "success");
+        refetchFundingQuery();
+        setOverrideFundingRecord(null);
+        onClose();
       })
-        .then(() => {
-          handleSnackbar(true, "Funding source updated", "success");
-          refetchFundingQuery();
-          setOverrideFundingRecord(null);
-          onClose();
-        })
-        .catch((error) => {
-          handleSnackbar(true, "Error updating funding source", "error", error);
-        });
-    }
+      .catch((error) => {
+        handleSnackbar(
+          true,
+          `Error ${snackbarVerb}ing funding source`,
+          "error",
+          error
+        );
+      });
   };
 
   return (
