@@ -94,11 +94,11 @@ Power BI
 
 #### Dependencies (project_funding_view)
 
-None
+combined_project_funding_view
 
 #### Summary (project_funding_view)
 
-Lists project funding rows with joined data from funding program and source tables to make values human-readable.
+Lists project funding rows with joined data from funding program and source tables to make values human-readable. Considers whether eCAPRIS funding sync is enabled per project to include synced funding records.
 
 ### current_phase_view
 
