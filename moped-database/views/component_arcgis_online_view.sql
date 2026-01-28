@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1757022149182_comp_created_at/up.sql
+-- Most recent migration: moped-database/migrations/default/1769119215514_combined_funding_toggle/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT

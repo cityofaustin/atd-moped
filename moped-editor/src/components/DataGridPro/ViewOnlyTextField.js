@@ -49,6 +49,10 @@ const ViewOnlyTextField = ({
     previousColumnField,
   ]);
 
+  const textFieldValue = lookupTable
+    ? lookupTable[value?.[valueIdName]]
+    : value;
+
   return (
     <TextField
       variant="standard"
@@ -61,7 +65,7 @@ const ViewOnlyTextField = ({
       inputRef={ref}
       name={field}
       type="text"
-      value={lookupTable[value?.[valueIdName]] || ""}
+      value={textFieldValue || ""}
       InputProps={{ readOnly: true, disableUnderline: true }}
     />
   );

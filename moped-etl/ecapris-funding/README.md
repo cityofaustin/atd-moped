@@ -18,11 +18,11 @@ The script `ecapris_funding_sync.py` is used to copy eCAPRIS subproject funding 
 1. `docker compose build` to build the container.
 1. Dry run the script via:
    ```bash
-   docker compose run ecapris-funding -n
+   docker compose run --rm ecapris-funding -n
    ```
 1. Run the script via:
    ```bash
-   docker compose run ecapris-funding
+   docker compose run --rm ecapris-funding
    ```
 
 ## Testing the script locally using Airflow

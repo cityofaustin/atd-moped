@@ -1,0 +1,61 @@
+-- Update moped_proj_funding table with information about what eCAPRIS subproject id was used for import
+ALTER TABLE moped_proj_funding
+ADD COLUMN ecapris_subproject_id text,
+ADD COLUMN is_manual boolean GENERATED ALWAYS AS (ecapris_subproject_id IS NULL) STORED;
+
+COMMENT ON COLUMN public.moped_proj_funding.ecapris_subproject_id IS 'eCapris subproject ID number associated with imported or synced eCAPRIS FDU';
+COMMENT ON COLUMN public.moped_proj_funding.is_manual IS 'eCAPRIS subproject ID is null, indicating this record was manually created in Moped and not imported or synced from an eCAPRIS subproject';
+
+-- Drop existing view and replace with modified definition
+DROP VIEW IF EXISTS combined_project_funding_view;
+
+CREATE OR REPLACE VIEW combined_project_funding_view AS SELECT
+    'moped_'::text || moped_proj_funding.proj_funding_id AS id,
+    moped_proj_funding.proj_funding_id AS original_id,
+    moped_proj_funding.created_at,
+    moped_proj_funding.updated_at,
+    moped_proj_funding.project_id,
+    moped_proj_funding.fdu,
+    moped_proj_funding.unit_long_name,
+    moped_proj_funding.funding_amount AS amount,
+    moped_proj_funding.funding_description AS description,
+    moped_fund_sources.funding_source_name AS source_name,
+    moped_proj_funding.funding_source_id,
+    moped_fund_status.funding_status_name AS status_name,
+    moped_proj_funding.funding_status_id,
+    moped_fund_programs.funding_program_name AS program_name,
+    moped_proj_funding.funding_program_id,
+    NULL::integer AS fao_id,
+    NULL::text AS ecapris_subproject_id,
+    FALSE AS is_synced_from_ecapris
+FROM moped_proj_funding
+LEFT JOIN moped_fund_status ON moped_proj_funding.funding_status_id = moped_fund_status.funding_status_id
+LEFT JOIN moped_fund_sources ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
+LEFT JOIN moped_fund_programs ON moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
+WHERE moped_proj_funding.is_deleted = FALSE
+UNION ALL
+SELECT
+    'ecapris_'::text || ecapris_subproject_funding.id AS id,
+    ecapris_subproject_funding.id AS original_id,
+    ecapris_subproject_funding.created_at,
+    ecapris_subproject_funding.updated_at,
+    NULL::integer AS project_id,
+    ecapris_subproject_funding.fdu,
+    ecapris_subproject_funding.unit_long_name,
+    ecapris_subproject_funding.app AS amount,
+    'Synced from eCAPRIS'::text AS description,
+    NULL::text AS source_name,
+    NULL::integer AS funding_source_id,
+    'Set up'::text AS status_name,
+    5 AS funding_status_id,
+    NULL::text AS program_name,
+    NULL::integer AS funding_program_id,
+    ecapris_subproject_funding.fao_id,
+    ecapris_subproject_funding.ecapris_subproject_id,
+    TRUE AS is_synced_from_ecapris
+FROM ecapris_subproject_funding
+WHERE NOT (EXISTS (
+        SELECT 1
+        FROM moped_proj_funding
+        WHERE moped_proj_funding.fdu = ecapris_subproject_funding.fdu AND moped_proj_funding.is_deleted = FALSE
+    ));

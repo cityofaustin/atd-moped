@@ -60,6 +60,7 @@ def main(args):
                 "created_by_user_id": 1,
                 "updated_by_user_id": 1,
                 "fdu_status": record.get("fdu_status"),
+                "bond_year": record.get("bond_year"),
             }
         )
 

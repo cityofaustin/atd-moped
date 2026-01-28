@@ -83,7 +83,13 @@ export const formatFundingActivity = (
   // Multiple fields in the moped_proj_funding table can be updated at once
   // We list the fields changed in the activity log, this gathers the fields changed
   let changes = [];
-  const fieldsToSkip = ["updated_at", "updated_by_user_id"];
+  const fieldsToSkip = [
+    "updated_at",
+    "updated_by_user_id",
+    "ecapris_funding_id", // Internal: What is the unique eCAPRIS id?
+    "ecapris_subproject_id", // Internal: What eCAPRIS subproject was this imported from?
+    "is_manual", // Generated column that should never change from user edits; filter out DTS automated updates
+  ];
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
