@@ -107,6 +107,8 @@ const SubprojectFundingModal = ({
       fduRecord.project_id = projectId;
       fduRecord.funding_amount = fdu.amount;
       fduRecord.unit_long_name = fdu.unit_long_name;
+      // All imports start as synced from eCAPRIS amounts
+      fduRecord.should_use_ecapris_amount = true;
       // funding status 5 is "Set Up"
       fduRecord.funding_status_id = 5;
       fduRecord.funding_program_id = fdu.funding_program_id;
