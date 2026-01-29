@@ -36,7 +36,7 @@ const validationSchema = ({ appropriatedFunding }) =>
 
 const renderECaprisLabel = (lookup, recordId, recordType) => {
   const fundingRecord = lookup.find(
-    (s) => s[`funding_${recordType}_id`] === recordId
+    (option) => option[`funding_${recordType}_id`] === recordId
   );
   return fundingRecord && fundingRecord[`funding_${recordType}_name`]
     ? fundingRecord[`funding_${recordType}_name`]
