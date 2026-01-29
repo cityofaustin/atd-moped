@@ -548,6 +548,7 @@ const ProjectFundingTable = ({
     }
   };
 
+
   const refetchFundingData = useCallback(() => {
     refetch();
     refetchProjectSummary();
@@ -737,6 +738,7 @@ const ProjectFundingTable = ({
           setOverrideFundingRecord={setOverrideFundingRecord}
           onClose={() => setOverrideFundingRecord(null)}
           handleSnackbar={handleSnackbar}
+          dataProjectFunding={dataProjectFunding}
         />
       )}
     </div>

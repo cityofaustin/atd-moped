@@ -111,6 +111,8 @@ const SubprojectFundingModal = ({
       fduRecord.should_use_ecapris_amount = true;
       // funding status 5 is "Set Up"
       fduRecord.funding_status_id = 5;
+      fduRecord.funding_program_id = fdu.funding_program_id;
+      fduRecord.funding_source_id = fdu.funding_source_id;
       newFunds.push(fduRecord);
     });
 
