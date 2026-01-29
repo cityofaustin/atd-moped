@@ -6,14 +6,39 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  Tooltip,
 } from "@mui/material";
+import { GridRow } from "@mui/x-data-grid-pro";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
-import { useSocrataJson } from "src/utils/socrataHelpers";
+import { useQuery } from "@apollo/client";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
+import { currencyFormatter } from "src/utils/numberFormatters";
 
 const PAGE_SIZE = 10;
+
+/**
+ * Custom row component that shows a tooltip when the row is disabled
+ * (i.e., when the FDU is already present on the project)
+ */
+const CustomRow = (props) => {
+  const { fdusArray, ...rowProps } = props;
+  const isDisabled = fdusArray?.some((fdu) => fdu?.fdu === rowProps.rowId);
+
+  if (isDisabled) {
+    return (
+      <Tooltip title="FDU already present on project" placement="top" arrow>
+        <div>
+          <GridRow {...rowProps} />
+        </div>
+      </Tooltip>
+    );
+  }
+
+  return <GridRow {...rowProps} />;
+};
 
 const useColumns = () =>
   useMemo(() => {
@@ -32,9 +57,17 @@ const useColumns = () =>
       },
       {
         headerName: "Status",
-        field: "dept_unit_status",
+        field: "fdu_status",
         display: "flex",
         flex: 1,
+      },
+      {
+        headerName: "Amount",
+        field: "amount",
+        display: "flex",
+        flex: 1,
+        valueFormatter: (value) => currencyFormatter.format(value),
+        type: "currency",
       },
     ];
   }, []);
@@ -49,11 +82,15 @@ const SubprojectFundingModal = ({
   handleSnackbar,
   refetch,
 }) => {
-  const { data } = useSocrataJson(
-    `https://data.austintexas.gov/resource/jega-nqf6.json?sp_number_txt=${eCaprisID}&$limit=9999`
+  const { data } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
+    variables: { ecapris_subproject_id: eCaprisID },
+    fetchPolicy: "no-cache",
+  });
+
+  const rows = useMemo(
+    () => data?.ecapris_subproject_funding ?? [],
+    [data?.ecapris_subproject_funding]
   );
-  // Filter the list of fdus to remove one(s) already on funding sources table
-  const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
 
   const [selectedFdus, setSelectedFdus] = useState([]);
 
@@ -64,22 +101,18 @@ const SubprojectFundingModal = ({
     // format record to match generic records added
     selectedFdus.forEach((fdu) => {
       const fduRecord = {};
-      fduRecord.dept_unit = {
-        dept: fdu.dept,
-        dept_id: fdu.dept_id,
-        dept_unit_id: fdu.dept_unit_id,
-        dept_unit_status: fdu.dept_unit_status,
-        unit: fdu.unit,
-        unit_long_name: fdu.unit_long_name,
-        unit_short_name: fdu.unit_short_name,
-      };
-      fduRecord.fund = {
-        fund_id: fdu.fund,
-        fund_name: fdu.fundname.toUpperCase(),
-      };
+      fduRecord.ecapris_funding_id = fdu.ecapris_funding_id; // fao_id
+      fduRecord.ecapris_subproject_id = eCaprisID;
+      fduRecord.fdu = fdu.fdu;
       fduRecord.project_id = projectId;
-      // funding status 2 is "Confirmed"
-      fduRecord.funding_status_id = 2;
+      fduRecord.funding_amount = fdu.amount;
+      fduRecord.unit_long_name = fdu.unit_long_name;
+      // All imports start as synced from eCAPRIS amounts
+      fduRecord.should_use_ecapris_amount = true;
+      // funding status 5 is "Set Up"
+      fduRecord.funding_status_id = 5;
+      fduRecord.funding_program_id = fdu.funding_program_id;
+      fduRecord.funding_source_id = fdu.funding_source_id;
       newFunds.push(fduRecord);
     });
 
@@ -104,6 +137,7 @@ const SubprojectFundingModal = ({
     handleDialogClose,
     projectId,
     refetch,
+    eCaprisID,
     selectedFdus,
     handleSnackbar,
   ]);
@@ -111,11 +145,11 @@ const SubprojectFundingModal = ({
   const handleRowSelection = useCallback(
     (selectedRows) => {
       const selectedFduRecords = selectedRows.map((fdu) =>
-        filteredData.find((record) => record.fdu === fdu)
+        rows.find((record) => record.fdu === fdu)
       );
       setSelectedFdus(selectedFduRecords);
     },
-    [filteredData]
+    [rows]
   );
 
   return (
@@ -133,7 +167,7 @@ const SubprojectFundingModal = ({
         }}
         variant="h4"
       >
-        Subproject funding sources
+        {` Import from eCAPRIS subproject ID ${eCaprisID}`}
         <IconButton onClick={() => handleDialogClose()} size="large">
           <CloseIcon />
         </IconButton>
@@ -144,7 +178,7 @@ const SubprojectFundingModal = ({
           autoHeight
           columns={dataGridColumns}
           disableColumnMenu
-          rows={filteredData}
+          rows={rows}
           getRowId={(row) => row.fdu}
           density="comfortable"
           getRowHeight={() => "auto"}
@@ -161,6 +195,11 @@ const SubprojectFundingModal = ({
           onProcessRowUpdateError={(error) =>
             handleSnackbar(true, "Error updating table", "error", error)
           }
+          isRowSelectable={(row) =>
+            !fdusArray.some((fdu) => fdu?.fdu === row.id)
+          }
+          slots={{ row: CustomRow }}
+          slotProps={{ row: { fdusArray } }}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
