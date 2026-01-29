@@ -18,6 +18,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   DataGridPro,
   GridRowModes,
+  GridRowEditStopReasons,
   useGridApiRef,
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
@@ -82,7 +83,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
-            options={dataProjectFunding["moped_fund_sources"]}
+            options={dataProjectFunding?.moped_fund_sources ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -97,7 +98,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
-            options={dataProjectFunding["moped_fund_programs"]}
+            options={dataProjectFunding?.moped_fund_programs ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -120,7 +121,7 @@ const useColumns = ({
             {...props}
             name={"funding_status"}
             defaultValue={1}
-            options={dataProjectFunding["moped_fund_status"]}
+            options={dataProjectFunding?.moped_fund_status ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -378,6 +379,19 @@ const ProjectFundingTable = ({
     setRowModesModel(newRowModesModel);
   };
 
+  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
+  // controls does not save the current row and create inconsistent state.
+  const handleFundingRowEditStop = useCallback(
+    (params, event) => {
+      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+        event.defaultMuiPrevented = true;
+        return;
+      }
+      handleRowEditStop(rows, setRows)(params, event);
+    },
+    [rows]
+  );
+
   // adds a blank row to the table and updates the row modes model
   const handleAddRecordClick = () => {
     // use a random id to keep track of row in row modes model and data grid rows
@@ -586,6 +600,12 @@ const ProjectFundingTable = ({
     }
   };
 
+  // Disable "Add Manually" button when any row is in edit mode to prevent
+  // creating multiple unsaved rows which leads to inconsistent state
+  const isEditMode = Object.values(rowModesModel).some(
+    (m) => m?.mode === GridRowModes.Edit
+  );
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <DataGridPro
@@ -600,7 +620,7 @@ const ProjectFundingTable = ({
         getRowId={(row) => row.id}
         editMode="row"
         rowModesModel={rowModesModel}
-        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowEditStop={handleFundingRowEditStop}
         isCellEditable={isCellEditable}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
@@ -626,6 +646,7 @@ const ProjectFundingTable = ({
                 color="primary"
                 onClick={handleAddRecordClick}
                 startIcon={<AddCircleIcon />}
+                disabled={isEditMode}
               >
                 {"Add Manually"}
               </Button>
@@ -635,7 +656,7 @@ const ProjectFundingTable = ({
                 variant="outlined"
                 onClick={() => setIsDialogOpen(true)}
                 startIcon={<AddCircleIcon />}
-                disabled={!eCaprisSubprojectId}
+                disabled={!eCaprisSubprojectId || isEditMode}
               >
                 {"Import from eCAPRIS"}
               </Button>
@@ -666,7 +687,9 @@ const ProjectFundingTable = ({
                     title={
                       !eCaprisSubprojectId
                         ? "Add eCAPRIS subproject ID to enable syncing"
-                        : null
+                        : isEditMode
+                          ? "Save or cancel current edits first"
+                          : null
                     }
                   >
                     <FormControlLabel
@@ -675,7 +698,7 @@ const ProjectFundingTable = ({
                         <Switch
                           variant="standard"
                           color="primary"
-                          disabled={!eCaprisSubprojectId}
+                          disabled={!eCaprisSubprojectId || isEditMode}
                           checked={shouldSyncEcaprisFunding}
                           onChange={handleECaprisSwitch}
                         />
