@@ -94,11 +94,11 @@ Power BI
 
 #### Dependencies (project_funding_view)
 
-None
+combined_project_funding_view
 
 #### Summary (project_funding_view)
 
-Lists project funding rows with joined data from funding program and source tables to make values human-readable.
+Lists project funding rows with joined data from funding program and source tables to make values human-readable. Considers whether eCAPRIS funding sync is enabled per project to include synced funding records.
 
 ### current_phase_view
 
@@ -141,3 +141,17 @@ project_geography
 #### Summary (council_district_project_distribution_analytics)
 
 Preliminary view to estimate project distribution across city council districts. This is used internally by ATSD along with project manager review to estimate bond funding distribution.
+
+### combined_project_funding_view
+
+#### Usage (combined_project_funding_view)
+
+React app
+
+#### Dependencies (combined_project_funding_view)
+
+project_list_view, component_arcgis_online_view, exploded_component_arcgis_online_view
+
+#### Summary (combined_project_funding_view)
+
+Lists and deduplicates (by FDU) funding records from the moped_proj_funding and ecapris_subproject_funding tables for the funding table

@@ -35,7 +35,7 @@ const WrapperComponent = ({ children, noWrapper }) =>
 /**
  * ProjectSummaryProjectECapris Component
  * @param {Number} projectId - The id of the current project being viewed
- * @param {Object} data - The data object from the GraphQL query
+ * @param {String} eCaprisSubprojectId - The current eCAPRIS subproject ID
  * @param {function} refetch - The refetch function from apollo
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
@@ -43,23 +43,23 @@ const WrapperComponent = ({ children, noWrapper }) =>
  */
 const ProjectSummaryProjectECapris = ({
   projectId,
+  eCaprisSubprojectId,
   loading,
-  data,
   refetch,
   handleSnackbar,
   noWrapper,
 }) => {
   const [originalValue, setOriginalValue] = useState(
-    data?.moped_project?.[0]?.ecapris_subproject_id ?? null
+    eCaprisSubprojectId ?? null
   );
   const [editMode, setEditMode] = useState(false);
   const [eCapris, setECapris] = useState(originalValue);
 
   useEffect(() => {
-    const newVal = data?.moped_project?.[0]?.ecapris_subproject_id ?? null;
+    const newVal = eCaprisSubprojectId ?? null;
     setOriginalValue(newVal);
     setECapris(newVal);
-  }, [data]);
+  }, [eCaprisSubprojectId]);
 
   const [updateProjectECapris, { loading: updateMutationLoading }] =
     useMutation(PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID);
@@ -159,7 +159,7 @@ const ProjectSummaryProjectECapris = ({
           <Stack
             direction="row"
             spacing={1}
-            sx={!eCapris && { flex: 1 }} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
+            sx={!eCapris ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
             <ProjectSummaryLabel
               text={eCapris ? eCapris : ""}

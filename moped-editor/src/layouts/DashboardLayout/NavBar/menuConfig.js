@@ -1,6 +1,5 @@
 import React from "react";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
@@ -24,7 +23,7 @@ export const helpItems = [
     linkType: "external",
     link: "https://atd-dts.gitbook.io/moped-documentation/user-guides/getting-started",
     title: "User guides ",
-    Icon: <HelpOutlineOutlinedIcon fontSize="small" />,
+    Icon: <MenuBookOutlined fontSize="small" />,
   },
   {
     linkType: "external",
