@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import isEqual from "lodash/isEqual";
+import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
@@ -443,7 +443,7 @@ const ProjectMilestones = ({
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error}
+        onProcessRowUpdateError={(error) => console.error(error)}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar

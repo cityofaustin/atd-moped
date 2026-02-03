@@ -1,5 +1,5 @@
 import { useMemo, createRef } from "react";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash.clonedeep";
 
 const setComponentCouncilDistrict = (component, projectGeography) => {
   const componentID = component.project_component_id;

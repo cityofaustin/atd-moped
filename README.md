@@ -34,7 +34,6 @@ Before you begin, make sure you have the following installed on your system:
 ### Setting Up Moped
 
 1. **Install Hasura CLI**
-
    - Install the Hasura CLI by running the following command:
 
      ```bash
@@ -45,7 +44,6 @@ Before you begin, make sure you have the following installed on your system:
    - Ensure it installs version `2.42.0` or later.
 
 2. **Start the Hasura Cluster**
-
    - Navigate to the `moped-database` directory:
 
      ```bash
@@ -63,14 +61,13 @@ Before you begin, make sure you have the following installed on your system:
    - If you encounter errors related to migrations, you can try the following:
 
      ```bash
-     ./hasura_cluster start_only
+     ./hasura-cluster start_only
      hasura migrate apply
      ./hasura-cluster start
 
      ```
 
 3. **Run the Frontend React App**
-
    - Navigate to the `moped-editor` directory:
 
      ```bash

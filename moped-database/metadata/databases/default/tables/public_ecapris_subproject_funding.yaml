@@ -1,3 +1,46 @@
 table:
   name: ecapris_subproject_funding
   schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - fao_id
+        - fdu
+        - id
+        - unit_long_name
+        - fdu_status
+        - ecapris_subproject_id
+        - app
+        - funding_program_id
+        - funding_source_id
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - fao_id
+        - fdu
+        - id
+        - unit_long_name
+        - fdu_status
+        - ecapris_subproject_id
+        - app
+        - funding_program_id
+        - funding_source_id
+      filter: {}
+    comment: ""
+  - role: moped-viewer
+    permission:
+      columns:
+        - fao_id
+        - fdu
+        - id
+        - unit_long_name
+        - fdu_status
+        - ecapris_subproject_id
+        - app
+        - funding_program_id
+        - funding_source_id
+      filter: {}
+    comment: ""

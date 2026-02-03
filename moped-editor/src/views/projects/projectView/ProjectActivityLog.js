@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { isEqual } from "lodash";
+import isEqual from "lodash.isequal";
 
 import {
   Box,
@@ -211,6 +211,7 @@ const ProjectActivityLog = () => {
 
   const { loading, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
+    fetchPolicy: "cache-and-network",
   });
 
   const activityLogData = usePrepareActivityData(data?.moped_activity_log);
