@@ -123,7 +123,6 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
         sortable: false,
         width: 100,
         renderCell: ({ row }) => {
-          // to do: use loading prop instead of ternary
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
@@ -162,7 +161,7 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
 const ProjectPhases = ({
   projectId,
   data,
-  // loading,
+  loading,
   refetch,
   handleSnackbar,
 }) => {
@@ -284,43 +283,41 @@ const ProjectPhases = ({
         onProcessRowUpdateError={(error) =>
           handleSnackbar(true, "Error updating table", "error", error)
         }
-        // loading={loading || !data}
+        loading={loading || !data}
       />
       {editPhase && (
-        <>
-          <ProjectPhaseDialog
-            phase={editPhase}
-            onClose={() => setEditPhase(null)}
-            onSubmitCallback={onSubmitCallback}
-            phases={data?.moped_phases}
-            noteTypes={data?.moped_note_types ?? []}
-            currentProjectPhaseId={currentProjectPhaseId}
-            currentPhaseTypeId={currentPhaseTypeId}
-            projectId={projectId}
-            handleSnackbar={handleSnackbar}
-          />
-          <PhaseTemplateModal
-            isDialogOpen={isTemplateDialogOpen}
-            handleDialogClose={() => setIsTemplateDialogOpen(false)}
-            selectedPhases={data?.moped_proj_phases}
-            phaseNameLookup={phaseNameLookup}
-            subphaseNameLookup={subphaseNameLookup}
-            projectId={projectId}
-            refetch={refetch}
-            handleSnackbar={handleSnackbar}
-          />
-          <DeleteConfirmationModal
-            type={"phase"}
-            submitDelete={handleDeleteClick(deleteConfirmationId)}
-            isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-            setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-          />
-          <CurrentPhaseDeleteModal
-            isOpen={isDeleteCurrentConfirmationOpen}
-            setIsOpen={setIsDeleteCurrentConfirmationOpen}
-          />
-        </>
+        <ProjectPhaseDialog
+          phase={editPhase}
+          onClose={() => setEditPhase(null)}
+          onSubmitCallback={onSubmitCallback}
+          phases={data?.moped_phases}
+          noteTypes={data?.moped_note_types ?? []}
+          currentProjectPhaseId={currentProjectPhaseId}
+          currentPhaseTypeId={currentPhaseTypeId}
+          projectId={projectId}
+          handleSnackbar={handleSnackbar}
+        />
       )}
+      <PhaseTemplateModal
+        isDialogOpen={isTemplateDialogOpen}
+        handleDialogClose={() => setIsTemplateDialogOpen(false)}
+        selectedPhases={data?.moped_proj_phases}
+        phaseNameLookup={phaseNameLookup}
+        subphaseNameLookup={subphaseNameLookup}
+        projectId={projectId}
+        refetch={refetch}
+        handleSnackbar={handleSnackbar}
+      />
+      <DeleteConfirmationModal
+        type={"phase"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+      />
+      <CurrentPhaseDeleteModal
+        isOpen={isDeleteCurrentConfirmationOpen}
+        setIsOpen={setIsDeleteCurrentConfirmationOpen}
+      />
     </>
   );
 };

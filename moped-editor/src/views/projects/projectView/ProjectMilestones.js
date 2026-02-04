@@ -423,11 +423,6 @@ const ProjectMilestones = ({
     setIsDialogOpen(false);
   };
 
-  // Only render if any row is in edit mode
-  const isEditing = Object.values(rowModesModel).some(
-    (mode) => mode.mode === GridRowModes.Edit
-  );
-
   return (
     <>
       <DataGridPro
@@ -472,17 +467,16 @@ const ProjectMilestones = ({
         }}
         loading={loading || !data}
       />
-      {isEditing && (
-        <MilestoneTemplateModal
-          isDialogOpen={isDialogOpen}
-          handleDialogClose={handleTemplateModalClose}
-          milestoneNameLookup={milestoneNameLookup}
-          selectedMilestones={data?.moped_proj_milestones}
-          projectId={projectId}
-          refetch={refetch}
-          handleSnackbar={handleSnackbar}
-        />
-      )}
+
+      <MilestoneTemplateModal
+        isDialogOpen={isDialogOpen}
+        handleDialogClose={handleTemplateModalClose}
+        milestoneNameLookup={milestoneNameLookup}
+        selectedMilestones={data?.moped_proj_milestones}
+        projectId={projectId}
+        refetch={refetch}
+        handleSnackbar={handleSnackbar}
+      />
       <DeleteConfirmationModal
         type={"milestone"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}

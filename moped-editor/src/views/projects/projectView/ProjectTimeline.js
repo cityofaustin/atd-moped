@@ -41,16 +41,16 @@ const ProjectTimeline = ({ handleSnackbar }) => {
         <Grid item xs={12}>
           <ProjectPhases
             projectId={projectId}
+            loading={loading || !data}
             data={data}
             refetch={refetch}
             handleSnackbar={handleSnackbar}
-            loading={loading}
           />
         </Grid>
         <Grid item xs={12}>
           <ProjectMilestones
             projectId={projectId}
-            loading={loading}
+            loading={loading || !data}
             data={data}
             refetch={refetch}
             handleSnackbar={handleSnackbar}
