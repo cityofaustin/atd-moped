@@ -467,12 +467,11 @@ const ProjectMilestones = ({
         }}
         loading={loading || !data}
       />
-
       <MilestoneTemplateModal
         isDialogOpen={isDialogOpen}
         handleDialogClose={handleTemplateModalClose}
         milestoneNameLookup={milestoneNameLookup}
-        selectedMilestones={data?.moped_proj_milestones}
+        selectedMilestones={data.moped_proj_milestones}
         projectId={projectId}
         refetch={refetch}
         handleSnackbar={handleSnackbar}

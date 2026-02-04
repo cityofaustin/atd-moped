@@ -301,7 +301,7 @@ const ProjectPhases = ({
       <PhaseTemplateModal
         isDialogOpen={isTemplateDialogOpen}
         handleDialogClose={() => setIsTemplateDialogOpen(false)}
-        selectedPhases={data?.moped_proj_phases}
+        selectedPhases={data.moped_proj_phases}
         phaseNameLookup={phaseNameLookup}
         subphaseNameLookup={subphaseNameLookup}
         projectId={projectId}
