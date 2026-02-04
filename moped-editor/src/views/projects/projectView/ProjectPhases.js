@@ -256,6 +256,7 @@ const ProjectPhases = ({
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
         rows={data?.moped_proj_phases || []}
+        loading={loading || !data}
         onCellDoubleClick={doubleClickListener}
         slots={{
           toolbar: DataGridToolbar,
@@ -283,7 +284,6 @@ const ProjectPhases = ({
         onProcessRowUpdateError={(error) =>
           handleSnackbar(true, "Error updating table", "error", error)
         }
-        loading={loading || !data}
       />
       {editPhase && (
         <ProjectPhaseDialog
@@ -298,16 +298,18 @@ const ProjectPhases = ({
           handleSnackbar={handleSnackbar}
         />
       )}
-      <PhaseTemplateModal
-        isDialogOpen={isTemplateDialogOpen}
-        handleDialogClose={() => setIsTemplateDialogOpen(false)}
-        selectedPhases={data.moped_proj_phases}
-        phaseNameLookup={phaseNameLookup}
-        subphaseNameLookup={subphaseNameLookup}
-        projectId={projectId}
-        refetch={refetch}
-        handleSnackbar={handleSnackbar}
-      />
+      {isTemplateDialogOpen && (
+        <PhaseTemplateModal
+          isDialogOpen={isTemplateDialogOpen}
+          handleDialogClose={() => setIsTemplateDialogOpen(false)}
+          selectedPhases={data.moped_proj_phases}
+          phaseNameLookup={phaseNameLookup}
+          subphaseNameLookup={subphaseNameLookup}
+          projectId={projectId}
+          refetch={refetch}
+          handleSnackbar={handleSnackbar}
+        />
+      )}
       <DeleteConfirmationModal
         type={"phase"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}

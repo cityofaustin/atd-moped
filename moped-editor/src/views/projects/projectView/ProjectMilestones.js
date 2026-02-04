@@ -432,6 +432,7 @@ const ProjectMilestones = ({
         autoHeight
         columns={dataGridColumns}
         rows={rows}
+        loading={loading || !data}
         getRowId={(row) => row.project_milestone_id}
         editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
@@ -465,17 +466,18 @@ const ProjectMilestones = ({
             ),
           },
         }}
-        loading={loading || !data}
       />
-      <MilestoneTemplateModal
-        isDialogOpen={isDialogOpen}
-        handleDialogClose={handleTemplateModalClose}
-        milestoneNameLookup={milestoneNameLookup}
-        selectedMilestones={data.moped_proj_milestones}
-        projectId={projectId}
-        refetch={refetch}
-        handleSnackbar={handleSnackbar}
-      />
+      {isDialogOpen && (
+        <MilestoneTemplateModal
+          isDialogOpen={isDialogOpen}
+          handleDialogClose={handleTemplateModalClose}
+          milestoneNameLookup={milestoneNameLookup}
+          selectedMilestones={data.moped_proj_milestones}
+          projectId={projectId}
+          refetch={refetch}
+          handleSnackbar={handleSnackbar}
+        />
+      )}
       <DeleteConfirmationModal
         type={"milestone"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
