@@ -325,7 +325,7 @@ const DashboardView = () => {
                     <DataGridPro
                       sx={dataGridProStyleOverrides}
                       columns={dataGridColumns}
-                      rows={rows}
+                      rows={rows || []}
                       autoHeight
                       getRowHeight={() => "auto"}
                       getRowId={(row) => row.project_id}

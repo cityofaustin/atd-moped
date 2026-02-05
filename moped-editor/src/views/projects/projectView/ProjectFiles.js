@@ -509,14 +509,12 @@ const ProjectFiles = ({ handleSnackbar }) => {
           fileTypesLookup={fileTypesLookup}
         />
       )}
-      {isDeleteConfirmationOpen && (
-        <DeleteConfirmationModal
-          type={"file"}
-          submitDelete={handleDeleteClick(deleteConfirmationId)}
-          isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-          setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-        />
-      )}
+      <DeleteConfirmationModal
+        type={"file"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+      />
     </>
   );
 };

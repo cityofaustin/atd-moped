@@ -415,21 +415,19 @@ const SubprojectsTable = ({
         }}
         loading={loading || !data}
       />
-      {isDeleteConfirmationOpen && (
-        <DeleteConfirmationModal
-          type={isSubproject ? "parent project" : "subproject"}
-          submitDelete={handleDeleteClick(deleteConfirmationId)}
-          isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-          setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-          confirmationText={
-            isSubproject
-              ? "Are you sure you want to unlink the parent project?"
-              : "Are you sure you want to unlink this subproject?"
-          }
-          actionButtonText="Unlink"
-          actionButtonIcon={<LinkOffIcon />}
-        />
-      )}
+      <DeleteConfirmationModal
+        type={isSubproject ? "parent project" : "subproject"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        confirmationText={
+          isSubproject
+            ? "Are you sure you want to unlink the parent project?"
+            : "Are you sure you want to unlink this subproject?"
+        }
+        actionButtonText="Unlink"
+        actionButtonIcon={<LinkOffIcon />}
+      />
     </>
   );
 };
