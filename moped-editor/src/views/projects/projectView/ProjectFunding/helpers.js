@@ -80,6 +80,8 @@ export const transformGridToDatabase = (gridRecord) => {
     ? gridRecord.fdu.ecapris_funding_id
     : null;
 
+  // Pull amount from FDU, if there is one added. If a funding amount has been manually entered, use that instead
+  // of the fdu amount
   const fduAmount = gridRecord.fdu ? gridRecord.fdu.amount : null;
   const funding_amount = gridRecord.funding_amount
     ? gridRecord.funding_amount
