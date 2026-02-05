@@ -240,7 +240,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
       <DataGridPro
         sx={dataGridProStyleOverrides}
         columns={dataGridColumns}
-        rows={rows}
+        rows={rows || []}
         autoHeight
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}

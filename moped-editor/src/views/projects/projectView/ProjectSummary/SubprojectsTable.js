@@ -378,7 +378,7 @@ const SubprojectsTable = ({
       <DataGridPro
         sx={{ ...dataGridProStyleOverrides, border: 0 }}
         columns={dataGridColumns}
-        rows={rows}
+        rows={rows || []}
         autoHeight
         getRowHeight={() => "auto"}
         density="comfortable"
@@ -415,19 +415,21 @@ const SubprojectsTable = ({
         }}
         loading={loading || !data}
       />
-      <DeleteConfirmationModal
-        type={isSubproject ? "parent project" : "subproject"}
-        submitDelete={handleDeleteClick(deleteConfirmationId)}
-        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-        confirmationText={
-          isSubproject
-            ? "Are you sure you want to unlink the parent project?"
-            : "Are you sure you want to unlink this subproject?"
-        }
-        actionButtonText="Unlink"
-        actionButtonIcon={<LinkOffIcon />}
-      />
+      {isDeleteConfirmationOpen && (
+        <DeleteConfirmationModal
+          type={isSubproject ? "parent project" : "subproject"}
+          submitDelete={handleDeleteClick(deleteConfirmationId)}
+          isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+          setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+          confirmationText={
+            isSubproject
+              ? "Are you sure you want to unlink the parent project?"
+              : "Are you sure you want to unlink this subproject?"
+          }
+          actionButtonText="Unlink"
+          actionButtonIcon={<LinkOffIcon />}
+        />
+      )}
     </>
   );
 };
