@@ -47,6 +47,7 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
       ecapris_funding_id: fao_id
       fdu
       unit_long_name
+      amount: app
     }
   }
 `;

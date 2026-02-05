@@ -80,6 +80,11 @@ export const transformGridToDatabase = (gridRecord) => {
     ? gridRecord.fdu.ecapris_funding_id
     : null;
 
+  const fduAmount = gridRecord.fdu ? gridRecord.fdu.amount : null;
+  const funding_amount = gridRecord.funding_amount
+    ? gridRecord.funding_amount
+    : fduAmount;
+
   const {
     id,
     __typename,
@@ -107,5 +112,6 @@ export const transformGridToDatabase = (gridRecord) => {
     fdu,
     unit_long_name,
     ecapris_funding_id,
+    funding_amount,
   };
 };
