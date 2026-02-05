@@ -64,8 +64,6 @@ select_permissions:
         - ecapris_subproject_id
         - fdu
         - fund
-        - fund_dept_unit
-        - fund_name
         - funding_amount
         - funding_description
         - funding_program_id
@@ -91,8 +89,6 @@ select_permissions:
         - ecapris_subproject_id
         - fdu
         - fund
-        - fund_dept_unit
-        - fund_name
         - funding_amount
         - funding_description
         - funding_program_id
@@ -118,8 +114,6 @@ select_permissions:
         - ecapris_subproject_id
         - fdu
         - fund
-        - fund_dept_unit
-        - fund_name
         - funding_amount
         - funding_description
         - funding_program_id
