@@ -241,6 +241,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         sx={dataGridProStyleOverrides}
         columns={dataGridColumns}
         rows={rows || []}
+        loading={loading || !data}
         autoHeight
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
@@ -253,7 +254,6 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No saved views to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
-        loading={loading || !data}
       />
       <DeleteConfirmationModal
         type={"saved view"}

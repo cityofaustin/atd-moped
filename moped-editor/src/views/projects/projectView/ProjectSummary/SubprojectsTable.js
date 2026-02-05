@@ -379,6 +379,7 @@ const SubprojectsTable = ({
         sx={{ ...dataGridProStyleOverrides, border: 0 }}
         columns={dataGridColumns}
         rows={rows || []}
+        loading={loading || !data}
         autoHeight
         getRowHeight={() => "auto"}
         density="comfortable"
@@ -413,7 +414,6 @@ const SubprojectsTable = ({
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows
         }}
-        loading={loading || !data}
       />
       <DeleteConfirmationModal
         type={isSubproject ? "parent project" : "subproject"}

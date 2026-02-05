@@ -462,9 +462,9 @@ const ProjectFiles = ({ handleSnackbar }) => {
         ref={apiRef}
         autoHeight
         columns={dataGridColumns}
-        loading={loading || !data}
         rows={rows || []}
-        getRowId={(row) => row?.project_file_id}
+        loading={loading || !data}
+        getRowId={(row) => row.project_file_id}
         editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         rowModesModel={rowModesModel}

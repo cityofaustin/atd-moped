@@ -105,6 +105,7 @@ const StaffListView = () => {
             sx={dataGridProStyleOverrides}
             disableRowSelectionOnClick
             rows={data?.moped_users || []}
+            loading={loading || !data}
             columns={staffColumns}
             getRowId={(row) => row.user_id}
             slots={{ toolbar: DataGridToolbar }}
@@ -127,7 +128,6 @@ const StaffListView = () => {
                 },
               },
             }}
-            loading={loading || !data}
           />
         </Card>
       </Box>

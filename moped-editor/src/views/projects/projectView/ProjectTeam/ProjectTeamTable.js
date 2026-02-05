@@ -561,6 +561,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         autoHeight
         columns={dataGridColumns}
         rows={rows || []}
+        loading={loading || !data}
         getRowId={getRowIdMemoized}
         editMode="row"
         rowModesModel={rowModesModel}
@@ -578,7 +579,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         hideFooter
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
-        loading={loading || !data}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,
