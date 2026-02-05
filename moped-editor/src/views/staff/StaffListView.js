@@ -104,7 +104,7 @@ const StaffListView = () => {
           <DataGridPro
             sx={dataGridProStyleOverrides}
             disableRowSelectionOnClick
-            rows={data?.moped_users}
+            rows={data?.moped_users || []}
             columns={staffColumns}
             getRowId={(row) => row.user_id}
             slots={{ toolbar: DataGridToolbar }}
