@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -457,14 +458,23 @@ const ProjectMilestones = ({
           toolbar: {
             title: "Milestones",
             primaryActionButton: (
-              <ButtonDropdownMenu
-                addAction={onClickAddMilestone}
-                openActionDialog={setIsDialogOpen}
-                parentButtonText="Add milestone"
-                firstOptionText="New milestone"
-                secondOptionText="From template"
-                secondOptionIcon
-              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onClickAddMilestone}
+                startIcon={<AddCircleIcon />}
+              >
+                {"Add milestone"}
+              </Button>
+            ),
+            secondaryActionButton: (
+              <Button
+                variant="outlined"
+                onClick={() => setIsDialogOpen(true)}
+                startIcon={<AddCircleIcon />}
+              >
+                {"From template"}
+              </Button>
             ),
           },
         }}
