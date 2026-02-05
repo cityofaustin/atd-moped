@@ -65,10 +65,10 @@ export const transformDatabaseToGrid = (fundingRecords, lookupData) => {
  */
 export const transformGridToDatabase = (gridRecord) => {
   // Extract the lookup ids from the selected lookup objects
-  const funding_source_id = gridRecord.fund_source
+  const record_source_id = gridRecord.fund_source
     ? gridRecord.fund_source.funding_source_id
     : null;
-  const funding_program_id = gridRecord.fund_program
+  const record_program_id = gridRecord.fund_program
     ? gridRecord.fund_program.funding_program_id
     : null;
   const funding_status_id = gridRecord.fund_status
@@ -86,6 +86,12 @@ export const transformGridToDatabase = (gridRecord) => {
   const funding_amount = gridRecord.funding_amount
     ? gridRecord.funding_amount
     : fduAmount;
+
+  // use program id and source id from FDU if none have been selected manually
+  const fduProgramID = gridRecord.fdu ? gridRecord.fdu.funding_progam_id : null;
+  const fduSourceID = gridRecord.fdu ? gridRecord.fdu.funding_source_id : null;
+  const funding_program_id = record_program_id ?? fduProgramID;
+  const funding_source_id = record_source_id ?? fduSourceID;
 
   const {
     id,

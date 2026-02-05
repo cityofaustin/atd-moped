@@ -48,6 +48,8 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
       fdu
       unit_long_name
       amount: app
+      funding_source_id
+      funding_program_id
     }
   }
 `;
