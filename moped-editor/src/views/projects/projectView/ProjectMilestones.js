@@ -10,7 +10,6 @@ import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
-import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
