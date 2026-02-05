@@ -462,8 +462,9 @@ const ProjectFiles = ({ handleSnackbar }) => {
         ref={apiRef}
         autoHeight
         columns={dataGridColumns}
-        rows={rows}
-        getRowId={(row) => row.project_file_id}
+        loading={loading || !data}
+        rows={rows || []}
+        getRowId={(row) => row?.project_file_id}
         editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         rowModesModel={rowModesModel}
@@ -497,22 +498,25 @@ const ProjectFiles = ({ handleSnackbar }) => {
             ),
           },
         }}
-        loading={loading || !data}
       />
-      <FileUploadDialogSingle
-        title={"Add file"}
-        dialogOpen={dialogOpen}
-        handleClickCloseUploadFile={handleClickCloseUploadFile}
-        handleClickSaveFile={handleClickSaveFile}
-        projectId={projectId}
-        fileTypesLookup={fileTypesLookup}
-      />
-      <DeleteConfirmationModal
-        type={"file"}
-        submitDelete={handleDeleteClick(deleteConfirmationId)}
-        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-      />
+      {dialogOpen && (
+        <FileUploadDialogSingle
+          title={"Add file"}
+          dialogOpen={dialogOpen}
+          handleClickCloseUploadFile={handleClickCloseUploadFile}
+          handleClickSaveFile={handleClickSaveFile}
+          projectId={projectId}
+          fileTypesLookup={fileTypesLookup}
+        />
+      )}
+      {isDeleteConfirmationOpen && (
+        <DeleteConfirmationModal
+          type={"file"}
+          submitDelete={handleDeleteClick(deleteConfirmationId)}
+          isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+          setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        />
+      )}
     </>
   );
 };
