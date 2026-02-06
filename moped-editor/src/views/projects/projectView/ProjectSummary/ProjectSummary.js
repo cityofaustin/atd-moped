@@ -126,9 +126,6 @@ const ProjectSummary = ({
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <ProjectSummaryComponentWorkTypes data={data} />
-                </Grid>
-                <Grid item xs={12}>
                   <ProjectSummaryAutocomplete
                     field="Public process"
                     idColumn={"id"}
