@@ -21,7 +21,6 @@ import ProjectSummaryInterimID from "src/views/projects/projectView/ProjectSumma
 import ProjectSummaryAutocomplete from "src/views/projects/projectView/ProjectSummary/ProjectSummaryAutocomplete";
 import ProjectSummaryProjectPartners from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectPartners";
 import ProjectSummaryCouncilDistricts from "src/views/projects/projectView/ProjectSummary/ProjectSummaryCouncilDistricts";
-import ProjectSummaryComponentWorkTypes from "src/views/projects/projectView/ProjectSummary/ProjectSummaryComponentWorkTypes";
 
 import SubprojectsTable from "src/views/projects/projectView/ProjectSummary/SubprojectsTable";
 import TagsSection from "src/views/projects/projectView/ProjectSummary/TagsSection";
