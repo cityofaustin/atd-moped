@@ -33,6 +33,7 @@ const LookupAutocompleteComponent = ({
   textFieldProps,
   dependentFieldName,
   setDependentFieldValue,
+  dependentFieldsArray,
   refetch,
 }) => {
   const apiRef = useGridApiContext();
@@ -59,11 +60,14 @@ const LookupAutocompleteComponent = ({
       field,
       value: newValue,
     });
-    if (dependentFieldName) {
-      apiRef.current.setEditCellValue({
-        id,
-        field: dependentFieldName,
-        value: setDependentFieldValue(newValue),
+
+    if (dependentFieldsArray && dependentFieldsArray.length > 0) {
+      dependentFieldsArray.forEach((field) => {
+        apiRef.current.setEditCellValue({
+          id,
+          field: field.fieldName,
+          value: field.setFieldValue(newValue),
+        });
       });
     }
   };
