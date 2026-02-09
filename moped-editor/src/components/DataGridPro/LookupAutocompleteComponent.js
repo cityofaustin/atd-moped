@@ -15,8 +15,8 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Boolean} fullWidthPopper - should component use custom Popper component
  * @param {Object} autocompleteProps - props passed to the MUI Autocomplete Component
  * @param {Object} textFieldProps - props passed to the renderInput TextField
- * @param {string} dependentFieldName - optional, if another field should be updated on change, name of field
- * @param {function} setDependentFieldValue - optional, takes newValue as input and returns the dependent fields change
+ * @param {Array|Objects} dependentFieldsArray - optional, array of objects {fieldName: String, setFieldValue: function
+ * that newValue as input and returns the dependent fields change}
  * @param {function} refetch - optional, function to refetch lookup table data when dropdown is opened
  *
  * @returns {React component}
