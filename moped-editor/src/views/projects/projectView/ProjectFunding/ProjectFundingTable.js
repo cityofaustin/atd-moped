@@ -74,59 +74,6 @@ const useColumns = ({
   useMemo(() => {
     return [
       {
-        headerName: "Source",
-        field: "fund_source",
-        width: 200,
-        editable: true,
-        valueFormatter: (value) => value?.funding_source_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_source"}
-            options={dataProjectFunding?.moped_fund_sources ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Program",
-        field: "fund_program",
-        width: 200,
-        editable: true,
-        valueFormatter: (value) => value?.funding_program_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_program"}
-            options={dataProjectFunding?.moped_fund_programs ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Description",
-        field: "funding_description",
-        width: 200,
-        editable: true,
-        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
-      },
-      {
-        headerName: "Status",
-        field: "fund_status",
-        editable: true,
-        width: 200,
-        valueFormatter: (value) => value?.funding_status_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_status"}
-            defaultValue={1}
-            options={dataProjectFunding?.moped_fund_status ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
         headerName: "FDU",
         field: "fdu",
         width: 200,
@@ -176,6 +123,59 @@ const useColumns = ({
             usingShiftKey={usingShiftKey}
             previousColumnField="fdu"
             nextColumnField="amount"
+          />
+        ),
+      },
+      {
+        headerName: "Source",
+        field: "fund_source",
+        width: 200,
+        editable: true,
+        valueFormatter: (value) => value?.funding_source_name,
+        renderEditCell: (props) => (
+          <LookupAutocompleteComponent
+            {...props}
+            name={"funding_source"}
+            options={dataProjectFunding?.moped_fund_sources ?? []}
+            fullWidthPopper={true}
+          />
+        ),
+      },
+      {
+        headerName: "Program",
+        field: "fund_program",
+        width: 200,
+        editable: true,
+        valueFormatter: (value) => value?.funding_program_name,
+        renderEditCell: (props) => (
+          <LookupAutocompleteComponent
+            {...props}
+            name={"funding_program"}
+            options={dataProjectFunding?.moped_fund_programs ?? []}
+            fullWidthPopper={true}
+          />
+        ),
+      },
+      {
+        headerName: "Description",
+        field: "funding_description",
+        width: 200,
+        editable: true,
+        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
+      },
+      {
+        headerName: "Status",
+        field: "fund_status",
+        editable: true,
+        width: 200,
+        valueFormatter: (value) => value?.funding_status_name,
+        renderEditCell: (props) => (
+          <LookupAutocompleteComponent
+            {...props}
+            name={"funding_status"}
+            defaultValue={1}
+            options={dataProjectFunding?.moped_fund_status ?? []}
+            fullWidthPopper={true}
           />
         ),
       },
