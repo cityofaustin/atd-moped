@@ -59,6 +59,25 @@ const fduAutocompleteProps = {
     value?.ecapris_funding_id === option?.ecapris_funding_id,
 };
 
+const fduAutocompleteDependentFields = [
+  {
+    fieldName: "unit_long_name",
+    setFieldValue: (newValue) => newValue?.unit_long_name,
+  },
+  {
+    fieldName: "fund_source",
+    setFieldValue: (newValue) => newValue?.moped_fund_source,
+  },
+  {
+    fieldName: "fund_program",
+    setFieldValue: (newValue) => newValue?.moped_fund_program,
+  },
+  {
+    fieldName: "funding_amount",
+    setFieldValue: (newValue) => newValue?.amount
+  }
+];
+
 /** Hook that provides memoized column settings */
 const useColumns = ({
   dataProjectFunding,
@@ -105,8 +124,7 @@ const useColumns = ({
               ...fduAutocompleteProps,
               value: props?.row?.fdu,
             }}
-            dependentFieldName="unit_long_name"
-            setDependentFieldValue={(newValue) => newValue?.unit_long_name}
+            dependentFieldsArray={fduAutocompleteDependentFields}
           />
         ),
       },
