@@ -115,7 +115,7 @@ const useColumns = ({
         field: "unit_long_name",
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
         // during editing -- the input field is always disabled
-        width: 150,
+        width: 175,
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
@@ -416,7 +416,7 @@ const ProjectFundingTable = ({
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "fund_source" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "fdu" },
     }));
   };
 

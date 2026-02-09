@@ -49,7 +49,15 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
       unit_long_name
       amount: app
       funding_source_id
+      moped_fund_source {
+        funding_source_id
+        funding_source_name
+      }
       funding_program_id
+      moped_fund_program {
+        funding_program_id
+        funding_program_name
+      }
     }
   }
 `;
