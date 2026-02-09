@@ -31,8 +31,6 @@ const LookupAutocompleteComponent = ({
   fullWidthPopper,
   autocompleteProps,
   textFieldProps,
-  dependentFieldName,
-  setDependentFieldValue,
   dependentFieldsArray,
   refetch,
 }) => {

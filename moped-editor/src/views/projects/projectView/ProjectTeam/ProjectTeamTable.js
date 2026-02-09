@@ -103,11 +103,15 @@ const useColumns = ({
                 error: props.error,
                 helperText: "Required",
               }}
-              dependentFieldName="moped_workgroup"
-              setDependentFieldValue={(newValue) => ({
-                workgroup_id: newValue?.workgroup_id,
-                workgroup_name: workgroupLookup[newValue?.workgroup_id],
-              })}
+              dependentFieldsArray={[
+                {
+                  fieldName: "moped_workgroup",
+                  setFieldValue: (newValue) => ({
+                    workgroup_id: newValue?.workgroup_id,
+                    workgroup_name: workgroupLookup[newValue?.workgroup_id],
+                  }),
+                },
+              ]}
             />
           );
         },
@@ -122,7 +126,7 @@ const useColumns = ({
         headerName: "Workgroup",
         field: "moped_workgroup",
         editable: true,
-        width: 200,
+        width: 250,
         valueFormatter: (workgroup) => workgroup?.workgroup_name ?? "",
         sortComparator: (v1, v2) =>
           v1.workgroup_name.localeCompare(v2.workgroup_name),
