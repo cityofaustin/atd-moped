@@ -509,7 +509,6 @@ const ProjectFundingTable = ({
             objects: {
               ...mutationData,
               project_id: Number(projectId),
-              ecapris_subproject_id: eCaprisSubprojectId,
             },
           },
         })
@@ -544,7 +543,6 @@ const ProjectFundingTable = ({
           updateProjectFunding({
             variables: {
               ...mutationData,
-              ecapris_subproject_id: eCaprisSubprojectId,
               proj_funding_id: updatedRow.proj_funding_id,
             },
           })

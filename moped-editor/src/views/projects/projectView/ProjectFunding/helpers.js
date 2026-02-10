@@ -80,6 +80,10 @@ export const transformGridToDatabase = (gridRecord) => {
     ? gridRecord.fdu.ecapris_funding_id
     : null;
 
+  const ecapris_subproject_id = gridRecord.fdu
+    ? gridRecord.fdu.ecapris_subproject_id
+    : null;
+
   const {
     id,
     __typename,
@@ -90,7 +94,6 @@ export const transformGridToDatabase = (gridRecord) => {
     fund_program,
     fund_source,
     fund_status,
-    ecapris_subproject_id,
     proj_funding_id,
     isNew,
     is_manual,
@@ -107,5 +110,6 @@ export const transformGridToDatabase = (gridRecord) => {
     fdu,
     unit_long_name,
     ecapris_funding_id,
+    ecapris_subproject_id,
   };
 };
