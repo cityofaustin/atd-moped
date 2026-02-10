@@ -65,10 +65,10 @@ export const transformDatabaseToGrid = (fundingRecords, lookupData) => {
  */
 export const transformGridToDatabase = (gridRecord) => {
   // Extract the lookup ids from the selected lookup objects
-  const record_source_id = gridRecord.fund_source
+  const funding_source_id = gridRecord.fund_source
     ? gridRecord.fund_source.funding_source_id
     : null;
-  const record_program_id = gridRecord.fund_program
+  const funding_program_id = gridRecord.fund_program
     ? gridRecord.fund_program.funding_program_id
     : null;
   const funding_status_id = gridRecord.fund_status
@@ -79,19 +79,6 @@ export const transformGridToDatabase = (gridRecord) => {
   const ecapris_funding_id = gridRecord.fdu
     ? gridRecord.fdu.ecapris_funding_id
     : null;
-
-  // Pull amount from FDU, if there is one added. If a funding amount has been manually entered, use that instead
-  // of the fdu amount
-  const fduAmount = gridRecord.fdu ? gridRecord.fdu.amount : null;
-  const funding_amount = gridRecord.funding_amount
-    ? gridRecord.funding_amount
-    : fduAmount;
-
-  // use program id and source id from FDU if none have been selected manually
-  const fduProgramID = gridRecord.fdu ? gridRecord.fdu.funding_progam_id : null;
-  const fduSourceID = gridRecord.fdu ? gridRecord.fdu.funding_source_id : null;
-  const funding_program_id = record_program_id ?? fduProgramID;
-  const funding_source_id = record_source_id ?? fduSourceID;
 
   const {
     id,
@@ -120,6 +107,5 @@ export const transformGridToDatabase = (gridRecord) => {
     fdu,
     unit_long_name,
     ecapris_funding_id,
-    funding_amount,
   };
 };
