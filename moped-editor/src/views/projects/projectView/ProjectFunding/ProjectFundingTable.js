@@ -74,8 +74,8 @@ const fduAutocompleteDependentFields = [
   },
   {
     fieldName: "funding_amount",
-    setFieldValue: (newValue) => newValue?.amount
-  }
+    setFieldValue: (newValue) => newValue?.amount,
+  },
 ];
 
 /** Hook that provides memoized column settings */
