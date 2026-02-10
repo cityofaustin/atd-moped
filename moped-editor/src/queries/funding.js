@@ -45,6 +45,7 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
   query EcaprisFdu {
     ecapris_subproject_funding {
       ecapris_funding_id: fao_id
+      ecapris_subproject_id
       fdu
       unit_long_name
       amount: app
