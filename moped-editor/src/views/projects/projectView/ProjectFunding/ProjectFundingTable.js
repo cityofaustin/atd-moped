@@ -556,7 +556,6 @@ const ProjectFundingTable = ({
     }
   };
 
-
   const refetchFundingData = useCallback(() => {
     refetch();
     refetchProjectSummary();
@@ -576,7 +575,9 @@ const ProjectFundingTable = ({
   });
 
   const handleECaprisSwitch = () => {
-    logUserEvent("funding_ecapris_sync_toggle");
+    logUserEvent(
+      `funding_ecapris_sync_toggle_${!shouldSyncEcaprisFunding === false ? "off" : "on"}`
+    );
     updateShouldSyncECapris({
       variables: {
         projectId: projectId,
