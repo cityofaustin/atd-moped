@@ -16,7 +16,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Object} autocompleteProps - props passed to the MUI Autocomplete Component
  * @param {Object} textFieldProps - props passed to the renderInput TextField
  * @param {Array|Objects} dependentFieldsArray - optional, array of objects {fieldName: String, setFieldValue: function
- * that newValue as input and returns the dependent fields change}
+ * that takes newValue as input and returns the dependent fields change}
  * @param {function} refetch - optional, function to refetch lookup table data when dropdown is opened
  *
  * @returns {React component}
