@@ -294,17 +294,19 @@ const ProjectPhases = ({
           handleSnackbar(true, "Error updating table", "error", error)
         }
       />
-      <ProjectPhaseDialog
-        phase={editPhase}
-        onClose={() => setEditPhase(null)}
-        onSubmitCallback={onSubmitCallback}
-        phases={data?.moped_phases}
-        noteTypes={data?.moped_note_types ?? []}
-        currentProjectPhaseId={currentProjectPhaseId}
-        currentPhaseTypeId={currentPhaseTypeId}
-        projectId={projectId}
-        handleSnackbar={handleSnackbar}
-      />
+      {editPhase && (
+        <ProjectPhaseDialog
+          phase={editPhase}
+          onClose={() => setEditPhase(null)}
+          onSubmitCallback={onSubmitCallback}
+          phases={data?.moped_phases}
+          noteTypes={data?.moped_note_types ?? []}
+          currentProjectPhaseId={currentProjectPhaseId}
+          currentPhaseTypeId={currentPhaseTypeId}
+          projectId={projectId}
+          handleSnackbar={handleSnackbar}
+        />
+      )}
       {isTemplateDialogOpen && (
         <PhaseTemplateModal
           isDialogOpen={isTemplateDialogOpen}
