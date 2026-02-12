@@ -16,11 +16,9 @@ insert_permissions:
         created_by_user_id: x-hasura-user-db-id
         updated_by_user_id: x-hasura-user-db-id
       columns:
-        - dept_unit
         - ecapris_funding_id
         - ecapris_subproject_id
         - fdu
-        - fund
         - funding_amount
         - funding_description
         - funding_program_id
@@ -38,11 +36,9 @@ insert_permissions:
         created_by_user_id: x-hasura-user-db-id
         updated_by_user_id: x-hasura-user-db-id
       columns:
-        - dept_unit
         - ecapris_funding_id
         - ecapris_subproject_id
         - fdu
-        - fund
         - funding_amount
         - funding_description
         - funding_program_id
@@ -59,13 +55,9 @@ select_permissions:
       columns:
         - created_at
         - created_by_user_id
-        - dept_unit
         - ecapris_funding_id
         - ecapris_subproject_id
         - fdu
-        - fund
-        - fund_dept_unit
-        - fund_name
         - funding_amount
         - funding_description
         - funding_program_id
@@ -86,13 +78,9 @@ select_permissions:
       columns:
         - created_at
         - created_by_user_id
-        - dept_unit
         - ecapris_funding_id
         - ecapris_subproject_id
         - fdu
-        - fund
-        - fund_dept_unit
-        - fund_name
         - funding_amount
         - funding_description
         - funding_program_id
@@ -113,13 +101,9 @@ select_permissions:
       columns:
         - created_at
         - created_by_user_id
-        - dept_unit
         - ecapris_funding_id
         - ecapris_subproject_id
         - fdu
-        - fund
-        - fund_dept_unit
-        - fund_name
         - funding_amount
         - funding_description
         - funding_program_id
@@ -139,11 +123,9 @@ update_permissions:
   - role: moped-admin
     permission:
       columns:
-        - dept_unit
         - ecapris_funding_id
         - ecapris_subproject_id
         - fdu
-        - fund
         - funding_amount
         - funding_description
         - funding_program_id
@@ -161,11 +143,9 @@ update_permissions:
   - role: moped-editor
     permission:
       columns:
-        - dept_unit
         - ecapris_funding_id
         - ecapris_subproject_id
         - fdu
-        - fund
         - funding_amount
         - funding_description
         - funding_program_id

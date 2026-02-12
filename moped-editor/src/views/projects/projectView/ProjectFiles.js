@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash.isequal";
 
-import { Button, CircularProgress, Link, Typography } from "@mui/material";
+import { Button, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import {
@@ -454,9 +454,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
     fileTypesObject,
   });
 
-  // If no data or loading show progress circle
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <>
       <DataGridPro
@@ -465,7 +462,8 @@ const ProjectFiles = ({ handleSnackbar }) => {
         ref={apiRef}
         autoHeight
         columns={dataGridColumns}
-        rows={rows}
+        rows={rows || []}
+        loading={loading || !data}
         getRowId={(row) => row.project_file_id}
         editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
@@ -501,14 +499,16 @@ const ProjectFiles = ({ handleSnackbar }) => {
           },
         }}
       />
-      <FileUploadDialogSingle
-        title={"Add file"}
-        dialogOpen={dialogOpen}
-        handleClickCloseUploadFile={handleClickCloseUploadFile}
-        handleClickSaveFile={handleClickSaveFile}
-        projectId={projectId}
-        fileTypesLookup={fileTypesLookup}
-      />
+      {fileTypesLookup && (
+        <FileUploadDialogSingle
+          title={"Add file"}
+          dialogOpen={dialogOpen}
+          handleClickCloseUploadFile={handleClickCloseUploadFile}
+          handleClickSaveFile={handleClickSaveFile}
+          projectId={projectId}
+          fileTypesLookup={fileTypesLookup}
+        />
+      )}
       <DeleteConfirmationModal
         type={"file"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}

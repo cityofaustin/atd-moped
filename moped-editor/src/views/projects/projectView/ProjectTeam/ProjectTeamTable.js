@@ -2,14 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  Box,
-  Button,
-  Icon,
-  Link,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Icon, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
@@ -103,11 +96,15 @@ const useColumns = ({
                 error: props.error,
                 helperText: "Required",
               }}
-              dependentFieldName="moped_workgroup"
-              setDependentFieldValue={(newValue) => ({
-                workgroup_id: newValue?.workgroup_id,
-                workgroup_name: workgroupLookup[newValue?.workgroup_id],
-              })}
+              dependentFieldsArray={[
+                {
+                  fieldName: "moped_workgroup",
+                  setFieldValue: (newValue) => ({
+                    workgroup_id: newValue?.workgroup_id,
+                    workgroup_name: workgroupLookup[newValue?.workgroup_id],
+                  }),
+                },
+              ]}
             />
           );
         },
@@ -122,7 +119,7 @@ const useColumns = ({
         headerName: "Workgroup",
         field: "moped_workgroup",
         editable: true,
-        width: 200,
+        width: 250,
         valueFormatter: (workgroup) => workgroup?.workgroup_name ?? "",
         sortComparator: (v1, v2) =>
           v1.workgroup_name.localeCompare(v2.workgroup_name),
@@ -549,8 +546,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   const getRowIdMemoized = useCallback((row) => row.project_personnel_id, []);
 
-  if (loading || !data) return <CircularProgress />;
-
   const checkIfShiftKey = (params, event) => {
     if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
       setUsingShiftKey(event.shiftKey);
@@ -569,7 +564,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         ref={apiRef}
         autoHeight
         columns={dataGridColumns}
-        rows={rows}
+        rows={rows || []}
+        loading={loading || !data}
         getRowId={getRowIdMemoized}
         editMode="row"
         rowModesModel={rowModesModel}
@@ -587,7 +583,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         hideFooter
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
-        loading={loading}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,

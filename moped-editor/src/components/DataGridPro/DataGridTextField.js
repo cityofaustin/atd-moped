@@ -42,7 +42,7 @@ const DataGridTextField = ({
   return (
     <TextField
       variant="standard"
-      sx={{ width: "100%", mx: 1, pt: 1 }}
+      sx={{ width: "100%", mx: 1 }}
       id={field}
       inputRef={ref}
       name={field}

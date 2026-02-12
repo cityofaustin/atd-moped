@@ -1,3 +1,4 @@
+- "!include deprecated_moped_funds.yaml"
 - "!include deprecated_moped_project_types.yaml"
 - "!include deprecated_moped_types.yaml"
 - "!include public_combined_project_funding_view.yaml"
@@ -28,7 +29,6 @@
 - "!include public_moped_fund_programs.yaml"
 - "!include public_moped_fund_sources.yaml"
 - "!include public_moped_fund_status.yaml"
-- "!include public_moped_funds.yaml"
 - "!include public_moped_milestones.yaml"
 - "!include public_moped_note_types.yaml"
 - "!include public_moped_organization.yaml"

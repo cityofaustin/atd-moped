@@ -7,7 +7,6 @@ import {
   AppBar,
   Box,
   Card,
-  CircularProgress,
   Container,
   Grid,
   Link,
@@ -272,8 +271,6 @@ const DashboardView = () => {
     handleSnackbar,
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <ActivityMetrics eventName="dashboard_load">
       <Page title={"Dashboard"}>
@@ -322,26 +319,26 @@ const DashboardView = () => {
                       })}
                     </Tabs>
                   </AppBar>
-                  {loading ? (
-                    <CircularProgress />
-                  ) : TABS[activeTab].label === "Saved views" ? (
+                  {TABS[activeTab].label === "Saved views" ? (
                     <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
-                    <DataGridPro
-                      sx={dataGridProStyleOverrides}
-                      columns={dataGridColumns}
-                      rows={rows}
-                      autoHeight
-                      getRowHeight={() => "auto"}
-                      getRowId={(row) => row.project_id}
-                      rowModesModel={rowModesModel}
-                      onRowModesModelChange={handleRowModesModelChange}
-                      hideFooter
-                      disableRowSelectionOnClick
-                      localeText={{
-                        noRowsLabel: "No projects to display",
-                      }}
-                    />
+                    <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                      <DataGridPro
+                        sx={dataGridProStyleOverrides}
+                        columns={dataGridColumns}
+                        rows={rows || []}
+                        loading={loading || !data}
+                        getRowHeight={() => "auto"}
+                        getRowId={(row) => row.project_id}
+                        rowModesModel={rowModesModel}
+                        onRowModesModelChange={handleRowModesModelChange}
+                        hideFooter
+                        disableRowSelectionOnClick
+                        localeText={{
+                          noRowsLabel: "No projects to display",
+                        }}
+                      />
+                    </Box>
                   )}
                 </Grid>
               </Box>

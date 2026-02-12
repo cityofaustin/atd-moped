@@ -245,47 +245,47 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     storageKey: "workActivityTableColumnConfig",
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
-        autoHeight
-        columns={columns}
-        columnVisibilityModel={hiddenColumns}
-        onColumnVisibilityModelChange={(newModel) => setHiddenColumns(newModel)}
-        toolbar
-        density="comfortable"
-        disableRowSelectionOnClick
-        getRowHeight={() => "auto"}
-        hideFooter
-        localeText={{ noRowsLabel: "No work activities" }}
-        initialState={{ pinnedColumns: { right: ["Edit"] } }}
-        rows={activities}
-        slots={{
-          toolbar: DataGridToolbar,
-        }}
-        slotProps={{
-          toolbar: {
-            title: "Work activities",
-            primaryActionButton: (
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddCircleIcon />}
-                onClick={onClickAddActivity}
-              >
-                Add Work Activity
-              </Button>
-            ),
-            showColumnsButton: true,
-            showFiltersButton: true,
-          },
-        }}
-        onCellDoubleClick={doubleClickListener}
-      />
-
+      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
+          columns={columns}
+          columnVisibilityModel={hiddenColumns}
+          onColumnVisibilityModelChange={(newModel) =>
+            setHiddenColumns(newModel)
+          }
+          density="comfortable"
+          disableRowSelectionOnClick
+          getRowHeight={() => "auto"}
+          hideFooter
+          localeText={{ noRowsLabel: "No work activities" }}
+          initialState={{ pinnedColumns: { right: ["Edit"] } }}
+          rows={activities || []}
+          loading={loading || !data}
+          slots={{
+            toolbar: DataGridToolbar,
+          }}
+          slotProps={{
+            toolbar: {
+              title: "Work activities",
+              primaryActionButton: (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddCircleIcon />}
+                  onClick={onClickAddActivity}
+                >
+                  Add Work Activity
+                </Button>
+              ),
+              showColumnsButton: true,
+              showFiltersButton: true,
+            },
+          }}
+          onCellDoubleClick={doubleClickListener}
+        />
+      </div>
       {editActivity && (
         <ProjectWorkActivitiesDialog
           activity={editActivity}

@@ -80,6 +80,15 @@ export const transformGridToDatabase = (gridRecord) => {
     ? gridRecord.fdu.ecapris_funding_id
     : null;
 
+  const ecapris_subproject_id = gridRecord.fdu
+    ? gridRecord.fdu.ecapris_subproject_id
+    : null;
+
+  const fdu_record_amount = gridRecord.fdu ? gridRecord.fdu.amount : null;
+  // if the amount on the fdu matches what we are saving, its not an override
+  const should_use_ecapris_amount =
+    fdu_record_amount === Number(gridRecord.funding_amount);
+
   const {
     id,
     __typename,
@@ -90,7 +99,6 @@ export const transformGridToDatabase = (gridRecord) => {
     fund_program,
     fund_source,
     fund_status,
-    ecapris_subproject_id,
     proj_funding_id,
     isNew,
     is_manual,
@@ -107,5 +115,7 @@ export const transformGridToDatabase = (gridRecord) => {
     fdu,
     unit_long_name,
     ecapris_funding_id,
+    ecapris_subproject_id,
+    should_use_ecapris_amount,
   };
 };

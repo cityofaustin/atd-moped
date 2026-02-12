@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
@@ -365,8 +365,6 @@ const SubprojectsTable = ({
     deleteIcon: <LinkOffIcon sx={{ fontSize: 24 }} />,
   });
 
-  if (loading || !data) return <CircularProgress />;
-
   const noRelatedProjectsLabel = isSubproject
     ? "No parent project set"
     : "No subprojects to display";
@@ -380,7 +378,8 @@ const SubprojectsTable = ({
       <DataGridPro
         sx={{ ...dataGridProStyleOverrides, border: 0 }}
         columns={dataGridColumns}
-        rows={rows}
+        rows={rows || []}
+        loading={loading || !data}
         autoHeight
         getRowHeight={() => "auto"}
         density="comfortable"
