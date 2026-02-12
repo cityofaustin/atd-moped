@@ -1,15 +1,15 @@
 import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
-import { CircularProgress, Box, IconButton } from "@mui/material";
+import { CircularProgress, Box, IconButton, Button } from "@mui/material";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import { green } from "@mui/material/colors";
 import {
   EditOutlined as EditOutlinedIcon,
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
+  AddCircle as AddCircleIcon,
 } from "@mui/icons-material";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
-import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import ProjectSubstantialCompletionDate from "src/views/projects/projectView/ProjectPhase/ProjectSubstantialCompletionDate";
 import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
@@ -265,14 +265,23 @@ const ProjectPhases = ({
           toolbar: {
             title: "Phases",
             primaryActionButton: (
-              <ButtonDropdownMenu
-                addAction={onClickAddPhase}
-                openActionDialog={setIsTemplateDialogOpen}
-                parentButtonText="Add phase"
-                firstOptionText="New phase"
-                secondOptionText="From template"
-                secondOptionIcon
-              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onClickAddPhase}
+                startIcon={<AddCircleIcon />}
+              >
+                {"Add phase"}
+              </Button>
+            ),
+            secondaryActionButton: (
+              <Button
+                variant="outlined"
+                onClick={() => setIsTemplateDialogOpen(true)}
+                startIcon={<AddCircleIcon />}
+              >
+                {"From template"}
+              </Button>
             ),
             children: (
               <ProjectSubstantialCompletionDate
