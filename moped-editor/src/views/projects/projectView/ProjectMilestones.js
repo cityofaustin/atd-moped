@@ -44,6 +44,15 @@ const useMilestoneNameLookup = (data) =>
 
 const requiredFields = ["moped_milestone"];
 
+const milestoneAutocompleteDependentFields = [
+  {
+    fieldName: "moped_milestone_related_phase",
+    setFieldValue: (newValue) => ({
+      related_phase_id: newValue?.related_phase_id,
+    }),
+  },
+];
+
 const useColumns = ({
   data,
   rowModesModel,
@@ -77,10 +86,7 @@ const useColumns = ({
               helperText: props.error ? "Milestone is required" : "",
               error: props.error,
             }}
-            dependentFieldName="moped_milestone_related_phase"
-            setDependentFieldValue={(newValue) => ({
-              related_phase_id: newValue?.related_phase_id,
-            })}
+            dependentFieldsArray={milestoneAutocompleteDependentFields}
           />
         ),
         width: 250,
