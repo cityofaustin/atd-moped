@@ -158,7 +158,13 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
+const ProjectPhases = ({
+  projectId,
+  data,
+  loading,
+  refetch,
+  handleSnackbar,
+}) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [editPhase, setEditPhase] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
@@ -250,6 +256,7 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
         rows={data?.moped_proj_phases || []}
+        loading={loading || !data}
         onCellDoubleClick={doubleClickListener}
         slots={{
           toolbar: DataGridToolbar,
@@ -300,16 +307,18 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
           handleSnackbar={handleSnackbar}
         />
       )}
-      <PhaseTemplateModal
-        isDialogOpen={isTemplateDialogOpen}
-        handleDialogClose={() => setIsTemplateDialogOpen(false)}
-        selectedPhases={data.moped_proj_phases}
-        phaseNameLookup={phaseNameLookup}
-        subphaseNameLookup={subphaseNameLookup}
-        projectId={projectId}
-        refetch={refetch}
-        handleSnackbar={handleSnackbar}
-      />
+      {isTemplateDialogOpen && (
+        <PhaseTemplateModal
+          isDialogOpen={isTemplateDialogOpen}
+          handleDialogClose={() => setIsTemplateDialogOpen(false)}
+          selectedPhases={data.moped_proj_phases}
+          phaseNameLookup={phaseNameLookup}
+          subphaseNameLookup={subphaseNameLookup}
+          projectId={projectId}
+          refetch={refetch}
+          handleSnackbar={handleSnackbar}
+        />
+      )}
       <DeleteConfirmationModal
         type={"phase"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}

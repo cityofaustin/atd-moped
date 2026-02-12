@@ -1,7 +1,7 @@
 import React from "react";
 
 // Material
-import { CircularProgress, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 
 // Query
 import { TIMELINE_QUERY } from "src/queries/project";
@@ -35,16 +35,13 @@ const ProjectTimeline = ({ handleSnackbar }) => {
     fetchPolicy: "no-cache",
   });
 
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
-  if (loading || !data) return <CircularProgress />;
-
   return (
     <>
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <ProjectPhases
             projectId={projectId}
+            loading={loading || !data}
             data={data}
             refetch={refetch}
             handleSnackbar={handleSnackbar}
@@ -53,7 +50,7 @@ const ProjectTimeline = ({ handleSnackbar }) => {
         <Grid item xs={12}>
           <ProjectMilestones
             projectId={projectId}
-            loading={loading}
+            loading={loading || !data}
             data={data}
             refetch={refetch}
             handleSnackbar={handleSnackbar}
