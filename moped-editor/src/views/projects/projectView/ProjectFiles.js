@@ -499,16 +499,14 @@ const ProjectFiles = ({ handleSnackbar }) => {
           },
         }}
       />
-      {dialogOpen && (
-        <FileUploadDialogSingle
-          title={"Add file"}
-          dialogOpen={dialogOpen}
-          handleClickCloseUploadFile={handleClickCloseUploadFile}
-          handleClickSaveFile={handleClickSaveFile}
-          projectId={projectId}
-          fileTypesLookup={fileTypesLookup}
-        />
-      )}
+      <FileUploadDialogSingle
+        title={"Add file"}
+        dialogOpen={dialogOpen}
+        handleClickCloseUploadFile={handleClickCloseUploadFile}
+        handleClickSaveFile={handleClickSaveFile}
+        projectId={projectId}
+        fileTypesLookup={fileTypesLookup}
+      />
       <DeleteConfirmationModal
         type={"file"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
