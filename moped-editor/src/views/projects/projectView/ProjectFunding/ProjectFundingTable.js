@@ -50,6 +50,7 @@ import {
   transformDatabaseToGrid,
   transformGridToDatabase,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
+import { useLogUserEvent } from "src/utils/userEvents";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -70,6 +71,7 @@ const useColumns = ({
   handleEditClick,
   setOverrideFundingRecord,
   usingShiftKey,
+  logUserEvent,
 }) =>
   useMemo(() => {
     return [
@@ -213,7 +215,10 @@ const useColumns = ({
               <IconButton
                 aria-label="edit"
                 sx={{ color: "inherit", padding: "5px" }}
-                onClick={() => setOverrideFundingRecord(row)}
+                onClick={() => {
+                  logUserEvent("funding_ecapris_override_form_load");
+                  setOverrideFundingRecord(row);
+                }}
               >
                 <EditOutlinedIcon />
               </IconButton>
@@ -239,6 +244,7 @@ const useColumns = ({
     handleEditClick,
     setOverrideFundingRecord,
     usingShiftKey,
+    logUserEvent,
   ]);
 
 const ProjectFundingTable = ({
@@ -305,6 +311,7 @@ const ProjectFundingTable = ({
   const [updateShouldSyncECapris] = useMutation(
     PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
   );
+  const logUserEvent = useLogUserEvent();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
@@ -332,6 +339,7 @@ const ProjectFundingTable = ({
   // Open funding override modal when double clicking in a cell of a record from ecapris
   const doubleClickListener = (params) => {
     if (!params.row.is_manual) {
+      logUserEvent("funding_ecapris_override_form_load");
       setOverrideFundingRecord(params.row);
     }
   };
@@ -548,7 +556,6 @@ const ProjectFundingTable = ({
     }
   };
 
-
   const refetchFundingData = useCallback(() => {
     refetch();
     refetchProjectSummary();
@@ -564,9 +571,13 @@ const ProjectFundingTable = ({
     handleEditClick,
     setOverrideFundingRecord,
     usingShiftKey,
+    logUserEvent,
   });
 
   const handleECaprisSwitch = () => {
+    logUserEvent(
+      `funding_ecapris_sync_toggle_${!shouldSyncEcaprisFunding === false ? "off" : "on"}`
+    );
     updateShouldSyncECapris({
       variables: {
         projectId: projectId,
@@ -655,7 +666,10 @@ const ProjectFundingTable = ({
             secondaryActionButton: (
               <Button
                 variant="outlined"
-                onClick={() => setIsDialogOpen(true)}
+                onClick={() => {
+                  logUserEvent("funding_ecapris_import_click");
+                  setIsDialogOpen(true);
+                }}
                 startIcon={<AddCircleIcon />}
                 disabled={!eCaprisSubprojectId || isEditMode}
               >
