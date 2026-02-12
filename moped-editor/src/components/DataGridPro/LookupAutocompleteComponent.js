@@ -11,11 +11,11 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {string} field - name of Field
  * @param {Boolean} hasFocus - does field have focus in table
  * @param {String} name - name of lookup table relationship
- * @param {Array|Objects} options - the lookup table data
+ * @param {Array<Object>} options - the lookup table data
  * @param {Boolean} fullWidthPopper - should component use custom Popper component
  * @param {Object} autocompleteProps - props passed to the MUI Autocomplete Component
  * @param {Object} textFieldProps - props passed to the renderInput TextField
- * @param {Array|Objects} dependentFieldsArray - optional, array of objects {fieldName: String, setFieldValue: function
+ * @param {Array<Object>} dependentFieldsArray - optional, array of objects {fieldName: String, setFieldValue: function
  * that takes newValue as input and returns the dependent fields change}
  * @param {function} refetch - optional, function to refetch lookup table data when dropdown is opened
  *
