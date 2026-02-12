@@ -2,14 +2,14 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
-import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -44,6 +44,15 @@ const useMilestoneNameLookup = (data) =>
 
 const requiredFields = ["moped_milestone"];
 
+const milestoneAutocompleteDependentFields = [
+  {
+    fieldName: "moped_milestone_related_phase",
+    setFieldValue: (newValue) => ({
+      related_phase_id: newValue?.related_phase_id,
+    }),
+  },
+];
+
 const useColumns = ({
   data,
   rowModesModel,
@@ -77,10 +86,7 @@ const useColumns = ({
               helperText: props.error ? "Milestone is required" : "",
               error: props.error,
             }}
-            dependentFieldName="moped_milestone_related_phase"
-            setDependentFieldValue={(newValue) => ({
-              related_phase_id: newValue?.related_phase_id,
-            })}
+            dependentFieldsArray={milestoneAutocompleteDependentFields}
           />
         ),
         width: 250,
@@ -457,14 +463,23 @@ const ProjectMilestones = ({
           toolbar: {
             title: "Milestones",
             primaryActionButton: (
-              <ButtonDropdownMenu
-                addAction={onClickAddMilestone}
-                openActionDialog={setIsDialogOpen}
-                parentButtonText="Add milestone"
-                firstOptionText="New milestone"
-                secondOptionText="From template"
-                secondOptionIcon
-              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onClickAddMilestone}
+                startIcon={<AddCircleIcon />}
+              >
+                {"Add milestone"}
+              </Button>
+            ),
+            secondaryActionButton: (
+              <Button
+                variant="outlined"
+                onClick={() => setIsDialogOpen(true)}
+                startIcon={<AddCircleIcon />}
+              >
+                {"From template"}
+              </Button>
             ),
           },
         }}

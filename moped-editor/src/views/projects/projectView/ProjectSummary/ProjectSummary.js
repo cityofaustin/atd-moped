@@ -21,7 +21,6 @@ import ProjectSummaryInterimID from "src/views/projects/projectView/ProjectSumma
 import ProjectSummaryAutocomplete from "src/views/projects/projectView/ProjectSummary/ProjectSummaryAutocomplete";
 import ProjectSummaryProjectPartners from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectPartners";
 import ProjectSummaryCouncilDistricts from "src/views/projects/projectView/ProjectSummary/ProjectSummaryCouncilDistricts";
-import ProjectSummaryComponentWorkTypes from "src/views/projects/projectView/ProjectSummary/ProjectSummaryComponentWorkTypes";
 
 import SubprojectsTable from "src/views/projects/projectView/ProjectSummary/SubprojectsTable";
 import TagsSection from "src/views/projects/projectView/ProjectSummary/TagsSection";
@@ -124,9 +123,6 @@ const ProjectSummary = ({
                     handleSnackbar={handleSnackbar}
                     tooltipText="Other internal or external workgroups participating in the project"
                   />
-                </Grid>
-                <Grid item xs={12}>
-                  <ProjectSummaryComponentWorkTypes data={data} />
                 </Grid>
                 <Grid item xs={12}>
                   <ProjectSummaryAutocomplete
