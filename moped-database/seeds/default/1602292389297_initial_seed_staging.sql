@@ -64,12 +64,23 @@ INSERT INTO public.moped_proj_work_activity (id, workgroup_contractor, contract_
 
 
 --
--- Data for Name: moped_proj_funding; Type: TABLE DATA; Schema: public; Owner: moped
+-- Insert ecapris_subproject_funding rows to use in seeded funding rows
 --
 
-INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, created_by_user_id, funding_source_id, funding_program_id, funding_amount, funding_description, funding_status_id, fund, dept_unit, is_deleted) VALUES (2, 227, '2022-11-12 18:12:47.295511+00', 1, 4, 7, 0, 'cha ching', 2, '{"fund_id": "8400", "fund_name": "GCP-TPSD GENERAL IMPROVEMENTS"}', '{"dept": "2507", "unit": "9024", "dept_id": "180775091", "dept_unit_id": "359318059", "unit_long_name": "Pay Station Parking Meter Replacement", "unit_short_name": "8400-2507", "dept_unit_status": "Active"}', false);
-INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, created_by_user_id, funding_source_id, funding_program_id, funding_amount, funding_description, funding_status_id, fund, dept_unit, is_deleted) VALUES (4, 227, '2022-11-12 18:12:47.295689+00', 1, 9, 11, 0, 'This is funding description', 1, '{"fund_id": "4730", "fund_name": "PARKING CIP"}', '{"dept": "2507", "unit": "9040", "dept_id": "180775091", "dept_unit_id": "207413510", "unit_long_name": "Parking Initiatives", "unit_short_name": "8400-2507", "dept_unit_status": "Active"}', false);
-INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, created_by_user_id, funding_source_id, funding_program_id, funding_amount, funding_description, funding_status_id, fund, dept_unit, is_deleted) VALUES (3, 229, '2022-11-12 18:12:47.295683+00', 1, NULL, NULL, NULL, NULL, 2, '{"fund_id": "4730", "fund_name": "PARKING CIP"}', '{"dept": "2507", "unit": "9042", "dept_id": "180775091", "dept_unit_id": "153705858", "unit_long_name": "New & Repair Parking Stations", "unit_short_name": "4730-2507", "dept_unit_status": "Active"}', false);
+INSERT INTO public.ecapris_subproject_funding (id, ecapris_subproject_id, fao_id, fdu, app, unit_long_name, subprogram, program, created_at, updated_at, created_by_user_id, updated_by_user_id, fdu_status, bond_year, funding_source_id, funding_program_id) VALUES
+(1, '12120.015', 105682, '8119 6207 L039', 189322, 'Real Ave - Fake Rd to Cool Rd Shared Use Path', 'Sidewalks', 'Sidewalks', '2025-12-04 20:21:58.594612+00', '2025-12-04 20:21:58.594612+00', 1, 1, 'Inactive', 2016, 2, 15);
+INSERT INTO public.ecapris_subproject_funding (id, ecapris_subproject_id, fao_id, fdu, app, unit_long_name, subprogram, program, created_at, updated_at, created_by_user_id, updated_by_user_id, fdu_status, bond_year, funding_source_id, funding_program_id) VALUES
+(2, '11887.003', 111450, '8119 2507 C128', 157880, 'A Nice Corridor', 'Corridor Program', 'Corridor Program', '2025-12-04 20:21:58.098206+00', '2025-12-04 20:21:58.098206+00', 1, 1, 'Active', 2016, 2, 4);
+
+--
+-- Data for Name: moped_proj_funding; Type: TABLE DATA; Schema: public; Owner: moped
+--
+INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id, should_use_ecapris_amount) VALUES
+(1, 227, '2026-02-05 22:23:49.011335+00', null, 'Latest appropriated amount', 5, '2026-02-05 22:23:49.011335+00', 105682, 'f', '8119 6207 L039', 'Real Ave - Fake Rd to Cool Rd Shared Use Path', '12120.015', 't');
+INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id, should_use_ecapris_amount) VALUES
+(2, 227, '2026-02-05 22:23:49.011335+00', 78910, 'Override of eCAPRIS amount', 5, '2026-02-05 22:23:49.011335+00', 111450, 'f', '8119 2507 C128', 'A Nice Corridor', '12120.015', 'f');
+INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id) VALUES
+(3, 229, '2026-02-05 22:23:49.011335+00', 1337, 'Manually entered', 2, '2026-02-05 22:23:49.011335+00', null, 'f', null, null, null);
 
 
 --

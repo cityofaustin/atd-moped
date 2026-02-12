@@ -50,6 +50,7 @@ import {
   transformDatabaseToGrid,
   transformGridToDatabase,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
+import { useLogUserEvent } from "src/utils/userEvents";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -58,6 +59,25 @@ const fduAutocompleteProps = {
   isOptionEqualToValue: (value, option) =>
     value?.ecapris_funding_id === option?.ecapris_funding_id,
 };
+
+const fduAutocompleteDependentFields = [
+  {
+    fieldName: "unit_long_name",
+    setFieldValue: (newValue) => newValue?.unit_long_name,
+  },
+  {
+    fieldName: "fund_source",
+    setFieldValue: (newValue) => newValue?.moped_fund_source,
+  },
+  {
+    fieldName: "fund_program",
+    setFieldValue: (newValue) => newValue?.moped_fund_program,
+  },
+  {
+    fieldName: "funding_amount",
+    setFieldValue: (newValue) => newValue?.amount,
+  },
+];
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
@@ -70,9 +90,62 @@ const useColumns = ({
   handleEditClick,
   setOverrideFundingRecord,
   usingShiftKey,
+  logUserEvent,
 }) =>
   useMemo(() => {
     return [
+      {
+        headerName: "FDU",
+        field: "fdu",
+        width: 200,
+        editable: true,
+        renderCell: ({ row, value }) =>
+          row.is_synced_from_ecapris ? (
+            <>
+              <span>{value?.fdu}</span>
+              <Typography
+                variant="body2"
+                color="primary.main"
+                sx={{
+                  fontWeight: 500,
+                }}
+              >
+                SYNCED FROM ECAPRIS
+              </Typography>
+            </>
+          ) : (
+            value?.fdu
+          ),
+        renderEditCell: (props) => (
+          <LookupAutocompleteComponent
+            {...props}
+            name={"ecapris_funding"}
+            options={dataFduOptions?.ecapris_subproject_funding}
+            fullWidthPopper={true}
+            autocompleteProps={{
+              ...fduAutocompleteProps,
+              value: props?.row?.fdu,
+            }}
+            dependentFieldsArray={fduAutocompleteDependentFields}
+          />
+        ),
+      },
+      {
+        headerName: "Unit Name",
+        field: "unit_long_name",
+        editable: true, // this is to be able to use the renderEditCell option to update the related phase
+        // during editing -- the input field is always disabled
+        width: 175,
+        renderEditCell: (props) => (
+          <ViewOnlyTextField
+            {...props}
+            value={props.row.unit_long_name}
+            usingShiftKey={usingShiftKey}
+            previousColumnField="fdu"
+            nextColumnField="amount"
+          />
+        ),
+      },
       {
         headerName: "Source",
         field: "fund_source",
@@ -127,59 +200,6 @@ const useColumns = ({
         ),
       },
       {
-        headerName: "FDU",
-        field: "fdu",
-        width: 200,
-        editable: true,
-        renderCell: ({ row, value }) =>
-          row.is_synced_from_ecapris ? (
-            <>
-              <span>{value?.fdu}</span>
-              <Typography
-                variant="body2"
-                color="primary.main"
-                sx={{
-                  fontWeight: 500,
-                }}
-              >
-                SYNCED FROM ECAPRIS
-              </Typography>
-            </>
-          ) : (
-            value?.fdu
-          ),
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"ecapris_funding"}
-            options={dataFduOptions?.ecapris_subproject_funding}
-            fullWidthPopper={true}
-            autocompleteProps={{
-              ...fduAutocompleteProps,
-              value: props?.row?.fdu,
-            }}
-            dependentFieldName="unit_long_name"
-            setDependentFieldValue={(newValue) => newValue?.unit_long_name}
-          />
-        ),
-      },
-      {
-        headerName: "Unit Name",
-        field: "unit_long_name",
-        editable: true, // this is to be able to use the renderEditCell option to update the related phase
-        // during editing -- the input field is always disabled
-        width: 150,
-        renderEditCell: (props) => (
-          <ViewOnlyTextField
-            {...props}
-            value={props.row.unit_long_name}
-            usingShiftKey={usingShiftKey}
-            previousColumnField="fdu"
-            nextColumnField="amount"
-          />
-        ),
-      },
-      {
         headerName: "Amount",
         field: "funding_amount",
         width: 100,
@@ -213,7 +233,10 @@ const useColumns = ({
               <IconButton
                 aria-label="edit"
                 sx={{ color: "inherit", padding: "5px" }}
-                onClick={() => setOverrideFundingRecord(row)}
+                onClick={() => {
+                  logUserEvent("funding_ecapris_override_form_load");
+                  setOverrideFundingRecord(row);
+                }}
               >
                 <EditOutlinedIcon />
               </IconButton>
@@ -239,6 +262,7 @@ const useColumns = ({
     handleEditClick,
     setOverrideFundingRecord,
     usingShiftKey,
+    logUserEvent,
   ]);
 
 const ProjectFundingTable = ({
@@ -305,6 +329,7 @@ const ProjectFundingTable = ({
   const [updateShouldSyncECapris] = useMutation(
     PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
   );
+  const logUserEvent = useLogUserEvent();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
@@ -332,6 +357,7 @@ const ProjectFundingTable = ({
   // Open funding override modal when double clicking in a cell of a record from ecapris
   const doubleClickListener = (params) => {
     if (!params.row.is_manual) {
+      logUserEvent("funding_ecapris_override_form_load");
       setOverrideFundingRecord(params.row);
     }
   };
@@ -416,7 +442,7 @@ const ProjectFundingTable = ({
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "fund_source" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "fdu" },
     }));
   };
 
@@ -548,7 +574,6 @@ const ProjectFundingTable = ({
     }
   };
 
-
   const refetchFundingData = useCallback(() => {
     refetch();
     refetchProjectSummary();
@@ -564,9 +589,13 @@ const ProjectFundingTable = ({
     handleEditClick,
     setOverrideFundingRecord,
     usingShiftKey,
+    logUserEvent,
   });
 
   const handleECaprisSwitch = () => {
+    logUserEvent(
+      `funding_ecapris_sync_toggle_${!shouldSyncEcaprisFunding === false ? "off" : "on"}`
+    );
     updateShouldSyncECapris({
       variables: {
         projectId: projectId,
@@ -655,7 +684,10 @@ const ProjectFundingTable = ({
             secondaryActionButton: (
               <Button
                 variant="outlined"
-                onClick={() => setIsDialogOpen(true)}
+                onClick={() => {
+                  logUserEvent("funding_ecapris_import_click");
+                  setIsDialogOpen(true);
+                }}
                 startIcon={<AddCircleIcon />}
                 disabled={!eCaprisSubprojectId || isEditMode}
               >

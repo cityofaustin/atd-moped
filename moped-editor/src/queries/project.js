@@ -72,7 +72,6 @@ export const SUMMARY_QUERY = gql`
         name
       }
       project_list_view {
-        component_work_type_names
         project_id
         project_status_update
         project_status_update_date_created
@@ -912,7 +911,10 @@ export const PROJECT_UPDATE_ECAPRIS_SYNC = gql`
 `;
 
 export const PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC = gql`
-  mutation UpdateProjectECaprisFundingSync($projectId: Int!, $shouldSync: Boolean!) {
+  mutation UpdateProjectECaprisFundingSync(
+    $projectId: Int!
+    $shouldSync: Boolean!
+  ) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { should_sync_ecapris_funding: $shouldSync }
