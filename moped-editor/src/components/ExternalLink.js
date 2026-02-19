@@ -7,10 +7,10 @@ const getExternalLinkText = (url) => {
   switch (true) {
     case url.includes("https://atd.knack.com/amd"):
       return "AMD Data Tracker";
-    case url.includes("https://atd.knack.com/signs-markings#work-order-signs/"):
+    case url.includes("https://atd.knack.com/signs-markings#work-order-signs"):
       return "Signs Work Order";
     case url.includes(
-      "https://atd.knack.com/signs-markings#work-orders-markings/"
+      "https://atd.knack.com/signs-markings#work-orders-markings"
     ):
       return "Markings Work Order";
     default:
