@@ -1,4 +1,4 @@
 AGOL_USERNAME=
 AGOL_PASSWORD=
-HASURA_ENDPOINT=http://host.docker.internal:8080/v1/graphql
+HASURA_ENDPOINT=http://host.docker.internal:8082/v1/graphql
 HASURA_ADMIN_SECRET=hasurapassword

@@ -35,5 +35,5 @@ The script `ecapris_funding_sync.py` is used to copy eCAPRIS subproject funding 
    --platform linux/amd64,linux/arm64 \
    --tag atddocker/atd-moped-etl-ecapris-funding:development .
    ```
-1. Start your local Airflow instance ([atd-airflow](https://github.com/cityofaustin/atd-airflow)). You will need to make sure you are running the Airflow web server on a port other than 8080 to prevent conflicts with the Moped local stack. 8082 works well.
-1. The DAG is setup to use `development` as the Docker image tag in the local development stack which references the local Hasura API for queries and mutations done by the ETL. 
+2. Start your local Airflow instance ([atd-airflow](https://github.com/cityofaustin/atd-airflow)).
+3. The DAG is setup to use `development` as the Docker image tag in the local development stack which references the local Hasura API for queries and mutations done by the ETL. 
