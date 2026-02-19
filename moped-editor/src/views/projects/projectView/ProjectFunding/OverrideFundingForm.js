@@ -35,7 +35,8 @@ const validationSchema = ({ appropriatedFunding }) =>
         "differentFromAppropriated",
         `Amount must be different from appropriated amount of ${currencyFormatter.format(appropriatedFunding)} if overriding`,
         function (value) {
-          return value !== appropriatedFunding;
+          const isOverriding = this.parent.should_use_ecapris_amount === false;
+          return isOverriding ? value !== appropriatedFunding : true;
         }
       )
       .nullable(),
