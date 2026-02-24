@@ -26,7 +26,9 @@ const validationSchema = ({ appropriatedFunding }) =>
       .number()
       .test(
         "lessThanAppropriated",
-        `Amount cannot exceed appropriated amount of ${currencyFormatter.format(appropriatedFunding)}`,
+        `Amount cannot exceed appropriated amount of ${currencyFormatter.format(
+          appropriatedFunding
+        )}`,
         function (value) {
           return value <= appropriatedFunding;
         }
@@ -209,7 +211,7 @@ const OverrideFundingForm = ({
             </FormHelperText>
           </FormControl>
         </Grid>
-                <Grid item xs={12}>
+        <Grid item xs={12}>
           <FormControl fullWidth>
             <ControlledTextInput
               fullWidth
@@ -223,61 +225,61 @@ const OverrideFundingForm = ({
           </FormControl>
         </Grid>
       </Grid>
-        <Grid item xs={12}>
-          <Controller
-            name="should_use_ecapris_amount"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormControlLabel
-                control={
-                  <Switch
-                    // Invert value for switch so that "on" means we are overriding and NOT using eCAPRIS amount
-                    checked={!value}
-                    onChange={(e) => {
-                      // Check target value so we can restore previous amount if unchecking (if there is one)
-                      if (e.target.checked) {
-                        setValue(
-                          "funding_amount",
-                          fundingRecord.funding_amount ?? appropriatedFunding
-                        );
-                        onChange(false);
-                      } else {
-                        setValue("funding_amount", appropriatedFunding);
-                        onChange(true);
-                      }
-                    }}
-                  />
-                }
-                label="Override eCAPRIS appropriated amount"
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth>
-            <ControlledTextInput
-              fullWidth
-              autoFocus
-              label="Amount"
-              name="funding_amount"
-              control={control}
-              size="small"
-              type="text"
-              inputMode="numeric"
-              onChangeHandler={amountOnChangeHandler}
-              disabled={should_use_ecapris_amount}
+      <Grid item xs={12}>
+        <Controller
+          name="should_use_ecapris_amount"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <FormControlLabel
+              control={
+                <Switch
+                  // Invert value for switch so that "on" means we are overriding and NOT using eCAPRIS amount
+                  checked={!value}
+                  onChange={(e) => {
+                    // Check target value so we can restore previous amount if unchecking (if there is one)
+                    if (e.target.checked) {
+                      setValue(
+                        "funding_amount",
+                        fundingRecord.funding_amount ?? appropriatedFunding
+                      );
+                      onChange(false);
+                    } else {
+                      setValue("funding_amount", appropriatedFunding);
+                      onChange(true);
+                    }
+                  }}
+                />
+              }
+              label="Override eCAPRIS appropriated amount"
             />
-            <FormHelperText>
-              eCAPRIS appropriated amount:{" "}
-              {currencyFormatter.format(appropriatedFunding)}
+          )}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <FormControl fullWidth>
+          <ControlledTextInput
+            fullWidth
+            autoFocus
+            label="Amount"
+            name="funding_amount"
+            control={control}
+            size="small"
+            type="text"
+            inputMode="numeric"
+            onChangeHandler={amountOnChangeHandler}
+            disabled={should_use_ecapris_amount}
+          />
+          <FormHelperText>
+            eCAPRIS appropriated amount:{" "}
+            {currencyFormatter.format(appropriatedFunding)}
+          </FormHelperText>
+          {errors.funding_amount ? (
+            <FormHelperText error>
+              {errors.funding_amount?.message}
             </FormHelperText>
-            {errors.funding_amount ? (
-              <FormHelperText error>
-                {errors.funding_amount?.message}
-              </FormHelperText>
-            ) : null}
-          </FormControl>
-        </Grid>
+          ) : null}
+        </FormControl>
+      </Grid>
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
