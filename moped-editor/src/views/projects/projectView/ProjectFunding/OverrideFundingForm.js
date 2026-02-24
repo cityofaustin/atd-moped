@@ -83,6 +83,7 @@ const OverrideFundingForm = ({
       should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
       funding_source_id: fundingRecord.fund_source?.funding_source_id,
       funding_program_id: fundingRecord.fund_program?.funding_program_id,
+      fund_status: fundingRecord.fund_status?.funding_status_id,
     },
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",
@@ -107,6 +108,7 @@ const OverrideFundingForm = ({
       data.should_use_ecapris_amount;
     transformedRecord.funding_source_id = data.funding_source_id;
     transformedRecord.funding_program_id = data.funding_program_id;
+    transformedRecord.funding_status_id = data.fund_status;
 
     const payload = isNewOverride
       ? {
@@ -224,61 +226,86 @@ const OverrideFundingForm = ({
             />
           </FormControl>
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Controller
-          name="should_use_ecapris_amount"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <FormControlLabel
-              control={
-                <Switch
-                  // Invert value for switch so that "on" means we are overriding and NOT using eCAPRIS amount
-                  checked={!value}
-                  onChange={(e) => {
-                    // Check target value so we can restore previous amount if unchecking (if there is one)
-                    if (e.target.checked) {
-                      setValue(
-                        "funding_amount",
-                        fundingRecord.funding_amount ?? appropriatedFunding
-                      );
-                      onChange(false);
-                    } else {
-                      setValue("funding_amount", appropriatedFunding);
-                      onChange(true);
-                    }
-                  }}
-                />
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <ControlledAutocomplete
+              control={control}
+              name="fund_status"
+              label="Status"
+              options={dataProjectFunding["moped_fund_status"]}
+              filterOptions={filterOptions}
+              getOptionLabel={(option) => option?.funding_status_name || ""}
+              onChangeHandler={(fund_status, field) => {
+                return field.onChange(fund_status?.funding_status_id || null);
+              }}
+              isOptionEqualToValue={(option, selectedOption) =>
+                option.funding_status_id === selectedOption.funding_status_id
               }
-              label="Override eCAPRIS appropriated amount"
+              valueHandler={(value) =>
+                value
+                  ? dataProjectFunding["moped_fund_status"].find(
+                      (s) => s.funding_status_id === value
+                    )
+                  : null
+              }
             />
-          )}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <FormControl fullWidth>
-          <ControlledTextInput
-            fullWidth
-            autoFocus
-            label="Amount"
-            name="funding_amount"
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="should_use_ecapris_amount"
             control={control}
-            size="small"
-            type="text"
-            inputMode="numeric"
-            onChangeHandler={amountOnChangeHandler}
-            disabled={should_use_ecapris_amount}
+            render={({ field: { onChange, value } }) => (
+              <FormControlLabel
+                control={
+                  <Switch
+                    // Invert value for switch so that "on" means we are overriding and NOT using eCAPRIS amount
+                    checked={!value}
+                    onChange={(e) => {
+                      // Check target value so we can restore previous amount if unchecking (if there is one)
+                      if (e.target.checked) {
+                        setValue(
+                          "funding_amount",
+                          fundingRecord.funding_amount ?? appropriatedFunding
+                        );
+                        onChange(false);
+                      } else {
+                        setValue("funding_amount", appropriatedFunding);
+                        onChange(true);
+                      }
+                    }}
+                  />
+                }
+                label="Override eCAPRIS appropriated amount"
+              />
+            )}
           />
-          <FormHelperText>
-            eCAPRIS appropriated amount:{" "}
-            {currencyFormatter.format(appropriatedFunding)}
-          </FormHelperText>
-          {errors.funding_amount ? (
-            <FormHelperText error>
-              {errors.funding_amount?.message}
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <ControlledTextInput
+              fullWidth
+              autoFocus
+              label="Amount"
+              name="funding_amount"
+              control={control}
+              size="small"
+              type="text"
+              inputMode="numeric"
+              onChangeHandler={amountOnChangeHandler}
+              disabled={should_use_ecapris_amount}
+            />
+            <FormHelperText>
+              eCAPRIS appropriated amount:{" "}
+              {currencyFormatter.format(appropriatedFunding)}
             </FormHelperText>
-          ) : null}
-        </FormControl>
+            {errors.funding_amount ? (
+              <FormHelperText error>
+                {errors.funding_amount?.message}
+              </FormHelperText>
+            ) : null}
+          </FormControl>
+        </Grid>
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
