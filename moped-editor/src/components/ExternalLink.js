@@ -5,14 +5,10 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 // Returns link text based on url when no text prop is provided, can be expanded to include more cases as needed
 const getExternalLinkText = (url) => {
   switch (true) {
-    case url.includes("https://atd.knack.com/amd"):
+    case url.toLowerCase().includes("https://atd.knack.com/amd"):
       return "AMD Data Tracker";
-    case url.includes("https://atd.knack.com/signs-markings#work-order-signs"):
-      return "Signs Work Order";
-    case url.includes(
-      "https://atd.knack.com/signs-markings#work-orders-markings"
-    ):
-      return "Markings Work Order";
+    case url.toLowerCase().includes("https://atd.knack.com/signs-markings"):
+      return "Signs & Markings";
     default:
       return "Open";
   }
