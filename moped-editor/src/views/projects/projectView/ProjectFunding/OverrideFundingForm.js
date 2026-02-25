@@ -236,7 +236,7 @@ const OverrideFundingForm = ({
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_status_name || ""}
               onChangeHandler={(fund_status, field) => {
-                return field.onChange(fund_status?.funding_status_id || null);
+                return field.onChange(fund_status?.funding_status_id || 1);
               }}
               isOptionEqualToValue={(option, selectedOption) =>
                 option.funding_status_id === selectedOption.funding_status_id
