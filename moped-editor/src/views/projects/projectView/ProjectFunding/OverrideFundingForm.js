@@ -33,6 +33,14 @@ const validationSchema = ({ appropriatedFunding }) =>
           return value <= appropriatedFunding;
         }
       )
+      .test(
+        "differentFromAppropriated",
+        `Amount must be different from appropriated amount of ${currencyFormatter.format(appropriatedFunding)} if overriding`,
+        function (value) {
+          const isOverriding = this.parent.should_use_ecapris_amount === false;
+          return isOverriding ? value !== appropriatedFunding : true;
+        }
+      )
       .nullable(),
   });
 
@@ -294,6 +302,7 @@ const OverrideFundingForm = ({
               inputMode="numeric"
               onChangeHandler={amountOnChangeHandler}
               disabled={should_use_ecapris_amount}
+              error={!!errors.funding_amount}
             />
             <FormHelperText>
               eCAPRIS appropriated amount:{" "}
