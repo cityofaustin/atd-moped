@@ -8,7 +8,7 @@ import { DataGridPro } from "@mui/x-data-grid-pro";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
+import ExternalLink from "src/components/ExternalLink";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
@@ -74,17 +74,17 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         defaultVisible: true,
         renderCell: ({ row }) =>
           row.work_order_url ? (
-            <Link
-              href={row.work_order_url}
-              target={"_blank"}
-              sx={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                display: "block",
+            <ExternalLink
+              url={row.work_order_url}
+              linkColor="primary"
+              linkProps={{
+                sx: {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "block",
+                },
               }}
-            >
-              {row.work_order_url}
-            </Link>
+            />
           ) : null,
       },
       {

@@ -16,7 +16,7 @@ GRAPHQL_QUERIES = {
     "project_funding_upsert": """
     mutation UpsertEcaprisFunding($objects: [ecapris_subproject_funding_insert_input!]!) {
         insert_ecapris_subproject_funding(objects: $objects, on_conflict: {constraint: ecapris_subproject_funding_fao_id_key, 
-        update_columns: [app, unit_long_name, subprogram, program, bond_year]}) {
+        update_columns: [app, unit_long_name, subprogram, program, bond_year, ecapris_subproject_id]}) {
             returning {
                 fao_id
                 ecapris_subproject_id

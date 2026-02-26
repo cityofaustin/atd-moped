@@ -47,21 +47,21 @@ function __get_docker_running() {
 # Gets the current hasura cluster status
 #
 function __get_status() {
-  echo $(curl --silent "http://localhost:8080/healthz");
+  echo $(curl --silent "http://localhost:8082/healthz");
 }
 
 #
 # Gets the current hasura cluster version
 #
 function __get_version() {
-  echo $(curl --silent "http://localhost:8080/v1/version");
+  echo $(curl --silent "http://localhost:8082/v1/version");
 }
 
 #
 # Prints TRUE if the current configuration is local
 #
 function __is_local() {
-  grep -q "endpoint: http://localhost:8080" config.yaml && echo "TRUE" || echo "FALSE";
+  grep -q "endpoint: http://localhost:8082" config.yaml && echo "TRUE" || echo "FALSE";
 }
 
 
@@ -71,7 +71,7 @@ function __is_local() {
 # Pings the Hasura server, returns True if it is ready to accept connections.
 #
 function __hasura_server_ready() {
-  HASURA_SERVER_STATUS=$(curl --silent http://localhost:8080/v1/version)
+  HASURA_SERVER_STATUS=$(curl --silent http://localhost:8082/v1/version)
   [[ "${HASURA_SERVER_STATUS}" =~ "version" ]] && echo "TRUE" || echo "FALSE";
 }
 

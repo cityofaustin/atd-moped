@@ -28,14 +28,14 @@ function __get_docker_running() {
 # Gets the current hasura cluster status
 #
 function __get_status() {
-  echo $(curl --silent "http://localhost:8080/healthz")
+  echo $(curl --silent "http://localhost:8082/healthz")
 }
 
 #
 # Gets the current hasura cluster version
 #
 function __get_version() {
-  echo $(curl --silent "http://localhost:8080/v1/version")
+  echo $(curl --silent "http://localhost:8082/v1/version")
 }
 
 echo "Generating documentation, one moment while checking on server status"
