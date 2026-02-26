@@ -194,6 +194,7 @@ const OverrideFundingForm = ({
               inputMode="numeric"
               onChangeHandler={amountOnChangeHandler}
               disabled={should_use_ecapris_amount}
+              error={!!errors.funding_amount}
             />
             <FormHelperText>
               eCAPRIS appropriated amount:{" "}
