@@ -1,7 +1,7 @@
-SOCRATA_ENDPOINT=
-SOCRATA_TOKEN=
-SOCRATA_API_KEY_ID=
-SOCRATA_API_KEY_SECRET=
+SOCRATA_ENDPOINT=See Socrata Key ID, Secret, and Token entry
+SOCRATA_TOKEN=See Socrata Key ID, Secret, and Token entry
+SOCRATA_API_KEY_ID=See Socrata Key ID, Secret, and Token entry
+SOCRATA_API_KEY_SECRET=See Socrata Key ID, Secret, and Token entry
 FUNDING_DATASET_IDENTIFIER=s4mj-68pg
 HASURA_ENDPOINT=http://host.docker.internal:8080/v1/graphql
 HASURA_ADMIN_SECRET=hasurapassword

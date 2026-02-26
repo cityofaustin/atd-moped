@@ -11,6 +11,7 @@ from process.args import get_cli_args
 from process.logging import get_logger
 from process.queries import GRAPHQL_QUERIES
 from process.request import make_hasura_request
+from process.format import format_sp_number
 
 SOCRATA_ENDPOINT = os.getenv("SOCRATA_ENDPOINT")
 SOCRATA_TOKEN = os.getenv("SOCRATA_TOKEN")
@@ -48,9 +49,13 @@ def main(args):
     funding_records_to_upsert = []
 
     for record in ecapris_funding_records:
+        # Update eCAPRIS subproject id with trailing zero to match eCAPRIS format
+        sp_number = record.get("sp_number")
+        ecapris_subproject_id = format_sp_number(sp_number)
+
         funding_records_to_upsert.append(
             {
-                "ecapris_subproject_id": record.get("sp_number"),
+                "ecapris_subproject_id": ecapris_subproject_id,
                 "fao_id": record.get("fao_id"),
                 "fdu": record.get("fdu"),
                 "app": int(float(record.get("app", 0))),
