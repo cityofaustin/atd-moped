@@ -1,50 +1,28 @@
-import { PHB_FILTER_STRING, SOCRATA_URL } from "./config.ts";
+import type { MopedComponentsResponse } from "./types.ts";
+import { makeSocrataRequest } from "./requests/socrata.ts";
+import {
+  getCompletedPhbComponents,
+  getCompletedPhbComponentsNeedingDateOnly,
+  getCompletedPhbComponentsNeedingPhaseAndDate,
+  makeHasuraRequest,
+} from "./requests/graphql.ts";
 
-const SOCRATA_TOKEN = process.env.SOCRATA_TOKEN;
-
-if (!SOCRATA_TOKEN) {
-  console.error(
-    "Error: SOCRATA_TOKEN environment variable is not set. Please set it in a .env file or your environment.",
-  );
-  process.exit(1);
-}
-
-async function requestPHBData() {
-  // Step 1: Request Data Tracker PHB data (ODP)
-  // https://data.austintexas.gov/Transportation-and-Mobility/Traffic-Signals-and-Pedestrian-Signals/p53x-x73x/about_data
-  console.log("Requesting PHB data from Data Tracker ODP...");
-
-  try {
-    const res = await fetch(`${SOCRATA_URL}?query=${PHB_FILTER_STRING}`, {
-      headers: {
-        Accept: "application/geo+json",
-        "X-App-Token": process.env.SOCRATA_TOKEN || "",
-      },
-    });
-    if (!res.ok) {
-      throw new Error(
-        `Failed to fetch PHB data: ${res.status} ${res.statusText}`,
-      );
-    }
-
-    const data = await res.json();
-    console.log(`Found ${data.length} PHB records from Data Tracker ODP.`);
-    // console.log("Sample PHB record:", data);
-    return data;
-  } catch (error) {
-    console.error("An error occurred while requesting PHB data:", error);
-    throw error;
-  }
-}
-
-async function requestMopedComponents() {
-  // Step 2: Query Moped components with missing PHB data
-  console.log("Querying Moped components with missing PHB data...");
-}
+const SOCRATA_URL =
+  "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
+export const PHB_FILTER_STRING = encodeURIComponent(
+  `
+SELECT *
+WHERE
+  caseless_eq(\`signal_status\`, "TURNED_ON")
+  AND caseless_eq(\`signal_type\`, "PHB")
+  AND \`turn_on_date\` IS NOT NULL
+ORDER BY \`signal_id\` ASC
+`.trim(),
+);
 
 async function backfillMopedComponents() {
   // Step 3: Backfill existin Moped component with Data Tracker data
-  console.log("Backfilling Moped components with missing PHB data...");
+  console.log("Backfilling Moped components with missing completion data...");
 }
 
 async function fillMissingPHBsIntoNewProject() {
@@ -54,7 +32,42 @@ async function fillMissingPHBsIntoNewProject() {
 
 async function main() {
   console.log("Starting PHB backfill process...");
-  const phbData = await requestPHBData();
+
+  // Request filtered Data Tracker PHB data (ODP) to backfill and insert into Moped
+  const phbData = await makeSocrataRequest(
+    `${SOCRATA_URL}?query=${PHB_FILTER_STRING}`,
+  );
+
+  // Get accurate completed PHBs remove from Data Tracker PHB data insert queue
+  const { moped_proj_components: completeMopedPHBs } =
+    await makeHasuraRequest<MopedComponentsResponse>(getCompletedPhbComponents);
+  console.log(
+    `Found ${completeMopedPHBs.length} completed PHBs already in Moped that can be removed from the queue.`,
+  );
+  // TODO: Remove from queue by id
+
+  // Get PHBs missing completion date to backfill from Data Tracker
+  const { moped_proj_components: newPHBsNeedingDateOnly } =
+    await makeHasuraRequest<MopedComponentsResponse>(
+      getCompletedPhbComponentsNeedingDateOnly,
+    );
+  console.log(
+    `Found ${newPHBsNeedingDateOnly.length} new PHBs missing completion date that need to be backfilled.`,
+  );
+
+  // TODO: Backfill mutation
+  // TODO: Remove backfilled PHBs from queue
+
+  // Get new PHBs missing completion date and phase to backfill from Data Tracker
+  const { moped_proj_components: newPHBsNeedingPhaseAndDate } =
+    await makeHasuraRequest<MopedComponentsResponse>(
+      getCompletedPhbComponentsNeedingPhaseAndDate,
+    );
+  console.log(
+    `Found ${newPHBsNeedingPhaseAndDate.length} new PHBs missing both completion date and phase that need to be backfilled.`,
+  );
+  // TODO: Backfill mutation
+  // TODO: Remove backfilled PHBs from queue
 }
 
 main().catch((error) => {
