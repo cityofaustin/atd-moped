@@ -42,7 +42,6 @@ query GetCompletedPhbComponents {
 /**
  * Query for new install PHBs that have Complete or Post-construction phase but are missing completion date
  */
-// https://localhost:3000/moped/projects/2260?tab=map&project_component_id=3288
 export const getCompletedPhbComponentsNeedingDateOnly = `
 query GetPhbComponentsMissingCompletionDate {
   moped_proj_components(
@@ -78,7 +77,6 @@ query GetPhbComponentsMissingCompletionDate {
 /**
  * Query for new install PHBs that are missing both completion date and phase
  */
-// https://localhost:3000/moped/projects/99?tab=summary
 export const getCompletedPhbComponentsNeedingPhaseAndDate = `
 query GetNewPhbComponentsMissingPhaseAndCompletionDate {
   moped_proj_components(
@@ -140,7 +138,7 @@ mutation AddProject($object: moped_project_insert_input!) {
 
 export async function makeHasuraRequest<T>(
   query: string,
-  payload?: Record<string, any>,
+  payload?: Record<string, unknown>,
 ): Promise<T> {
   const res = await fetch(HASURA_ENDPOINT, {
     method: "POST",
@@ -151,7 +149,12 @@ export async function makeHasuraRequest<T>(
     body: JSON.stringify({ query, ...(payload ? { variables: payload } : {}) }),
   });
 
+  if (!res.ok) {
+    throw new Error(`Hasura request failed: ${res.status} ${res.statusText}`);
+  }
+
   const data = await res.json();
+
   if (data.errors) {
     throw new Error(`Hasura errors: ${JSON.stringify(data.errors)}`);
   }

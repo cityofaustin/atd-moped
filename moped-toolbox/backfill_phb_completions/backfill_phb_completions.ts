@@ -20,7 +20,7 @@ import {
 } from "./helpers/graphql.ts";
 import { toTimestamptz } from "./helpers/time.ts";
 
-const mopedBaseUrl = "https://localhost:3000/moped/projects";
+const MOPED_BASE_URL = "https://localhost:3000/moped/projects";
 const SOCRATA_URL =
   "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
 const PHB_FILTER_STRING = encodeURIComponent(
@@ -52,7 +52,7 @@ function findDuplicatePHBsInMoped(mopedPHBs: MopedComponent[]): string[] {
   duplicates.forEach(([id, components]) => {
     const urls = components.map(
       (component) =>
-        `${mopedBaseUrl}/${component.project_id}?tab=map&project_component_id=${component.project_component_id}`,
+        `${MOPED_BASE_URL}/${component.project_id}?tab=map&project_component_id=${component.project_component_id}`,
     );
     console.log(
       `Signal ID ${id} appears in multiple Moped components. Flagging for manual review:\n  ${urls.join("\n  ")}`,
@@ -60,6 +60,20 @@ function findDuplicatePHBsInMoped(mopedPHBs: MopedComponent[]): string[] {
   });
 
   return duplicates.map(([id]) => id);
+}
+
+function removeFromInsertQueue(
+  queue: SocrataSignalRecord[],
+  mopedComponents: MopedComponent[],
+): SocrataSignalRecord[] {
+  return queue.filter(
+    (phb) =>
+      !mopedComponents.some((component) =>
+        component.feature_signals.some(
+          (signal) => String(signal.signal_id) === String(phb.signal_id),
+        ),
+      ),
+  );
 }
 
 async function backfillMopedComponents(
@@ -75,7 +89,7 @@ async function backfillMopedComponents(
     const completionDate = componentsToInsert.find(
       (phb) => String(phb.signal_id) === String(signalId),
     )?.turn_on_date;
-    const logUrl = `${mopedBaseUrl}/${projectId}?tab=map&project_component_id=${mopedComponentId}`;
+    const logUrl = `${MOPED_BASE_URL}/${projectId}?tab=map&project_component_id=${mopedComponentId}`;
 
     if (duplicatesToSkip.includes(String(signalId))) {
       console.log(
@@ -108,84 +122,69 @@ async function backfillMopedComponents(
 async function main() {
   console.log("Starting PHB backfill process...");
 
-  // Request filtered Data Tracker PHB data (ODP) to backfill some and insert others into Moped
+  /* 1. Request filtered Data Tracker PHB data (ODP) to backfill some and insert others into Moped */
   let phbsToInsert = await makeSocrataRequest<SocrataPHBResponse>(
     `${SOCRATA_URL}?query=${PHB_FILTER_STRING}`,
   );
-  const duplicatePhbsInMoped = [];
 
-  // Get fully complete PHBs in Moped and remove from Data Tracker PHB data insert queue
+  /* 2. Get PHBs in Moped */
   const { moped_proj_components: completeMopedPHBs } =
     await makeHasuraRequest<MopedComponentsResponse>(getCompletedPhbComponents);
-  console.log(
-    `Found ${completeMopedPHBs.length} completed PHBs already in Moped that can be removed from the queue.`,
-  );
-  const completeMopedPHBSignalIds = new Set<string>(
-    completeMopedPHBs.flatMap((component) =>
-      component.feature_signals.map((signal) => String(signal.signal_id)),
-    ),
-  );
-  duplicatePhbsInMoped.push(...findDuplicatePHBsInMoped(completeMopedPHBs));
-
-  phbsToInsert = phbsToInsert.filter(
-    (phb) => !completeMopedPHBSignalIds.has(phb.signal_id),
-  );
-  console.log(`There are now ${phbsToInsert.length} PHBs to insert.`);
-
-  /* Get PHBs missing completion date to backfill from Data Tracker and remove from insert queue */
-  const { moped_proj_components: newPHBsNeedingDateOnly } =
+  const { moped_proj_components: needingDateOnly } =
     await makeHasuraRequest<MopedComponentsResponse>(
       getCompletedPhbComponentsNeedingDateOnly,
     );
+  const { moped_proj_components: needingPhaseAndDate } =
+    await makeHasuraRequest<MopedComponentsResponse>(
+      getCompletedPhbComponentsNeedingPhaseAndDate,
+    );
+
   console.log(
-    `Found ${newPHBsNeedingDateOnly.length} new PHBs missing completion date that need to be backfilled.`,
+    `Found ${completeMopedPHBs.length} already-complete PHBs in Moped.`,
   );
-  duplicatePhbsInMoped.push(
-    ...findDuplicatePHBsInMoped(newPHBsNeedingDateOnly),
+  console.log(
+    `Found ${needingDateOnly.length} PHBs needing completion date backfill.`,
   );
+  console.log(
+    `Found ${needingPhaseAndDate.length} PHBs needing completion date and phase backfill.`,
+  );
+
+  /* 3. Find duplicates in Moped so we can skip backfilling and flag for manual review */
+  const duplicatePhbsInMoped = findDuplicatePHBsInMoped([
+    ...completeMopedPHBs,
+    ...needingDateOnly,
+    ...needingPhaseAndDate,
+  ]);
+
+  /* 4. Remove complete PHBs from insert queue, backfill missing data on those in Moped and remove from insert queue too */
+  phbsToInsert = removeFromInsertQueue(phbsToInsert, completeMopedPHBs);
+  console.log(
+    `Insert queue after removing complete PHBs: ${phbsToInsert.length} remaining.`,
+  );
+
   await backfillMopedComponents(
-    newPHBsNeedingDateOnly,
+    needingDateOnly,
     phbsToInsert,
     updateMopedComponentCompletionDate,
     duplicatePhbsInMoped,
   );
+  phbsToInsert = removeFromInsertQueue(phbsToInsert, needingDateOnly);
+  console.log(
+    `Insert queue after backfilling date-only PHBs: ${phbsToInsert.length} remaining.`,
+  );
 
-  const backfilledDatePHBSignalIds = new Set<string>(
-    newPHBsNeedingDateOnly.flatMap((component) =>
-      component.feature_signals.map((signal) => String(signal.signal_id)),
-    ),
-  );
-  phbsToInsert = phbsToInsert.filter(
-    (phb) => !backfilledDatePHBSignalIds.has(phb.signal_id),
-  );
-  console.log(`There are now ${phbsToInsert.length} PHBs to insert.`);
-
-  /* Get new PHBs missing completion date and phase to backfill from Data Tracker and remove from insert queue */
-  const { moped_proj_components: newPHBsNeedingPhaseAndDate } =
-    await makeHasuraRequest<MopedComponentsResponse>(
-      getCompletedPhbComponentsNeedingPhaseAndDate,
-    );
-  duplicatePhbsInMoped.push(
-    ...findDuplicatePHBsInMoped(newPHBsNeedingPhaseAndDate),
-  );
   await backfillMopedComponents(
-    newPHBsNeedingPhaseAndDate,
+    needingPhaseAndDate,
     phbsToInsert,
     updateMopedComponentCompletionDateAndPhase,
     duplicatePhbsInMoped,
   );
-
-  const backfilledPhaseAndDatePHBSignalIds = new Set<string>(
-    newPHBsNeedingPhaseAndDate.flatMap((component) =>
-      component.feature_signals.map((signal) => String(signal.signal_id)),
-    ),
+  phbsToInsert = removeFromInsertQueue(phbsToInsert, needingPhaseAndDate);
+  console.log(
+    `Insert queue after backfilling phase and date PHBs: ${phbsToInsert.length} remaining.`,
   );
-  phbsToInsert = phbsToInsert.filter(
-    (phb) => !backfilledPhaseAndDatePHBSignalIds.has(phb.signal_id),
-  );
-  console.log(`There are now ${phbsToInsert.length} PHBs to insert.`);
 
-  /* Create PHB project and insert remaining PHBs in queue as components in that project */
+  /*  5. Create PHB project and insert remaining PHBs in queue as components in that project */
   const componentPayload = phbsToInsert.map((phb) => ({
     component_id: 16, // Signal - PHB component ID
     location_description: `${phb.signal_id}: ${phb.location_name.trim()}`,
@@ -217,9 +216,11 @@ async function main() {
     console.error("An error occurred while creating the PHB project:", error);
   }
 
-  console.log(
-    `Duplicate PHBs in Moped that were flagged for manual review: ${[...new Set(duplicatePhbsInMoped)].join(", ")}`,
-  );
+  if (duplicatePhbsInMoped.length > 0) {
+    console.log(
+      `Duplicate PHBs in Moped that were flagged for manual review: ${duplicatePhbsInMoped.join(", ")}`,
+    );
+  }
   console.log("PHB backfill done.");
 }
 

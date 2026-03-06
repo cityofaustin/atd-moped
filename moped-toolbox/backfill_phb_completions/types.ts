@@ -16,7 +16,7 @@ export interface MopedComponentsResponse {
 export interface SocrataSignalRecord {
   signal_id: string;
   location_name: string;
-  location: { type: string; coordinates: number[] };
+  location: { type: string; coordinates: [number, number] };
   signal_type: string;
   turn_on_date: string;
   id: string;
