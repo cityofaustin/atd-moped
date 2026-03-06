@@ -1,4 +1,4 @@
-import type { MopedComponentsResponse } from "./types.ts";
+import type { MopedComponentsResponse, SocrataPHBResponse } from "./types.ts";
 import { makeSocrataRequest } from "./requests/socrata.ts";
 import {
   getCompletedPhbComponents,
@@ -11,7 +11,7 @@ const SOCRATA_URL =
   "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
 export const PHB_FILTER_STRING = encodeURIComponent(
   `
-SELECT *
+SELECT signal_id,location_name,location,signal_type,id
 WHERE
   caseless_eq(\`signal_status\`, "TURNED_ON")
   AND caseless_eq(\`signal_type\`, "PHB")
@@ -34,9 +34,10 @@ async function main() {
   console.log("Starting PHB backfill process...");
 
   // Request filtered Data Tracker PHB data (ODP) to backfill and insert into Moped
-  const phbData = await makeSocrataRequest(
+  let phbsToInsert = await makeSocrataRequest<SocrataPHBResponse>(
     `${SOCRATA_URL}?query=${PHB_FILTER_STRING}`,
   );
+  console.log(phbsToInsert.length);
 
   // Get accurate completed PHBs remove from Data Tracker PHB data insert queue
   const { moped_proj_components: completeMopedPHBs } =
@@ -44,7 +45,16 @@ async function main() {
   console.log(
     `Found ${completeMopedPHBs.length} completed PHBs already in Moped that can be removed from the queue.`,
   );
-  // TODO: Remove from queue by id
+  const completeMopedPHBSignalIds = new Set<string>(
+    completeMopedPHBs.flatMap((component) =>
+      component.feature_signals.map((signal) => String(signal.signal_id)),
+    ),
+  );
+  // Filter out PHBs already in Moped from the insert queue
+  phbsToInsert = phbsToInsert.filter(
+    (phb) => !completeMopedPHBSignalIds.has(phb.signal_id),
+  );
+  console.log(phbsToInsert.length);
 
   // Get PHBs missing completion date to backfill from Data Tracker
   const { moped_proj_components: newPHBsNeedingDateOnly } =

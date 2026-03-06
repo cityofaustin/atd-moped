@@ -110,6 +110,15 @@ query GetNewPhbComponentsMissingCompletionDate {
 }
 `;
 
+export const updateMopedComponent = `
+mutation UpdateMopedComponent($id: Int!, $completion_date: date, $phase_id: Int) {
+  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $id}, _set: {completion_date: $completion_date, phase_id: $phase_id}) {
+    project_component_id
+    project_id
+  }
+}
+`;
+
 export async function makeHasuraRequest<T>(
   query: string,
   payload?: Record<string, any>,

@@ -12,3 +12,11 @@ export interface MopedComponent {
 export type MopedComponentsResponse = {
   moped_proj_components: MopedComponent[];
 };
+
+export type SocrataPHBResponse = {
+  signal_id: string;
+  location_name: string;
+  location: { type: string; coordinates: number[] };
+  signal_type: string;
+  id: string;
+}[];
