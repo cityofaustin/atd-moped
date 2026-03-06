@@ -4,7 +4,7 @@ const HASURA_ENDPOINT = requireEnv("HASURA_ENDPOINT");
 const HASURA_ADMIN_SECRET = requireEnv("HASURA_ADMIN_SECRET");
 
 /**
- * Query for new install PHBs that are missing completion date and phase
+ * Query for new install PHBs that have completion date and Complete or Post-construction phase
  */
 export const getCompletedPhbComponents = `
 query GetCompletedPhbComponents {
@@ -42,6 +42,7 @@ query GetCompletedPhbComponents {
 /**
  * Query for new install PHBs that have Complete or Post-construction phase but are missing completion date
  */
+// https://localhost:3000/moped/projects/2260?tab=map&project_component_id=3288
 export const getCompletedPhbComponentsNeedingDateOnly = `
 query GetPhbComponentsMissingCompletionDate {
   moped_proj_components(
@@ -77,8 +78,9 @@ query GetPhbComponentsMissingCompletionDate {
 /**
  * Query for new install PHBs that are missing both completion date and phase
  */
+// https://localhost:3000/moped/projects/99?tab=summary
 export const getCompletedPhbComponentsNeedingPhaseAndDate = `
-query GetNewPhbComponentsMissingCompletionDate {
+query GetNewPhbComponentsMissingPhaseAndCompletionDate {
   moped_proj_components(
     where: {
       component_id: { _eq: 16 }
@@ -110,9 +112,18 @@ query GetNewPhbComponentsMissingCompletionDate {
 }
 `;
 
-export const updateMopedComponent = `
-mutation UpdateMopedComponent($id: Int!, $completion_date: date, $phase_id: Int) {
-  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $id}, _set: {completion_date: $completion_date, phase_id: $phase_id}) {
+export const updateMopedComponentCompletionDate = `
+mutation UpdateMopedComponentCompletionDate($id: Int!, $completion_date: date!) {
+  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $id}, _set: {completion_date: $completion_date}) {
+    project_component_id
+    project_id
+  }
+}
+`;
+
+export const updateMopedComponentCompletionDateAndPhase = `
+mutation UpdateMopedComponentCompletionDateAndPhase($id: Int!, $completion_date: date!) {
+  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $id}, _set: {completion_date: $completion_date, phase_id: 11}) {
     project_component_id
     project_id
   }

@@ -9,14 +9,17 @@ export interface MopedComponent {
   }[];
 }
 
-export type MopedComponentsResponse = {
+export interface MopedComponentsResponse {
   moped_proj_components: MopedComponent[];
-};
+}
 
-export type SocrataPHBResponse = {
+export interface SocrataPHBRecord {
   signal_id: string;
   location_name: string;
   location: { type: string; coordinates: number[] };
   signal_type: string;
+  turn_on_date: string;
   id: string;
-}[];
+}
+
+export type SocrataPHBResponse = SocrataPHBRecord[];

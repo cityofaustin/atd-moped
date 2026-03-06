@@ -33,21 +33,21 @@ export async function makeSocrataRequest<T>(url: string): Promise<T> {
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * @return {Object} A geojson feature collection with the signal feature or 0 features
  */
-export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
-  if (signal && signal?.properties && signal?.geometry) {
-    const featureSignalsRecord = {
-      // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
-      geography: {
-        ...signal.geometry,
-        type: "MultiPoint",
-        coordinates: [signal.geometry.coordinates],
-      },
-      knack_id: signal.properties.id,
-      location_name: signal.properties.location_name,
-      signal_type: signal.properties.signal_type,
-      signal_id: signal.properties.signal_id,
-    };
+// export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
+//   if (signal && signal?.properties && signal?.geometry) {
+//     const featureSignalsRecord = {
+//       // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
+//       geography: {
+//         ...signal.geometry,
+//         type: "MultiPoint",
+//         coordinates: [signal.geometry.coordinates],
+//       },
+//       knack_id: signal.properties.id,
+//       location_name: signal.properties.location_name,
+//       signal_type: signal.properties.signal_type,
+//       signal_id: signal.properties.signal_id,
+//     };
 
-    return featureSignalsRecord;
-  }
-};
+//     return featureSignalsRecord;
+//   }
+// };
