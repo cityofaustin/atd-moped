@@ -130,6 +130,14 @@ mutation UpdateMopedComponentCompletionDateAndPhase($id: Int!, $completion_date:
 }
 `;
 
+export const addProject = `
+mutation AddProject($object: moped_project_insert_input!) {
+  insert_moped_project_one(object: $object) {
+      project_id
+  }
+}
+`;
+
 export async function makeHasuraRequest<T>(
   query: string,
   payload?: Record<string, any>,
@@ -143,12 +151,10 @@ export async function makeHasuraRequest<T>(
     body: JSON.stringify({ query, ...(payload ? { variables: payload } : {}) }),
   });
 
-  if (!res.ok) {
-    throw new Error(
-      `Failed to fetch Hasura data: ${res.status} ${res.statusText}`,
-    );
+  const data = await res.json();
+  if (data.errors) {
+    throw new Error(`Hasura errors: ${JSON.stringify(data.errors)}`);
   }
 
-  const data = await res.json();
   return data.data;
 }

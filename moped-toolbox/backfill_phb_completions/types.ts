@@ -13,7 +13,7 @@ export interface MopedComponentsResponse {
   moped_proj_components: MopedComponent[];
 }
 
-export interface SocrataPHBRecord {
+export interface SocrataSignalRecord {
   signal_id: string;
   location_name: string;
   location: { type: string; coordinates: number[] };
@@ -22,4 +22,10 @@ export interface SocrataPHBRecord {
   id: string;
 }
 
-export type SocrataPHBResponse = SocrataPHBRecord[];
+export type SocrataPHBResponse = SocrataSignalRecord[];
+
+export interface MopedProjectInsertResponse {
+  insert_moped_project_one: {
+    project_id: number;
+  };
+}

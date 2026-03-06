@@ -2,10 +2,15 @@ import type {
   MopedComponentsResponse,
   MopedComponent,
   SocrataPHBResponse,
-  SocrataPHBRecord,
+  SocrataSignalRecord,
+  MopedProjectInsertResponse,
 } from "./types.ts";
-import { makeSocrataRequest } from "./requests/socrata.ts";
 import {
+  makeSocrataRequest,
+  socrataSignalRecordToFeatureSignalsRecord,
+} from "./requests/socrata.ts";
+import {
+  addProject,
   getCompletedPhbComponents,
   getCompletedPhbComponentsNeedingDateOnly,
   getCompletedPhbComponentsNeedingPhaseAndDate,
@@ -15,7 +20,7 @@ import {
 
 const SOCRATA_URL =
   "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
-export const PHB_FILTER_STRING = encodeURIComponent(
+const PHB_FILTER_STRING = encodeURIComponent(
   `
 SELECT signal_id,location_name,location,signal_type,id
 WHERE
@@ -28,7 +33,7 @@ ORDER BY \`signal_id\` ASC
 
 async function backfillMopedComponents(
   componentsToBackfill: MopedComponent[],
-  componentsToInsert: SocrataPHBRecord[],
+  componentsToInsert: SocrataSignalRecord[],
 ) {
   componentsToBackfill.forEach(async (component) => {
     const projectId = component.project_id;
@@ -41,7 +46,6 @@ async function backfillMopedComponents(
 
     if (completionDate) {
       try {
-        console.log("mutating");
         await makeHasuraRequest(updateMopedComponentCompletionDate, {
           id: mopedComponentId,
           completion_date: completionDate,
@@ -59,11 +63,6 @@ async function backfillMopedComponents(
       );
     }
   });
-}
-
-async function fillMissingPHBsIntoNewProject() {
-  // Step 4: Insert PHBs not already in Moped into new project
-  console.log("Filling missing PHBs into new project...");
 }
 
 async function main() {
@@ -130,7 +129,28 @@ async function main() {
   );
   console.log(`There are now ${phbsToInsert.length} PHBs to insert.`);
 
-  // TODO: Create PHB project and insert remaining PHBs in queue as features in that project
+  // Create PHB project and insert remaining PHBs in queue as components in that project
+  const componentPayload = phbsToInsert.map((phb) =>
+    socrataSignalRecordToFeatureSignalsRecord(phb),
+  );
+
+  try {
+    const projectData = await makeHasuraRequest<MopedProjectInsertResponse>(
+      addProject,
+      {
+        object: {
+          project_name: "Vision Zero PHB Safety Statistics",
+          project_description: `Backfill installed PHBs from Data Tracker that are not yet in Moped.`,
+          moped_proj_components: { data: componentPayload },
+        },
+      },
+    );
+    console.log(
+      `Inserted ${componentPayload.length} new PHBs from Data Tracker into a new Moped project #${projectData.insert_moped_project_one.project_id}.`,
+    );
+  } catch (error) {
+    console.error("An error occurred while creating the PHB project:", error);
+  }
 }
 
 main().catch((error) => {
