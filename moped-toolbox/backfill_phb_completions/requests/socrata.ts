@@ -30,7 +30,7 @@ export async function makeSocrataRequest<T>(url: string): Promise<T> {
 }
 
 /**
- * Copied from Moped editor code; transforms Socrata signal record into the shape needed for Moped feature_signals records
+ * Mostly copied from Moped editor code; transforms Socrata signal record into the shape needed for Moped feature_signals records
  */
 export const socrataSignalRecordToFeatureSignalsRecord = (
   signal: SocrataSignalRecord,

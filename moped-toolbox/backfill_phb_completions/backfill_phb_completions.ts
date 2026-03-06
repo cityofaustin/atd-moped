@@ -130,9 +130,18 @@ async function main() {
   console.log(`There are now ${phbsToInsert.length} PHBs to insert.`);
 
   // Create PHB project and insert remaining PHBs in queue as components in that project
-  const componentPayload = phbsToInsert.map((phb) =>
-    socrataSignalRecordToFeatureSignalsRecord(phb),
-  );
+  const componentPayload = phbsToInsert.map((phb) => ({
+    component_id: 16, // Signal - PHB component ID
+    location_description: phb.location_name.trim(),
+    phase_id: 11, // Complete phase
+    completion_date: phb.turn_on_date,
+    feature_signals: {
+      data: [socrataSignalRecordToFeatureSignalsRecord(phb)],
+    },
+    moped_proj_component_work_types: {
+      data: [{ work_type_id: 7 }], // "New" work type
+    },
+  }));
 
   try {
     const projectData = await makeHasuraRequest<MopedProjectInsertResponse>(
