@@ -113,8 +113,8 @@ query GetNewPhbComponentsMissingPhaseAndCompletionDate {
 `;
 
 export const updateMopedComponentCompletionDate = `
-mutation UpdateMopedComponentCompletionDate($id: Int!, $completion_date: date!) {
-  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $id}, _set: {completion_date: $completion_date}) {
+mutation UpdateMopedComponentCompletionDate($id: Int!, $completion_date: timestamptz!) {
+  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $id}, _set: {completion_date: $completion_date, updated_by_user_id: 1}) {
     project_component_id
     project_id
   }
@@ -122,7 +122,7 @@ mutation UpdateMopedComponentCompletionDate($id: Int!, $completion_date: date!) 
 `;
 
 export const updateMopedComponentCompletionDateAndPhase = `
-mutation UpdateMopedComponentCompletionDateAndPhase($id: Int!, $completion_date: date!) {
+mutation UpdateMopedComponentCompletionDateAndPhase($id: Int!, $completion_date: timestamptz!) {
   update_moped_proj_components_by_pk(pk_columns: {project_component_id: $id}, _set: {completion_date: $completion_date, phase_id: 11}) {
     project_component_id
     project_id

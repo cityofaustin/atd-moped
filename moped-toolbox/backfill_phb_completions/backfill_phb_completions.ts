@@ -8,7 +8,7 @@ import type {
 import {
   makeSocrataRequest,
   socrataSignalRecordToFeatureSignalsRecord,
-} from "./requests/socrata.ts";
+} from "./helpers/socrata.ts";
 import {
   addProject,
   getCompletedPhbComponents,
@@ -16,13 +16,14 @@ import {
   getCompletedPhbComponentsNeedingPhaseAndDate,
   makeHasuraRequest,
   updateMopedComponentCompletionDate,
-} from "./requests/graphql.ts";
+} from "./helpers/graphql.ts";
+import { toTimestamptz } from "./helpers/time.ts";
 
 const SOCRATA_URL =
   "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
 const PHB_FILTER_STRING = encodeURIComponent(
   `
-SELECT signal_id,location_name,location,signal_type,id
+SELECT signal_id,location_name,location,signal_type,id,turn_on_date
 WHERE
   caseless_eq(\`signal_status\`, "TURNED_ON")
   AND caseless_eq(\`signal_type\`, "PHB")
@@ -48,7 +49,7 @@ async function backfillMopedComponents(
       try {
         await makeHasuraRequest(updateMopedComponentCompletionDate, {
           id: mopedComponentId,
-          completion_date: completionDate,
+          completion_date: toTimestamptz(completionDate),
         });
         console.log(`Backfilled completion date for ${logUrl}.`);
       } catch (error) {
@@ -132,9 +133,9 @@ async function main() {
   // Create PHB project and insert remaining PHBs in queue as components in that project
   const componentPayload = phbsToInsert.map((phb) => ({
     component_id: 16, // Signal - PHB component ID
-    location_description: phb.location_name.trim(),
+    location_description: `${phb.signal_id}: ${phb.location_name.trim()}`,
     phase_id: 11, // Complete phase
-    completion_date: phb.turn_on_date,
+    completion_date: toTimestamptz(phb.turn_on_date),
     feature_signals: {
       data: [socrataSignalRecordToFeatureSignalsRecord(phb)],
     },
