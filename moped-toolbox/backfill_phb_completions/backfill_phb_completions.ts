@@ -19,8 +19,9 @@ import {
   updateMopedComponentCompletionDateAndPhase,
 } from "./helpers/graphql.ts";
 import { toTimestamptz } from "./helpers/time.ts";
+import { requireEnv } from "./helpers/env.ts";
 
-const MOPED_BASE_URL = "https://localhost:3000/moped/projects";
+const MOPED_BASE_URL = requireEnv("MOPED_BASE_URL");
 const SOCRATA_URL =
   "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
 const PHB_FILTER_STRING = encodeURIComponent(
@@ -34,7 +35,10 @@ ORDER BY \`signal_id\` ASC
 `.trim(),
 );
 
-function findDuplicatePHBsInMoped(mopedPHBs: MopedComponent[]): string[] {
+function findDuplicatePHBsInMoped(mopedPHBs: MopedComponent[]): {
+  duplicateIds: string[];
+  logLines: string[];
+} {
   const signalIdToComponents = new Map<string, MopedComponent[]>();
 
   mopedPHBs.forEach((component) => {
@@ -49,17 +53,18 @@ function findDuplicatePHBsInMoped(mopedPHBs: MopedComponent[]): string[] {
     ([, components]) => components.length > 1,
   );
 
-  duplicates.forEach(([id, components]) => {
+  const logLines = duplicates.map(([id, components]) => {
     const urls = components.map(
       (component) =>
         `${MOPED_BASE_URL}/${component.project_id}?tab=map&project_component_id=${component.project_component_id}`,
     );
-    console.log(
-      `Signal ID ${id} appears in multiple Moped components. Flagging for manual review:\n  ${urls.join("\n  ")}`,
-    );
+    return `  Signal ID ${id} appears in multiple Moped components:\n  ${urls.join("\n  ")}`;
   });
 
-  return duplicates.map(([id]) => id);
+  return {
+    duplicateIds: duplicates.map(([id]) => id),
+    logLines,
+  };
 }
 
 function removeFromInsertQueue(
@@ -91,12 +96,9 @@ async function backfillMopedComponents(
     const completionDate = componentsToInsert.find(
       (phb) => String(phb.signal_id) === String(signalId),
     )?.turn_on_date;
-    const logUrl = `${MOPED_BASE_URL}/${projectId}?tab=map&project_component_id=${mopedComponentId}`;
+    const logUrl = `Signal ID ${signalId} in ${MOPED_BASE_URL}/${projectId}?tab=map&project_component_id=${mopedComponentId}`;
 
     if (duplicatesToSkip.includes(String(signalId))) {
-      console.log(
-        `Skipping backfill for ${logUrl} with signal ID ${signalId} due to duplicate signal ID in Moped. Flagging for manual review.`,
-      );
       continue;
     }
 
@@ -106,12 +108,9 @@ async function backfillMopedComponents(
           id: mopedComponentId,
           completion_date: toTimestamptz(completionDate),
         });
-        console.log(`Backfilled completion date for ${logUrl}.`);
+        console.log(`Backfilled ${logUrl}`);
       } catch (error) {
-        console.error(
-          `An error occurred while backfilling completion date for ${logUrl}:`,
-          error,
-        );
+        console.error(`An error occurred while backfilling ${logUrl}:`, error);
       }
     } else {
       noMatchUrls.push(logUrl);
@@ -128,8 +127,6 @@ async function main() {
   let phbsToInsert = await makeSocrataRequest<SocrataPHBResponse>(
     `${SOCRATA_URL}?query=${PHB_FILTER_STRING}`,
   );
-  // Collect URLs to flag for manual review in case of duplicates or missing data
-  const urlsToDuplicateSignalReview = [];
 
   /* 2. Get PHBs in Moped */
   const { moped_proj_components: completeMopedPHBs } =
@@ -154,7 +151,10 @@ async function main() {
   );
 
   /* 3. Find duplicates in Moped so we can skip backfilling and flag for manual review */
-  const duplicatePhbsInMoped = findDuplicatePHBsInMoped([
+  const {
+    duplicateIds: duplicatePhbsInMoped,
+    logLines: duplicatePhbsInMopedLogLines,
+  } = findDuplicatePHBsInMoped([
     ...completeMopedPHBs,
     ...needingDateOnly,
     ...needingPhaseAndDate,
@@ -166,6 +166,7 @@ async function main() {
     `Insert queue after removing complete PHBs: ${phbsToInsert.length} remaining.`,
   );
 
+  console.log("Backfilling PHBs in Moped that are missing completion date...");
   const noMatchNeedingDateOnlyUrls = await backfillMopedComponents(
     needingDateOnly,
     phbsToInsert,
@@ -177,6 +178,9 @@ async function main() {
     `Insert queue after backfilling date-only PHBs: ${phbsToInsert.length} remaining.`,
   );
 
+  console.log(
+    "Backfilling PHBs in Moped that are missing completion date and phase...",
+  );
   const noMatchNeedingPhaseAndDateUrls = await backfillMopedComponents(
     needingPhaseAndDate,
     phbsToInsert,
@@ -220,10 +224,9 @@ async function main() {
     console.error("An error occurred while creating the PHB project:", error);
   }
 
-  if (duplicatePhbsInMoped.length > 0) {
-    console.log(
-      `Duplicate PHBs in Moped that were flagged for manual review: ${duplicatePhbsInMoped.join(", ")}`,
-    );
+  if (duplicatePhbsInMopedLogLines.length > 0) {
+    console.log("\nComponents with duplicate signal IDs that need review:");
+    duplicatePhbsInMopedLogLines.forEach((line) => console.log(line));
   }
 
   const allNoMatchUrls = [
@@ -232,7 +235,7 @@ async function main() {
   ];
   if (allNoMatchUrls.length > 0) {
     console.log(
-      "Components with no matching Socrata record — manual review required:",
+      "\nComponents with signal no longer turned on that need review:",
     );
     allNoMatchUrls.forEach((url) => console.log(`  ${url}`));
   }
