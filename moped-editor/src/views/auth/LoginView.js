@@ -16,9 +16,8 @@ import Page from "src/components/Page";
 import { useUser } from "src/auth/user";
 import SimpleDialog from "src/components/SimpleDialog";
 import ExternalLink from "src/components/ExternalLink";
+import { serviceRequestLink } from "src/layouts/DashboardLayout/NavBar/menuConfig";
 
-const serviceRequestLink =
-  "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_399%22%3A%22Moped%22%7D";
 
 const LoginView = () => {
   const { login, loginSSO, isLoginLoading } = useUser();
