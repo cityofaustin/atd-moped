@@ -21,6 +21,7 @@ import {
 import { toTimestamptz } from "./helpers/time.ts";
 import { requireEnv } from "./helpers/env.ts";
 
+const DRY_RUN = process.argv.includes("--dry-run");
 const MOPED_BASE_URL = requireEnv("MOPED_BASE_URL");
 const SOCRATA_URL =
   "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
@@ -103,14 +104,21 @@ async function backfillMopedComponents(
     }
 
     if (completionDate) {
-      try {
-        await makeHasuraRequest(mutation, {
-          id: mopedComponentId,
-          completion_date: toTimestamptz(completionDate),
-        });
-        console.log(`Backfilled ${logUrl}`);
-      } catch (error) {
-        console.error(`An error occurred while backfilling ${logUrl}:`, error);
+      if (DRY_RUN) {
+        console.log(`[DRY RUN] Would backfill ${logUrl}`);
+      } else {
+        try {
+          await makeHasuraRequest(mutation, {
+            id: mopedComponentId,
+            completion_date: toTimestamptz(completionDate),
+          });
+          console.log(`Backfilled ${logUrl}`);
+        } catch (error) {
+          console.error(
+            `An error occurred while backfilling ${logUrl}:`,
+            error,
+          );
+        }
       }
     } else {
       noMatchUrls.push(logUrl);
@@ -121,7 +129,7 @@ async function backfillMopedComponents(
 }
 
 async function main() {
-  console.log("Starting PHB backfill process...");
+  console.log(`Starting PHB backfill process ${DRY_RUN ? "(DRY RUN)" : ""}...`);
 
   /* 1. Request filtered Data Tracker PHB data (ODP) to backfill some and insert others into Moped */
   let phbsToInsert = await makeSocrataRequest<SocrataPHBResponse>(
@@ -207,19 +215,25 @@ async function main() {
   }));
 
   try {
-    const projectData = await makeHasuraRequest<MopedProjectInsertResponse>(
-      addProject,
-      {
-        object: {
-          project_name: "Vision Zero PHB Safety Statistics",
-          project_description: `Backfill installed PHBs from Data Tracker that are not yet in Moped.`,
-          moped_proj_components: { data: componentPayload },
+    if (DRY_RUN) {
+      console.log(
+        `[DRY RUN] Would insert ${componentPayload.length} new PHBs into a new Moped project.`,
+      );
+    } else {
+      const projectData = await makeHasuraRequest<MopedProjectInsertResponse>(
+        addProject,
+        {
+          object: {
+            project_name: "Vision Zero PHB Safety Statistics",
+            project_description: `Backfill installed PHBs from Data Tracker that are not yet in Moped.`,
+            moped_proj_components: { data: componentPayload },
+          },
         },
-      },
-    );
-    console.log(
-      `Inserted ${componentPayload.length} new PHBs from Data Tracker into a new Moped project #${projectData.insert_moped_project_one.project_id}.`,
-    );
+      );
+      console.log(
+        `Inserted ${componentPayload.length} new PHBs from Data Tracker into a new Moped project #${projectData.insert_moped_project_one.project_id}.`,
+      );
+    }
   } catch (error) {
     console.error("An error occurred while creating the PHB project:", error);
   }
