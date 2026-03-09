@@ -81,7 +81,9 @@ async function backfillMopedComponents(
   componentsToInsert: SocrataSignalRecord[],
   mutation: string,
   duplicatesToSkip: string[],
-) {
+): Promise<string[]> {
+  const noMatchUrls: string[] = [];
+
   for (const component of componentsToBackfill) {
     const projectId = component.project_id;
     const mopedComponentId = component.project_component_id;
@@ -112,11 +114,11 @@ async function backfillMopedComponents(
         );
       }
     } else {
-      console.log(
-        `Could not find completion date for ${logUrl} in Data Tracker response. Flagging for manual review.`,
-      );
+      noMatchUrls.push(logUrl);
     }
   }
+
+  return noMatchUrls;
 }
 
 async function main() {
@@ -126,6 +128,8 @@ async function main() {
   let phbsToInsert = await makeSocrataRequest<SocrataPHBResponse>(
     `${SOCRATA_URL}?query=${PHB_FILTER_STRING}`,
   );
+  // Collect URLs to flag for manual review in case of duplicates or missing data
+  const urlsToDuplicateSignalReview = [];
 
   /* 2. Get PHBs in Moped */
   const { moped_proj_components: completeMopedPHBs } =
@@ -162,7 +166,7 @@ async function main() {
     `Insert queue after removing complete PHBs: ${phbsToInsert.length} remaining.`,
   );
 
-  await backfillMopedComponents(
+  const noMatchNeedingDateOnlyUrls = await backfillMopedComponents(
     needingDateOnly,
     phbsToInsert,
     updateMopedComponentCompletionDate,
@@ -173,7 +177,7 @@ async function main() {
     `Insert queue after backfilling date-only PHBs: ${phbsToInsert.length} remaining.`,
   );
 
-  await backfillMopedComponents(
+  const noMatchNeedingPhaseAndDateUrls = await backfillMopedComponents(
     needingPhaseAndDate,
     phbsToInsert,
     updateMopedComponentCompletionDateAndPhase,
@@ -221,6 +225,18 @@ async function main() {
       `Duplicate PHBs in Moped that were flagged for manual review: ${duplicatePhbsInMoped.join(", ")}`,
     );
   }
+
+  const allNoMatchUrls = [
+    ...noMatchNeedingDateOnlyUrls,
+    ...noMatchNeedingPhaseAndDateUrls,
+  ];
+  if (allNoMatchUrls.length > 0) {
+    console.log(
+      "Components with no matching Socrata record — manual review required:",
+    );
+    allNoMatchUrls.forEach((url) => console.log(`  ${url}`));
+  }
+
   console.log("PHB backfill done.");
 }
 
