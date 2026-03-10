@@ -9,5 +9,9 @@
     "start:dry": "node --env-file=.env backfill_phb_completions.ts --dry-run"
   },
   "dependencies": {
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.0.0"
   }
 }

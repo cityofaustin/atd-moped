@@ -8,16 +8,21 @@ and completion date are populated. If not, the PHB is added to a project that th
 and completion date populated.
 
 ## Running the script
-1. If you have Node Version Manager installed, you will be prompted to install Node version 24. Otherwise, install it.
+1. If you have [Node Version Manager](https://github.com/nvm-sh/nvm) installed, you can install Node version 24 with `nvm use`. Otherwise, install it.
 
-1. Set up your `.env` file see the `.env.example` file as a template
+2. Set up your `.env` file see the `.env.example` file as a template
 
-1. To run in dry mode to preview what the script will do, run:
+3. Install dependencies with:
+```shell
+npm install
+``` 
+
+4. To run in dry mode to preview what the script will do, run:
 ```shell
 npm run start:dry
 ```
 
-1. To run the script against the credentials in your `.env` file:
+5. To run the script against the credentials in your `.env` file:
 ```shell
 npm run start
 ```
