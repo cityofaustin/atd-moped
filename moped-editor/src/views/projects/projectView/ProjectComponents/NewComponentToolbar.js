@@ -38,10 +38,6 @@ const NewComponentToolbar = ({
             New Component
           </Button>
           <Box>
-            <DocumentationIconLink
-              documentationLink="https://atd-dts.gitbook.io/moped-documentation/user-guides/project-map"
-              size="large"
-            />
             <IconButton
               onClick={() => setAreSettingsOpen(!areSettingsOpen)}
               aria-label="settings"
@@ -49,6 +45,10 @@ const NewComponentToolbar = ({
             >
               <TuneIcon fontSize="small" />
             </IconButton>
+            <DocumentationIconLink
+              documentationLink="https://atd-dts.gitbook.io/moped-documentation/user-guides/project-map"
+              size="large"
+            />
           </Box>
         </ListItem>
         <Collapse in={areSettingsOpen}>

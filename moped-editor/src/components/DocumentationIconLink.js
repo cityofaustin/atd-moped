@@ -10,14 +10,16 @@ import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
  * @param {string} tooltipText - Tooltip text displayed on hover
  * @param {string} documentationLink - Link to documentation
  * @param {string} size - MUI size variant of the icon button (small, medium, large)
+ * @param {object} iconButtonSx - Optional sx styling for the IconButton
  */
 const DocumentationIconLink = ({
   tooltipText = "View documentation",
   documentationLink,
   size = "small",
+  iconButtonSx = {},
 }) => (
   <Tooltip title={tooltipText}>
-    <IconButton sx={{ ml: 1, minWidth: 3 }} color="inherit" size={size}>
+    <IconButton sx={iconButtonSx} color="inherit" size={size}>
       <Link
         component={RouterLink}
         to={documentationLink}

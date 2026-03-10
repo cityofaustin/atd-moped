@@ -42,7 +42,10 @@ const DataGridToolbar = ({
               {title}
             </Typography>
             {documentationLink ? (
-              <DocumentationIconLink documentationLink={documentationLink} />
+              <DocumentationIconLink
+                iconButtonSx={{ ml: 1, minWidth: 3 }}
+                documentationLink={documentationLink}
+              />
             ) : null}
           </Box>
           {(primaryActionButton || secondaryActionButton) && (
