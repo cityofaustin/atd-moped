@@ -1,6 +1,6 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Tooltip } from "@mui/material";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 
@@ -9,13 +9,15 @@ import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
  *
  * @param {string} tooltipText - Tooltip text displayed on hover
  * @param {string} documentationLink - Link to documentation
+ * @param {string} size - MUI size variant of the icon button (small, medium, large)
  */
 const DocumentationIconLink = ({
   tooltipText = "View documentation",
   documentationLink,
+  size = "small",
 }) => (
   <Tooltip title={tooltipText}>
-    <Button sx={{ ml: 1, minWidth: 3 }} color="inherit" size="small">
+    <IconButton sx={{ ml: 1, minWidth: 3 }} color="inherit" size={size}>
       <Link
         component={RouterLink}
         to={documentationLink}
@@ -28,7 +30,7 @@ const DocumentationIconLink = ({
       >
         <MenuBookOutlined sx={{ color: "text.secondary" }} fontSize="small" />
       </Link>
-    </Button>
+    </IconButton>
   </Tooltip>
 );
 

@@ -39,8 +39,8 @@ const NewComponentToolbar = ({
           </Button>
           <Box>
             <DocumentationIconLink
-              tooltipText="View documentation"
               documentationLink="https://atd-dts.gitbook.io/moped-documentation/user-guides/project-map"
+              size="large"
             />
             <IconButton
               onClick={() => setAreSettingsOpen(!areSettingsOpen)}
