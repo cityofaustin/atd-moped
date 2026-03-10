@@ -1,3 +1,4 @@
+import DocumentationIconLink from "src/components/DocumentationIconLink";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import ListItemText from "@mui/material/ListItemText";
@@ -26,24 +27,29 @@ const NewComponentToolbar = ({
   return (
     isNotCreatingOrEditing && (
       <>
-        <ListItem dense>
+        <ListItem dense sx={{ justifyContent: "space-between" }}>
           <Button
             sx={{ justifyContent: "flex-start" }}
             size="small"
             variant="contained"
-            fullWidth
             startIcon={<AddCircleOutlineIcon />}
             onClick={onStartCreatingComponent}
           >
             New Component
           </Button>
-          <IconButton
-            onClick={() => setAreSettingsOpen(!areSettingsOpen)}
-            aria-label="settings"
-            size="large"
-          >
-            <TuneIcon fontSize="small" />
-          </IconButton>
+          <Box>
+            <DocumentationIconLink
+              tooltipText="View documentation"
+              documentationLink="https://atd-dts.gitbook.io/moped-documentation/user-guides/project-map"
+            />
+            <IconButton
+              onClick={() => setAreSettingsOpen(!areSettingsOpen)}
+              aria-label="settings"
+              size="large"
+            >
+              <TuneIcon fontSize="small" />
+            </IconButton>
+          </Box>
         </ListItem>
         <Collapse in={areSettingsOpen}>
           <Box borderLeft={7} borderColor="white">
