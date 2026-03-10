@@ -30,7 +30,7 @@ const NewComponentToolbar = ({
           <Button
             sx={{ justifyContent: "flex-start" }}
             size="small"
-            color="primary"
+            variant="contained"
             fullWidth
             startIcon={<AddCircleOutlineIcon />}
             onClick={onStartCreatingComponent}
