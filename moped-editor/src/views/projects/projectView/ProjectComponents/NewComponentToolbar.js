@@ -9,7 +9,7 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import TuneIcon from "@mui/icons-material/Tune";
 
 const NewComponentToolbar = ({
@@ -32,7 +32,7 @@ const NewComponentToolbar = ({
             sx={{ justifyContent: "flex-start" }}
             size="small"
             variant="contained"
-            startIcon={<AddCircleOutlineIcon />}
+            startIcon={<AddCircleIcon />}
             onClick={onStartCreatingComponent}
           >
             New Component
