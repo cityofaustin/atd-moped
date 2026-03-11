@@ -8,6 +8,8 @@ and completion date are populated. If not, the PHB is added to a project that th
 and completion date populated.
 
 ## Running the script
+**This script currently requires running in CST/CDT. If we reuse, we can update to convert to UTC at that time.**
+
 1. If you have [Node Version Manager](https://github.com/nvm-sh/nvm) installed, you can install Node version 24 with `nvm use`. Otherwise, install it.
 
 2. Set up your `.env` file see the `.env.example` file as a template
