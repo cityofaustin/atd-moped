@@ -13,9 +13,15 @@ import Button from "@mui/material/Button";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
+import ComponentTagsTable from "./ComponentTagsTable";
+import ProjectTagsTable from "./ProjectTagsTable";
 import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
 import CopyTextButton from "src/components/CopyTextButton";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
+import Can from "src/auth/Can";
 
 /**
  * Converts a record key (e.g. moped_phases) into a URL hash, (e.g. #moped-phases)
@@ -32,14 +38,19 @@ const scrollToTable = (recordKey, refs) => {
   }
 };
 
+const TAG_TABLE_KEYS = ["moped_component_tags", "moped_tags"];
+
 /**
  * Page component which renders various Moped record types.
  * To add a table to this page:
  * 1. Add an entry to the ./settings/SETTINGS array with the appropriate definitions
  * 2. Update the query that powers this view to include your data
+ * Tag tables (component tags, project tags) use DataGridPro with CRUD - admin only for edit.
  * @returns { JSX } a page component
  */
 const LookupsView = () => {
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
   const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
     fetchPolicy: "no-cache",
   });
@@ -177,6 +188,10 @@ const LookupsView = () => {
             </Paper>
           ))}
         </Container>
+        <FeedbackSnackbar
+          snackbarState={snackbarState}
+          handleSnackbarClose={handleSnackbarClose}
+        />
       </Page>
     </ApolloErrorHandler>
   );
