@@ -13,9 +13,15 @@ import Button from "@mui/material/Button";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
+import ComponentTagsTable from "./ComponentTagsTable";
+import ProjectTagsTable from "./ProjectTagsTable";
 import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
 import CopyTextButton from "src/components/CopyTextButton";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
+import Can from "src/auth/Can";
 
 /**
  * Converts a record key (e.g. moped_phases) into a URL hash, (e.g. #moped-phases)
@@ -32,14 +38,19 @@ const scrollToTable = (recordKey, refs) => {
   }
 };
 
+const TAG_TABLE_KEYS = ["moped_component_tags", "moped_tags"];
+
 /**
  * Page component which renders various Moped record types.
  * To add a table to this page:
  * 1. Add an entry to the ./settings/SETTINGS array with the appropriate definitions
  * 2. Update the query that powers this view to include your data
+ * Tag tables (component tags, project tags) use DataGridPro with CRUD - admin only for edit.
  * @returns { JSX } a page component
  */
 const LookupsView = () => {
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
   const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
     fetchPolicy: "no-cache",
   });
@@ -124,52 +135,88 @@ const LookupsView = () => {
                 ref={refs[recordType.key]}
               >
                 <Grid item xs={12}>
-                  <Grid
-                    container
-                    direction="row"
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <Grid item>
-                      <Typography variant="h2">{recordType.label}</Typography>
+                  {TAG_TABLE_KEYS.includes(recordType.key) ? (
+                    <Can
+                      perform="lookups:edit"
+                      yes={
+                        recordType.key === "moped_component_tags" ? (
+                          <ComponentTagsTable
+                            canEdit={true}
+                            handleSnackbar={handleSnackbar}
+                          />
+                        ) : (
+                          <ProjectTagsTable
+                            canEdit={true}
+                            handleSnackbar={handleSnackbar}
+                          />
+                        )
+                      }
+                      no={
+                        recordType.key === "moped_component_tags" ? (
+                          <ComponentTagsTable
+                            canEdit={false}
+                            handleSnackbar={handleSnackbar}
+                          />
+                        ) : (
+                          <ProjectTagsTable
+                            canEdit={false}
+                            handleSnackbar={handleSnackbar}
+                          />
+                        )
+                      }
+                    />
+                  ) : (
+                    <Grid
+                      container
+                      direction="row"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Grid item>
+                        <Typography variant="h2">{recordType.label}</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Tooltip title="Return to top of page">
+                          <IconButton
+                            component={Link}
+                            to={"#"}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                            size="large"
+                          >
+                            <ArrowUpwardIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Grid>
+                      <Grid item>
+                        <CopyTextButton
+                          copyButtonText="Copy link"
+                          textToCopy={`${
+                            window.location.origin
+                          }${pathname}${createRecordKeyHash(recordType.key)}`}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <RecordTable
+                          rows={data?.[recordType.key]}
+                          columns={recordType.columns}
+                          loading={loading}
+                        />
+                      </Grid>
                     </Grid>
-                    <Grid item>
-                      <Tooltip title="Return to top of page">
-                        <IconButton
-                          component={Link}
-                          to={"#"}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            scrollToTable("_scroll_to_top", refs);
-                            history.replace("");
-                          }}
-                          size="large"
-                        >
-                          <ArrowUpwardIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Grid>
-                    <Grid item>
-                      <CopyTextButton
-                        copyButtonText="Copy link"
-                        textToCopy={`${
-                          window.location.origin
-                        }${pathname}${createRecordKeyHash(recordType.key)}`}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <RecordTable
-                        rows={data?.[recordType.key]}
-                        columns={recordType.columns}
-                        loading={loading}
-                      />
-                    </Grid>
-                  </Grid>
+                  )}
                 </Grid>
               </Grid>
             </Paper>
           ))}
         </Container>
+        <FeedbackSnackbar
+          snackbarState={snackbarState}
+          handleSnackbarClose={handleSnackbarClose}
+        />
       </Page>
     </ApolloErrorHandler>
   );

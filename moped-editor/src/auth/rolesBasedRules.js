@@ -31,6 +31,7 @@ const adminStaticRules = [
   "user:delete",
   "newStaff:visit",
   "editStaff:visit",
+  "lookups:edit",
 ];
 
 export const rules = {
