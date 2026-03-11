@@ -225,7 +225,6 @@ async function main() {
         {
           object: {
             project_name: "Vision Zero PHB Safety Statistics",
-            project_description: `Backfill installed PHBs from Data Tracker that are not yet in Moped.`,
             moped_proj_components: { data: componentPayload },
           },
         },
