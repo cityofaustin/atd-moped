@@ -17,7 +17,7 @@ $ npm run start
 2. From this directory, install dependencies:
 
 ```shell
-# ./moped-toolbox/random_project_seeds
+# ./toolbox/random_project_seeds
 $ npm install
 ```
 
