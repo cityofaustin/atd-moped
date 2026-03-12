@@ -320,10 +320,10 @@ const Filters = ({
       <Grid2 container sx={gridItemPaddingStyle}>
         <Grid2
           size={{ xs: 6 }}
-          sx={filtersContainerStyle}
-          display="flex"
-          justifyContent="flex-start"
-        >
+          sx={[{
+            display: "flex",
+            justifyContent: "flex-start"
+          }, ...(Array.isArray(filtersContainerStyle) ? filtersContainerStyle : [filtersContainerStyle])]}>
           <RadioGroup
             row
             value={isOrToggleValue ? "any" : "all"}
@@ -351,10 +351,10 @@ const Filters = ({
         </Grid2>
         <Grid2
           size={{ xs: 6 }}
-          sx={filtersContainerStyle}
-          display="flex"
-          justifyContent="flex-end"
-        >
+          sx={[{
+            display: "flex",
+            justifyContent: "flex-end"
+          }, ...(Array.isArray(filtersContainerStyle) ? filtersContainerStyle : [filtersContainerStyle])]}>
           <IconButton
             onClick={handleAdvancedSearchClose}
             sx={closeButtonStyle}

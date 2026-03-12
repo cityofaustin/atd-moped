@@ -207,7 +207,12 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
   }, [noteAddSuccess, onAction]);
 
   return (
-    <Box paddingTop="16px" display="flex" justifyContent="left">
+    <Box
+      sx={{
+        paddingTop: "16px",
+        display: "flex",
+        justifyContent: "left"
+      }}>
       <ButtonGroup size="xs" variant="ghost">
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }, key) =>
           id === richTextAction.divider ? (

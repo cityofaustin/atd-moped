@@ -109,7 +109,9 @@ const EditStaffView = () => {
       {data && !!data?.moped_users?.length && (
         <Page title="Staff">
           <Container maxWidth={false}>
-            <Box mt={3}>
+            <Box sx={{
+              mt: 3
+            }}>
               <Card>
                 <CardHeader title="Edit User" />
                 <Divider />

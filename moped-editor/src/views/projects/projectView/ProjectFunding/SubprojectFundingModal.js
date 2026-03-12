@@ -201,7 +201,12 @@ const SubprojectFundingModal = ({
           slots={{ row: CustomRow }}
           slotProps={{ row: { fdusArray } }}
         />
-        <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
+        <Box
+          sx={{
+            my: 3,
+            display: "flex",
+            flexDirection: "row-reverse"
+          }}>
           <Button
             variant="contained"
             color="primary"

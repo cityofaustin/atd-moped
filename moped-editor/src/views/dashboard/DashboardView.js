@@ -282,10 +282,18 @@ const DashboardView = () => {
                 backgroundColor: "background.paper",
               }}
             >
-              <Box pl={3} pt={3}>
+              <Box
+                sx={{
+                  pl: 3,
+                  pt: 3
+                }}>
                 <UserGreeting userName={userName} />
               </Box>
-              <Box px={3} py={3}>
+              <Box
+                sx={{
+                  px: 3,
+                  py: 3
+                }}>
                 <Grid2>
                   <AppBar
                     sx={{

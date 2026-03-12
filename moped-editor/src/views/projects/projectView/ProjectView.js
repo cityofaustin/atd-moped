@@ -25,7 +25,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Grid,
+  Grid2,
   Menu,
   MenuItem,
   Fade,
@@ -356,11 +356,13 @@ const ProjectView = () => {
                         </Typography>
                       </Breadcrumbs>
                     </Box>
-                    <Box px={3} pb={1}>
-                      <Grid container>
-                        <Grid
-                          item
-                          xs // Take all available space
+                    <Box
+                      sx={{
+                        px: 3,
+                        pb: 1
+                      }}>
+                      <Grid2 container>
+                        <Grid2
                           sx={(theme) => ({
                             minHeight: theme.spacing(8), // Prevent jumping when edit form appears
                             display: "flex",
@@ -370,7 +372,7 @@ const ProjectView = () => {
                               my: 1, // Add margin when on small screen and stacked vertically
                             },
                           })}
-                        >
+                          size="grow">
                           <Box sx={{ minWidth: 0, width: "100%" }}>
                             <ProjectNameEditable
                               projectData={data.moped_project[0]}
@@ -381,9 +383,8 @@ const ProjectView = () => {
                               refetch={refetch}
                             />
                           </Box>
-                        </Grid>
-                        <Grid
-                          item
+                        </Grid2>
+                        <Grid2
                           sx={{
                             justifyItems: "right",
                             display: "flex",
@@ -391,8 +392,7 @@ const ProjectView = () => {
                             gap: 2,
                             flexShrink: 0,
                             marginLeft: 2,
-                          }}
-                        >
+                          }}>
                           <Box>
                             <ProjectStatusBadge
                               phaseKey={currentPhase?.phase_key}
@@ -468,8 +468,8 @@ const ProjectView = () => {
                               </MenuItem>
                             </Menu>
                           </Box>
-                        </Grid>
-                      </Grid>
+                        </Grid2>
+                      </Grid2>
                     </Box>
                     <Divider />
                     <AppBar

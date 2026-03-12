@@ -22,9 +22,19 @@ const getStyleSx = (style) => {
  */
 const ProjectActivityEntry = ({ changeIcon, changeText }) => {
   return (
-    <Box display="flex" p={0}>
-      <Box p={0}>{changeIcon}</Box>
-      <Box p={0} flexGrow={1}>
+    <Box
+      sx={{
+        display: "flex",
+        p: 0
+      }}>
+      <Box sx={{
+        p: 0
+      }}>{changeIcon}</Box>
+      <Box
+        sx={{
+          p: 0,
+          flexGrow: 1
+        }}>
         <Typography
           variant="body2"
           sx={{ padding: "0 0 0 .5rem" }}

@@ -23,56 +23,56 @@ const NewComponentToolbar = ({
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
-  return (
-    isNotCreatingOrEditing && (
-      <>
-        <ListItem dense>
-          <Button
-            sx={{ justifyContent: "flex-start" }}
-            size="small"
-            color="primary"
-            fullWidth
-            startIcon={<AddCircleOutlineIcon />}
-            onClick={onStartCreatingComponent}
-          >
-            New Component
-          </Button>
-          <IconButton
-            onClick={() => setAreSettingsOpen(!areSettingsOpen)}
-            aria-label="settings"
-            size="large"
-          >
-            <TuneIcon fontSize="small" />
-          </IconButton>
+  return (isNotCreatingOrEditing && (<>
+    <ListItem dense>
+      <Button
+        sx={{ justifyContent: "flex-start" }}
+        size="small"
+        color="primary"
+        fullWidth
+        startIcon={<AddCircleOutlineIcon />}
+        onClick={onStartCreatingComponent}
+      >
+        New Component
+      </Button>
+      <IconButton
+        onClick={() => setAreSettingsOpen(!areSettingsOpen)}
+        aria-label="settings"
+        size="large"
+      >
+        <TuneIcon fontSize="small" />
+      </IconButton>
+    </ListItem>
+    <Collapse in={areSettingsOpen}>
+      <Box
+        sx={{
+          borderLeft: 7,
+          borderColor: "white"
+        }}>
+        <ListItem
+          sx={{
+            paddingLeft: (theme) => theme.spacing(1),
+            paddingTop: 0,
+          }}
+        >
+          <Icon />
+          <ListItemText
+            sx={{ marginLeft: (theme) => theme.spacing(1) }}
+            secondary="Show related projects"
+          />
+          <ListItemSecondaryAction>
+            <Switch
+              checked={shouldShowRelatedProjects}
+              onChange={toggleShowRelatedProjects}
+              name="showRelatedProjects"
+              color="primary"
+            />
+          </ListItemSecondaryAction>
         </ListItem>
-        <Collapse in={areSettingsOpen}>
-          <Box borderLeft={7} borderColor="white">
-            <ListItem
-              sx={{
-                paddingLeft: (theme) => theme.spacing(1),
-                paddingTop: 0,
-              }}
-            >
-              <Icon />
-              <ListItemText
-                sx={{ marginLeft: (theme) => theme.spacing(1) }}
-                secondary="Show related projects"
-              />
-              <ListItemSecondaryAction>
-                <Switch
-                  checked={shouldShowRelatedProjects}
-                  onChange={toggleShowRelatedProjects}
-                  name="showRelatedProjects"
-                  color="primary"
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
-          </Box>
-        </Collapse>
-        <Divider />
-      </>
-    )
-  );
+      </Box>
+    </Collapse>
+    <Divider />
+  </>));
 };
 
 export default NewComponentToolbar;

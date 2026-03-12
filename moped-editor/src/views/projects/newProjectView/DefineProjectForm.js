@@ -1,7 +1,7 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, FormControlLabel, Grid, Switch } from "@mui/material";
+import { Box, FormControlLabel, Grid2, Switch } from "@mui/material";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { agolValidation } from "src/constants/projects";
 import KnackComponentAutocomplete from "src/views/projects/projectView/ProjectComponents/KnackComponentAutocomplete";
@@ -66,10 +66,14 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
       onSubmit={handleSubmit(handleSave)}
       sx={{ paddingX: 9, paddingY: 9 }}
     >
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Grid container spacing={3}>
-            <Grid item sm={6} xs={12}>
+      <Grid2 container spacing={6}>
+        <Grid2 size={12}>
+          <Grid2 container spacing={3}>
+            <Grid2
+              size={{
+                sm: 6,
+                xs: 12
+              }}>
               {!isSignalProject && (
                 <ControlledTextInput
                   autoFocus
@@ -110,8 +114,15 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   )}
                 />
               )}
-            </Grid>
-            <Grid item sm={6} xs={12} alignContent="flex-end">
+            </Grid2>
+            <Grid2
+              sx={{
+                alignContent: "flex-end"
+              }}
+              size={{
+                sm: 6,
+                xs: 12
+              }}>
               <Controller
                 name="isSignalProject"
                 control={control}
@@ -131,12 +142,16 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   />
                 )}
               />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={3}>
-            <Grid item sm={6} xs={12}>
+            </Grid2>
+          </Grid2>
+        </Grid2>
+        <Grid2 size={12}>
+          <Grid2 container spacing={3}>
+            <Grid2
+              size={{
+                sm: 6,
+                xs: 12
+              }}>
               <ControlledTextInput
                 variant="standard"
                 fullWidth
@@ -150,12 +165,16 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   disabled: loading,
                 }}
               />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={3}>
-            <Grid item sm={6} xs={12}>
+            </Grid2>
+          </Grid2>
+        </Grid2>
+        <Grid2 size={12}>
+          <Grid2 container spacing={3}>
+            <Grid2
+              size={{
+                sm: 6,
+                xs: 12
+              }}>
               <ControlledTextInput
                 variant="standard"
                 fullWidth
@@ -170,10 +189,10 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   disabled: loading,
                 }}
               />
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+            </Grid2>
+          </Grid2>
+        </Grid2>
+      </Grid2>
       <Box
         sx={{
           display: "flex",

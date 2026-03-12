@@ -114,7 +114,11 @@ const StaffUpdateUserStatusButtons = ({
         open: true,
         title: "Activating",
         message: (
-          <Box display="flex" justifyContent="flex-start">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start"
+            }}>
             <Typography>Please Wait...</Typography>
           </Box>
         ),

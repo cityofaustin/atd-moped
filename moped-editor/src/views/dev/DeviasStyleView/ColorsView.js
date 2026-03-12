@@ -70,7 +70,9 @@ const colorConfig = [
 const TypographyView = () => {
   return (
     <Paper>
-      <Box p={3}>
+      <Box sx={{
+        p: 3
+      }}>
         <List>
           {colorConfig.map((color) => (
             <ListItem key={color.number}>

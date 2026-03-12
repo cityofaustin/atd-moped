@@ -136,7 +136,12 @@ const Profile = ({ ...rest }) => {
       {error && (
         <Card {...rest}>
           <CardContent>
-            <Box alignItems="center" display="flex" flexDirection="column">
+            <Box
+              sx={{
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "column"
+              }}>
               <Box>
                 <Avatar
                   sx={{ height: 100, width: 100, marginBottom: 8 }}
@@ -148,15 +153,25 @@ const Profile = ({ ...rest }) => {
                   </Typography>
                 </Avatar>
               </Box>
-              <Typography color="textPrimary" gutterBottom variant="h3">
+              <Typography
+                sx={{ color: (theme) => theme.palette.text.primary }}
+                gutterBottom
+                variant="h3"
+              >
                 {String(
                   user?.userName ?? user?.idToken?.payload?.email
                 ).toLowerCase()}
               </Typography>
-              <Typography color="textSecondary" variant="body1">
+              <Typography
+                sx={{ color: (theme) => theme.palette.text.secondary }}
+                variant="body1"
+              >
                 {user?.userJobTitle ?? "Austin Transportation"}
               </Typography>
-              <Typography color="textSecondary" variant="body1">
+              <Typography
+                sx={{ color: (theme) => theme.palette.text.secondary }}
+                variant="body1"
+              >
                 {user?.userCity ?? "Austin, TX"}
               </Typography>
             </Box>
@@ -182,11 +197,15 @@ const Profile = ({ ...rest }) => {
           />
         </Card>
       )}
-
       {userProfile && (
         <Card xs={12} sm={6} md={6} {...rest}>
           <CardContent>
-            <Box alignItems="center" display="flex" flexDirection="column">
+            <Box
+              sx={{
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "column"
+              }}>
               <Box>
                 <CDNAvatar
                   src={userProfile?.picture ?? null}

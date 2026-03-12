@@ -6,7 +6,7 @@ import isEqual from "lodash.isequal";
 import {
   Button,
   FormControlLabel,
-  Grid,
+  Grid2,
   Switch,
   Tooltip,
   IconButton,
@@ -105,11 +105,10 @@ const useColumns = ({
               <span>{value?.fdu}</span>
               <Typography
                 variant="body2"
-                color="primary.main"
                 sx={{
-                  fontWeight: 500,
-                }}
-              >
+                  color: "primary.main",
+                  fontWeight: 500
+                }}>
                 SYNCED FROM ECAPRIS
               </Typography>
             </>
@@ -697,7 +696,7 @@ const ProjectFundingTable = ({
             documentationLink:
               "https://atd-dts.gitbook.io/moped-documentation/user-guides/add-funding-to-a-project",
             children: (
-              <Grid
+              <Grid2
                 container
                 direction="row"
                 sx={{
@@ -705,7 +704,11 @@ const ProjectFundingTable = ({
                   alignItems: "center",
                 }}
               >
-                <Grid item xs={6} md={4}>
+                <Grid2
+                  size={{
+                    xs: 6,
+                    md: 4
+                  }}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}
@@ -713,8 +716,13 @@ const ProjectFundingTable = ({
                     handleSnackbar={handleSnackbar}
                     noWrapper
                   />
-                </Grid>
-                <Grid item container xs={2} justifyContent={"flex-end"}>
+                </Grid2>
+                <Grid2
+                  container
+                  sx={{
+                    justifyContent: "flex-end"
+                  }}
+                  size={2}>
                   <Tooltip
                     placement="bottom"
                     title={
@@ -738,8 +746,8 @@ const ProjectFundingTable = ({
                       }
                     />
                   </Tooltip>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             ),
           },
         }}

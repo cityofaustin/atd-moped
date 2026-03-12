@@ -117,7 +117,9 @@ const TopBar = ({ className, ...rest }) => {
               ))}
             </Tabs>
           </Box>
-          <Box flexGrow={1} />
+          <Box sx={{
+            flexGrow: 1
+          }} />
           <NavigationSearchInput />
           <Box sx={{ marginRight: (theme) => theme.spacing(1) }}>
             <CanAddProjectButton />

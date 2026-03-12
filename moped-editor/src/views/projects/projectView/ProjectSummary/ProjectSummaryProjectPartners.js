@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Checkbox,
-  Grid,
+  Grid2,
   Input,
   ListItemText,
   MenuItem,
@@ -125,9 +125,13 @@ const ProjectSummaryProjectPartners = ({
   };
 
   return (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Partners</Typography>
-      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
+      <Box
+        sx={[{
+          display: "flex",
+          justifyContent: "flex-start"
+        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
         {editMode && (
           <>
             <Select
@@ -177,7 +181,7 @@ const ProjectSummaryProjectPartners = ({
           />
         )}
       </Box>
-    </Grid>
+    </Grid2>
   );
 };
 
