@@ -89,6 +89,11 @@ export const transformGridToDatabase = (gridRecord) => {
   const should_use_ecapris_amount =
     fdu_record_amount === Number(gridRecord.funding_amount);
 
+  // the database expects the funding amount to be an Int or null. An empty string will result in an error, coerce to null
+  const funding_amount = Boolean(gridRecord.funding_amount)
+    ? gridRecord.funding_amount
+    : null;
+
   const {
     id,
     __typename,
@@ -117,5 +122,6 @@ export const transformGridToDatabase = (gridRecord) => {
     ecapris_funding_id,
     ecapris_subproject_id,
     should_use_ecapris_amount,
+    funding_amount,
   };
 };
