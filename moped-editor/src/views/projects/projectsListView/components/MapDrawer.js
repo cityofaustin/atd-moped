@@ -1,6 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
@@ -67,13 +67,9 @@ function DrawerContent({
 
   return (
     <>
-      <Grid container padding={theme.spacing(1)}>
-        <Grid container alignItems="center">
-          <Grid
-            item
-            flexGrow={1}
-            display={showDrawerContent && open ? "flex" : "none"}
-          >
+      <Grid2 container padding={theme.spacing(1)}>
+        <Grid2 container alignItems="center">
+          <Grid2 flexGrow={1} display={showDrawerContent && open ? "flex" : "none"}>
             <Typography
               variant="h2"
               color={theme.palette.text.primary}
@@ -81,14 +77,14 @@ function DrawerContent({
             >
               {title}
             </Typography>
-          </Grid>
-          <Grid item>
+          </Grid2>
+          <Grid2>
             <IconButton onClick={toggleDrawer}>
               {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
-          </Grid>
-        </Grid>
-      </Grid>
+          </Grid2>
+        </Grid2>
+      </Grid2>
       <Box
         flexGrow={1}
         display={showDrawerContent && open ? "flex" : "none"}

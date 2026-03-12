@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid2 } from "@mui/material";
 import Page from "src/components/Page";
 import Profile from "./Profile";
 
@@ -13,11 +13,16 @@ const Account = () => {
       title="Account"
     >
       <Container maxWidth="lg">
-        <Grid container spacing={3}>
-          <Grid item lg={4} md={6} xs={12}>
+        <Grid2 container spacing={3}>
+          <Grid2
+            size={{
+              lg: 4,
+              md: 6,
+              xs: 12
+            }}>
             <Profile />
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </Container>
     </Page>
   );

@@ -5,7 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
+  Grid2,
   Icon,
   TextField,
   FormControl,
@@ -158,8 +158,12 @@ const FileUploadDialogSingle = ({
     >
       <DialogTitle variant="h4">{title ? title : "Upload Media"}</DialogTitle>
       <DialogContent>
-        <Grid container style={{ marginTop: "5px" }}>
-          <Grid item xs={12} md={12}>
+        <Grid2 container style={{ marginTop: "5px" }}>
+          <Grid2
+            size={{
+              xs: 12,
+              md: 12
+            }}>
             <TextField
               autoFocus
               sx={{
@@ -221,8 +225,13 @@ const FileUploadDialogSingle = ({
                 labelPlacement="start"
               />
             </FormControl>
-          </Grid>
-          <Grid item xs={12} md={12} sx={{ marginTop: theme.spacing(2) }}>
+          </Grid2>
+          <Grid2
+            sx={{ marginTop: theme.spacing(2) }}
+            size={{
+              xs: 12,
+              md: 12
+            }}>
             {externalFile ? (
               <TextField
                 autoFocus
@@ -243,8 +252,8 @@ const FileUploadDialogSingle = ({
                 onFileAdded={handleOnFileAdded}
               />
             )}
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="primary">
