@@ -1,0 +1,17 @@
+{
+  "name": "backfill_phb_completions",
+  "description": "Request Data Tracker PHB data (ODP), backfill Moped components, and fill missing into new project",
+  "version": "1.0.0",
+  "main": "backfill_phb_completions.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env backfill_phb_completions.ts",
+    "start:dry": "node --env-file=.env backfill_phb_completions.ts --dry-run"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.0.0"
+  }
+}
