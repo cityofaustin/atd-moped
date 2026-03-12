@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Switch } from "@mui/material";
+import { Grid2, Switch } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
@@ -30,8 +30,10 @@ const ToggleEditComponent = ({ id, value, field, hasFocus }) => {
   };
 
   return (
-    <Grid component="label" container alignItems="center" spacing={1}>
-      <Grid item>
+    <Grid2 component="label" container spacing={1} sx={{
+      alignItems: "center"
+    }}>
+      <Grid2>
         <Switch
           checked={value ?? false}
           onChange={handleChange}
@@ -40,8 +42,8 @@ const ToggleEditComponent = ({ id, value, field, hasFocus }) => {
           inputProps={{ "aria-label": "primary checkbox" }}
           inputRef={ref}
         />
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 };
 

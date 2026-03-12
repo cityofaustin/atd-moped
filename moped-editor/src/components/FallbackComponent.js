@@ -15,11 +15,12 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      height="100%"
-      justifyContent="center"
-    >
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        justifyContent: "center"
+      }}>
       <Container
         // Disable container's responsive maxWidth to override maxWidth in sx
         maxWidth={false}
@@ -30,7 +31,9 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
           marginTop: 2,
         }}
       >
-        <Box textAlign="center">
+        <Box sx={{
+          textAlign: "center"
+        }}>
           <Box
             component="img"
             alt="the moped logo with a flat rear tire"

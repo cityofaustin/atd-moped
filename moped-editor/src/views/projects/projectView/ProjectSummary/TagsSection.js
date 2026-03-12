@@ -16,7 +16,7 @@ import {
 import AddCircle from "@mui/icons-material/AddCircle";
 import Autocomplete from "@mui/material/Autocomplete";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
 
 import {
   TAGS_QUERY,
@@ -148,9 +148,9 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
           isDeleteConfirmationOpen={isDeleteConfirmationOpen}
           setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         >
-          <Grid container spacing={1}>
+          <Grid2 container spacing={1}>
             {data.moped_proj_tags.map((tag) => (
-              <Grid item key={tag.id}>
+              <Grid2 key={tag.id}>
                 <Chip
                   key={tag.id}
                   label={tag.moped_tag.name}
@@ -164,18 +164,17 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
                     },
                   }}
                 />
-              </Grid>
+              </Grid2>
             ))}
-          </Grid>
+          </Grid2>
         </DeleteConfirmationModal>
         {addTagMode && (
           <Box
-            display="flex"
-            justifyContent="flex-start"
             sx={{
-              padding: (theme) => theme.spacing(1),
-            }}
-          >
+              display: "flex",
+              justifyContent: "flex-start",
+              padding: (theme) => theme.spacing(1)
+            }}>
             <Autocomplete
               multiple
               sx={{ minWidth: (theme) => theme.spacing(31.25) }} // 250px / 8 = 31.25

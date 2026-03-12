@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Stack, TextField, Typography } from "@mui/material";
+import { Box, Grid2, Stack, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
@@ -26,10 +26,10 @@ const WrapperComponent = ({ children, noWrapper }) =>
       {children}
     </>
   ) : (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
       {children}
-    </Grid>
+    </Grid2>
   );
 
 /**
@@ -127,7 +127,11 @@ const ProjectSummaryProjectECapris = ({
 
   return (
     <WrapperComponent noWrapper={noWrapper}>
-      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
+      <Box
+        sx={[{
+          display: "flex",
+          justifyContent: "flex-start"
+        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
         {editMode && (
           <>
             <TextField

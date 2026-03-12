@@ -100,11 +100,11 @@ const ProjectComponentsListItem = ({
         <Stack
           spacing={2}
           direction="row"
-          justifyContent="flex-end"
-          my={1}
-          // estimating alignment with zoom ListItemSecondaryAction button
-          mr={2.5}
-        >
+          sx={{
+            justifyContent: "flex-end",
+            my: 1,
+            mr: 2.5
+          }}>
           <Tooltip title="Details">
             <IconButton
               color="primary"

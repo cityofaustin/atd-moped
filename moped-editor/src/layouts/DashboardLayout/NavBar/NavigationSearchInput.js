@@ -162,7 +162,12 @@ const NavigationSearchInput = ({ input404Class }) => {
   }, [searchTerm]);
 
   return (
-    <Box display="flex" justifyContent="center" onClick={handleMagClick}>
+    <Box
+      onClick={handleMagClick}
+      sx={{
+        display: "flex",
+        justifyContent: "center"
+      }}>
       <ClickAwayListener onClickAway={startSlideAway}>
         <Box
           ref={divRef}

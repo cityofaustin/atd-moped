@@ -8,7 +8,7 @@ import {
   Box,
   Card,
   Container,
-  Grid,
+  Grid2,
   Link,
   Tab,
   Tabs,
@@ -59,14 +59,14 @@ const UserGreeting = ({ userName }) => {
   const timeOfDay = getTimeOfDay(date);
 
   return (
-    <Grid sx={{ display: "block" }}>
+    <Grid2 sx={{ display: "block" }}>
       <Typography sx={{ color: "text.secondary", fontWeight: "bold" }}>
         Good {timeOfDay}, {userName}!
       </Typography>
       <Typography variant="h1" sx={{ paddingTop: theme.spacing(0.5) }}>
         {getCalendarDate(date)}
       </Typography>
-    </Grid>
+    </Grid2>
   );
 };
 
@@ -276,17 +276,25 @@ const DashboardView = () => {
       <Page title={"Dashboard"}>
         <Container maxWidth="xl">
           <Card sx={{ marginTop: 3 }}>
-            <Grid
+            <Grid2
               sx={{
                 flexGrow: 1,
                 backgroundColor: "background.paper",
               }}
             >
-              <Box pl={3} pt={3}>
+              <Box
+                sx={{
+                  pl: 3,
+                  pt: 3
+                }}>
                 <UserGreeting userName={userName} />
               </Box>
-              <Box px={3} py={3}>
-                <Grid>
+              <Box
+                sx={{
+                  px: 3,
+                  py: 3
+                }}>
+                <Grid2>
                   <AppBar
                     sx={{
                       backgroundColor: "background.paper",
@@ -340,9 +348,9 @@ const DashboardView = () => {
                       />
                     </Box>
                   )}
-                </Grid>
+                </Grid2>
               </Box>
-            </Grid>
+            </Grid2>
           </Card>
         </Container>
         <FeedbackSnackbar

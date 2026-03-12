@@ -42,7 +42,9 @@ const LoginView = () => {
 
   const dialogContent = {
     link: (
-      <Typography display="inline" color="textSecondary" variant="body2">
+      <Typography color="textSecondary" variant="body2" sx={{
+        display: "inline"
+      }}>
         <Link href="#">here</Link>.
       </Typography>
     ),
@@ -71,7 +73,9 @@ const LoginView = () => {
           values,
         }) => (
           <form onSubmit={handleSubmit}>
-            <Box m={2}>
+            <Box sx={{
+              m: 2
+            }}>
               <TextField
                 error={Boolean(touched.email && errors.email)}
                 fullWidth
@@ -98,7 +102,9 @@ const LoginView = () => {
                 value={values.password}
                 variant="outlined"
               />
-              <Box my={2}>
+              <Box sx={{
+                my: 2
+              }}>
                 <Button
                   color="primary"
                   disabled={isSubmitting}
@@ -126,11 +132,12 @@ const LoginView = () => {
       }}
     >
       <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
-      >
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          justifyContent: "center"
+        }}>
         <Backdrop
           sx={(theme) => ({
             zIndex: theme.zIndex.modal + 1,
@@ -141,8 +148,15 @@ const LoginView = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Container maxWidth="sm">
-          <Box mb={"4em"}>
-            <Box display="flex" justifyContent="center" mb={2}>
+          <Box sx={{
+            mb: "4em"
+          }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mb: 2
+              }}>
               <img
                 alt="Logo"
                 src={`${process.env.PUBLIC_URL}/static/moped.svg`}
@@ -162,7 +176,9 @@ const LoginView = () => {
               Austin's mobility project tracking platform
             </Typography>
           </Box>
-          <Box mb={3}>
+          <Box sx={{
+            mb: 3
+          }}>
             <Button
               color="primary"
               fullWidth
@@ -180,7 +196,9 @@ const LoginView = () => {
             </Button>
           </Box>
           <Box align="center">
-            <Typography display="inline" color="textSecondary" variant="body2">
+            <Typography color="textSecondary" variant="body2" sx={{
+              display: "inline"
+            }}>
               External user? Sign in{" "}
             </Typography>
             <SimpleDialog content={dialogContent} />

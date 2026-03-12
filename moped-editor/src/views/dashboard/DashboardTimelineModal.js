@@ -5,7 +5,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Grid,
+  Grid2,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -72,9 +72,11 @@ const DashboardTimelineModal = ({
         </DialogTitle>
         <DialogContent>
           <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Box mb={2} style={{ maxWidth: "100%" }}>
+            <Grid2 container spacing={2}>
+              <Grid2 size={12}>
+                <Box style={{ maxWidth: "100%" }} sx={{
+                  mb: 2
+                }}>
                   {table === "phases" && (
                     <ProjectPhases
                       projectId={projectId}
@@ -94,8 +96,8 @@ const DashboardTimelineModal = ({
                     />
                   )}
                 </Box>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </CardContent>
         </DialogContent>
       </Dialog>

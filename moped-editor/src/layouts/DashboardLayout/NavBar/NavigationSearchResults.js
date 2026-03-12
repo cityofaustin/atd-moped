@@ -48,7 +48,7 @@ const NavigationSearchResults = ({
       ))}
       {results.length > 5 && (
         // Link to project list view with simple search populated
-        <>
+        (<>
           <Divider />
           <ListItemLink
             to={`/moped/projects?search=${searchTerm}`}
@@ -58,7 +58,7 @@ const NavigationSearchResults = ({
             <ListItemText primary="More results" />
             <ArrowForwardIosIcon sx={{ fontSize: "1.125rem" }} />
           </ListItemLink>
-        </>
+        </>)
       )}
     </List>
   );
