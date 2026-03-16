@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Link, Menu, MenuItem } from "@mui/material";
+import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -50,9 +51,9 @@ const MobileDropdownMenu = () => {
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <MenuItem>
+        <Box sx={{ paddingX: 2, paddingY: 1 }}>
           <UserInfo />
-        </MenuItem>
+        </Box>
         {navigationItems.map((item) => (
           <MenuItem
             key={item.href}
