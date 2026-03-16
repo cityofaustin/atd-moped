@@ -12,7 +12,7 @@ esac
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
 echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
 
-PYTHON_REQUIREMENTS_FILE="$(pwd)/moped-auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
+PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
 
 #
 # First, we need to create the python package by installing requirements
