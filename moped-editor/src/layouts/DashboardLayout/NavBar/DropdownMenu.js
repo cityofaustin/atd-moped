@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import CDNAvatar from "../../../components/CDN/Avatar";
+import UserAvatar from "src/components/user/Avatar";
 import { useSessionDatabaseData, useUser } from "src/auth/user";
 import { getInitials } from "src/utils/userNames";
 import emailToInitials from "src/utils/emailToInitials";
@@ -66,9 +66,8 @@ const DropdownMenu = ({
           }}
         >
           <ListItemIcon>
-            <CDNAvatar
+            <UserAvatar
               size="small"
-              src={userDbData?.picture}
               initials={userInitials}
               userColor={user?.userColor}
             />

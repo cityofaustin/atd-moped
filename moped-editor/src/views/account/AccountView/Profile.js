@@ -29,7 +29,7 @@ import {
 } from "src/queries/account";
 
 import { useMutation, useQuery } from "@apollo/client";
-import CDNAvatar from "src/components/CDN/Avatar";
+import UserAvatar from "src/components/user/Avatar";
 import { DeleteForever } from "@mui/icons-material";
 
 const Profile = ({ ...rest }) => {
@@ -188,8 +188,7 @@ const Profile = ({ ...rest }) => {
           <CardContent>
             <Box alignItems="center" display="flex" flexDirection="column">
               <Box>
-                <CDNAvatar
-                  src={userProfile?.picture ?? null}
+                <UserAvatar
                   initials={getInitials(userProfile)}
                   largeInitials={true}
                 />
