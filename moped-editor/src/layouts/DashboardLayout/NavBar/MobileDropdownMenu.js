@@ -10,6 +10,7 @@ import {
 } from "src/layouts/DashboardLayout/NavBar/menuConfig";
 import { navigationItems } from "src/layouts/DashboardLayout/TopBar";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
+import UserInfo from "src/views/account/UserInfo";
 
 /**
  * Renders dropdown menu visible on small screens
@@ -49,6 +50,9 @@ const MobileDropdownMenu = () => {
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
+        <MenuItem>
+          <UserInfo />
+        </MenuItem>
         {navigationItems.map((item) => (
           <MenuItem
             key={item.href}
@@ -123,14 +127,6 @@ const MobileDropdownMenu = () => {
             })}
           </div>
         )}
-        <MenuItem
-          onClick={() => {
-            handleMobileClose();
-            navigate("/moped/account");
-          }}
-        >
-          Account
-        </MenuItem>
         <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
         <MenuItem>
           <CanAddProjectButton />

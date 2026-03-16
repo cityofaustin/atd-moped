@@ -78,7 +78,7 @@ export const useSessionDatabaseData = () => {
  * Persists the user Postgres database row into localStorage
  * @param userObject
  */
-export const setSessionDatabaseData = (userObject) =>
+const setSessionDatabaseData = (userObject) =>
   localStorage.setItem(
     atdSessionDatabaseDataKeyName,
     JSON.stringify(userObject)
@@ -347,7 +347,7 @@ export const getHasuraClaims = (user) => {
  * @param {object} user - The Cognito user session containing ID token and claims.
  * @returns {string|null} The database ID or null if not found.
  */
-export const getDatabaseId = (user) => {
+const getDatabaseId = (user) => {
   try {
     const claims = getHasuraClaims(user);
     return claims["x-hasura-user-db-id"];

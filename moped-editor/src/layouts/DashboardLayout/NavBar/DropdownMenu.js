@@ -13,6 +13,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import UserAvatar from "src/components/user/Avatar";
+import UserInfo from "src/views/account/UserInfo";
 import { useSessionDatabaseData, useUser } from "src/auth/user";
 import { getInitials } from "src/utils/userNames";
 import emailToInitials from "src/utils/emailToInitials";
@@ -59,12 +60,7 @@ const DropdownMenu = ({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem
-          onClick={() => {
-            handleDropdownClose();
-            navigate("/moped/account");
-          }}
-        >
+        <MenuItem>
           <ListItemIcon>
             <UserAvatar
               size="small"
@@ -72,7 +68,8 @@ const DropdownMenu = ({
               userColor={user?.userColor}
             />
           </ListItemIcon>
-          Account
+          {/* TODO: Add user email and name; make mobile component to use in MobileDropdownMenu too */}
+          <UserInfo />
         </MenuItem>
         <Divider sx={{ marginY: 1 }} />
         {analysisItems.map((item) => (
