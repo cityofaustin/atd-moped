@@ -80,7 +80,7 @@ function deploy_cognito_function() {
 #
 function deploy_cognito_functions() {
   MAIN_DIR=$PWD
-  FUNCTION="moped-auth/cognito-pre-token-hook"
+  FUNCTION="auth/cognito-pre-token-hook"
   FUNCTION_DIR=$(echo "${FUNCTION}" | cut -d "/" -f 2)
   FUNCTION_NAME="atd-moped-${FUNCTION_DIR}-${WORKING_STAGE}"
   echo "Current directory: ${PWD}"
