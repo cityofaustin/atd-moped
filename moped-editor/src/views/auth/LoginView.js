@@ -203,7 +203,9 @@ const LoginView = () => {
             <SimpleDialog content={dialogContent} />
           </Box>
           <Box align="center" sx={{ pt: 2 }}>
-            <Typography display="inline" color="textSecondary" variant="body2">
+            <Typography color="textSecondary" variant="body2" sx={{
+              display: "inline"
+            }}>
               Need access? Request{" "}
               {<ExternalLink url={serviceRequestLink} text="here" />}.
             </Typography>
