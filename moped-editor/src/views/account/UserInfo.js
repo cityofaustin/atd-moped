@@ -10,6 +10,8 @@ const UserInfo = () => {
   const session = useUser();
 
   const userInitials = user ? getInitials(user) : emailToInitials(user?.email);
+  const userFullName = getUserFullName(user);
+  const userEmail = user?.email;
 
   return (
     <Stack direction="column" sx={{ alignItems: "center", cursor: "default" }}>
@@ -19,14 +21,14 @@ const UserInfo = () => {
         userColor={session?.user?.userColor}
       />
       <Typography variant="body2" sx={{ pt: 0.5 }} noWrap>
-        {getUserFullName(user)}
+        {userFullName}
       </Typography>
       <Typography
         variant="subtitle2"
         noWrap
         sx={{ maxWidth: { xs: "150px", md: "225px", fontWeight: 400 } }}
       >
-        {user?.email}
+        {userEmail}
       </Typography>
     </Stack>
   );
