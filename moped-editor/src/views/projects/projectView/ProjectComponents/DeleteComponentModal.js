@@ -5,7 +5,7 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Grid22,
+  Grid2,
   List,
   ListItem,
   ListItemText,
