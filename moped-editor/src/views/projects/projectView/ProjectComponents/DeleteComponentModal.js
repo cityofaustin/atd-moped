@@ -66,7 +66,7 @@ const DeleteComponentModal = ({
             display: "flex",
             justifyContent: "flex-end"
           }}>
-          <Grid2 item>
+          <Grid2>
             <Button
               size="small"
               sx={{ color: "text.primary" }}
@@ -76,7 +76,7 @@ const DeleteComponentModal = ({
               Cancel
             </Button>
           </Grid2>
-          <Grid2 item>
+          <Grid2>
             <Button
               variant="contained"
               color="primary"

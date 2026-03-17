@@ -112,7 +112,7 @@ export default function ComponentListItem({
               <ListItem sx={{ paddingLeft: (theme) => theme.spacing(4) }}>
                 <Grid2 container spacing={0.5}>
                   {component.moped_proj_component_work_types.map((element) => (
-                    <Grid2 item key={element.moped_work_type.id}>
+                    <Grid2 key={element.moped_work_type.id}>
                       <Chip
                         label={element.moped_work_type.name}
                         sx={{
