@@ -22,5 +22,4 @@ function TabPanel(props) {
     </div>
   );
 }
-
 export default TabPanel;

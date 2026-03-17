@@ -141,5 +141,4 @@ const NewStaffView = () => {
     </Page>
   );
 };
-
 export default NewStaffView;

@@ -41,19 +41,34 @@ const containDrawerMixin = () => ({
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})(({
+  theme
+}) => ({
   width: drawerWidth,
   flexShrink: 0,
   ...containDrawerMixin(),
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...containDrawerMixin(),
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
+  variants: [{
+    props: (
+      {
+        open
+      }
+    ) => open,
+    style: {
+      ...openedMixin(theme),
+      "& .MuiDrawer-paper": openedMixin(theme),
+    }
+  }, {
+    props: (
+      {
+        open
+      }
+    ) => !open,
+    style: {
+      ...containDrawerMixin(),
+      ...closedMixin(theme),
+      "& .MuiDrawer-paper": closedMixin(theme),
+    }
+  }]
 }));
 
 function DrawerContent({

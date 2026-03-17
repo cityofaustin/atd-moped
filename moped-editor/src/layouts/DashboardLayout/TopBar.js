@@ -82,7 +82,9 @@ const TopBar = ({ className, ...rest }) => {
         <Box sx={{ display: { xs: "none", md: "contents" } }}>
           <Box>
             <Tabs
-              sx={{ marginLeft: (theme) => theme.spacing(1.5) }}
+              sx={theme => ({
+                marginLeft: theme.spacing(1.5)
+              })}
               value={false}
             >
               {navigationItems.map((item) => (
@@ -121,7 +123,9 @@ const TopBar = ({ className, ...rest }) => {
             flexGrow: 1
           }} />
           <NavigationSearchInput />
-          <Box sx={{ marginRight: (theme) => theme.spacing(1) }}>
+          <Box sx={theme => ({
+            marginRight: theme.spacing(1)
+          })}>
             <CanAddProjectButton />
           </Box>
         </Box>
@@ -146,5 +150,4 @@ const TopBar = ({ className, ...rest }) => {
     </AppBar>
   );
 };
-
 export default TopBar;

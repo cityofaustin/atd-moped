@@ -244,5 +244,4 @@ const ProjectSummary = ({
     </>
   );
 };
-
 export default ProjectSummary;

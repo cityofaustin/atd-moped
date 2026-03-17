@@ -303,5 +303,4 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
     </form>
   );
 };
-
 export default ProjectWorkActivitiesForm;

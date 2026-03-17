@@ -155,14 +155,14 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
                   key={tag.id}
                   label={tag.moped_tag.name}
                   onDelete={() => handleDeleteOpen(tag)}
-                  sx={{
+                  sx={theme => ({
                     height: "auto",
-                    minHeight: (theme) => theme.spacing(4),
+                    minHeight: theme.spacing(4),
                     "& .MuiChip-label": {
                       display: "block",
                       whiteSpace: "normal",
-                    },
-                  }}
+                    }
+                  })}
                 />
               </Grid2>
             ))}
@@ -170,14 +170,16 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
         </DeleteConfirmationModal>
         {addTagMode && (
           <Box
-            sx={{
+            sx={theme => ({
               display: "flex",
               justifyContent: "flex-start",
-              padding: (theme) => theme.spacing(1)
-            }}>
+              padding: theme.spacing(1)
+            })}>
             <Autocomplete
               multiple
-              sx={{ minWidth: (theme) => theme.spacing(31.25) }} // 250px / 8 = 31.25
+              sx={theme => ({
+                minWidth: theme.spacing(31.25)
+              })} // 250px / 8 = 31.25
               id="tag-autocomplete"
               getOptionLabel={(option) => option.name}
               onChange={(e, value) => setNewTagList(value)}

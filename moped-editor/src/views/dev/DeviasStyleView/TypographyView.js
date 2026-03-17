@@ -68,5 +68,4 @@ const TypographyView = () => {
     </Paper>
   );
 };
-
 export default TypographyView;

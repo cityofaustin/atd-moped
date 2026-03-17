@@ -43,7 +43,9 @@ export default function ComponentListItem({
       <ListItemButton
         dense
         onClick={onListItemClick}
-        sx={{ paddingLeft: (theme) => theme.spacing(1) }}
+        sx={theme => ({
+          paddingLeft: theme.spacing(1)
+        })}
         ref={component._ref}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
@@ -55,11 +57,11 @@ export default function ComponentListItem({
               width: "100%"
             }}>
             <ListItemText
-              sx={{
-                marginLeft: (theme) => theme.spacing(1),
+              sx={theme => ({
+                marginLeft: theme.spacing(1),
                 flexGrow: 1,
-                marginRight: (theme) => theme.spacing(6),
-              }}
+                marginRight: theme.spacing(6)
+              })}
               primary={primary}
               secondary={
                 <>
@@ -100,7 +102,9 @@ export default function ComponentListItem({
         {isExpanded ? (
           <List component="div" disablePadding dense>
             {!isComponentMapped && (
-              <ListItem dense sx={{ paddingLeft: (theme) => theme.spacing(1) }}>
+              <ListItem dense sx={theme => ({
+                paddingLeft: theme.spacing(1)
+              })}>
                 <ListItemText
                   primary={
                     <Alert severity="error">Component is not mapped</Alert>
@@ -109,7 +113,9 @@ export default function ComponentListItem({
               </ListItem>
             )}
             {component.moped_proj_component_work_types.length > 0 && (
-              <ListItem sx={{ paddingLeft: (theme) => theme.spacing(4) }}>
+              <ListItem sx={theme => ({
+                paddingLeft: theme.spacing(4)
+              })}>
                 <Grid2 container spacing={0.5}>
                   {component.moped_proj_component_work_types.map((element) => (
                     <Grid2 key={element.moped_work_type.id}>
@@ -132,7 +138,9 @@ export default function ComponentListItem({
               </ListItem>
             )}
             {component.description && (
-              <ListItem sx={{ paddingLeft: (theme) => theme.spacing(4) }}>
+              <ListItem sx={theme => ({
+                paddingLeft: theme.spacing(4)
+              })}>
                 <ListItemText secondary={component.description} />
               </ListItem>
             )}

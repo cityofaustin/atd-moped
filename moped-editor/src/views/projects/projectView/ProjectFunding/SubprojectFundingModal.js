@@ -222,5 +222,4 @@ const SubprojectFundingModal = ({
     </Dialog>
   );
 };
-
 export default SubprojectFundingModal;

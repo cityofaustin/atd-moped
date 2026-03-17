@@ -129,7 +129,6 @@ const StaffUpdateUserStatusButtons = ({
       });
     }
   };
-
   /**
    * Activate User
    */
@@ -141,7 +140,6 @@ const StaffUpdateUserStatusButtons = ({
       action: handleActivateConfirm,
     });
   };
-
   /**
    * Handles the deactivation of user
    */
@@ -153,7 +151,6 @@ const StaffUpdateUserStatusButtons = ({
       action: handleDeleteConfirm,
     });
   };
-
   return (
     <>
       {isUserActive === true && (

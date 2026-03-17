@@ -85,9 +85,9 @@ const MobileDropdownMenu = () => {
         </MenuItem>
         {subMenu && (
           <div
-            sx={{
-              marginLeft: (theme) => theme.spacing(2),
-            }}
+            sx={theme => ({
+              marginLeft: theme.spacing(2)
+            })}
           >
             {helpItems.map((item) => {
               if (item.linkType === "external") {

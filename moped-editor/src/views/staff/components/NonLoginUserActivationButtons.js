@@ -113,7 +113,6 @@ const NonLoginUserActivationButtons = ({
       });
     }
   };
-
   const handleActivateNonLoginUser = () => {
     setModalState({
       open: true,
@@ -122,7 +121,6 @@ const NonLoginUserActivationButtons = ({
       action: handleActivateNonLoginUserConfirm,
     });
   };
-
   return (
     <>
       {/* Need to create a save button to update only the moped_user row with a new mutation */}

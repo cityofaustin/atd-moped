@@ -150,5 +150,4 @@ const ProjectNotes = ({
     </ListItem>
   );
 };
-
 export default ProjectNotes;

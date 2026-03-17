@@ -32,16 +32,14 @@ export default function ProjectSaveButton({
         color="primary"
         disabled={(loading && !success) || disabled}
         onClick={success ? null : handleButtonClick}
-        sx={{
-          ...(success && {
+        sx={[success && {
+          backgroundColor: green[500],
+          "&:hover": {
             backgroundColor: green[500],
-            "&:hover": {
-              backgroundColor: green[500],
-            },
-            disabled: true,
-            cursor: "default",
-          }),
-        }}
+          },
+          disabled: true,
+          cursor: "default",
+        }]}
         {...buttonOptions}
       >
         {success ? <Icon>check</Icon> : label}

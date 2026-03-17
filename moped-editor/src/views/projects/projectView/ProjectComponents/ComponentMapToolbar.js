@@ -23,14 +23,14 @@ export default function ComponentMapToolbar({
   return (
     <AppBar
       position="fixed"
-      sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-      }}
+      sx={theme => ({
+        zIndex: theme.zIndex.drawer + 1
+      })}
     >
       <Toolbar
-        sx={{
-          backgroundColor: (theme) => theme.palette.background.paper,
-        }}
+        sx={theme => ({
+          backgroundColor: theme.palette.background.paper
+        })}
       >
         <Box sx={{
           mr: 2

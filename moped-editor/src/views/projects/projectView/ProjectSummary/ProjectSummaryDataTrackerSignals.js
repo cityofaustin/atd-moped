@@ -45,5 +45,4 @@ const ProjectSummaryDataTrackerSignals = ({ project }) => {
     </Grid2>
   );
 };
-
 export default ProjectSummaryDataTrackerSignals;

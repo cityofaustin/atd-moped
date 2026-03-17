@@ -373,19 +373,15 @@ const Filters = ({
       ) : null}
       {filterParameters.map((filter, filterIndex) => {
         const { field: fieldName, operator, value } = filter;
-
         /* Get field configuration and values need for inputs */
         const fieldConfig = filtersConfig[fieldName];
         const { label, type } = fieldConfig ?? {};
         const operators = fieldConfig?.operators ?? [];
-
         /* If the field uses a lookup table, get the table and field names  */
         const { table_name: lookupTable, operators: lookupOperators } =
           fieldConfig?.lookup ?? {};
-
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
-
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid2
@@ -424,7 +420,6 @@ const Filters = ({
                   />
                 </FormControl>
               </Grid2>
-
               {/*Select the operator from drop-down menu*/}
               <Grid2 size={{ xs: 12, md: 3 }} sx={gridItemPaddingStyle}>
                 <FormControl variant="standard" fullWidth sx={formControlStyle}>
@@ -454,7 +449,6 @@ const Filters = ({
                   />
                 </FormControl>
               </Grid2>
-
               {/* Select or enter value */}
               <Grid2 size={{ xs: 12, md: 4 }} sx={gridItemPaddingStyle}>
                 <FormControl fullWidth variant="outlined" sx={formControlStyle}>

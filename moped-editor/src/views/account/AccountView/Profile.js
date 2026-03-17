@@ -154,7 +154,9 @@ const Profile = ({ ...rest }) => {
                 </Avatar>
               </Box>
               <Typography
-                sx={{ color: (theme) => theme.palette.text.primary }}
+                sx={theme => ({
+                  color: theme.palette.text.primary
+                })}
                 gutterBottom
                 variant="h3"
               >
@@ -163,13 +165,17 @@ const Profile = ({ ...rest }) => {
                 ).toLowerCase()}
               </Typography>
               <Typography
-                sx={{ color: (theme) => theme.palette.text.secondary }}
+                sx={theme => ({
+                  color: theme.palette.text.secondary
+                })}
                 variant="body1"
               >
                 {user?.userJobTitle ?? "Austin Transportation"}
               </Typography>
               <Typography
-                sx={{ color: (theme) => theme.palette.text.secondary }}
+                sx={theme => ({
+                  color: theme.palette.text.secondary
+                })}
                 variant="body1"
               >
                 {user?.userCity ?? "Austin, TX"}

@@ -92,5 +92,4 @@ const DeleteComponentModal = ({
     </Dialog>
   );
 };
-
 export default DeleteComponentModal;

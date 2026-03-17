@@ -319,19 +319,18 @@ const ProjectView = () => {
           <Container maxWidth="xl">
             <ErrorBoundary FallbackComponent={FallbackComponent}>
               <Card
-                sx={{
-                  marginTop: (theme) => theme.spacing(3),
-                }}
+                sx={theme => ({
+                  marginTop: theme.spacing(3)
+                })}
               >
                 {loading ? (
                   <CircularProgress />
                 ) : (
                   <Box
-                    sx={{
+                    sx={theme => ({
                       flexGrow: 1,
-                      backgroundColor: (theme) =>
-                        theme.palette.background.paper,
-                    }}
+                      backgroundColor: theme.palette.background.paper
+                    })}
                   >
                     <Box
                       sx={{
@@ -436,15 +435,15 @@ const ProjectView = () => {
                             >
                               <MenuItem
                                 onClick={handleRenameClick}
-                                sx={{
-                                  minWidth: (theme) => theme.spacing(14),
-                                }}
+                                sx={theme => ({
+                                  minWidth: theme.spacing(14)
+                                })}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  sx={{
-                                    minWidth: (theme) => theme.spacing(2),
-                                  }}
+                                  sx={theme => ({
+                                    minWidth: theme.spacing(2)
+                                  })}
                                 >
                                   <CreateOutlinedIcon />
                                 </ListItemIcon>
@@ -452,15 +451,15 @@ const ProjectView = () => {
                               </MenuItem>
                               <MenuItem
                                 onClick={handleDeleteClick}
-                                sx={{
-                                  minWidth: (theme) => theme.spacing(14),
-                                }}
+                                sx={theme => ({
+                                  minWidth: theme.spacing(14)
+                                })}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  sx={{
-                                    minWidth: (theme) => theme.spacing(2),
-                                  }}
+                                  sx={theme => ({
+                                    minWidth: theme.spacing(2)
+                                  })}
                                 >
                                   <DeleteOutlinedIcon />
                                 </ListItemIcon>
@@ -473,20 +472,18 @@ const ProjectView = () => {
                     </Box>
                     <Divider />
                     <AppBar
-                      sx={{
-                        backgroundColor: (theme) =>
-                          theme.palette.background.paper,
-                        color: (theme) => theme.palette.text.secondary,
-                      }}
+                      sx={theme => ({
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.secondary
+                      })}
                       position="static"
                     >
                       <Tabs
-                        sx={{
+                        sx={theme => ({
                           "& .MuiTabs-indicator": {
-                            backgroundColor: (theme) =>
-                              theme.palette.primary.light,
-                          },
-                        }}
+                            backgroundColor: theme.palette.primary.light,
+                          }
+                        })}
                         value={activeTab}
                         onChange={handleChange}
                         variant="scrollable"
@@ -495,12 +492,12 @@ const ProjectView = () => {
                         {TABS.map((tab, i) => {
                           return (
                             <Tab
-                              sx={{
+                              sx={theme => ({
                                 minWidth: "160px",
                                 "&.Mui-selected": {
-                                  color: (theme) => theme.palette.text.primary,
-                                },
-                              }}
+                                  color: theme.palette.text.primary,
+                                }
+                              })}
                               key={tab.label}
                               label={tab.label}
                               {...a11yProps(i)}
@@ -598,9 +595,9 @@ const ProjectView = () => {
                   <Link
                     component={RouterLink}
                     to={allProjectsLink}
-                    sx={{
-                      color: (theme) => theme.palette.primary.main,
-                    }}
+                    sx={theme => ({
+                      color: theme.palette.primary.main
+                    })}
                   >
                     Back to all projects
                   </Link>

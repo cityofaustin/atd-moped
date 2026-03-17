@@ -504,5 +504,4 @@ const ComponentForm = ({
     </form>
   );
 };
-
 export default ComponentForm;

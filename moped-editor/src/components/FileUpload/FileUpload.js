@@ -247,7 +247,9 @@ const FileUpload = (props) => {
       {errors.length > 0 &&
         errors.map((err) => {
           return (
-            <Alert sx={{ margin: `${theme.spacing(2)} 0` }} severity="error">
+            <Alert sx={theme => ({
+              margin: `${theme.spacing(2)} 0`
+            })} severity="error">
               <b>Error:</b> {err}
             </Alert>
           );
@@ -269,5 +271,4 @@ const FileUpload = (props) => {
     </Grid2>
   );
 };
-
 export default FileUpload;

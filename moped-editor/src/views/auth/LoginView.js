@@ -118,7 +118,6 @@ const LoginView = () => {
       </Formik>
     ),
   };
-
   return (
     <Page
       title="Login"
@@ -204,5 +203,4 @@ const LoginView = () => {
     </Page>
   );
 };
-
 export default LoginView;

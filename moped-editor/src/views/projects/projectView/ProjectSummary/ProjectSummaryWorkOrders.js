@@ -39,5 +39,4 @@ const ProjectSummaryWorkOrders = ({ project }) => {
     (<Grid2 size={{ xs: 12 }} sx={fieldGridItem} />)
   );
 };
-
 export default ProjectSummaryWorkOrders;

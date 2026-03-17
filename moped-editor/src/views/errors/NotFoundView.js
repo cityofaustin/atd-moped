@@ -23,7 +23,6 @@ const NotFoundView = () => {
           <Typography align="center" color="textPrimary" variant="h2">
             404: The page you are looking for doesn't exist.
           </Typography>
-
           <Box sx={{
             textAlign: "center"
           }}>

@@ -33,14 +33,23 @@ const DataGridToolbar = ({
 
   return (
     <>
-      <Box sx={{ p: 2, pb: hasSecondRow ? 1 : 2 }}>
+      <Box sx={[{
+        p: 2
+      }, hasSecondRow ? {
+        pb: 1
+      } : {
+        pb: 2
+      }]}>
         <Box
-          sx={{
+          sx={[{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "flex-start",
-            pb: hasSecondRow ? 1 : 0
-          }}>
+            alignItems: "flex-start"
+          }, hasSecondRow ? {
+            pb: 1
+          } : {
+            pb: 0
+          }]}>
           <Box
             sx={{
               display: "flex",
@@ -96,5 +105,4 @@ const DataGridToolbar = ({
     </>
   );
 };
-
 export default DataGridToolbar;

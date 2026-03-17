@@ -154,7 +154,6 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
       },
     ];
   }, [deleteInProgress, handleDeleteOpen, setEditPhase]);
-
 /**
  * ProjectPhases Component - renders Project Phase table
  * @return {JSX.Element}
@@ -174,12 +173,9 @@ const ProjectPhases = ({
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [isDeleteCurrentConfirmationOpen, setIsDeleteCurrentConfirmationOpen] =
     useState(false);
-
   const [deletePhase, { loading: deleteInProgress }] =
     useMutation(DELETE_PROJECT_PHASE);
-
   const onClickAddPhase = () => setEditPhase({ project_id: projectId });
-
   const handleDeleteOpen = useCallback(
     ({ project_phase_id, is_current_phase }) => {
       if (is_current_phase) {
@@ -191,7 +187,6 @@ const ProjectPhases = ({
     },
     []
   );
-
   const handleDeleteClick = useCallback(
     (id) => () => {
       deletePhase({
@@ -209,26 +204,19 @@ const ProjectPhases = ({
     },
     [deletePhase, refetch, handleSnackbar]
   );
-
   const columns = useColumns({
     setEditPhase,
     deleteInProgress,
     handleDeleteOpen,
   });
-
   const currentProjectPhaseId = useCurrentProjectPhaseID(
     data?.moped_proj_phases
   );
-
   const currentPhaseTypeId = useCurrentPhaseId(data?.moped_proj_phases);
-
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
-
   const subphaseNameLookup = useSubphaseNameLookup(data?.moped_subphases || []);
-
   const completionDate =
     data?.project_list_view[0]["substantial_completion_date"];
-
   const onSubmitCallback = (isNewPhase) => {
     refetch().then(() => {
       isNewPhase
@@ -237,12 +225,10 @@ const ProjectPhases = ({
       setEditPhase(null);
     });
   };
-
   // Open activity edit modal when double clicking in a cell
   const doubleClickListener = (params) => {
     setEditPhase(params.row);
   };
-
   return (
     <>
       <DataGridPro

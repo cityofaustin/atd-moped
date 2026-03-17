@@ -312,5 +312,4 @@ const Search = ({
     </ClickAwayListener>
   );
 };
-
 export default Search;

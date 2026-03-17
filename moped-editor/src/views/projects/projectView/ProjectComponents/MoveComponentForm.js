@@ -91,5 +91,4 @@ const MoveComponentForm = ({ onSave, component }) => {
     </form>
   );
 };
-
 export default MoveComponentForm;

@@ -180,5 +180,4 @@ const EditStaffView = () => {
     </>
   );
 };
-
 export default EditStaffView;

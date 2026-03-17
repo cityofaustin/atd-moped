@@ -187,5 +187,4 @@ const FiltersChips = ({
     </Box>
   );
 };
-
 export default FiltersChips;

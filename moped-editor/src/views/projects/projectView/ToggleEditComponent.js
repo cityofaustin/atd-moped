@@ -46,5 +46,4 @@ const ToggleEditComponent = ({ id, value, field, hasFocus }) => {
     </Grid2>
   );
 };
-
 export default ToggleEditComponent;

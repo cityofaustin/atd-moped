@@ -104,5 +104,4 @@ const DashboardTimelineModal = ({
     </>
   );
 };
-
 export default DashboardTimelineModal;

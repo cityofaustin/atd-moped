@@ -114,7 +114,6 @@ const ProjectComponentsListItem = ({
               <EditNoteOutlinedIcon />
             </IconButton>
           </Tooltip>
-
           <Tooltip
             title={
               isSignal || isSchoolBeacon
@@ -136,7 +135,6 @@ const ProjectComponentsListItem = ({
               </IconButton>
             </span>
           </Tooltip>
-
           <Tooltip
             PopperProps={{
               disablePortal: true,
@@ -161,7 +159,6 @@ const ProjectComponentsListItem = ({
               </Tooltip>
             </span>
           </Tooltip>
-
           <Tooltip title="Move to another project">
             <IconButton
               color="primary"
@@ -171,7 +168,6 @@ const ProjectComponentsListItem = ({
               <DriveFileMoveOutlinedIcon />
             </IconButton>
           </Tooltip>
-
           <Tooltip title="Delete">
             <IconButton
               color="primary"
@@ -186,5 +182,4 @@ const ProjectComponentsListItem = ({
     />
   );
 };
-
 export default ProjectComponentsListItem;

@@ -70,5 +70,4 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
     </ActivityMetrics>
   );
 };
-
 export default SaveUserViewForm;

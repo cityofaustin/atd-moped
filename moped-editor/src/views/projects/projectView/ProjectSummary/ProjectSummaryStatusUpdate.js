@@ -60,5 +60,4 @@ const ProjectSummaryStatusUpdate = ({
     </Grid2>
   );
 };
-
 export default ProjectSummaryStatusUpdate;
