@@ -15,6 +15,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Page from "src/components/Page";
 import { useUser } from "src/auth/user";
 import SimpleDialog from "src/components/SimpleDialog";
+import ExternalLink from "src/components/ExternalLink";
+
+const serviceRequestLink =
+  "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22IT%20Support%20%E2%80%94%20Help%20with%20licenses%2C%20accounts%2C%20hardware%2C%20etc.%22%2C%22field_399%22%3A%22Moped%22%7D";
 
 const LoginView = () => {
   const { login, loginSSO, isLoginLoading } = useUser();
@@ -197,6 +201,12 @@ const LoginView = () => {
               External user? Sign in{" "}
             </Typography>
             <SimpleDialog content={dialogContent} />
+          </Box>
+          <Box align="center" sx={{ pt: 2 }}>
+            <Typography display="inline" color="textSecondary" variant="body2">
+              Need access? Request{" "}
+              {<ExternalLink url={serviceRequestLink} text="here" />}.
+            </Typography>
           </Box>
         </Container>
       </Box>

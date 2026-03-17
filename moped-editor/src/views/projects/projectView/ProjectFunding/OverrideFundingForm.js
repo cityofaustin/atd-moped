@@ -86,7 +86,7 @@ const OverrideFundingForm = ({
     setValue,
   } = useForm({
     defaultValues: {
-      funding_amount: fundingRecord.funding_amount ?? 0,
+      funding_amount: fundingRecord.funding_amount,
       description: fundingRecord.funding_description ?? "",
       should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
       funding_source_id: fundingRecord.fund_source?.funding_source_id,
@@ -300,6 +300,9 @@ const OverrideFundingForm = ({
               size="small"
               type="text"
               inputMode="numeric"
+              // the default value handler on the controlled text input Coerces falsey values to an empty string
+              // which is making 0 appear as an empty string. we do want null to be an empty string
+              valueHandler={(value) => (value === null ? "" : value)}
               onChangeHandler={amountOnChangeHandler}
               disabled={should_use_ecapris_amount}
               error={!!errors.funding_amount}

@@ -1,13 +1,10 @@
-import { Link as RouterLink } from "react-router-dom";
-import { Box, Typography, Stack, Tooltip } from "@mui/material";
-import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
+import { Box, Typography, Stack } from "@mui/material";
 import {
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarFilterButton,
 } from "@mui/x-data-grid-pro";
-import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
+import DocumentationIconLink from "src/components/DocumentationIconLink";
 
 /**
  * Custom toolbar for MUI DataGridPro for consistent titles, spacing, and layout
@@ -59,29 +56,10 @@ const DataGridToolbar = ({
               {title}
             </Typography>
             {documentationLink ? (
-              <Tooltip title="View documentation">
-                <Button
-                  sx={{ ml: 1, minWidth: 3 }}
-                  color="inherit"
-                  size="small"
-                >
-                  <Link
-                    component={RouterLink}
-                    to={documentationLink}
-                    target="_blank"
-                    underline="none"
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <MenuBookOutlined
-                      sx={{ color: "text.secondary" }}
-                      fontSize="small"
-                    />
-                  </Link>
-                </Button>
-              </Tooltip>
+              <DocumentationIconLink
+                iconButtonSx={{ ml: 1, minWidth: 3 }}
+                documentationLink={documentationLink}
+              />
             ) : null}
           </Box>
           {(primaryActionButton || secondaryActionButton) && (
