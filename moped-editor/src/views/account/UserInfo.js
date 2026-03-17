@@ -20,7 +20,7 @@ const UserInfo = () => {
         initials={userInitials}
         userColor={session?.user?.userColor}
       />
-      <Typography variant="body2" sx={{ pt: 0.5 }} noWrap>
+      <Typography variant="body2" sx={{ pt: 0.5, fontWeight: 500 }} noWrap>
         {userFullName}
       </Typography>
       <Typography
