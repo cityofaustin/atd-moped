@@ -37,14 +37,14 @@ export default function ComponentListItem({
         borderColor: isExpanded ? selectedBorderColor : COLORS.white,
       }}
       sx={{
-        borderLeft: 7
+        borderLeft: 7,
       }}
     >
       <ListItemButton
         dense
         onClick={onListItemClick}
-        sx={theme => ({
-          paddingLeft: theme.spacing(1)
+        sx={(theme) => ({
+          paddingLeft: theme.spacing(1),
         })}
         ref={component._ref}
       >
@@ -54,14 +54,16 @@ export default function ComponentListItem({
             sx={{
               display: "flex",
               alignItems: "center",
-              width: "100%"
-            }}>
+              width: "100%",
+            }}
+          >
             <ListItemText
-              sx={theme => ({
+              sx={(theme) => ({
                 marginLeft: theme.spacing(1),
                 flexGrow: 1,
-                marginRight: theme.spacing(6)
+                marginRight: theme.spacing(6),
               })}
+              slotProps={{ secondary: { component: "div" } }}
               primary={primary}
               secondary={
                 <>
@@ -87,8 +89,9 @@ export default function ComponentListItem({
               sx={{
                 width: "100%",
                 my: 0.5,
-                ml: 1
-              }}>
+                ml: 1,
+              }}
+            >
               <ProjectStatusBadge
                 phaseName={component.moped_phase?.phase_name}
                 phaseKey={component.moped_phase?.phase_key}
@@ -102,9 +105,12 @@ export default function ComponentListItem({
         {isExpanded ? (
           <List component="div" disablePadding dense>
             {!isComponentMapped && (
-              <ListItem dense sx={theme => ({
-                paddingLeft: theme.spacing(1)
-              })}>
+              <ListItem
+                dense
+                sx={(theme) => ({
+                  paddingLeft: theme.spacing(1),
+                })}
+              >
                 <ListItemText
                   primary={
                     <Alert severity="error">Component is not mapped</Alert>
@@ -113,9 +119,11 @@ export default function ComponentListItem({
               </ListItem>
             )}
             {component.moped_proj_component_work_types.length > 0 && (
-              <ListItem sx={theme => ({
-                paddingLeft: theme.spacing(4)
-              })}>
+              <ListItem
+                sx={(theme) => ({
+                  paddingLeft: theme.spacing(4),
+                })}
+              >
                 <Grid2 container spacing={0.5}>
                   {component.moped_proj_component_work_types.map((element) => (
                     <Grid2 key={element.moped_work_type.id}>
@@ -138,9 +146,11 @@ export default function ComponentListItem({
               </ListItem>
             )}
             {component.description && (
-              <ListItem sx={theme => ({
-                paddingLeft: theme.spacing(4)
-              })}>
+              <ListItem
+                sx={(theme) => ({
+                  paddingLeft: theme.spacing(4),
+                })}
+              >
                 <ListItemText secondary={component.description} />
               </ListItem>
             )}
