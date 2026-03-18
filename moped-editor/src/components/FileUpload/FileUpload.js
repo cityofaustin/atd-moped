@@ -12,7 +12,7 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert, useTheme } from "@mui/material";
+import { Alert } from "@mui/material";
 import { Grid2 } from "@mui/material";
 import { useUser, getCognitoIdJwt } from "src/auth/user";
 
@@ -23,7 +23,6 @@ registerPlugin(
 );
 
 const FileUpload = (props) => {
-  const theme = useTheme();
   const { getCognitoSession } = useUser();
 
   /**

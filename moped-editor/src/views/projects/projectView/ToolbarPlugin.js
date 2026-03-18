@@ -211,8 +211,9 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
       sx={{
         paddingTop: "16px",
         display: "flex",
-        justifyContent: "left"
-      }}>
+        justifyContent: "left",
+      }}
+    >
       <ButtonGroup size="xs" variant="ghost">
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }, key) =>
           id === richTextAction.divider ? (
@@ -223,14 +224,16 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}
-              sx={[(theme) => ({
-                "& .MuiButton-startIcon": { margin: 0 }
-              }), selectionMap[id] && {
-                backgroundColor: theme.palette.primary.main,
-                "&:hover, &.Mui-focusVisible": {
-                  backgroundColor: theme.palette.primary.main,
-                },
-              }]}
+              sx={(theme) => ({
+                "& .MuiButton-startIcon": { margin: 0 },
+                // selectionMap[id] is true if the button is selected which
+                // applies conditional styling with this conditional object spread
+                ...(selectionMap[id] && {
+                  "&:hover, &.Mui-focusVisible": {
+                    backgroundColor: theme.palette.primary.main,
+                  },
+                }),
+              })}
             />
           )
         )}
