@@ -15,7 +15,6 @@ import {
   Select,
   MenuItem,
   Switch,
-  useTheme,
 } from "@mui/material";
 import FileUpload from "src/components/FileUpload/FileUpload";
 
@@ -27,7 +26,6 @@ const FileUploadDialogSingle = ({
   projectId,
   fileTypesLookup,
 }) => {
-  const theme = useTheme();
   /**
    * @constant {string} fileName - Contains a human-readable file name
    * @constant {string} fileType- Contains an integer representing file type
@@ -162,14 +160,15 @@ const FileUploadDialogSingle = ({
           <Grid2
             size={{
               xs: 12,
-              md: 12
-            }}>
+              md: 12,
+            }}
+          >
             <TextField
               autoFocus
-              sx={{
+              sx={(theme) => ({
                 marginTop: theme.spacing(2),
                 marginBottom: theme.spacing(2),
-              }}
+              })}
               id="file-name-input"
               multiline={false}
               label={"File name"}
@@ -183,7 +182,7 @@ const FileUploadDialogSingle = ({
               <InputLabel id="select-dropdown-filetype">Type</InputLabel>
               <Select
                 labelId="select-dropdown-filetype"
-                sx={{ width: theme.spacing(25) }}
+                sx={(theme) => ({ width: theme.spacing(25) })}
                 value={fileType}
                 label="Type"
                 onChange={handleFileTypeChange}
@@ -198,10 +197,10 @@ const FileUploadDialogSingle = ({
             </FormControl>
 
             <TextField
-              sx={{
+              sx={(theme) => ({
                 marginTop: theme.spacing(2),
                 marginBottom: theme.spacing(2),
-              }}
+              })}
               id="standard-multiline-static"
               label={"Description"}
               multiline
@@ -227,11 +226,12 @@ const FileUploadDialogSingle = ({
             </FormControl>
           </Grid2>
           <Grid2
-            sx={{ marginTop: theme.spacing(2) }}
+            sx={(theme) => ({ marginTop: theme.spacing(2) })}
             size={{
               xs: 12,
-              md: 12
-            }}>
+              md: 12,
+            }}
+          >
             {externalFile ? (
               <TextField
                 autoFocus
