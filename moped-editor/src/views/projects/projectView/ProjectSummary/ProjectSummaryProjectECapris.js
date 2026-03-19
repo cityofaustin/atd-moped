@@ -2,14 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Box, Grid2, Stack, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
-import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import CopyTextButton from "src/components/CopyTextButton";
 
-import {
-  PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
-  PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
-} from "src/queries/project";
-import { useMutation } from "@apollo/client";
+import { PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID } from "src/queries/project";
 import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 /**
@@ -43,87 +38,15 @@ const WrapperComponent = ({ children, noWrapper }) =>
  */
 const ProjectSummaryProjectECapris = ({
   projectId,
-  eCaprisSubprojectId,
+  data,
   loading,
   refetch,
   handleSnackbar,
   noWrapper,
 }) => {
-  const [originalValue, setOriginalValue] = useState(
-    eCaprisSubprojectId ?? null
-  );
+  const eCaprisSubprojectId = data?.moped_project[0]?.ecapris_subproject_id;
+  const eCaprisSubprojectOptions = data?.ecapris_subproject_funding ?? [];
   const [editMode, setEditMode] = useState(false);
-  const [eCapris, setECapris] = useState(originalValue);
-
-  useEffect(() => {
-    const newVal = eCaprisSubprojectId ?? null;
-    setOriginalValue(newVal);
-    setECapris(newVal);
-  }, [eCaprisSubprojectId]);
-
-  const [updateProjectECapris, { loading: updateMutationLoading }] =
-    useMutation(PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID);
-
-  const [clearProjectECapris, { loading: clearMutationLoading }] = useMutation(
-    PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID
-  );
-
-  /**
-   * Validates the eCapris ID format or checks if it is empty so it can be cleared.
-   * The format should be a number with exactly three digits after the decimal point.
-   */
-  const isValidECaprisId = (num) =>
-    /^[\d]*\.[0-9]{3}$/.test(num) || !num?.length;
-  /**
-   * Resets the project website to original value
-   */
-  const handleProjectECaprisClose = () => {
-    setECapris(originalValue);
-    setEditMode(false);
-  };
-
-  /**
-   * Saves the new project website...
-   */
-  const handleProjectECaprisSave = () => {
-    const isEmpty = (eCapris ?? "").length === 0;
-
-    (isEmpty
-      ? clearProjectECapris({
-          variables: {
-            projectId: projectId,
-          },
-        })
-      : updateProjectECapris({
-          variables: {
-            projectId: projectId,
-            eCapris: eCapris,
-          },
-        })
-    )
-      .then(() => refetch())
-      .then(() => {
-        setEditMode(false);
-        handleSnackbar(true, "eCAPRIS Subproject ID updated", "success");
-      })
-      .catch((error) => {
-        handleProjectECaprisClose();
-        handleSnackbar(
-          true,
-          `Error updating eCAPRIS Subproject ID`,
-          "error",
-          error
-        );
-      });
-  };
-
-  /**
-   * Updates the state of website
-   * @param {Object} e - Event object
-   */
-  const handleProjectECaprisChange = (e) => {
-    setECapris(e.target.value.trim());
-  };
 
   return (
     <WrapperComponent noWrapper={noWrapper}>
@@ -137,45 +60,37 @@ const ProjectSummaryProjectECapris = ({
         ]}
       >
         {editMode && (
-          <>
-            <TextField
-              variant="standard"
-              autoFocus
-              fullWidth
-              id="moped-project-ecapris"
-              label={null}
-              onChange={handleProjectECaprisChange}
-              value={eCapris ?? ""}
-              error={!isValidECaprisId(eCapris)}
-              helperText={
-                !isValidECaprisId(eCapris)
-                  ? `eCapris value must contain no letters and have exactly three digits after the decimal place. E.g., 12680.010.`
-                  : null
-              }
-            />
-            <ProjectSummaryIconButtons
-              handleSave={handleProjectECaprisSave}
-              handleClose={handleProjectECaprisClose}
-              disabledCondition={
-                originalValue === eCapris || !isValidECaprisId(eCapris)
-              }
-              loading={loading || updateMutationLoading || clearMutationLoading}
-            />
-          </>
+          <ProjectSummaryAutocomplete
+            field="eCAPRIS subproject ID"
+            idColumn={"ecapris_subproject_id"}
+            nameColumn={"ecapris_subproject_id"}
+            initialValue={{
+              id: eCaprisSubprojectId,
+              ecapris_subproject_id: eCaprisSubprojectId,
+            }}
+            optionList={eCaprisSubprojectOptions}
+            updateMutation={PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID}
+            tooltipText="Current public phase of a project"
+            projectId={projectId}
+            loading={loading}
+            data={data}
+            refetch={refetch}
+            handleSnackbar={handleSnackbar}
+          />
         )}
         {!editMode && (
           <Stack
             direction="row"
             spacing={1}
-            sx={!eCapris ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
+            sx={!eCaprisSubprojectId ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
             <ProjectSummaryLabel
-              text={eCapris ? eCapris : ""}
+              text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => setEditMode(true)}
             />
-            {eCapris ? (
+            {eCaprisSubprojectId ? (
               <CopyTextButton
-                textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+                textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCaprisSubprojectId}`}
                 copyButtonText="Copy eCAPRIS link"
                 buttonProps={{
                   sx: { minWidth: 160, justifyContent: "flex-start" },
