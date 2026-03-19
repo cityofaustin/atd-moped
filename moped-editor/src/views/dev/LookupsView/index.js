@@ -1,4 +1,4 @@
-import React, { createRef, useMemo, useEffect } from "react";
+import React, { createRef, useMemo, useEffect, useState } from "react";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useQuery } from "@apollo/client";
 import { useLocation, Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
 import ComponentTagsTable from "./ComponentTagsTable";
@@ -49,6 +50,8 @@ const TAG_TABLE_KEYS = ["moped_component_tags", "moped_tags"];
  * @returns { JSX } a page component
  */
 const LookupsView = () => {
+  const [componentTagsAddTrigger, setComponentTagsAddTrigger] = useState(0);
+  const [projectTagsAddTrigger, setProjectTagsAddTrigger] = useState(0);
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
     useFeedbackSnackbar();
   const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
