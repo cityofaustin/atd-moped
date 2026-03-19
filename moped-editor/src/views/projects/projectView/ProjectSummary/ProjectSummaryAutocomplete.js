@@ -14,7 +14,6 @@ import { useMutation } from "@apollo/client";
 
 /**
  * ProjectSummaryAutocomplete Component
- * @param {String | null} field - The name of the field to be displayed in the label (no label if null)
  * @param {String} idColumn - The name of the id column to be used in the mutation
  * @param {String} nameColumn - The name of the name column to be displayed
  * @param {Object} initialValue - The initial value returned from the query
@@ -25,13 +24,11 @@ import { useMutation } from "@apollo/client";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {function} handleSnackbar - The function to show the snackbar
- * @param {boolean} defaultEditMode - True if the component should start in edit mode
- * @param {function} onClose - Callback function for when the autocomplete is closed
  * @returns {JSX.Element}
  * @constructor
  */
 const ProjectSummaryAutocomplete = ({
-  field = null,
+  field,
   idColumn,
   nameColumn,
   initialValue,
@@ -42,10 +39,8 @@ const ProjectSummaryAutocomplete = ({
   loading,
   refetch,
   handleSnackbar,
-  defaultEditMode = false,
-  onClose = null,
 }) => {
-  const [editMode, setEditMode] = useState(defaultEditMode);
+  const [editMode, setEditMode] = useState(false);
   const [fieldValue, setFieldValue] = useState(initialValue);
 
   // The mutation and mutation function
@@ -56,10 +51,8 @@ const ProjectSummaryAutocomplete = ({
    * Resets the field value back to its original state, closes edit mode
    */
   const handleFieldClose = () => {
+    setFieldValue(initialValue);
     setEditMode(false);
-    if (onClose) {
-      onClose();
-    }
   };
 
   /**
@@ -74,12 +67,11 @@ const ProjectSummaryAutocomplete = ({
     })
       .then(() => refetch())
       .then(() => {
-        handleFieldClose();
+        setEditMode(false);
         handleSnackbar(true, `${field} updated`, "success");
       })
       .catch((error) => {
         handleSnackbar(true, `Error updating ${field}`, "error", error);
-        setFieldValue(initialValue);
         handleFieldClose();
       });
   };

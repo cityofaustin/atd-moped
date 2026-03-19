@@ -38,6 +38,10 @@ export const COMBINED_FUNDING_QUERY = gql`
       funding_status_id
       funding_status_name
     }
+    ecapris_subproject_funding(distinct_on: ecapris_subproject_id) {
+      id
+      ecapris_subproject_id
+    }
   }
 `;
 
