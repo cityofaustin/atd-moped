@@ -29,6 +29,7 @@ import {
   PROJECT_UPDATE_SPONSOR,
   PROJECT_UPDATE_LEAD,
   PROJECT_UPDATE_PUBLIC_PROCESS,
+  PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 
 /**
@@ -167,6 +168,31 @@ const ProjectSummary = ({
                     eCaprisSubprojectId={
                       data?.moped_project?.[0]?.ecapris_subproject_id
                     }
+                    refetch={refetch}
+                    handleSnackbar={handleSnackbar}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <ProjectSummaryProjectECapris
+                    projectId={projectId}
+                    loading={loading}
+                    eCaprisSubprojectId={
+                      data?.moped_project?.[0]?.ecapris_subproject_id
+                    }
+                  />
+                  <ProjectSummaryAutocomplete
+                    field="eCAPRIS subproject ID"
+                    idColumn={"ecapris_subproject_id"}
+                    nameColumn={"ecapris_subproject_id"}
+                    initialValue={
+                      data?.moped_project[0]?.moped_public_process_statuses
+                    }
+                    optionList={data?.ecapris_subproject_funding ?? []}
+                    updateMutation={PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID}
+                    tooltipText="Current public phase of a project"
+                    projectId={projectId}
+                    loading={loading}
+                    data={data}
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
