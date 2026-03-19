@@ -820,7 +820,7 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
 `;
 
 export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
-  mutation UpdateProjectECapris($projectId: Int!, $fieldValueId: String!) {
+  mutation UpdateProjectECapris($projectId: Int!, $fieldValueId: String) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: {
