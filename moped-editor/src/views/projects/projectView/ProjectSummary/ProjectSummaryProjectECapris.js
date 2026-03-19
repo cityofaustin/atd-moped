@@ -32,6 +32,8 @@ const WrapperComponent = ({ children, noWrapper }) =>
  * ProjectSummaryProjectECapris Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {String} eCaprisSubprojectId - The current eCAPRIS subproject ID
+ * @param {Array} options - The list of eCAPRIS subproject funding options
+ * @param {boolean} loading - True if it is loading
  * @param {function} refetch - The refetch function from apollo
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
@@ -39,36 +41,35 @@ const WrapperComponent = ({ children, noWrapper }) =>
  */
 const ProjectSummaryProjectECapris = ({
   projectId,
-  data,
+  eCaprisSubprojectId,
+  options,
   loading,
   refetch,
   handleSnackbar,
   noWrapper,
 }) => {
-  const eCaprisSubprojectId = data?.moped_project[0]?.ecapris_subproject_id;
-  const eCaprisSubprojectOptions = data?.ecapris_subproject_funding ?? [];
   const [editMode, setEditMode] = useState(false);
 
   return (
-    <WrapperComponent noWrapper={noWrapper}>
+    <WrapperComponent noWrapper={editMode}>
       <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <ProjectSummaryAutocomplete
-            field="eCAPRIS subproject ID"
             idColumn={"ecapris_subproject_id"}
             nameColumn={"ecapris_subproject_id"}
             initialValue={{
               id: eCaprisSubprojectId,
               ecapris_subproject_id: eCaprisSubprojectId,
             }}
-            optionList={eCaprisSubprojectOptions}
+            optionList={options}
             updateMutation={PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID}
             tooltipText="Current public phase of a project"
             projectId={projectId}
             loading={loading}
-            data={data}
             refetch={refetch}
             handleSnackbar={handleSnackbar}
+            defaultEditMode={true}
+            onClose={() => setEditMode(false)}
           />
         )}
         {!editMode && (
