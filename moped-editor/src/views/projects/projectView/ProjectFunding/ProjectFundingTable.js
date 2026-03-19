@@ -715,9 +715,12 @@ const ProjectFundingTable = ({
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}
-                    refetch={refetchFundingData}
+                    loading={loadingProjectFunding}
+                    options={
+                      dataProjectFunding?.ecapris_subproject_funding ?? []
+                    }
+                    refetch={refetch}
                     handleSnackbar={handleSnackbar}
-                    noWrapper
                   />
                 </Grid2>
                 <Grid2
