@@ -15,9 +15,9 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 import {
   PROJECT_TAGS_QUERY,
-  INSERT_PROJECT_TAG,
-  UPDATE_PROJECT_TAG,
-} from "src/queries/dataDictionary";
+  ADD_PROJECT_TAG_LOOKUP,
+  UPDATE_PROJECT_TAG_LOOKUP,
+} from "src/queries/tableLookups";
 import {
   transformDatabaseToGrid,
   transformGridToDatabase,
@@ -108,8 +108,8 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, addTrigger = 0 }) => {
     fetchPolicy: "no-cache",
   });
 
-  const [insertProjectTag] = useMutation(INSERT_PROJECT_TAG);
-  const [updateProjectTag] = useMutation(UPDATE_PROJECT_TAG);
+  const [addProjectTagLookup] = useMutation(ADD_PROJECT_TAG_LOOKUP);
+  const [updateProjectTagLookup] = useMutation(UPDATE_PROJECT_TAG_LOOKUP);
 
   const tableRows = useMemo(
     () => transformDatabaseToGrid(data?.moped_tags),
@@ -203,7 +203,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, addTrigger = 0 }) => {
       setRows(rows.filter((row) => row.id !== id));
       const deletedRow = rows.find((row) => row.id === id);
       if (!deletedRow?.isNew) {
-        updateProjectTag({
+        updateProjectTagLookup({
           variables: {
             id: deletedRow.id,
             set: { is_deleted: true },
@@ -226,14 +226,14 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, addTrigger = 0 }) => {
         setIsDeleteConfirmationOpen(false);
       }
     },
-    [rows, updateProjectTag, refetch, handleSnackbar]
+    [rows, updateProjectTagLookup, refetch, handleSnackbar]
   );
 
   const processRowUpdate = (updatedRow, originalRow) => {
     const mutationData = transformGridToDatabase(updatedRow);
 
     if (updatedRow.isNew) {
-      return insertProjectTag({
+      return addProjectTagLookup({
         variables: {
           object: {
             name: mutationData.name || null,
@@ -267,7 +267,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, addTrigger = 0 }) => {
       return Promise.resolve(updatedRow);
     }
 
-    return updateProjectTag({
+    return updateProjectTagLookup({
       variables: {
         id: updatedRow.id,
         set: {
