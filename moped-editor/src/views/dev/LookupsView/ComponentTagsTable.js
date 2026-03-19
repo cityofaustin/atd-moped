@@ -15,9 +15,9 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 import {
   COMPONENT_TAGS_QUERY,
-  INSERT_COMPONENT_TAG,
+  ADD_COMPONENT_TAG,
   UPDATE_COMPONENT_TAG,
-} from "src/queries/dataDictionary";
+} from "src/queries/tableLookups";
 import {
   transformDatabaseToGrid,
   transformGridToDatabase,
@@ -108,7 +108,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, addTrigger = 0 }) => {
     fetchPolicy: "no-cache",
   });
 
-  const [insertComponentTag] = useMutation(INSERT_COMPONENT_TAG);
+  const [addComponentTag] = useMutation(ADD_COMPONENT_TAG);
   const [updateComponentTag] = useMutation(UPDATE_COMPONENT_TAG);
 
   const tableRows = useMemo(
@@ -233,7 +233,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, addTrigger = 0 }) => {
     const mutationData = transformGridToDatabase(updatedRow);
 
     if (updatedRow.isNew) {
-      return insertComponentTag({
+      return addComponentTag({
         variables: {
           object: {
             name: mutationData.name || null,
