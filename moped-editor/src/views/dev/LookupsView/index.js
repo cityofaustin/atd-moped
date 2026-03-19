@@ -1,4 +1,4 @@
-import React, { createRef, useMemo, useEffect } from "react";
+import React, { createRef, useMemo, useEffect, useState } from "react";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useQuery } from "@apollo/client";
 import { useLocation, Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
 import ComponentTagsTable from "./ComponentTagsTable";
@@ -49,6 +50,8 @@ const TAG_TABLE_KEYS = ["moped_component_tags", "moped_tags"];
  * @returns { JSX } a page component
  */
 const LookupsView = () => {
+  const [componentTagsAddTrigger, setComponentTagsAddTrigger] = useState(0);
+  const [projectTagsAddTrigger, setProjectTagsAddTrigger] = useState(0);
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
     useFeedbackSnackbar();
   const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
@@ -127,7 +130,7 @@ const LookupsView = () => {
           </Paper>
 
           {SETTINGS.map((recordType) => (
-            <Paper sx={{ paddingLeft: 3 }} key={recordType.key}>
+            <Paper sx={{ px: 3 }} key={recordType.key}>
               <Grid
                 container
                 spacing={3}
@@ -135,6 +138,76 @@ const LookupsView = () => {
                 ref={refs[recordType.key]}
               >
                 <Grid item xs={12}>
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    spacing={1}
+                    sx={{ mb: 2 }}
+                  >
+                    <Grid item>
+                      <Grid
+                        container
+                        direction="row"
+                        alignItems="center"
+                        spacing={1}
+                      >
+                        <Grid item>
+                          <Typography variant="h2">{recordType.label}</Typography>
+                        </Grid>
+                        <Grid item>
+                          <Tooltip title="Return to top of page">
+                            <IconButton
+                              component={Link}
+                              to={"#"}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                scrollToTable("_scroll_to_top", refs);
+                                history.replace("");
+                              }}
+                              size="large"
+                            >
+                              <ArrowUpwardIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Grid>
+                        <Grid item>
+                          <CopyTextButton
+                            copyButtonText="Copy link"
+                            textToCopy={`${
+                              window.location.origin
+                            }${pathname}${createRecordKeyHash(recordType.key)}`}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    {TAG_TABLE_KEYS.includes(recordType.key) ? (
+                      <Grid item>
+                        <Can
+                          perform="lookups:edit"
+                          yes={
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              startIcon={<AddCircleIcon />}
+                              onClick={() => {
+                                if (recordType.key === "moped_component_tags") {
+                                  setComponentTagsAddTrigger((prev) => prev + 1);
+                                } else {
+                                  setProjectTagsAddTrigger((prev) => prev + 1);
+                                }
+                              }}
+                            >
+                              Add tag
+                            </Button>
+                          }
+                          no={null}
+                        />
+                      </Grid>
+                    ) : null}
+                  </Grid>
+                  <div>
                   {TAG_TABLE_KEYS.includes(recordType.key) ? (
                     <Can
                       perform="lookups:edit"
@@ -143,11 +216,13 @@ const LookupsView = () => {
                           <ComponentTagsTable
                             canEdit={true}
                             handleSnackbar={handleSnackbar}
+                            addTrigger={componentTagsAddTrigger}
                           />
                         ) : (
                           <ProjectTagsTable
                             canEdit={true}
                             handleSnackbar={handleSnackbar}
+                            addTrigger={projectTagsAddTrigger}
                           />
                         )
                       }
@@ -156,58 +231,25 @@ const LookupsView = () => {
                           <ComponentTagsTable
                             canEdit={false}
                             handleSnackbar={handleSnackbar}
+                            addTrigger={componentTagsAddTrigger}
                           />
                         ) : (
                           <ProjectTagsTable
                             canEdit={false}
                             handleSnackbar={handleSnackbar}
+                            addTrigger={projectTagsAddTrigger}
                           />
                         )
                       }
                     />
                   ) : (
-                    <Grid
-                      container
-                      direction="row"
-                      alignItems="center"
-                      spacing={1}
-                    >
-                      <Grid item>
-                        <Typography variant="h2">{recordType.label}</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Tooltip title="Return to top of page">
-                          <IconButton
-                            component={Link}
-                            to={"#"}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              scrollToTable("_scroll_to_top", refs);
-                              history.replace("");
-                            }}
-                            size="large"
-                          >
-                            <ArrowUpwardIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                      <Grid item>
-                        <CopyTextButton
-                          copyButtonText="Copy link"
-                          textToCopy={`${
-                            window.location.origin
-                          }${pathname}${createRecordKeyHash(recordType.key)}`}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <RecordTable
-                          rows={data?.[recordType.key]}
-                          columns={recordType.columns}
-                          loading={loading}
-                        />
-                      </Grid>
-                    </Grid>
+                    <RecordTable
+                      rows={data?.[recordType.key]}
+                      columns={recordType.columns}
+                      loading={loading}
+                    />
                   )}
+                  </div>
                 </Grid>
               </Grid>
             </Paper>

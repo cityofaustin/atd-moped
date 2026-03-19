@@ -2,19 +2,14 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   DataGridPro,
   GridRowModes,
   GridRowEditStopReasons,
   useGridApiRef,
 } from "@mui/x-data-grid-pro";
-import { useLocation } from "react-router-dom";
-import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import CopyTextButton from "src/components/CopyTextButton";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
@@ -27,8 +22,6 @@ import {
   transformDatabaseToGrid,
   transformGridToDatabase,
 } from "./componentTagsHelpers";
-
-const createRecordKeyHash = (recordKey) => `#${recordKey.replaceAll("_", "-")}`;
 
 const requiredFields = ["name", "type", "slug"];
 
@@ -105,10 +98,8 @@ const useColumns = ({
     canEdit,
   ]);
 
-const ComponentTagsTable = ({ canEdit, handleSnackbar }) => {
+const ComponentTagsTable = ({ canEdit, handleSnackbar, addTrigger = 0 }) => {
   const apiRef = useGridApiRef();
-  const { pathname } = useLocation();
-  const recordKeyHash = createRecordKeyHash("moped_component_tags");
 
   const { data, loading, refetch } = useQuery(COMPONENT_TAGS_QUERY, {
     variables: {
@@ -174,6 +165,13 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar }) => {
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
     }));
   };
+
+  useEffect(() => {
+    if (canEdit && addTrigger > 0) {
+      handleAddRecordClick();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addTrigger, canEdit]);
 
   const handleEditClick = useCallback(
     (id) => () => {
@@ -300,10 +298,6 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar }) => {
     canEdit,
   });
 
-  const isEditMode = Object.values(rowModesModel).some(
-    (m) => m?.mode === GridRowModes.Edit
-  );
-
   return (
     <>
       <DataGridPro
@@ -320,39 +314,11 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar }) => {
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={(error) => console.error(error)}
         disableRowSelectionOnClick
-        toolbar
         density="comfortable"
         getRowHeight={() => "auto"}
         hideFooter
         localeText={{ noRowsLabel: "No component tags" }}
         initialState={{ pinnedColumns: canEdit ? { right: ["edit"] } : {} }}
-        slots={{
-          toolbar: DataGridToolbar,
-        }}
-        slotProps={{
-          toolbar: {
-            title: "Component tags",
-            primaryActionButton: (
-              <CopyTextButton
-                copyButtonText="Copy link"
-                textToCopy={`${window.location.origin}${pathname}${recordKeyHash}`}
-                buttonProps={{ variant: "outlined", size: "small" }}
-              />
-            ),
-            secondaryActionButton:
-              canEdit && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AddCircleIcon />}
-                  onClick={handleAddRecordClick}
-                  disabled={isEditMode}
-                >
-                  Add tag
-                </Button>
-              ),
-          },
-        }}
       />
       <DeleteConfirmationModal
         type="component tag"
