@@ -43,6 +43,7 @@ const ProjectSummaryAutocomplete = ({
 }) => {
   const [editMode, setEditMode] = useState(false);
   const [fieldValue, setFieldValue] = useState(initialValue);
+  console.log(typeof initialValue);
 
   // The mutation and mutation function
   const [updateFieldValue, { loading: mutationLoading }] =
