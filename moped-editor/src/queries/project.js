@@ -820,11 +820,11 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
 `;
 
 export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
-  mutation UpdateProjectECapris($projectId: Int!, $eCapris: String!) {
+  mutation UpdateProjectECapris($projectId: Int!, $fieldValueId: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: {
-        ecapris_subproject_id: $eCapris
+        ecapris_subproject_id: $fieldValueId
         should_sync_ecapris_statuses: true
         should_sync_ecapris_funding: true
       }
