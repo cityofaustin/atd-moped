@@ -169,6 +169,9 @@ const ProjectSummary = ({
                 <Grid2 size={12}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
+                    eCaprisSubprojectId={
+                      data?.moped_project[0]?.ecapris_subproject_id
+                    }
                     loading={loading}
                     eCaprisSubprojectId={
                       data?.moped_project?.[0]?.ecapris_subproject_id
