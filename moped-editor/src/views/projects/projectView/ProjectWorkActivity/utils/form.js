@@ -54,9 +54,11 @@ export const activityValidationSchema = yup.object().shape({
  * @param {object} field react-hook-form field object
  */
 export const amountOnChangeHandler = (value, field) => {
-  const handledValue = value
+  const integerValue = value
     ? removeNonIntegers(removeDecimalsAndTrailingNumbers(value))
     : null;
+  // if after removing non integers, we are only left we an empty string, handle as null
+  const handledValue = integerValue ? integerValue : null;
   field.onChange(handledValue);
 };
 

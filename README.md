@@ -103,7 +103,7 @@ Before you begin, make sure you have the following installed on your system:
 - [API](./moped-api/README.md) - serverless Flask API, handling data operations and API requests
 - [auth](./moped-auth/README.md) - manages authentication using AWS Cognito, including JWT token generation and validation for secure access control
 - [etl](./moped-etl/README.md) - integration scripts for ArcGIS, Knack Data Tracker, and eCapris
-- [toolbox](./moped-toolbox/README.md) - collection of utilities and scripts designed for ad-hoc maintenance tasks
+- [toolbox](./toolbox/README.md) - collection of utilities and scripts designed for ad-hoc maintenance tasks
 
 ## License
 

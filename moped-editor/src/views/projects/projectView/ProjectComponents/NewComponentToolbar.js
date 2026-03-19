@@ -1,3 +1,4 @@
+import DocumentationIconLink from "src/components/DocumentationIconLink";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import ListItemText from "@mui/material/ListItemText";
@@ -8,7 +9,7 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import TuneIcon from "@mui/icons-material/Tune";
 
 const NewComponentToolbar = ({
@@ -26,24 +27,29 @@ const NewComponentToolbar = ({
   return (
     isNotCreatingOrEditing && (
       <>
-        <ListItem dense>
+        <ListItem dense sx={{ justifyContent: "space-between" }}>
           <Button
             sx={{ justifyContent: "flex-start" }}
             size="small"
-            color="primary"
-            fullWidth
-            startIcon={<AddCircleOutlineIcon />}
+            variant="contained"
+            startIcon={<AddCircleIcon />}
             onClick={onStartCreatingComponent}
           >
             New Component
           </Button>
-          <IconButton
-            onClick={() => setAreSettingsOpen(!areSettingsOpen)}
-            aria-label="settings"
-            size="large"
-          >
-            <TuneIcon fontSize="small" />
-          </IconButton>
+          <Box>
+            <IconButton
+              onClick={() => setAreSettingsOpen(!areSettingsOpen)}
+              aria-label="settings"
+              size="large"
+            >
+              <TuneIcon fontSize="small" />
+            </IconButton>
+            <DocumentationIconLink
+              documentationLink="https://atd-dts.gitbook.io/moped-documentation/user-guides/project-map"
+              size="large"
+            />
+          </Box>
         </ListItem>
         <Collapse in={areSettingsOpen}>
           <Box borderLeft={7} borderColor="white">

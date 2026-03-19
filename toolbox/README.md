@@ -11,7 +11,7 @@ The Moped application supports keeping correlated records in ATD's Knack Data Tr
 The docker image does not automatically run the script when it is instantiated from the container. It will spin on a `tail -f /dev/null` `CMD` and the user is expected to attach to the running container and execute the script manually.
 
 1. Spin up your local database or prepare yourself to be able to connect to the read replica
-1. Navigate to `moped-toolbox/backfill_data_tracker_url_field`
+1. Navigate to `toolbox/backfill_data_tracker_url_field`
 1. Using the `environment_file_template` template, create an environment file, `development.env` named by default...
    - **NB:** If you put production knack configuration values in this file, you will write to production Data Tracker when you run the script. Use the development Data Tracker instance set aside for moped development for testing.
 1. .. and change the reference if needed in the `docker-compose.yml` file.

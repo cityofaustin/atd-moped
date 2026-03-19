@@ -204,7 +204,8 @@ const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
-        valueFormatter: (value) => currencyFormatter.format(value),
+        valueFormatter: (value) =>
+          value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
         type: "currency",
       },
