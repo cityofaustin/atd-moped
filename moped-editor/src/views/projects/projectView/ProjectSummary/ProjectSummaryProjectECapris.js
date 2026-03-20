@@ -53,7 +53,6 @@ const ProjectSummaryProjectECapris = ({
 }) => {
   const initialValue = eCaprisSubprojectId
     ? {
-        id: eCaprisSubprojectId,
         ecapris_subproject_id: eCaprisSubprojectId,
       }
     : null;
