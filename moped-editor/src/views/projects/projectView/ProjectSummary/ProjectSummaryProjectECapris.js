@@ -39,7 +39,6 @@ const ProjectSummaryProjectECapris = ({
 }) => {
   const initialValue = eCaprisSubprojectId
     ? {
-        id: eCaprisSubprojectId,
         ecapris_subproject_id: eCaprisSubprojectId,
       }
     : null;
@@ -90,7 +89,7 @@ const ProjectSummaryProjectECapris = ({
 
   return (
     <Grid item xs={12} sx={fieldGridItem}>
-      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
+      <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
       <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <>
