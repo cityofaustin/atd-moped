@@ -14,6 +14,7 @@ import { useMutation } from "@apollo/client";
 
 /**
  * ProjectSummaryAutocomplete Component
+ * @param {String} field - The name of the field to be displayed
  * @param {String} idColumn - The name of the id column to be used in the mutation
  * @param {String} nameColumn - The name of the name column to be displayed
  * @param {Object} initialValue - The initial value returned from the query
