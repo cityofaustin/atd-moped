@@ -182,26 +182,38 @@ const LookupsView = () => {
                       container
                       direction="row"
                       alignItems="center"
+                      justifyContent="space-between"
                       spacing={1}
                     >
                       <Grid item>
-                        <Typography variant="h2">{recordType.label}</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Tooltip title="Return to top of page">
-                          <IconButton
-                            component={Link}
-                            to={"#"}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              scrollToTable("_scroll_to_top", refs);
-                              history.replace("");
-                            }}
-                            size="large"
-                          >
-                            <ArrowUpwardIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+                        <Grid
+                          container
+                          direction="row"
+                          alignItems="center"
+                          spacing={1}
+                        >
+                          <Grid item>
+                            <Typography variant="h2">
+                              {recordType.label}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Tooltip title="Return to top of page">
+                              <IconButton
+                                component={Link}
+                                to={"#"}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  scrollToTable("_scroll_to_top", refs);
+                                  history.replace("");
+                                }}
+                                size="large"
+                              >
+                                <ArrowUpwardIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
                       </Grid>
                       <Grid item>
                         <CopyTextButton
