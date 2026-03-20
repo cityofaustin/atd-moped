@@ -17,16 +17,12 @@ import ComponentTagsTable from "./ComponentTagsTable";
 import ProjectTagsTable from "./ProjectTagsTable";
 import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
+import { createRecordKeyHash } from "src/utils/urls";
 import CopyTextButton from "src/components/CopyTextButton";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
 import Can from "src/auth/Can";
-
-/**
- * Converts a record key (e.g. moped_phases) into a URL hash, (e.g. #moped-phases)
- */
-const createRecordKeyHash = (recordKey) => `#${recordKey.replaceAll("_", "-")}`;
 
 /**
  * Scroll to a page element based on its key
