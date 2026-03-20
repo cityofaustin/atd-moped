@@ -714,7 +714,7 @@ const ProjectFundingTable = ({
                     options={
                       dataProjectFunding?.ecapris_subproject_funding ?? []
                     }
-                    refetch={refetch}
+                    refetch={refetchProjectSummary}
                     handleSnackbar={handleSnackbar}
                   />
                 </Grid>

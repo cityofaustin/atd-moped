@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
+import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
+import CopyTextButton from "src/components/CopyTextButton";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
 
-import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
-import CopyTextButton from "src/components/CopyTextButton";
-import { fieldSelectItem } from "src/styles/reusableStyles";
-
+import {
+  fieldBox,
+  fieldGridItem,
+  fieldLabel,
+  fieldSelectItem,
+} from "src/styles/reusableStyles";
 import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
-import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 /**
  * ProjectSummaryProjectECapris Component
@@ -44,8 +47,12 @@ const ProjectSummaryProjectECapris = ({
   const [editMode, setEditMode] = useState(false);
   const [fieldValue, setFieldValue] = useState(initialValue);
 
-  const [updateFieldValue, { loading: mutationLoading }] = useMutation(
+  const isClearingValue = fieldValue === null;
+  const [updateECaprisId, { loading: updateLoading }] = useMutation(
     PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID
+  );
+  const [clearECaprisId, { loading: clearLoading }] = useMutation(
+    PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID
   );
 
   const handleFieldClose = () => {
@@ -54,10 +61,14 @@ const ProjectSummaryProjectECapris = ({
   };
 
   const handleFieldSave = () => {
-    updateFieldValue({
+    const mutation = isClearingValue ? clearECaprisId : updateECaprisId;
+
+    mutation({
       variables: {
         projectId: projectId,
-        eCaprisSubprojectId: fieldValue?.ecapris_subproject_id ?? null,
+        ...(isClearingValue
+          ? {}
+          : { eCaprisSubprojectId: fieldValue?.ecapris_subproject_id ?? null }),
       },
     })
       .then(() => refetch())
@@ -67,6 +78,7 @@ const ProjectSummaryProjectECapris = ({
       })
       .catch((error) => {
         setEditMode(false);
+        setFieldValue(initialValue);
         handleSnackbar(
           true,
           `Error updating eCAPRIS subproject ID`,
@@ -86,10 +98,10 @@ const ProjectSummaryProjectECapris = ({
               value={fieldValue}
               sx={fieldSelectItem}
               options={options}
-              getOptionLabel={(e) => e["ecapris_subproject_id"]}
+              getOptionLabel={(e) => e?.["ecapris_subproject_id"] ?? ""}
               isOptionEqualToValue={(option, value) =>
-                option["ecapris_subproject_id"] ===
-                value["ecapris_subproject_id"]
+                option?.["ecapris_subproject_id"] ===
+                value?.["ecapris_subproject_id"]
               }
               onChange={(event, newValue) => {
                 setFieldValue(newValue);
@@ -107,8 +119,11 @@ const ProjectSummaryProjectECapris = ({
             <ProjectSummaryIconButtons
               handleSave={handleFieldSave}
               handleClose={handleFieldClose}
-              disabledCondition={eCaprisSubprojectId === fieldValue}
-              loading={loading || mutationLoading}
+              disabledCondition={
+                eCaprisSubprojectId ===
+                (fieldValue?.ecapris_subproject_id ?? null)
+              }
+              loading={loading || updateLoading || clearLoading}
             />
           </>
         )}
