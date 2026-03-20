@@ -139,11 +139,19 @@ const LookupsView = () => {
                           <ComponentTagsTable
                             canEdit={true}
                             handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
                           />
                         ) : (
                           <ProjectTagsTable
                             canEdit={true}
                             handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
                           />
                         )
                       }
@@ -152,11 +160,19 @@ const LookupsView = () => {
                           <ComponentTagsTable
                             canEdit={false}
                             handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
                           />
                         ) : (
                           <ProjectTagsTable
                             canEdit={false}
                             handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
                           />
                         )
                       }
