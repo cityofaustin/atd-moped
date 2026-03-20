@@ -16,26 +16,6 @@ import {
 import { fieldBox, fieldGridItem, fieldLabel } from "src/styles/reusableStyles";
 
 /**
- * Custom wrapper for the eCapris edit field
- * @param {JSX.Element} children - Any children
- * @param {boolean} noWrapper - If false, it provides a null wrapper
- * @returns {JSX.Element}
- * @constructor
- */
-const WrapperComponent = ({ children, noWrapper }) =>
-  noWrapper ? (
-    <>
-      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
-      {children}
-    </>
-  ) : (
-    <Grid item xs={12} sx={fieldGridItem}>
-      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
-      {children}
-    </Grid>
-  );
-
-/**
  * ProjectSummaryProjectECapris Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {String} eCaprisSubprojectId - The current eCAPRIS subproject ID
@@ -53,7 +33,6 @@ const ProjectSummaryProjectECapris = ({
   loading,
   refetch,
   handleSnackbar,
-  noWrapper,
 }) => {
   const initialValue = eCaprisSubprojectId
     ? {
@@ -98,7 +77,8 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <WrapperComponent noWrapper={editMode}>
+    <Grid item xs={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
       <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <>
@@ -154,7 +134,7 @@ const ProjectSummaryProjectECapris = ({
           </Stack>
         )}
       </Box>
-    </WrapperComponent>
+    </Grid>
   );
 };
 
