@@ -36,8 +36,8 @@ const WrapperComponent = ({ children, noWrapper }) =>
  * ProjectSummaryProjectECapris Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {String} eCaprisSubprojectId - The current eCAPRIS subproject ID
- * @param {Array} options - The list of eCAPRIS subproject funding options
- * @param {boolean} loading - True if it is loading
+ * @param {Array} options - The list of eCAPRIS subproject ID options
+ * @param {boolean} loading - True if project summary refetch is loading
  * @param {function} refetch - The refetch function from apollo
  * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
@@ -87,14 +87,14 @@ const ProjectSummaryProjectECapris = ({
       .then(() => refetch())
       .then(() => {
         setEditMode(false);
-        handleSnackbar(true, `eCAPRIS subproject ID updated`, "success");
+        handleSnackbar(true, "eCAPRIS subproject ID updated", "success");
       })
       .catch((error) => {
         setEditMode(false);
         setFieldValue(initialValue);
         handleSnackbar(
           true,
-          `Error updating eCAPRIS subproject ID`,
+          "Error updating eCAPRIS subproject ID",
           "error",
           error
         );
