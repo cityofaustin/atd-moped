@@ -3,7 +3,11 @@ import { gql } from "@apollo/client";
 export const TAGS_QUERY = gql`
   query TagsQuery($projectId: Int!) {
     moped_proj_tags(
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+      where: {
+        project_id: { _eq: $projectId }
+        is_deleted: { _eq: false }
+        moped_tag: { is_deleted: { _eq: false } }
+      }
     ) {
       id
       moped_tag {
