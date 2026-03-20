@@ -26,8 +26,7 @@ import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
 import UserSavedViewsTable from "src/views/dashboard/UserSavedViewsTable";
-import { DataGridPro } from "@mui/x-data-grid-pro";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
 import { formatRelativeDate } from "src/utils/dateAndTime";
 
@@ -323,17 +322,13 @@ const DashboardView = () => {
                     <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
                     <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                      <DataGridPro
-                        sx={dataGridProStyleOverrides}
+                      <MopedDataGrid
                         columns={dataGridColumns}
                         rows={rows || []}
                         loading={loading || !data}
-                        getRowHeight={() => "auto"}
                         getRowId={(row) => row.project_id}
                         rowModesModel={rowModesModel}
                         onRowModesModelChange={handleRowModesModelChange}
-                        hideFooter
-                        disableRowSelectionOnClick
                         localeText={{
                           noRowsLabel: "No projects to display",
                         }}

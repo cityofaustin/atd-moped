@@ -16,12 +16,12 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
-  DataGridPro,
   GridRowModes,
   GridRowEditStopReasons,
   useGridApiRef,
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
@@ -39,7 +39,6 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -639,8 +638,7 @@ const ProjectFundingTable = ({
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         loading={
           loadingProjectFunding || loadingFduOptions || !dataProjectFunding
         }
@@ -655,12 +653,7 @@ const ProjectFundingTable = ({
         isCellEditable={isCellEditable}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error(error)}
-        disableRowSelectionOnClick
         toolbar
-        density="comfortable"
-        getRowHeight={() => "auto"}
-        hideFooter
         onCellKeyDown={handleTabKeyDown}
         onCellDoubleClick={doubleClickListener}
         localeText={{ noRowsLabel: "No funding sources" }}

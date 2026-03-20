@@ -2,8 +2,9 @@ import React from "react";
 
 import { Box, Card } from "@mui/material";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { useQuery } from "@apollo/client";
-import { DataGridPro, GridToolbar } from "@mui/x-data-grid-pro";
+import { GridToolbar } from "@mui/x-data-grid-pro";
 
 import Page from "src/components/Page";
 import { GET_ALL_USERS } from "src/queries/staff";
@@ -12,7 +13,6 @@ import {
   EditUserButton,
   CopyMugUsersButton,
 } from "./StaffListViewCustomComponents";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 const staffColumns = [
   {
@@ -101,9 +101,9 @@ const StaffListView = () => {
         }}
       >
         <Card>
-          <DataGridPro
-            sx={dataGridProStyleOverrides}
-            disableRowSelectionOnClick
+          <MopedDataGrid
+            hideFooter={false}
+            getRowHeight={undefined}
             rows={data?.moped_users || []}
             loading={loading || !data}
             columns={staffColumns}
