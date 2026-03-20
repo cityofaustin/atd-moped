@@ -49,7 +49,6 @@ const ProjectSummaryProjectECapris = ({
   loading,
   refetch,
   handleSnackbar,
-  noWrapper,
 }) => {
   const initialValue = eCaprisSubprojectId
     ? {
@@ -158,7 +157,7 @@ const ProjectSummaryProjectECapris = ({
           </Stack>
         )}
       </Box>
-    </WrapperComponent>
+    </Grid>
   );
 };
 
