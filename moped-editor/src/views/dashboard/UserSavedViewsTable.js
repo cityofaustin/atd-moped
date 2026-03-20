@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
-import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
+import { GridRowModes } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import Link from "@mui/material/Link";
 
 import {
@@ -12,7 +13,6 @@ import {
 } from "src/queries/userSavedViews";
 import { useSessionDatabaseData } from "src/auth/user";
 
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
@@ -237,8 +237,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
 
   return (
     <>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}
@@ -246,12 +245,10 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        onProcessRowUpdateError={(error) => console.error}
         editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
-        hideFooter
-        disableRowSelectionOnClick
+        getRowHeight={undefined}
         localeText={{ noRowsLabel: "No saved views to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
       />
