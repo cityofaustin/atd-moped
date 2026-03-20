@@ -27,8 +27,7 @@ import {
   transformDatabaseToGrid,
   transformGridToDatabase,
 } from "./projectTagsHelpers";
-
-const createRecordKeyHash = (recordKey) => `#${recordKey.replaceAll("_", "-")}`;
+import { createRecordKeyHash } from "src/utils/urls";
 
 const requiredFields = ["name", "type", "slug"];
 
