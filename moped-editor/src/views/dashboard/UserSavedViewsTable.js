@@ -61,11 +61,7 @@ const useColumns = ({
         field: "updated_at",
         width: 150,
         renderCell: ({ row }) => (
-          <FormattedDateString
-            date={row.updated_at}
-            primary="relative"
-            secondary="absolute"
-          />
+          <FormattedDateString date={row.updated_at} primary="relative" />
         ),
       },
       {
@@ -73,11 +69,7 @@ const useColumns = ({
         field: "created_at",
         width: 150,
         renderCell: ({ row }) => (
-          <FormattedDateString
-            date={row.created_at}
-            primary="relative"
-            secondary="absolute"
-          />
+          <FormattedDateString date={row.created_at} primary="relative" />
         ),
       },
       {
