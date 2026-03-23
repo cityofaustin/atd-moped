@@ -248,7 +248,6 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
-        getRowHeight={undefined}
         localeText={{ noRowsLabel: "No saved views to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
       />

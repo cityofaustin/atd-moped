@@ -472,7 +472,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
           handleSnackbar(true, "Error updating table", "error", error)
         }
         toolbar
-        getRowHeight={undefined}
         localeText={{ noRowsLabel: "No files to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{

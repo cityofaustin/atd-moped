@@ -178,7 +178,6 @@ const SubprojectFundingModal = ({
           disableColumnMenu
           rows={rows}
           getRowId={(row) => row.fdu}
-          getRowHeight={undefined}
           hideFooter={false}
           initialState={{
             pagination: {

@@ -384,7 +384,6 @@ const SubprojectsTable = ({
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        getRowHeight={undefined}
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{
           toolbar: {

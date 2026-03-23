@@ -447,7 +447,6 @@ const ProjectMilestones = ({
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar
-        getRowHeight={undefined}
         localeText={{ noRowsLabel: "No project milestones to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
