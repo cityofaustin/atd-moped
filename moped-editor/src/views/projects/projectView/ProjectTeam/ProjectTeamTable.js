@@ -576,7 +576,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar
-        getRowHeight={undefined}
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
         initialState={{ pinnedColumns: { right: ["edit"] } }}

@@ -103,7 +103,6 @@ const StaffListView = () => {
         <Card>
           <MopedDataGrid
             hideFooter={false}
-            getRowHeight={undefined}
             rows={data?.moped_users || []}
             loading={loading || !data}
             columns={staffColumns}

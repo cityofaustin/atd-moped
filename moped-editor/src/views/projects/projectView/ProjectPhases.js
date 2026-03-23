@@ -237,7 +237,6 @@ const ProjectPhases = ({
         columns={columns}
         getRowId={(row) => row.project_phase_id}
         disableColumnMenu
-        getRowHeight={undefined}
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
         rows={data?.moped_proj_phases || []}
