@@ -2,12 +2,11 @@ import { gql } from "@apollo/client";
 
 export const TAGS_QUERY = gql`
   query TagsQuery($projectId: Int!) {
+    # Do not filter by moped_tag.is_deleted here — soft-deleted tags that
+    # were previously applied should still appear on projects.
+    # See https://github.com/cityofaustin/atd-moped/pull/1120#discussion_r1316179730
     moped_proj_tags(
-      where: {
-        project_id: { _eq: $projectId }
-        is_deleted: { _eq: false }
-        moped_tag: { is_deleted: { _eq: false } }
-      }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       id
       moped_tag {
