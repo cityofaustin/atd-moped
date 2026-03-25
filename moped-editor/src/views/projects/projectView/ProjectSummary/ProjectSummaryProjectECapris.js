@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
+import ExternalLink, { createBugReportLink } from "src/components/ExternalLink";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
+import { useUser } from "src/auth/user";
 
 import {
   fieldBox,
@@ -37,6 +39,9 @@ const ProjectSummaryProjectECapris = ({
   refetch,
   handleSnackbar,
 }) => {
+  const { user } = useUser();
+  const userEmail = user?.idToken?.payload?.email;
+
   const initialValue = eCaprisSubprojectId
     ? {
         ecapris_subproject_id: eCaprisSubprojectId,
@@ -44,9 +49,11 @@ const ProjectSummaryProjectECapris = ({
     : null;
 
   const [editMode, setEditMode] = useState(false);
-  const [fieldValue, setFieldValue] = useState(initialValue);
+  const [selectedValue, setSelectedValue] = useState(initialValue);
+  // Capture input value to include in service request if user encounters missing eCAPRIS subproject ID in options list
+  const [inputValue, setInputValue] = useState("");
 
-  const isClearingValue = fieldValue === null;
+  const isClearingValue = selectedValue === null;
   const [updateECaprisId, { loading: updateLoading }] = useMutation(
     PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID
   );
@@ -55,7 +62,8 @@ const ProjectSummaryProjectECapris = ({
   );
 
   const handleFieldClose = () => {
-    setFieldValue(initialValue);
+    setSelectedValue(initialValue);
+    setInputValue("");
     setEditMode(false);
   };
 
@@ -67,7 +75,9 @@ const ProjectSummaryProjectECapris = ({
         projectId: projectId,
         ...(isClearingValue
           ? {}
-          : { eCaprisSubprojectId: fieldValue?.ecapris_subproject_id ?? null }),
+          : {
+              eCaprisSubprojectId: selectedValue?.ecapris_subproject_id ?? null,
+            }),
       },
     })
       .then(() => refetch())
@@ -77,7 +87,7 @@ const ProjectSummaryProjectECapris = ({
       })
       .catch((error) => {
         setEditMode(false);
-        setFieldValue(initialValue);
+        setSelectedValue(initialValue);
         handleSnackbar(
           true,
           "Error updating eCAPRIS subproject ID",
@@ -94,7 +104,7 @@ const ProjectSummaryProjectECapris = ({
         {editMode && (
           <>
             <Autocomplete
-              value={fieldValue}
+              value={selectedValue}
               sx={fieldSelectItem}
               options={options}
               getOptionLabel={(e) => e?.["ecapris_subproject_id"] ?? ""}
@@ -102,8 +112,11 @@ const ProjectSummaryProjectECapris = ({
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
               }
-              onChange={(event, newValue) => {
-                setFieldValue(newValue);
+              onChange={(_, newValue) => {
+                setSelectedValue(newValue);
+              }}
+              onInputChange={(_, newInputValue) => {
+                setInputValue(newInputValue);
               }}
               renderInput={(params) => (
                 <TextField
@@ -114,13 +127,30 @@ const ProjectSummaryProjectECapris = ({
                 />
               )}
               openOnFocus={true}
-            ></Autocomplete>
+              noOptionsText={
+                <Typography>
+                  eCAPRIS subproject ID not found.{" "}
+                  {
+                    <ExternalLink
+                      url={createBugReportLink(
+                        {
+                          message: `Missing eCAPRIS subproject ID ${inputValue ?? ""} for project ${projectId}`,
+                        },
+                        userEmail
+                      )}
+                      text={"Click here"}
+                    />
+                  }{" "}
+                  to report.
+                </Typography>
+              }
+            />
             <ProjectSummaryIconButtons
               handleSave={handleFieldSave}
               handleClose={handleFieldClose}
               disabledCondition={
                 eCaprisSubprojectId ===
-                (fieldValue?.ecapris_subproject_id ?? null)
+                (selectedValue?.ecapris_subproject_id ?? null)
               }
               loading={loading || updateLoading || clearLoading}
             />
