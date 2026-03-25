@@ -94,12 +94,10 @@ export const PROJECT_COMPONENT_FIELDS = gql`
         name
       }
     }
-    moped_proj_component_tags(
-      where: {
-        is_deleted: { _eq: false }
-        moped_component_tag: { is_deleted: { _eq: false } }
-      }
-    ) {
+    # Do not filter by moped_component_tag.is_deleted here — soft-deleted
+    # tags that were previously applied should still appear on projects.
+    # See https://github.com/cityofaustin/atd-moped/pull/1120#discussion_r1316179730
+    moped_proj_component_tags(where: { is_deleted: { _eq: false } }) {
       component_tag_id
       moped_component_tag {
         full_name
