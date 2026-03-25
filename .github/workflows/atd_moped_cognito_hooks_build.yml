@@ -9,7 +9,7 @@ on:
       - main
       - production
     paths:
-      - "moped-auth/cognito-pre-token-hook/**"
+      - "auth/cognito-pre-token-hook/**"
   workflow_dispatch:
     inputs:
       description:

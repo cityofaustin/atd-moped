@@ -3,7 +3,6 @@ import { Navigate } from "react-router-dom";
 import Can from "src/auth/Can";
 import DashboardLayout from "src/layouts/DashboardLayout/DashboardLayout";
 import MainLayout from "src/layouts/MainLayout/MainLayout";
-import AccountView from "src/views/account/AccountView/AccountView";
 import StaffListView from "src/views/staff/StaffListView";
 import NewStaffView from "src/views/staff/NewStaffView";
 import EditStaffView from "src/views/staff/EditStaffView";
@@ -42,7 +41,6 @@ export const routes = [
         action: "dashboard:visit",
         element: <DashboardView />,
       },
-      { path: "account", action: "account:visit", element: <AccountView /> },
       { path: "staff", action: "staff:visit", element: <StaffListView /> },
       {
         path: "staff/new",

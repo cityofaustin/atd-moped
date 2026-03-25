@@ -9,8 +9,6 @@ import React, {
 
 import { Auth, Amplify } from "aws-amplify";
 
-import { colors } from "@mui/material";
-
 import config from "../config";
 import { nonLoginUserRole } from "src/views/staff/helpers";
 
@@ -21,24 +19,11 @@ import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "src/queries/account";
 export const UserContext = createContext(null);
 
 /**
- * This is a constant string key that holds the profile color for a user.
- * @type {string}
- * @constant
- */
-export const atdColorKeyName = "atd_moped_user_color";
-
-/**
  * This is a constant string key that holds the profile for a user.
  * @type {string}
  * @constant
  */
 export const atdSessionDatabaseDataKeyName = "atd_moped_user_db_data";
-
-/**
- * Removes the current user profile color
- */
-export const destroyProfileColor = () =>
-  localStorage.removeItem(atdColorKeyName);
 
 /**
  * Parses the user Postgres database row from localStorage
@@ -210,7 +195,6 @@ export const UserProvider = ({ children }) => {
   const logout = useCallback(async () => {
     try {
       await Auth.signOut();
-      destroyProfileColor();
       deleteSessionDatabaseData();
       setUser(null);
     } catch (error) {
@@ -260,7 +244,6 @@ export const UserProvider = ({ children }) => {
 
             setUser(session);
           } else {
-            destroyProfileColor();
             deleteSessionDatabaseData();
           }
           setIsLoginLoading(false);
@@ -294,33 +277,11 @@ export const UserProvider = ({ children }) => {
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };
 
-/**
- * Returns a random themes standard color as hexadecimal
- * @return {string}
- */
-export const getRandomColor = () => {
-  if (localStorage.getItem(atdColorKeyName) === null) {
-    const randomInt = Math.floor(Math.random() * Math.floor(3));
-    const colorList = [
-      colors.green[900],
-      colors.indigo[600],
-      colors.orange[600],
-      colors.red[600],
-    ];
-    localStorage.setItem(atdColorKeyName, colorList[randomInt]);
-  }
-  return localStorage.getItem(atdColorKeyName);
-};
-
 // We also create a simple custom hook to read these values from. We want our React components
 // to know as little as possible on how everything is handled, so we are not only abstracting them from
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
   const context = useContext(UserContext);
-
-  if (context && context.user && !context.user.userColor) {
-    context.user.userColor = getRandomColor();
-  }
 
   if (context === undefined) {
     throw new Error(
