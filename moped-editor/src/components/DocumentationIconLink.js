@@ -19,20 +19,20 @@ const DocumentationIconLink = ({
   iconButtonSx = {},
 }) => (
   <Tooltip title={tooltipText}>
-    <IconButton sx={iconButtonSx} color="inherit" size={size}>
-      <Link
-        component={RouterLink}
-        to={documentationLink}
-        target="_blank"
-        underline="none"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
+    <Link
+      component={RouterLink}
+      to={documentationLink}
+      target="_blank"
+      underline="none"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <IconButton sx={iconButtonSx} color="inherit" size={size}>
         <MenuBookOutlined sx={{ color: "text.secondary" }} fontSize="small" />
-      </Link>
-    </IconButton>
+      </IconButton>
+    </Link>
   </Tooltip>
 );
 
