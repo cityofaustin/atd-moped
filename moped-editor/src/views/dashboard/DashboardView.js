@@ -323,6 +323,7 @@ const DashboardView = () => {
                   ) : (
                     <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
                       <MopedDataGrid
+                        density="standard"
                         columns={dataGridColumns}
                         rows={rows || []}
                         loading={loading || !data}
