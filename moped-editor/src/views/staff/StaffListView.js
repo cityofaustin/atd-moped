@@ -118,6 +118,7 @@ const StaffListView = () => {
                 children: <GridToolbar showQuickFilter />,
               },
             }}
+            disableDensitySelector
             initialState={{
               filter: {
                 filterModel: {
