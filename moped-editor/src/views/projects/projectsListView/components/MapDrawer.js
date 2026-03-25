@@ -41,34 +41,27 @@ const containDrawerMixin = () => ({
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({
-  theme
-}) => ({
+})(({ theme }) => ({
   width: drawerWidth,
   flexShrink: 0,
   ...containDrawerMixin(),
-  variants: [{
-    props: (
-      {
-        open
-      }
-    ) => open,
-    style: {
-      ...openedMixin(theme),
-      "& .MuiDrawer-paper": openedMixin(theme),
-    }
-  }, {
-    props: (
-      {
-        open
-      }
-    ) => !open,
-    style: {
-      ...containDrawerMixin(),
-      ...closedMixin(theme),
-      "& .MuiDrawer-paper": closedMixin(theme),
-    }
-  }]
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        ...openedMixin(theme),
+        "& .MuiDrawer-paper": openedMixin(theme),
+      },
+    },
+    {
+      props: ({ open }) => !open,
+      style: {
+        ...containDrawerMixin(),
+        ...closedMixin(theme),
+        "& .MuiDrawer-paper": closedMixin(theme),
+      },
+    },
+  ],
 }));
 
 function DrawerContent({
@@ -78,10 +71,15 @@ function DrawerContent({
   title,
   showDrawerContent,
 }) {
-
   return (
     <>
-      <Grid2 container padding={(theme) => theme.spacing(1)}>
+      <Grid2
+        container
+        sx={(theme) => ({
+          position: "relative",
+          padding: theme.spacing(1),
+        })}
+      >
         <Grid2 container alignItems="center">
           <Grid2
             flexGrow={1}
@@ -96,7 +94,15 @@ function DrawerContent({
             </Typography>
           </Grid2>
           <Grid2>
-            <IconButton onClick={toggleDrawer}>
+            <IconButton
+              onClick={toggleDrawer}
+              sx={(theme) => ({
+                position: "absolute",
+                right: theme.spacing(0.5),
+                top: theme.spacing(0.5),
+                zIndex: 2,
+              })}
+            >
               {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
           </Grid2>
