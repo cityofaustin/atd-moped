@@ -1,9 +1,7 @@
 import {
-  Avatar,
   IconButton,
   Grid,
   ListItem,
-  ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
   Typography,
@@ -50,9 +48,6 @@ const ProjectNotes = ({
 
   return (
     <ListItem alignItems="flex-start">
-      <ListItemAvatar>
-        <Avatar />
-      </ListItemAvatar>
       <ListItemText
         sx={
           isNoteEditable
