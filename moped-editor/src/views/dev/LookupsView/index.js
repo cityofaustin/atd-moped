@@ -91,7 +91,11 @@ const LookupsView = () => {
               ref={refs._scroll_to_top}
             >
               <Grid2 size={12}>
-                <Typography variant="h1" color="primary">
+                <Typography
+                  variant="h1"
+                  color="primary"
+                  sx={(theme) => ({ marginTop: theme.spacing(3) })}
+                >
                   Data dictionary
                 </Typography>
               </Grid2>
@@ -128,9 +132,7 @@ const LookupsView = () => {
                     container
                     direction="row"
                     spacing={1}
-                    sx={{
-                      alignItems: "center"
-                    }}
+                    sx={(theme) => ({ marginTop: theme.spacing(3), alignItems: "center" })}
                   >
                     <Grid2>
                       <Typography variant="h2">{recordType.label}</Typography>
