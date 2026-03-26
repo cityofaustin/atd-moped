@@ -65,6 +65,7 @@ const DataGridToolbar = ({
               display: "flex",
               alignItems: "center",
             }}
+            gap={1}
           >
             <Typography variant="h2" color="primary">
               {title}
