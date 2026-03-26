@@ -3,9 +3,9 @@ import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@mui/material";
-import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -432,8 +432,7 @@ const ProjectMilestones = ({
 
   return (
     <>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         apiRef={apiRef}
         ref={apiRef}
         autoHeight
@@ -446,13 +445,8 @@ const ProjectMilestones = ({
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error(error)}
         onCellKeyDown={checkIfShiftKey}
-        disableRowSelectionOnClick
         toolbar
-        density="comfortable"
-        getRowHeight={() => "auto"}
-        hideFooter
         localeText={{ noRowsLabel: "No project milestones to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{

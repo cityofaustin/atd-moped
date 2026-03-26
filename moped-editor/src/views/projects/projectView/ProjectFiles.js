@@ -6,12 +6,11 @@ import { Button, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import {
-  DataGridPro,
   GridRowModes,
   useGridApiRef,
   gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
@@ -456,8 +455,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   return (
     <>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         apiRef={apiRef}
         ref={apiRef}
         autoHeight
@@ -473,11 +471,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         onProcessRowUpdateError={(error) =>
           handleSnackbar(true, "Error updating table", "error", error)
         }
-        disableRowSelectionOnClick
         toolbar
-        density="comfortable"
-        getRowHeight={() => "auto"}
-        hideFooter
         localeText={{ noRowsLabel: "No files to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{

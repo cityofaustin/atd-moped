@@ -9,11 +9,10 @@ import {
   Tooltip,
 } from "@mui/material";
 import { GridRow } from "@mui/x-data-grid-pro";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { useQuery } from "@apollo/client";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
@@ -173,15 +172,13 @@ const SubprojectFundingModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
+        <MopedDataGrid
           autoHeight
           columns={dataGridColumns}
           disableColumnMenu
           rows={rows}
           getRowId={(row) => row.fdu}
-          density="comfortable"
-          getRowHeight={() => "auto"}
+          hideFooter={false}
           initialState={{
             pagination: {
               paginationModel: { pageSize: PAGE_SIZE, page: 0 },
@@ -189,6 +186,7 @@ const SubprojectFundingModal = ({
           }}
           pagination
           pageSizeOptions={[PAGE_SIZE]}
+          disableRowSelectionOnClick={false}
           localeText={{ noRowsLabel: "No FDUs available" }}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}

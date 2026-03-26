@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
@@ -15,7 +15,6 @@ import { getUserFullName } from "src/utils/userNames";
 import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { FormattedDateString } from "src/utils/dateAndTime";
 
@@ -248,17 +247,12 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
+        <MopedDataGrid
           columns={columns}
           columnVisibilityModel={hiddenColumns}
           onColumnVisibilityModelChange={(newModel) =>
             setHiddenColumns(newModel)
           }
-          density="comfortable"
-          disableRowSelectionOnClick
-          getRowHeight={() => "auto"}
-          hideFooter
           localeText={{ noRowsLabel: "No work activities" }}
           initialState={{ pinnedColumns: { right: ["Edit"] } }}
           rows={activities || []}

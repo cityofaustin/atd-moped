@@ -6,17 +6,16 @@ import { Button, Tooltip, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import {
-  DataGridPro,
   GridRowModes,
   GridRowEditStopReasons,
   useGridApiRef,
 } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { useLocation } from "react-router-dom";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import CopyTextButton from "src/components/CopyTextButton";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
 import {
@@ -312,8 +311,8 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
 
   return (
     <>
-      <DataGridPro
-        sx={{ ...dataGridProStyleOverrides, border: "none" }}
+      <MopedDataGrid
+        sx={{ border: "none" }}
         apiRef={apiRef}
         columns={columns}
         rows={rows}
@@ -324,11 +323,6 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         onRowEditStop={handleComponentTagsRowEditStop}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error(error)}
-        disableRowSelectionOnClick
-        density="comfortable"
-        getRowHeight={() => "auto"}
-        hideFooter
         localeText={{ noRowsLabel: "No component tags" }}
         initialState={{ pinnedColumns: canEdit ? { right: ["edit"] } : {} }}
         slots={{
