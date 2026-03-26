@@ -8,7 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
 import Tooltip from "@mui/material/Tooltip";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
@@ -163,20 +163,20 @@ const ProjectPhaseForm = ({
 
   if (mutationState.error) {
     return (
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid2 container spacing={2}>
+        <Grid2 size={12}>
           <Alert severity="error">
             Something went wrong. Refresh the page to try again.
           </Alert>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid2 container spacing={2}>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.phase_id}>
             <ControlledAutocomplete
               control={control}
@@ -200,8 +200,8 @@ const ProjectPhaseForm = ({
               <FormHelperText>{formErrors.phase_id.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.subphase_id}>
             <ControlledAutocomplete
               control={control}
@@ -227,8 +227,8 @@ const ProjectPhaseForm = ({
               <FormHelperText>{formErrors.subphase_id.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={8}>
+        </Grid2>
+        <Grid2 size={8}>
           <FormControl fullWidth error={!!formErrors?.phase_start}>
             <ControlledDateField
               name="phase_start"
@@ -245,8 +245,8 @@ const ProjectPhaseForm = ({
               <FormHelperText>{formErrors?.phase_start.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={4}>
+        </Grid2>
+        <Grid2 size={4}>
           <FormControl fullWidth>
             <ControlledCheckbox
               name="is_phase_start_confirmed"
@@ -254,8 +254,8 @@ const ProjectPhaseForm = ({
               label="Confirmed"
             />
           </FormControl>
-        </Grid>
-        <Grid item xs={8}>
+        </Grid2>
+        <Grid2 size={8}>
           <FormControl fullWidth error={!!formErrors?.phase_end}>
             <ControlledDateField
               name="phase_end"
@@ -267,8 +267,8 @@ const ProjectPhaseForm = ({
               <FormHelperText>{formErrors.phase_end.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={4}>
+        </Grid2>
+        <Grid2 size={4}>
           <FormControl fullWidth>
             <ControlledCheckbox
               name="is_phase_end_confirmed"
@@ -276,8 +276,8 @@ const ProjectPhaseForm = ({
               label="Confirmed"
             />
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.phase_description}>
             <ControlledTextInput
               fullWidth
@@ -294,11 +294,11 @@ const ProjectPhaseForm = ({
               </FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={12} sx={{ marginY: theme.spacing(2) }}>
+        </Grid2>
+        <Grid2 sx={{ marginY: theme.spacing(2) }} size={12}>
           <Divider />
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.status_update}>
             <ControlledTextInput
               fullWidth
@@ -318,10 +318,16 @@ const ProjectPhaseForm = ({
               </FormHelperText>
             )}
           </FormControl>
-        </Grid>
-      </Grid>
-      <Grid container display="flex" justifyContent="flex-end">
-        <Grid item sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
+        </Grid2>
+      </Grid2>
+      <Grid2
+        container
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Grid2 sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
           <Tooltip title="Mark this phase as the current phase of the project">
             <span>
               {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
@@ -346,8 +352,8 @@ const ProjectPhaseForm = ({
               </Button>
             </span>
           </Tooltip>
-        </Grid>
-        <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
+        </Grid2>
+        <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"
@@ -360,10 +366,9 @@ const ProjectPhaseForm = ({
               "Save"
             )}
           </Button>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </form>
   );
 };
-
 export default ProjectPhaseForm;

@@ -9,7 +9,7 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
-import { Grid, Chip } from "@mui/material";
+import { Grid2, Chip } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { COLORS } from "./mapStyleSettings";
 import ProjectStatusBadge from "../ProjectStatusBadge";
@@ -33,26 +33,37 @@ export default function ComponentListItem({
 
   return (
     <Box
-      borderLeft={7}
       style={{
         borderColor: isExpanded ? selectedBorderColor : COLORS.white,
+      }}
+      sx={{
+        borderLeft: 7,
       }}
     >
       <ListItemButton
         dense
         onClick={onListItemClick}
-        sx={{ paddingLeft: (theme) => theme.spacing(1) }}
+        sx={(theme) => ({
+          paddingLeft: theme.spacing(1),
+        })}
         ref={component._ref}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
         <Box>
-          <Box display="flex" alignItems="center" width="100%">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             <ListItemText
-              sx={{
-                marginLeft: (theme) => theme.spacing(1),
+              sx={(theme) => ({
+                marginLeft: theme.spacing(1),
                 flexGrow: 1,
-                marginRight: (theme) => theme.spacing(6),
-              }}
+                marginRight: theme.spacing(6),
+              })}
+              slotProps={{ secondary: { component: "div" } }}
               primary={primary}
               secondary={
                 <>
@@ -74,7 +85,13 @@ export default function ComponentListItem({
             </ListItemSecondaryAction>
           </Box>
           {!!component.moped_phase && (
-            <Box width="100%" sx={{ my: 0.5, ml: 1 }}>
+            <Box
+              sx={{
+                width: "100%",
+                my: 0.5,
+                ml: 1,
+              }}
+            >
               <ProjectStatusBadge
                 phaseName={component.moped_phase?.phase_name}
                 phaseKey={component.moped_phase?.phase_key}
@@ -88,7 +105,12 @@ export default function ComponentListItem({
         {isExpanded ? (
           <List component="div" disablePadding dense>
             {!isComponentMapped && (
-              <ListItem dense sx={{ paddingLeft: (theme) => theme.spacing(1) }}>
+              <ListItem
+                dense
+                sx={(theme) => ({
+                  paddingLeft: theme.spacing(1),
+                })}
+              >
                 <ListItemText
                   primary={
                     <Alert severity="error">Component is not mapped</Alert>
@@ -97,10 +119,14 @@ export default function ComponentListItem({
               </ListItem>
             )}
             {component.moped_proj_component_work_types.length > 0 && (
-              <ListItem sx={{ paddingLeft: (theme) => theme.spacing(4) }}>
-                <Grid container spacing={0.5}>
+              <ListItem
+                sx={(theme) => ({
+                  paddingLeft: theme.spacing(4),
+                })}
+              >
+                <Grid2 container spacing={0.5}>
                   {component.moped_proj_component_work_types.map((element) => (
-                    <Grid item key={element.moped_work_type.id}>
+                    <Grid2 key={element.moped_work_type.id}>
                       <Chip
                         label={element.moped_work_type.name}
                         sx={{
@@ -114,13 +140,17 @@ export default function ComponentListItem({
                           height: "1.75rem",
                         }}
                       />
-                    </Grid>
+                    </Grid2>
                   ))}
-                </Grid>
+                </Grid2>
               </ListItem>
             )}
             {component.description && (
-              <ListItem sx={{ paddingLeft: (theme) => theme.spacing(4) }}>
+              <ListItem
+                sx={(theme) => ({
+                  paddingLeft: theme.spacing(4),
+                })}
+              >
                 <ListItemText secondary={component.description} />
               </ListItem>
             )}

@@ -7,6 +7,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
+import ListItemButton from "@mui/material/ListItemButton";
+
 const useFeatureComponents = (feature, components) =>
   useMemo(() => {
     if (!feature || !components?.length > 0) {
@@ -50,8 +52,7 @@ export default function FeaturePopup({
           {featureComponents?.map((component) => {
             return (
               <React.Fragment key={component._id}>
-                <ListItem
-                  button
+                <ListItemButton
                   onClick={() => {
                     setClickedComponent(component);
                     onClose();
@@ -65,7 +66,7 @@ export default function FeaturePopup({
                     primary={component.component_name}
                     secondary={component.component_subtype}
                   />
-                </ListItem>
+                </ListItemButton>
               </React.Fragment>
             );
           })}

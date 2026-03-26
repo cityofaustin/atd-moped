@@ -4,7 +4,7 @@ import {
   Button,
   TextField,
   FormControl,
-  Grid,
+  Grid2,
   IconButton,
   Grow,
   Typography,
@@ -316,14 +316,19 @@ const Filters = ({
   };
 
   return (
-    <Grid>
-      <Grid container sx={gridItemPaddingStyle}>
-        <Grid
-          item
-          xs={6}
-          sx={filtersContainerStyle}
-          display="flex"
-          justifyContent="flex-start"
+    <Grid2>
+      <Grid2 container sx={gridItemPaddingStyle}>
+        <Grid2
+          size={{ xs: 6 }}
+          sx={[
+            {
+              display: "flex",
+              justifyContent: "flex-start",
+            },
+            ...(Array.isArray(filtersContainerStyle)
+              ? filtersContainerStyle
+              : [filtersContainerStyle]),
+          ]}
         >
           <RadioGroup
             row
@@ -349,13 +354,18 @@ const Filters = ({
               }
             />
           </RadioGroup>
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          sx={filtersContainerStyle}
-          display="flex"
-          justifyContent="flex-end"
+        </Grid2>
+        <Grid2
+          size={{ xs: 6 }}
+          sx={[
+            {
+              display: "flex",
+              justifyContent: "flex-end",
+            },
+            ...(Array.isArray(filtersContainerStyle)
+              ? filtersContainerStyle
+              : [filtersContainerStyle]),
+          ]}
         >
           <IconButton
             onClick={handleAdvancedSearchClose}
@@ -364,40 +374,36 @@ const Filters = ({
           >
             <Close />
           </IconButton>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       {filterParameters.length === 0 ? (
-        <Grid container sx={filtersContainerStyle}>
-          <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
+        <Grid2 container sx={filtersContainerStyle}>
+          <Grid2 size={{ xs: 12, md: 4 }} sx={gridItemPaddingStyle}>
             <Typography>No filters applied</Typography>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       ) : null}
       {filterParameters.map((filter, filterIndex) => {
         const { field: fieldName, operator, value } = filter;
-
         /* Get field configuration and values need for inputs */
         const fieldConfig = filtersConfig[fieldName];
         const { label, type } = fieldConfig ?? {};
         const operators = fieldConfig?.operators ?? [];
-
         /* If the field uses a lookup table, get the table and field names  */
         const { table_name: lookupTable, operators: lookupOperators } =
           fieldConfig?.lookup ?? {};
-
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
-
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
-            <Grid
+            <Grid2
               container
               id={`filter-${filterIndex}`}
               key={`filter-${filterIndex}`}
               sx={filtersContainerStyle}
             >
               {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
+              <Grid2 size={{ xs: 12, md: 4 }} sx={gridItemPaddingStyle}>
                 <FormControl variant="standard" fullWidth sx={formControlStyle}>
                   <Autocomplete
                     value={label || null}
@@ -425,10 +431,9 @@ const Filters = ({
                     )}
                   />
                 </FormControl>
-              </Grid>
-
+              </Grid2>
               {/*Select the operator from drop-down menu*/}
-              <Grid item xs={12} md={3} sx={gridItemPaddingStyle}>
+              <Grid2 size={{ xs: 12, md: 3 }} sx={gridItemPaddingStyle}>
                 <FormControl variant="standard" fullWidth sx={formControlStyle}>
                   <Autocomplete
                     value={operator || null}
@@ -455,10 +460,9 @@ const Filters = ({
                     )}
                   />
                 </FormControl>
-              </Grid>
-
+              </Grid2>
               {/* Select or enter value */}
-              <Grid item xs={12} md={4} sx={gridItemPaddingStyle}>
+              <Grid2 size={{ xs: 12, md: 4 }} sx={gridItemPaddingStyle}>
                 <FormControl fullWidth variant="outlined" sx={formControlStyle}>
                   {isFilterNullType(operator) !== true &&
                     (shouldRenderAutocompleteInput(
@@ -498,12 +502,10 @@ const Filters = ({
                       />
                     ))}
                 </FormControl>
-              </Grid>
+              </Grid2>
               <>
-                <Grid
-                  item
-                  xs={12}
-                  md={1}
+                <Grid2
+                  size={{ xs: 12, md: 1 }}
                   sx={{
                     display: { xs: "none", md: "block" },
                     textAlign: "center",
@@ -516,10 +518,9 @@ const Filters = ({
                   >
                     <DeleteOutline sx={deleteIconStyle} />
                   </IconButton>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
+                </Grid2>
+                <Grid2
+                  size={{ xs: 12 }}
                   sx={{ display: { xs: "block", md: "none" } }}
                 >
                   <Button
@@ -530,14 +531,14 @@ const Filters = ({
                   >
                     <DeleteOutline />
                   </Button>
-                </Grid>
+                </Grid2>
               </>
-            </Grid>
+            </Grid2>
           </Grow>
         );
       })}
-      <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
-        <Grid item xs={12} md={2}>
+      <Grid2 container spacing={3} id={`filter-options`} key={`filter-options`}>
+        <Grid2 size={{ xs: 12, md: 2 }}>
           <Button
             // Disable button until the user has added a complete filter
             disabled={!areAllFiltersComplete(filterParameters)}
@@ -550,8 +551,8 @@ const Filters = ({
           >
             Add Filter
           </Button>
-        </Grid>
-        <Grid item xs={12} md={1}>
+        </Grid2>
+        <Grid2 size={{ xs: 12, md: 1 }}>
           <Button
             sx={bottomButtonStyle}
             fullWidth
@@ -561,11 +562,14 @@ const Filters = ({
           >
             Reset
           </Button>
-        </Grid>
-        <Grid item xs={12} md={7} sx={{ display: { xs: "none", md: "block" } }}>
+        </Grid2>
+        <Grid2
+          size={{ xs: 12, md: 7 }}
+          sx={{ display: { xs: "none", md: "block" } }}
+        >
           {""}
-        </Grid>
-        <Grid item xs={12} md={2}>
+        </Grid2>
+        <Grid2 size={{ xs: 12, md: 2 }}>
           <Button
             fullWidth
             sx={applyButtonStyle}
@@ -579,9 +583,9 @@ const Filters = ({
           >
             Apply
           </Button>
-        </Grid>
-      </Grid>
-    </Grid>
+        </Grid2>
+      </Grid2>
+    </Grid2>
   );
 };
 

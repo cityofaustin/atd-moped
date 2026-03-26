@@ -1,12 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { drawerWidth } from "../../projectView/ProjectComponents";
 
 const openedMixin = (theme) => ({
@@ -41,19 +41,27 @@ const containDrawerMixin = () => ({
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})(({ theme }) => ({
   width: drawerWidth,
   flexShrink: 0,
   ...containDrawerMixin(),
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...containDrawerMixin(),
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        ...openedMixin(theme),
+        "& .MuiDrawer-paper": openedMixin(theme),
+      },
+    },
+    {
+      props: ({ open }) => !open,
+      style: {
+        ...containDrawerMixin(),
+        ...closedMixin(theme),
+        "& .MuiDrawer-paper": closedMixin(theme),
+      },
+    },
+  ],
 }));
 
 function DrawerContent({
@@ -63,38 +71,49 @@ function DrawerContent({
   title,
   showDrawerContent,
 }) {
-  const theme = useTheme();
-
   return (
     <>
-      <Grid container padding={theme.spacing(1)}>
-        <Grid container alignItems="center">
-          <Grid
-            item
+      <Grid2
+        container
+        sx={(theme) => ({
+          position: "relative",
+          padding: theme.spacing(1),
+        })}
+      >
+        <Grid2 container alignItems="center">
+          <Grid2
             flexGrow={1}
             display={showDrawerContent && open ? "flex" : "none"}
           >
             <Typography
               variant="h2"
-              color={theme.palette.text.primary}
-              paddingLeft={theme.spacing(1)}
+              color={(theme) => theme.palette.text.primary}
+              paddingLeft={(theme) => theme.spacing(1)}
             >
               {title}
             </Typography>
-          </Grid>
-          <Grid item>
-            <IconButton onClick={toggleDrawer}>
+          </Grid2>
+          <Grid2>
+            <IconButton
+              onClick={toggleDrawer}
+              sx={(theme) => ({
+                position: "absolute",
+                right: open ? theme.spacing(1) : null,
+                top: open ? theme.spacing(1) : null,
+                zIndex: 2,
+              })}
+            >
               {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
-          </Grid>
-        </Grid>
-      </Grid>
+          </Grid2>
+        </Grid2>
+      </Grid2>
       <Box
         flexGrow={1}
         display={showDrawerContent && open ? "flex" : "none"}
         overflow="scroll"
-        padding={theme.spacing(1)}
-        paddingLeft={theme.spacing(2)}
+        padding={(theme) => theme.spacing(1)}
+        paddingLeft={(theme) => theme.spacing(2)}
       >
         {children}
       </Box>

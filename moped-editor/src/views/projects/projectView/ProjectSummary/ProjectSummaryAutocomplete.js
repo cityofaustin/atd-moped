@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Box, Typography, TextField } from "@mui/material";
+import { Grid2, Box, Typography, TextField } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { Autocomplete } from "@mui/material";
@@ -78,9 +78,17 @@ const ProjectSummaryAutocomplete = ({
   };
 
   return (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>{field}</Typography>
-      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
+      <Box
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         {editMode && (
           <>
             <Autocomplete
@@ -123,7 +131,7 @@ const ProjectSummaryAutocomplete = ({
           />
         )}
       </Box>
-    </Grid>
+    </Grid2>
   );
 };
 

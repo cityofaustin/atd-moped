@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import {
   Box,
   Button,
-  Grid,
+  Grid2,
   Paper,
   Popper,
   ClickAwayListener,
@@ -194,10 +194,20 @@ const Search = ({
         as discussed in this thread https://github.com/mui/material-ui/issues/25578 
         so we have opted to use Autocompletes instead*/}
       <div>
-        <Box mt={3}>
+        <Box
+          sx={{
+            mt: 3,
+          }}
+        >
           <Paper ref={divRef}>
-            <Grid container sx={searchBarContainerStyle}>
-              <Grid item xs={12} md sx={gridSearchPaddingStyle}>
+            <Grid2 container sx={searchBarContainerStyle}>
+              <Grid2
+                sx={gridSearchPaddingStyle}
+                size={{
+                  xs: 12,
+                  md: "grow",
+                }}
+              >
                 <SearchBar
                   searchFieldValue={searchFieldValue}
                   setSearchFieldValue={setSearchFieldValue}
@@ -216,8 +226,14 @@ const Search = ({
                   setSearchParams={setSearchParams}
                   handleSnackbar={handleSnackbar}
                 />
-              </Grid>
-              <Grid item xs={12} md="auto" sx={downloadButtonGridStyle}>
+              </Grid2>
+              <Grid2
+                sx={downloadButtonGridStyle}
+                size={{
+                  xs: 12,
+                  md: "auto",
+                }}
+              >
                 <div>
                   {queryConfig.showExport && (
                     <>
@@ -268,8 +284,8 @@ const Search = ({
                     </>
                   )}
                 </div>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Paper>
         </Box>
         <Popper
@@ -300,5 +316,4 @@ const Search = ({
     </ClickAwayListener>
   );
 };
-
 export default Search;

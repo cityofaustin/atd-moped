@@ -258,8 +258,7 @@ export const returnPDDMilestoneTemplate = (projectId) => {
   ];
 };
 
-
-export const returnArterialManagementPhaseTemplate = projectId => {
+export const returnArterialManagementPhaseTemplate = (projectId) => {
   return [
     {
       project_id: projectId,

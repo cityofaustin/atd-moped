@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Link, Menu, MenuItem } from "@mui/material";
+import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -10,6 +11,7 @@ import {
 } from "src/layouts/DashboardLayout/NavBar/menuConfig";
 import { navigationItems } from "src/layouts/DashboardLayout/TopBar";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
+import UserInfo from "src/views/account/UserInfo";
 
 /**
  * Renders dropdown menu visible on small screens
@@ -49,6 +51,9 @@ const MobileDropdownMenu = () => {
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
+        <Box sx={{ paddingX: 2, paddingY: 1 }}>
+          <UserInfo />
+        </Box>
         {navigationItems.map((item) => (
           <MenuItem
             key={item.href}
@@ -85,9 +90,9 @@ const MobileDropdownMenu = () => {
         </MenuItem>
         {subMenu && (
           <div
-            sx={{
-              marginLeft: (theme) => theme.spacing(2),
-            }}
+            sx={(theme) => ({
+              marginLeft: theme.spacing(2),
+            })}
           >
             {helpItems.map((item) => {
               if (item.linkType === "external") {
@@ -123,14 +128,6 @@ const MobileDropdownMenu = () => {
             })}
           </div>
         )}
-        <MenuItem
-          onClick={() => {
-            handleMobileClose();
-            navigate("/moped/account");
-          }}
-        >
-          Account
-        </MenuItem>
         <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
         <MenuItem>
           <CanAddProjectButton />

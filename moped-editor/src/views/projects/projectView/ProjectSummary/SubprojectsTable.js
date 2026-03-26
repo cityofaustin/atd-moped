@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 import { Box, Button } from "@mui/material";
-import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
+import { GridRowModes } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { v4 as uuidv4 } from "uuid";
 
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
@@ -375,18 +375,15 @@ const SubprojectsTable = ({
 
   return (
     <>
-      <DataGridPro
-        sx={{ ...dataGridProStyleOverrides, border: 0 }}
+      <MopedDataGrid
+        sx={{ border: 0 }}
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}
         autoHeight
-        getRowHeight={() => "auto"}
-        density="comfortable"
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        onProcessRowUpdateError={(error) => console.error(error)}
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{
           toolbar: {
@@ -407,8 +404,6 @@ const SubprojectsTable = ({
         editMode="row"
         processRowUpdate={processRowUpdate}
         onRowEditStop={handleRowEditStop(rows, setRows)}
-        hideFooter
-        disableRowSelectionOnClick
         localeText={{ noRowsLabel: noRelatedProjectsLabel }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         onRowEditStart={(params, event) => {

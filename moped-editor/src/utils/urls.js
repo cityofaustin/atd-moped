@@ -11,6 +11,14 @@ export const isValidUrl = (url) => {
 };
 
 /**
+ * Converts a record key (e.g. moped_phases) into a URL hash (e.g. #moped-phases)
+ * @param {string} recordKey - underscore-delimited record key
+ * @returns {string} - hash string for use in URLs
+ */
+export const createRecordKeyHash = (recordKey) =>
+  `#${recordKey.replaceAll("_", "-")}`;
+
+/**
  * Attempt to make a url valid by prepending https:// to it
  * @param {string} url - url to try to make valid
  * @returns {string} - valid url or original url

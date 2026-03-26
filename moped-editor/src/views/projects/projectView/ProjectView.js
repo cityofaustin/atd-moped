@@ -25,7 +25,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Grid,
+  Grid2,
   Menu,
   MenuItem,
   Fade,
@@ -319,19 +319,18 @@ const ProjectView = () => {
           <Container maxWidth="xl">
             <ErrorBoundary FallbackComponent={FallbackComponent}>
               <Card
-                sx={{
-                  marginTop: (theme) => theme.spacing(3),
-                }}
+                sx={(theme) => ({
+                  marginTop: theme.spacing(3),
+                })}
               >
                 {loading ? (
                   <CircularProgress />
                 ) : (
                   <Box
-                    sx={{
+                    sx={(theme) => ({
                       flexGrow: 1,
-                      backgroundColor: (theme) =>
-                        theme.palette.background.paper,
-                    }}
+                      backgroundColor: theme.palette.background.paper,
+                    })}
                   >
                     <Box
                       sx={{
@@ -356,11 +355,14 @@ const ProjectView = () => {
                         </Typography>
                       </Breadcrumbs>
                     </Box>
-                    <Box px={3} pb={1}>
-                      <Grid container>
-                        <Grid
-                          item
-                          xs // Take all available space
+                    <Box
+                      sx={{
+                        px: 3,
+                        pb: 1,
+                      }}
+                    >
+                      <Grid2 container>
+                        <Grid2
                           sx={(theme) => ({
                             minHeight: theme.spacing(8), // Prevent jumping when edit form appears
                             display: "flex",
@@ -370,6 +372,7 @@ const ProjectView = () => {
                               my: 1, // Add margin when on small screen and stacked vertically
                             },
                           })}
+                          size="grow"
                         >
                           <Box sx={{ minWidth: 0, width: "100%" }}>
                             <ProjectNameEditable
@@ -381,9 +384,8 @@ const ProjectView = () => {
                               refetch={refetch}
                             />
                           </Box>
-                        </Grid>
-                        <Grid
-                          item
+                        </Grid2>
+                        <Grid2
                           sx={{
                             justifyItems: "right",
                             display: "flex",
@@ -436,15 +438,15 @@ const ProjectView = () => {
                             >
                               <MenuItem
                                 onClick={handleRenameClick}
-                                sx={{
-                                  minWidth: (theme) => theme.spacing(14),
-                                }}
+                                sx={(theme) => ({
+                                  minWidth: theme.spacing(14),
+                                })}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  sx={{
-                                    minWidth: (theme) => theme.spacing(2),
-                                  }}
+                                  sx={(theme) => ({
+                                    minWidth: theme.spacing(2),
+                                  })}
                                 >
                                   <CreateOutlinedIcon />
                                 </ListItemIcon>
@@ -452,15 +454,15 @@ const ProjectView = () => {
                               </MenuItem>
                               <MenuItem
                                 onClick={handleDeleteClick}
-                                sx={{
-                                  minWidth: (theme) => theme.spacing(14),
-                                }}
+                                sx={(theme) => ({
+                                  minWidth: theme.spacing(14),
+                                })}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  sx={{
-                                    minWidth: (theme) => theme.spacing(2),
-                                  }}
+                                  sx={(theme) => ({
+                                    minWidth: theme.spacing(2),
+                                  })}
                                 >
                                   <DeleteOutlinedIcon />
                                 </ListItemIcon>
@@ -468,25 +470,23 @@ const ProjectView = () => {
                               </MenuItem>
                             </Menu>
                           </Box>
-                        </Grid>
-                      </Grid>
+                        </Grid2>
+                      </Grid2>
                     </Box>
                     <Divider />
                     <AppBar
-                      sx={{
-                        backgroundColor: (theme) =>
-                          theme.palette.background.paper,
-                        color: (theme) => theme.palette.text.secondary,
-                      }}
+                      sx={(theme) => ({
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.secondary,
+                      })}
                       position="static"
                     >
                       <Tabs
-                        sx={{
+                        sx={(theme) => ({
                           "& .MuiTabs-indicator": {
-                            backgroundColor: (theme) =>
-                              theme.palette.primary.light,
+                            backgroundColor: theme.palette.primary.light,
                           },
-                        }}
+                        })}
                         value={activeTab}
                         onChange={handleChange}
                         variant="scrollable"
@@ -495,12 +495,12 @@ const ProjectView = () => {
                         {TABS.map((tab, i) => {
                           return (
                             <Tab
-                              sx={{
+                              sx={(theme) => ({
                                 minWidth: "160px",
                                 "&.Mui-selected": {
-                                  color: (theme) => theme.palette.text.primary,
+                                  color: theme.palette.text.primary,
                                 },
-                              }}
+                              })}
                               key={tab.label}
                               label={tab.label}
                               {...a11yProps(i)}
@@ -598,9 +598,9 @@ const ProjectView = () => {
                   <Link
                     component={RouterLink}
                     to={allProjectsLink}
-                    sx={{
-                      color: (theme) => theme.palette.primary.main,
-                    }}
+                    sx={(theme) => ({
+                      color: theme.palette.primary.main,
+                    })}
                   >
                     Back to all projects
                   </Link>

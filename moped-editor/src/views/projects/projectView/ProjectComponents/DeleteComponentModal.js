@@ -5,7 +5,7 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Grid,
+  Grid2,
   List,
   ListItem,
   ListItemText,
@@ -41,9 +41,14 @@ const DeleteComponentModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent sx={{ paddingBottom: 3 }} dividers={true}>
-        <Grid container spacing={1}>
+        <Grid2 container spacing={1}>
           <List>
-            <Box borderLeft={7} borderColor="secondary.main">
+            <Box
+              sx={{
+                borderLeft: 7,
+                borderColor: "secondary.main",
+              }}
+            >
               <ListItem>
                 <ListItemText
                   primary={clickedComponent.moped_components?.component_name}
@@ -54,9 +59,16 @@ const DeleteComponentModal = ({
               </ListItem>
             </Box>
           </List>
-        </Grid>
-        <Grid container spacing={2} display="flex" justifyContent="flex-end">
-          <Grid item>
+        </Grid2>
+        <Grid2
+          container
+          spacing={2}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Grid2>
             <Button
               size="small"
               sx={{ color: "text.primary" }}
@@ -65,8 +77,8 @@ const DeleteComponentModal = ({
             >
               Cancel
             </Button>
-          </Grid>
-          <Grid item>
+          </Grid2>
+          <Grid2>
             <Button
               variant="contained"
               color="primary"
@@ -76,11 +88,10 @@ const DeleteComponentModal = ({
             >
               Delete component
             </Button>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </DialogContent>
     </Dialog>
   );
 };
-
 export default DeleteComponentModal;

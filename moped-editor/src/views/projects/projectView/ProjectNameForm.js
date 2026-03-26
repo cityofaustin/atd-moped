@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid2 } from "@mui/material";
 
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
@@ -85,8 +85,13 @@ const ProjectNameForm = ({
         sx={{ width: "100%" }}
         onSubmit={handleSubmit(handleSave)}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={12} lg={6}>
+        <Grid2 container spacing={2}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 6,
+            }}
+          >
             <ControlledTextInput
               autoFocus
               variant="standard"
@@ -106,8 +111,13 @@ const ProjectNameForm = ({
                 disabled: loading,
               }}
             />
-          </Grid>
-          <Grid item xs={12} lg={5}>
+          </Grid2>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 5,
+            }}
+          >
             <ControlledTextInput
               variant="standard"
               fullWidth
@@ -127,27 +137,32 @@ const ProjectNameForm = ({
                 disabled: loading,
               }}
             />
-          </Grid>
+          </Grid2>
           {/* Minimum width prevents icons from wrapping. */}
-          <Grid
-            item
+          <Grid2
             container
             direction="row"
-            alignItems="center"
-            alignContent="center"
-            xs={12}
-            lg={1}
-            sx={(theme) => ({
-              minWidth: theme.spacing(12),
-            })}
+            sx={[
+              {
+                alignItems: "center",
+                alignContent: "center",
+              },
+              (theme) => ({
+                minWidth: theme.spacing(12),
+              }),
+            ]}
+            size={{
+              xs: 12,
+              lg: 1,
+            }}
           >
             <ProjectSummaryIconButtons
               handleClose={handleCancelClick}
               disabledCondition={!isDirty}
               loading={loading}
             />
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </Box>
     </>
   );

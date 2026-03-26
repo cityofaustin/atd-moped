@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Chip, Grid, Button, Tooltip } from "@mui/material";
+import { Box, Chip, Grid2, Button, Tooltip } from "@mui/material";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -119,8 +119,14 @@ const FiltersChips = ({
 
   return (
     <Box sx={filtersListStyle}>
-      <Grid container justifyContent="flex-start" spacing={0.5}>
-        <Grid item>
+      <Grid2
+        container
+        spacing={0.5}
+        sx={{
+          justifyContent: "flex-start",
+        }}
+      >
+        <Grid2>
           <Tooltip
             placement="bottom-start"
             title="Save these filters to the dashboard"
@@ -136,9 +142,9 @@ const FiltersChips = ({
               SAVE VIEW
             </Button>
           </Tooltip>
-        </Grid>
+        </Grid2>
         {filtersCount > 1 && (
-          <Grid item>
+          <Grid2>
             <Chip
               variant="outlined"
               color="primary"
@@ -157,10 +163,10 @@ const FiltersChips = ({
                 )
               }
             />
-          </Grid>
+          </Grid2>
         )}
         {filtersLabels.map((filter, index) => (
-          <Grid item key={index}>
+          <Grid2 key={index}>
             <Chip
               onDelete={() => handleDeleteButtonClick(index)}
               label={
@@ -170,9 +176,9 @@ const FiltersChips = ({
                 </>
               }
             />
-          </Grid>
+          </Grid2>
         ))}
-      </Grid>
+      </Grid2>
       <SaveUserViewModal
         showDialog={isSaveViewModalOpen}
         setIsSaveViewModalOpen={setIsSaveViewModalOpen}
@@ -185,5 +191,4 @@ const FiltersChips = ({
     </Box>
   );
 };
-
 export default FiltersChips;

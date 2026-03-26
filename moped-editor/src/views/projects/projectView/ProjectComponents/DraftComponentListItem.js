@@ -19,9 +19,11 @@ const DraftComponentListItem = ({
 
   return (
     <Box
-      borderLeft={7}
       style={{
         borderColor: COLORS.orange,
+      }}
+      sx={{
+        borderLeft: 7,
       }}
     >
       <ListItem dense>

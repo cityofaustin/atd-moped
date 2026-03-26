@@ -23,26 +23,38 @@ export default function ComponentMapToolbar({
   return (
     <AppBar
       position="fixed"
-      sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-      }}
+      sx={(theme) => ({
+        zIndex: theme.zIndex.drawer + 1,
+      })}
     >
       <Toolbar
-        sx={{
-          backgroundColor: (theme) => theme.palette.background.paper,
-        }}
+        sx={(theme) => ({
+          backgroundColor: theme.palette.background.paper,
+        })}
       >
-        <Box mr={2}>
+        <Box
+          sx={{
+            mr: 2,
+          }}
+        >
           <ProjectName name={projectName} id={projectId} />
         </Box>
-        <Box mr={2}>
+        <Box
+          sx={{
+            mr: 2,
+          }}
+        >
           <ProjectStatusBadge
             phaseKey={phaseKey}
             phaseName={phaseName}
             condensed
           />
         </Box>
-        <Box mr={2}>
+        <Box
+          sx={{
+            mr: 2,
+          }}
+        >
           <MapAlert
             message={message}
             severity={severity}
@@ -50,7 +62,13 @@ export default function ComponentMapToolbar({
             onClose={onClose ? onClose : null}
           />
         </Box>
-        <Box color="primary" display="flex" flexGrow={1}>
+        <Box
+          sx={{
+            color: "primary",
+            display: "flex",
+            flexGrow: 1,
+          }}
+        >
           {isFetchingFeatures && <CircularProgress />}
         </Box>
         <Box>

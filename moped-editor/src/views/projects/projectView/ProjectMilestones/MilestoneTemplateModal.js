@@ -10,7 +10,6 @@ import {
   List,
   ListItemText,
   ListItemIcon,
-  ListItem,
   TextField,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material";
@@ -24,6 +23,8 @@ import {
 
 import { ADD_PROJECT_MILESTONE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
+
+import ListItemButton from "@mui/material/ListItemButton";
 
 const templateChoices = [
   "AMD Signal Infrastructure",
@@ -155,7 +156,13 @@ const MilestoneTemplateModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Box my={3} sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            my: 3,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Autocomplete
             style={{ width: "250px" }}
             defaultValue={null}
@@ -186,8 +193,7 @@ const MilestoneTemplateModal = ({
         <List dense>
           {filteredMilestonesList.map((milestone) => {
             return (
-              <ListItem
-                button
+              <ListItemButton
                 key={milestone.milestone_id}
                 dense
                 onClick={() => handleToggle(milestone)}
@@ -204,7 +210,7 @@ const MilestoneTemplateModal = ({
                 <ListItemText
                   primary={milestoneNameLookup[milestone.milestone_id]}
                 />
-              </ListItem>
+              </ListItemButton>
             );
           })}
         </List>

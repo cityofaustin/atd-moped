@@ -16,9 +16,8 @@ import {
 
 import { PROJECT_ACTIVITY_LOG } from "src/queries/project";
 import { Alert } from "@mui/material";
-import CDNAvatar from "src/components/CDN/Avatar";
 import { FormattedDateString } from "src/utils/dateAndTime";
-import { getUserFullName, getInitials } from "src/utils/userNames";
+import { getUserFullName } from "src/utils/userNames";
 import ProjectActivityEntry from "src/views/projects/projectView/ProjectActivityEntry";
 
 import { formatActivityLogEntry } from "src/utils/activityLogHelpers";
@@ -249,20 +248,19 @@ const ProjectActivityLog = () => {
                         verticalAlign: "top",
                       }}
                     >
-                      <Box p={0} display="flex">
-                        <Box p={0}>
-                          <CDNAvatar
-                            size="small"
-                            src={change?.updated_by_user?.picture}
-                            initials={getInitials(change?.updated_by_user)}
-                            // todo: do we want this to not be always gray if its just the initials?
-                            userColor={null}
-                          />
-                        </Box>
+                      <Box
+                        p={0}
+                        sx={{
+                          p: 0,
+                          display: "flex",
+                        }}
+                      >
                         <Box
-                          p={0}
-                          flexGrow={1}
-                          sx={{ margin: "0.3rem 0 0 .5rem" }}
+                          sx={{
+                            p: 0,
+                            flexGrow: 1,
+                            margin: "0.3rem 0 0 .5rem",
+                          }}
                         >
                           {getUserFullName(change?.updated_by_user)}
                         </Box>

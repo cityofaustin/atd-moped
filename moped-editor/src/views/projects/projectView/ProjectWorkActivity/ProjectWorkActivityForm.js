@@ -7,7 +7,7 @@ import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -33,7 +33,11 @@ import {
   IMPLEMENTATION_WORKGROUP_OPTIONS,
 } from "./utils/form";
 
-const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar }) => {
+const ProjectWorkActivitiesForm = ({
+  activity,
+  onSubmitCallback,
+  handleSnackbar,
+}) => {
   /** Status lookup values */
   const {
     loading: loadingStatuses,
@@ -89,34 +93,40 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
 
   if (errorStatuses || errorTaskOrders || mutationState.error) {
     return (
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid2 container spacing={2}>
+        <Grid2 size={12}>
           <Alert severity="error">
             Something went wrong. Refresh the page to try again.
           </Alert>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   } else if (loadingStatuses || loadingTaskOrders) {
     return (
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid2 container spacing={2}>
+        <Grid2 size={12}>
           <CircularProgress color="primary" size={20} />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   }
 
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        onSubmitActivity({ data, mutate, onSubmitCallback, handleSnackbar, isNewActivity })
+        onSubmitActivity({
+          data,
+          mutate,
+          onSubmitCallback,
+          handleSnackbar,
+          isNewActivity,
+        })
       )}
       autoComplete="off"
     >
-      <Grid container spacing={2}>
+      <Grid2 container spacing={2}>
         {!isNewActivity && (
-          <Grid item xs={12}>
+          <Grid2 size={12}>
             <FormControl fullWidth>
               <TextField
                 id="id"
@@ -127,9 +137,9 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
                 value={activity.reference_id}
               />
             </FormControl>
-          </Grid>
+          </Grid2>
         )}
-        <Grid item xs={12}>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.status_id}>
             <InputLabel id="status-label" required={true}>
               Status
@@ -148,8 +158,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
             />
             <FormHelperText>Required</FormHelperText>
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.workgroup_contractor}>
             <ControlledAutocomplete
               control={control}
@@ -162,11 +172,13 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               valueHandler={(value) => value || null}
             />
             {formErrors?.workgroup_contractor && (
-              <FormHelperText>{formErrors.workgroup_contractor.message}</FormHelperText>
+              <FormHelperText>
+                {formErrors.workgroup_contractor.message}
+              </FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.contract_number}>
             <ControlledTextInput
               fullWidth
@@ -182,8 +194,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               </FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.work_assignment_id}>
             <ControlledTextInput
               fullWidth
@@ -198,8 +210,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               </FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth>
             <ControlledTextInput
               fullWidth
@@ -210,8 +222,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               size="small"
             />
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
               control={control}
@@ -227,8 +239,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               error={formErrors?.task_orders}
             />
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.description}>
             <ControlledTextInput
               fullWidth
@@ -243,8 +255,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               <FormHelperText>{formErrors.description.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.status_note}>
             <ControlledTextInput
               fullWidth
@@ -259,8 +271,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               <FormHelperText>{formErrors.status_note.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.work_order_url}>
             <ControlledTextInput
               control={control}
@@ -276,10 +288,16 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               </FormHelperText>
             )}
           </FormControl>
-        </Grid>
-      </Grid>
-      <Grid container display="flex" justifyContent="flex-end">
-        <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
+        </Grid2>
+      </Grid2>
+      <Grid2
+        container
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"
@@ -293,10 +311,9 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               "Save"
             )}
           </Button>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </form>
   );
 };
-
 export default ProjectWorkActivitiesForm;

@@ -162,7 +162,13 @@ const NavigationSearchInput = ({ input404Class }) => {
   }, [searchTerm]);
 
   return (
-    <Box display="flex" justifyContent="center" onClick={handleMagClick}>
+    <Box
+      onClick={handleMagClick}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
       <ClickAwayListener onClickAway={startSlideAway}>
         <Box
           ref={divRef}
@@ -206,17 +212,19 @@ const NavigationSearchInput = ({ input404Class }) => {
             // inherit the position from the modifiers and dont reset to 0
             style={{ position: "fixed", top: "unset", left: "unset" }}
             modifiers={[]}
-            sx={{
-              width: input404Class
-                ? { xs: "400px", sm: "400px", md: "400px", lg: "600px" }
-                : { xs: "200px", sm: "200px", md: "200px", lg: "300px" },
-              overflow: "hidden",
-              borderRadius: "4px",
-              ...(popperEnterComplete && {
+            sx={[
+              {
+                width: input404Class
+                  ? { xs: "400px", sm: "400px", md: "400px", lg: "600px" }
+                  : { xs: "200px", sm: "200px", md: "200px", lg: "300px" },
+                overflow: "hidden",
+                borderRadius: "4px",
+              },
+              popperEnterComplete && {
                 boxShadow:
                   "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
-              }),
-            }}
+              },
+            ]}
             // including the transition prop counter intuitively messes up the positioning
             // transition
           >
@@ -243,5 +251,4 @@ const NavigationSearchInput = ({ input404Class }) => {
     </Box>
   );
 };
-
 export default NavigationSearchInput;

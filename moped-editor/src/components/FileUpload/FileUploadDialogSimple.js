@@ -5,7 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
+  Grid2,
   Icon,
 } from "@mui/material";
 import FileUpload from "src/components/FileUpload/FileUpload";
@@ -118,8 +118,8 @@ const FileUploadDialogSimple = (props) => {
         {props?.title ? props.title : "Upload Media"}
       </DialogTitle>
       <DialogContent>
-        <Grid container>
-          <Grid xs={12} md={12} sx={{ minWidth: "320px" }}>
+        <Grid2 container>
+          <Grid2 size={{ xs: 12, md: 12 }} sx={{ minWidth: "320px" }}>
             <FileUpload
               limit={1}
               sizeLimit={"1024MB"}
@@ -128,8 +128,8 @@ const FileUploadDialogSimple = (props) => {
               onFileProcessed={handleOnFileProcessed}
               onFileAdded={handleOnFileAdded}
             />
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="primary" autoFocus>

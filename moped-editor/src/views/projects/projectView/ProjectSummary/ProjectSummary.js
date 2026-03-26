@@ -5,7 +5,7 @@ import ProjectSummaryMap from "src/views/projects/projectView/ProjectSummary/Pro
 import ProjectSummaryStatusUpdate from "src/views/projects/projectView/ProjectSummary/ProjectSummaryStatusUpdate";
 
 import {
-  Grid,
+  Grid2,
   CardContent,
   CircularProgress,
   Card,
@@ -60,14 +60,19 @@ const ProjectSummary = ({
 
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+      <Grid2 container spacing={2}>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <Card sx={{ height: "fit-content" }}>
             <CardContent>
               <Typography variant="h2" color="primary" sx={{ mb: 3 }}>
                 Overview
               </Typography>
-              <Grid container spacing={0}>
+              <Grid2 container spacing={0}>
                 <ProjectSummaryProjectDescription
                   projectId={projectId}
                   data={data}
@@ -82,7 +87,7 @@ const ProjectSummary = ({
                   refetch={refetch}
                   handleSnackbar={handleSnackbar}
                 />
-                <Grid item xs={12}>
+                <Grid2 size={12}>
                   <ProjectSummaryAutocomplete
                     field="Lead"
                     idColumn={"entity_id"}
@@ -97,8 +102,8 @@ const ProjectSummary = ({
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryAutocomplete
                     field="Sponsor"
                     idColumn={"entity_id"}
@@ -113,8 +118,8 @@ const ProjectSummary = ({
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryProjectPartners
                     projectId={projectId}
                     loading={loading}
@@ -123,8 +128,8 @@ const ProjectSummary = ({
                     handleSnackbar={handleSnackbar}
                     tooltipText="Other internal or external workgroups participating in the project"
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryAutocomplete
                     field="Public process"
                     idColumn={"id"}
@@ -141,8 +146,8 @@ const ProjectSummary = ({
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryProjectWebsite
                     projectId={projectId}
                     loading={loading}
@@ -150,8 +155,8 @@ const ProjectSummary = ({
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryInterimID
                     projectId={projectId}
                     loading={loading}
@@ -159,65 +164,71 @@ const ProjectSummary = ({
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
-                    loading={loading}
                     eCaprisSubprojectId={
-                      data?.moped_project?.[0]?.ecapris_subproject_id
+                      data?.moped_project[0]?.ecapris_subproject_id
                     }
+                    loading={loading}
+                    options={data?.ecapris_subproject_funding ?? []}
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryDataTrackerSignals
                     project={data?.moped_project?.[0]}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid2>
+                <Grid2 size={12}>
                   <ProjectSummaryWorkOrders
                     project={data?.moped_project?.[0]}
                   />
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
+          <Grid2 container spacing={2}>
+            <Grid2 size={12}>
               <Card sx={{ height: "fit-content" }}>
                 <CardContent>
                   <Typography variant="h2" color="primary" sx={{ mb: 3 }}>
                     Map
                   </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                  <Grid2 container spacing={2}>
+                    <Grid2 size={12}>
                       <ProjectSummaryMap data={data} />
-                    </Grid>
-                    <Grid item xs={12}>
+                    </Grid2>
+                    <Grid2 size={12}>
                       <ProjectSummaryCouncilDistricts
                         projectGeography={data.project_geography}
                         childProjectGeography={childProjectGeography}
                       />
-                    </Grid>
-                  </Grid>
+                    </Grid2>
+                  </Grid2>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid2>
 
             {/* Tags Section */}
-            <Grid item xs={12}>
+            <Grid2 size={12}>
               <TagsSection
                 projectId={projectId}
                 handleSnackbar={handleSnackbar}
               />
-            </Grid>
+            </Grid2>
 
             {/* Subprojects Section */}
-            <Grid item xs={12}>
+            <Grid2 size={12}>
               <Card sx={{ height: "fit-content", p: 0 }}>
                 {/* The `&:last-child` is used to remove the padding from the bottom of the Table making it flush with the card layout */}
                 <CardContent sx={{ "&:last-child": { p: 0 } }}>
@@ -229,12 +240,11 @@ const ProjectSummary = ({
                   />
                 </CardContent>
               </Card>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+            </Grid2>
+          </Grid2>
+        </Grid2>
+      </Grid2>
     </>
   );
 };
-
 export default ProjectSummary;

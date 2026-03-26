@@ -88,7 +88,6 @@ const DataGridActions = ({
   const DeleteIcon = deleteIcon || (
     <DeleteOutlineIcon sx={defaultEditColumnIconStyle} />
   );
-
   return [
     // only render edit button if we were passed an edit handler and are not currently in edit mode
     handleEditClick && (

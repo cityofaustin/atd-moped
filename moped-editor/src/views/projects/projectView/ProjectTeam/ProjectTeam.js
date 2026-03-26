@@ -2,20 +2,20 @@ import React from "react";
 import ProjectTeamTable from "src/views/projects/projectView/ProjectTeam/ProjectTeamTable";
 import { useParams } from "react-router-dom";
 
-import { Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 
 const ProjectTeam = ({ handleSnackbar }) => {
   const { projectId } = useParams();
 
   return (
-    <Grid container spacing={4}>
-      <Grid item xs={12}>
+    <Grid2 container spacing={4}>
+      <Grid2 size={12}>
         <ProjectTeamTable
           projectId={projectId}
           handleSnackbar={handleSnackbar}
         />
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 };
 

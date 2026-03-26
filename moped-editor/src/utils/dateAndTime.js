@@ -130,24 +130,24 @@ export const formatRelativeDate = (timeStampTZString) => {
  *   - 'fullTime': Returns the full time including seconds (e.g., "2:30:45 PM")
  * @returns {string} The formatted date string
  */
-  const formatDate = (date, format) => {
-    switch (format) {
-      case 'relative':
-        return formatRelativeDate(date);
-      case 'absolute':
-        return new Date(date).toLocaleString();
-      case 'expanded':
-        return makeUSExpandedFormDateFromTimeStampTZ(date);
-      case 'short':
-        return formatDateType(date);
-      case 'time':
-        return makeHourAndMinutesFromTimeStampTZ(date);
-      case 'fullTime':
-        return makeFullTimeFromTimeStampTZ(date);
-      default:
-        return new Date(date).toLocaleString();
-    }
-  };
+const formatDate = (date, format) => {
+  switch (format) {
+    case "relative":
+      return formatRelativeDate(date);
+    case "absolute":
+      return new Date(date).toLocaleString();
+    case "expanded":
+      return makeUSExpandedFormDateFromTimeStampTZ(date);
+    case "short":
+      return formatDateType(date);
+    case "time":
+      return makeHourAndMinutesFromTimeStampTZ(date);
+    case "fullTime":
+      return makeFullTimeFromTimeStampTZ(date);
+    default:
+      return new Date(date).toLocaleString();
+  }
+};
 
 /**
  * A component that renders a formatted date string with primary display and optional secondary display
@@ -162,7 +162,7 @@ export const FormattedDateString = ({ date, primary, secondary }) => {
     <span>
       <div>{formatDate(date, primary)}</div>
       {secondary && (
-        <div style={{ fontSize: '0.8em', color: theme.palette.text.secondary }}>
+        <div style={{ fontSize: "0.8em", color: theme.palette.text.secondary }}>
           {formatDate(date, secondary)}
         </div>
       )}

@@ -12,7 +12,7 @@ esac
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
 echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
 
-PYTHON_REQUIREMENTS_FILE="$(pwd)/moped-auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
+PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
 
 #
 # First, we need to create the python package by installing requirements
@@ -80,7 +80,7 @@ function deploy_cognito_function() {
 #
 function deploy_cognito_functions() {
   MAIN_DIR=$PWD
-  FUNCTION="moped-auth/cognito-pre-token-hook"
+  FUNCTION="auth/cognito-pre-token-hook"
   FUNCTION_DIR=$(echo "${FUNCTION}" | cut -d "/" -f 2)
   FUNCTION_NAME="atd-moped-${FUNCTION_DIR}-${WORKING_STAGE}"
   echo "Current directory: ${PWD}"

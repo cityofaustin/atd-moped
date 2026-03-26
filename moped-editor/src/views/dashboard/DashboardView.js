@@ -8,7 +8,7 @@ import {
   Box,
   Card,
   Container,
-  Grid,
+  Grid2,
   Link,
   Tab,
   Tabs,
@@ -26,8 +26,7 @@ import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
 import UserSavedViewsTable from "src/views/dashboard/UserSavedViewsTable";
-import { DataGridPro } from "@mui/x-data-grid-pro";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
 import { formatRelativeDate } from "src/utils/dateAndTime";
 
@@ -59,14 +58,14 @@ const UserGreeting = ({ userName }) => {
   const timeOfDay = getTimeOfDay(date);
 
   return (
-    <Grid sx={{ display: "block" }}>
+    <Grid2 sx={{ display: "block" }}>
       <Typography sx={{ color: "text.secondary", fontWeight: "bold" }}>
         Good {timeOfDay}, {userName}!
       </Typography>
       <Typography variant="h1" sx={{ paddingTop: theme.spacing(0.5) }}>
         {getCalendarDate(date)}
       </Typography>
-    </Grid>
+    </Grid2>
   );
 };
 
@@ -276,17 +275,27 @@ const DashboardView = () => {
       <Page title={"Dashboard"}>
         <Container maxWidth="xl">
           <Card sx={{ marginTop: 3 }}>
-            <Grid
+            <Grid2
               sx={{
                 flexGrow: 1,
                 backgroundColor: "background.paper",
               }}
             >
-              <Box pl={3} pt={3}>
+              <Box
+                sx={{
+                  pl: 3,
+                  pt: 3,
+                }}
+              >
                 <UserGreeting userName={userName} />
               </Box>
-              <Box px={3} py={3}>
-                <Grid>
+              <Box
+                sx={{
+                  px: 3,
+                  py: 3,
+                }}
+              >
+                <Grid2>
                   <AppBar
                     sx={{
                       backgroundColor: "background.paper",
@@ -322,27 +331,30 @@ const DashboardView = () => {
                   {TABS[activeTab].label === "Saved views" ? (
                     <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
-                    <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                      <DataGridPro
-                        sx={dataGridProStyleOverrides}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                      }}
+                    >
+                      <MopedDataGrid
+                        density="standard"
                         columns={dataGridColumns}
                         rows={rows || []}
                         loading={loading || !data}
-                        getRowHeight={() => "auto"}
                         getRowId={(row) => row.project_id}
                         rowModesModel={rowModesModel}
                         onRowModesModelChange={handleRowModesModelChange}
-                        hideFooter
-                        disableRowSelectionOnClick
                         localeText={{
                           noRowsLabel: "No projects to display",
                         }}
                       />
                     </Box>
                   )}
-                </Grid>
+                </Grid2>
               </Box>
-            </Grid>
+            </Grid2>
           </Card>
         </Container>
         <FeedbackSnackbar

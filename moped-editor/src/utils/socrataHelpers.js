@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
  * @param {String} url - The url endpoint
  * @return {Object} data (geojson feature array), loading, and error states
  */
-export const useSocrataGeojson = url => {
+export const useSocrataGeojson = (url) => {
   const [features, setFeatures] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
     fetch(url)
-      .then(response => response.json())
+      .then((response) => response.json())
       .then(
-        result => {
+        (result) => {
           if (result.message) {
             // on query error, socrata returns status 200 with {"message": <message>} in body
             setError(result.message.toString());
@@ -21,7 +21,7 @@ export const useSocrataGeojson = url => {
             setFeatures(result.features);
           }
         },
-        error => {
+        (error) => {
           setError(error.toString());
         }
       );
@@ -35,14 +35,14 @@ export const useSocrataGeojson = url => {
  * @param {String} url - The url endpoint
  * @return {Object} data (json object), loading, and error states
  */
-export const useSocrataJson = url => {
+export const useSocrataJson = (url) => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   useEffect(() => {
     fetch(url)
-      .then(response => response.json())
+      .then((response) => response.json())
       .then(
-        result => {
+        (result) => {
           if (result.message) {
             // on query error, socrata returns status 200 with {"message": <message>} in body
             setError(result.message.toString());
@@ -51,7 +51,7 @@ export const useSocrataJson = url => {
             setData(result);
           }
         },
-        error => {
+        (error) => {
           setError(error.toString());
         }
       );

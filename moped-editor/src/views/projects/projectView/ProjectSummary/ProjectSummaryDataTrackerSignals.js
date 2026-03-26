@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid2, Typography } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import RenderSignalLink from "../../../../components/RenderSignalLink";
 import {
@@ -27,9 +27,14 @@ const ProjectSummaryDataTrackerSignals = ({ project }) => {
   const signals = useProjectSignals(project);
 
   return (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Signal IDs</Typography>
-      <Box display="flex" justifyContent="flex-start">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
         <ProjectSummaryLabel
           sxProp={fieldLabelDataTrackerLink}
           spanSxProp={fieldLabelTextSpanNoBorder}
@@ -38,8 +43,7 @@ const ProjectSummaryDataTrackerSignals = ({ project }) => {
           }
         />
       </Box>
-    </Grid>
+    </Grid2>
   );
 };
-
 export default ProjectSummaryDataTrackerSignals;

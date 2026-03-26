@@ -1,9 +1,7 @@
 import {
-  Avatar,
   IconButton,
-  Grid,
+  Grid2,
   ListItem,
-  ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
   Typography,
@@ -50,9 +48,6 @@ const ProjectNotes = ({
 
   return (
     <ListItem alignItems="flex-start">
-      <ListItemAvatar>
-        <Avatar />
-      </ListItemAvatar>
       <ListItemText
         sx={
           isNoteEditable
@@ -121,8 +116,8 @@ const ProjectNotes = ({
             marginTop: 3,
           }}
         >
-          <Grid container spacing={0.5}>
-            <Grid item>
+          <Grid2 container spacing={0.5}>
+            <Grid2>
               <IconButton
                 edge="end"
                 aria-label="edit"
@@ -131,8 +126,8 @@ const ProjectNotes = ({
               >
                 <EditIcon sx={editButtonStyles} />
               </IconButton>
-            </Grid>
-            <Grid item>
+            </Grid2>
+            <Grid2>
               {!isEditingNote && (
                 <IconButton
                   edge="end"
@@ -143,12 +138,11 @@ const ProjectNotes = ({
                   <DeleteIcon sx={editButtonStyles} />
                 </IconButton>
               )}
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
         </ListItemSecondaryAction>
       )}
     </ListItem>
   );
 };
-
 export default ProjectNotes;

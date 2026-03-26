@@ -142,6 +142,9 @@ export const SUMMARY_QUERY = gql`
         ...projectComponentFields
       }
     }
+    ecapris_subproject_funding(distinct_on: ecapris_subproject_id) {
+      ecapris_subproject_id
+    }
   }
 `;
 
@@ -816,11 +819,14 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
 `;
 
 export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
-  mutation UpdateProjectECapris($projectId: Int!, $eCapris: String!) {
+  mutation UpdateProjectECapris(
+    $projectId: Int!
+    $eCaprisSubprojectId: String
+  ) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: {
-        ecapris_subproject_id: $eCapris
+        ecapris_subproject_id: $eCaprisSubprojectId
         should_sync_ecapris_statuses: true
         should_sync_ecapris_funding: true
       }

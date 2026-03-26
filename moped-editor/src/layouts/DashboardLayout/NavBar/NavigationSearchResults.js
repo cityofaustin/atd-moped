@@ -31,7 +31,6 @@ const NavigationSearchResults = ({
       </List>
     );
   }
-
   return (
     <List sx={listPaddingStyles}>
       {firstResults.map((result) => (
@@ -63,5 +62,4 @@ const NavigationSearchResults = ({
     </List>
   );
 };
-
 export default NavigationSearchResults;

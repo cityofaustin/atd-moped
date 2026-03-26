@@ -231,7 +231,13 @@ export const useColumns = ({ hiddenColumns }) => {
         field: "ecapris_subproject_id",
         width: COLUMN_WIDTHS.small,
         renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1} alignItems="flex-start">
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "flex-start",
+            }}
+          >
             <Typography variant="body2">{row.ecapris_subproject_id}</Typography>
             {row.ecapris_subproject_id ? (
               <CopyTextButton

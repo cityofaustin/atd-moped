@@ -9,7 +9,7 @@ import DocumentationIconLink from "src/components/DocumentationIconLink";
 /**
  * Custom toolbar for MUI DataGridPro for consistent titles, spacing, and layout
  *
- * @param {string} title - Main title displayed on the top left
+ * @param {React.ReactNode} title - Main title displayed on the top left (string or JSX)
  * @param {React.ReactNode} primaryActionButton - Primary action button on top right
  * @param {React.ReactNode} secondaryActionButton - Optional secondary action button on top right
  * @param {boolean} showColumnsButton - Whether to show the DataGridPro columns settings button
@@ -30,26 +30,61 @@ const DataGridToolbar = ({
 
   return (
     <>
-      <Box sx={{ p: 2, pb: hasSecondRow ? 1 : 2 }}>
+      <Box
+        sx={[
+          {
+            p: 2,
+          },
+          hasSecondRow
+            ? {
+                pb: 1,
+              }
+            : {
+                pb: 2,
+              },
+        ]}
+      >
         <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          sx={{ pb: hasSecondRow ? 1 : 0 }}
+          sx={[
+            {
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            },
+            hasSecondRow
+              ? {
+                  pb: 1,
+                }
+              : {
+                  pb: 0,
+                },
+          ]}
         >
-          <Box display="flex" alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+            gap={1}
+          >
             <Typography variant="h2" color="primary">
               {title}
             </Typography>
             {documentationLink ? (
               <DocumentationIconLink
-                iconButtonSx={{ ml: 1, minWidth: 3 }}
+                iconButtonSx={{ minWidth: 3 }}
                 documentationLink={documentationLink}
               />
             ) : null}
           </Box>
           {(primaryActionButton || secondaryActionButton) && (
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               {secondaryActionButton}
               {primaryActionButton}
             </Stack>
@@ -67,5 +102,4 @@ const DataGridToolbar = ({
     </>
   );
 };
-
 export default DataGridToolbar;

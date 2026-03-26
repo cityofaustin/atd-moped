@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CircularProgress, Box, IconButton, Button } from "@mui/material";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { green } from "@mui/material/colors";
 import {
   EditOutlined as EditOutlinedIcon,
@@ -21,7 +21,6 @@ import {
   usePhaseNameLookup,
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import CurrentPhaseDeleteModal from "src/views/projects/projectView/ProjectPhase/CurrentPhaseDeleteModal";
 
@@ -110,7 +109,11 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
         minWidth: 50,
         renderCell: ({ row }) =>
           row.is_current_phase ? (
-            <Box display="flex">
+            <Box
+              sx={{
+                display: "flex",
+              }}
+            >
               <CheckCircleOutline style={{ color: green[500] }} />
             </Box>
           ) : (
@@ -152,7 +155,6 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
       },
     ];
   }, [deleteInProgress, handleDeleteOpen, setEditPhase]);
-
 /**
  * ProjectPhases Component - renders Project Phase table
  * @return {JSX.Element}
@@ -172,12 +174,9 @@ const ProjectPhases = ({
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [isDeleteCurrentConfirmationOpen, setIsDeleteCurrentConfirmationOpen] =
     useState(false);
-
   const [deletePhase, { loading: deleteInProgress }] =
     useMutation(DELETE_PROJECT_PHASE);
-
   const onClickAddPhase = () => setEditPhase({ project_id: projectId });
-
   const handleDeleteOpen = useCallback(
     ({ project_phase_id, is_current_phase }) => {
       if (is_current_phase) {
@@ -189,7 +188,6 @@ const ProjectPhases = ({
     },
     []
   );
-
   const handleDeleteClick = useCallback(
     (id) => () => {
       deletePhase({
@@ -207,26 +205,19 @@ const ProjectPhases = ({
     },
     [deletePhase, refetch, handleSnackbar]
   );
-
   const columns = useColumns({
     setEditPhase,
     deleteInProgress,
     handleDeleteOpen,
   });
-
   const currentProjectPhaseId = useCurrentProjectPhaseID(
     data?.moped_proj_phases
   );
-
   const currentPhaseTypeId = useCurrentPhaseId(data?.moped_proj_phases);
-
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
-
   const subphaseNameLookup = useSubphaseNameLookup(data?.moped_subphases || []);
-
   const completionDate =
     data?.project_list_view[0]["substantial_completion_date"];
-
   const onSubmitCallback = (isNewPhase) => {
     refetch().then(() => {
       isNewPhase
@@ -235,24 +226,17 @@ const ProjectPhases = ({
       setEditPhase(null);
     });
   };
-
   // Open activity edit modal when double clicking in a cell
   const doubleClickListener = (params) => {
     setEditPhase(params.row);
   };
-
   return (
     <>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         autoHeight
         columns={columns}
-        density="comfortable"
         getRowId={(row) => row.project_phase_id}
-        disableRowSelectionOnClick
         disableColumnMenu
-        getRowHeight={() => "auto"}
-        hideFooter
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
         rows={data?.moped_proj_phases || []}

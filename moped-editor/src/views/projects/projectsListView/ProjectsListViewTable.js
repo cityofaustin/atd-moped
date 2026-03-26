@@ -3,7 +3,7 @@ import { Box, Container, Paper } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import Search from "src/components/GridTable/Search";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { useColumns } from "src/views/projects/projectsListView/helpers";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import { useGetProjectListView } from "src/views/projects/projectsListView/useProjectListViewQuery/useProjectListViewQuery";
@@ -27,7 +27,6 @@ import {
 import ProjectListToolbar from "src/views/projects/projectsListView/ProjectListToolbar";
 import { useCurrentData } from "src/views/projects/projectsListView/useProjectListViewQuery/useCurrentData";
 import ProjectsListViewMap from "src/views/projects/projectsListView/ProjectsListViewMap";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ActivityMetrics from "src/components/ActivityMetrics";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
@@ -241,10 +240,9 @@ const ProjectsListViewTable = () => {
             }}
           >
             {!showMapView && data && data.project_list_view && (
-              <DataGridPro
-                sx={dataGridProStyleOverrides}
+              <MopedDataGrid
                 density="compact"
-                getRowHeight={() => "auto"}
+                hideFooter={false}
                 columnVisibilityModel={hiddenColumns}
                 onColumnVisibilityModelChange={(newModel) => {
                   // when someone toggles "show all columns", datagrid's model is an empty object
@@ -259,7 +257,6 @@ const ProjectsListViewTable = () => {
                 }}
                 columns={columns}
                 getRowId={(row) => row.project_id}
-                disableRowSelectionOnClick
                 rows={data.project_list_view}
                 onSortModelChange={handleSortClick}
                 disableColumnFilter

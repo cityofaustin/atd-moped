@@ -6,7 +6,7 @@ import isEqual from "lodash.isequal";
 import {
   Button,
   FormControlLabel,
-  Grid,
+  Grid2,
   Switch,
   Tooltip,
   IconButton,
@@ -16,12 +16,12 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
-  DataGridPro,
   GridRowModes,
   GridRowEditStopReasons,
   useGridApiRef,
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
@@ -39,7 +39,6 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -105,8 +104,8 @@ const useColumns = ({
               <span>{value?.fdu}</span>
               <Typography
                 variant="body2"
-                color="primary.main"
                 sx={{
+                  color: "primary.main",
                   fontWeight: 500,
                 }}
               >
@@ -639,8 +638,7 @@ const ProjectFundingTable = ({
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         loading={
           loadingProjectFunding || loadingFduOptions || !dataProjectFunding
         }
@@ -655,12 +653,7 @@ const ProjectFundingTable = ({
         isCellEditable={isCellEditable}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error(error)}
-        disableRowSelectionOnClick
         toolbar
-        density="comfortable"
-        getRowHeight={() => "auto"}
-        hideFooter
         onCellKeyDown={handleTabKeyDown}
         onCellDoubleClick={doubleClickListener}
         localeText={{ noRowsLabel: "No funding sources" }}
@@ -698,7 +691,7 @@ const ProjectFundingTable = ({
             documentationLink:
               "https://atd-dts.gitbook.io/moped-documentation/user-guides/add-funding-to-a-project",
             children: (
-              <Grid
+              <Grid2
                 container
                 direction="row"
                 sx={{
@@ -706,16 +699,30 @@ const ProjectFundingTable = ({
                   alignItems: "center",
                 }}
               >
-                <Grid item xs={6} md={4}>
+                <Grid2
+                  size={{
+                    xs: 6,
+                    md: 4,
+                  }}
+                >
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}
-                    refetch={refetchFundingData}
+                    loading={loadingProjectFunding}
+                    options={
+                      dataProjectFunding?.ecapris_subproject_funding ?? []
+                    }
+                    refetch={refetchProjectSummary}
                     handleSnackbar={handleSnackbar}
-                    noWrapper
                   />
-                </Grid>
-                <Grid item container xs={2} justifyContent={"flex-end"}>
+                </Grid2>
+                <Grid2
+                  container
+                  sx={{
+                    justifyContent: "flex-end",
+                  }}
+                  size={2}
+                >
                   <Tooltip
                     placement="bottom"
                     title={
@@ -739,8 +746,8 @@ const ProjectFundingTable = ({
                       }
                     />
                   </Tooltip>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             ),
           },
         }}

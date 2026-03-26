@@ -15,9 +15,11 @@ const ProjectSubstantialCompletionDate = ({ completionDate }) => {
         Substantial completion date
       </Typography>
       <Box
-        display="flex"
-        justifyContent="flex-start"
-        sx={{ maxWidth: "10rem" }}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-start",
+          maxWidth: "10rem",
+        }}
       >
         <Tooltip
           placement="bottom-start"

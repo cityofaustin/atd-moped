@@ -298,7 +298,11 @@ export const useUpdateComponent = ({
     } else if (featureTable === "feature_signals") {
       makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
     } else if (featureTable === "feature_school_beacons") {
-      makePointFeatureInsertionData(featureTable, newFeaturesToInsert, schoolBeacons)
+      makePointFeatureInsertionData(
+        featureTable,
+        newFeaturesToInsert,
+        schoolBeacons
+      );
     }
 
     // Find the features to delete
@@ -388,7 +392,10 @@ export const useUpdateComponent = ({
       drawnPointsToInsert,
       editedComponentId
     );
-    const schoolBeaconInserts = addComponentIdForUpdate(schoolBeacons, editedComponentId)
+    const schoolBeaconInserts = addComponentIdForUpdate(
+      schoolBeacons,
+      editedComponentId
+    );
 
     updateComponentFeatures({
       variables: {
@@ -400,7 +407,7 @@ export const useUpdateComponent = ({
         drawnPoints: drawnPointInserts,
         drawnLinesDragUpdates,
         drawnPointsDragUpdates,
-        schoolBeacons: schoolBeaconInserts
+        schoolBeacons: schoolBeaconInserts,
       },
     })
       .then(() => {
