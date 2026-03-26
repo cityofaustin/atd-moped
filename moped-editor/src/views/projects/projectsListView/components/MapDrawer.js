@@ -98,8 +98,8 @@ function DrawerContent({
               onClick={toggleDrawer}
               sx={(theme) => ({
                 position: "absolute",
-                right: theme.spacing(0.5),
-                top: theme.spacing(0.5),
+                right: open ? theme.spacing(1) : null,
+                top: open ? theme.spacing(1) : null,
                 zIndex: 2,
               })}
             >

@@ -101,7 +101,7 @@ const LookupsView = () => {
                 <Typography
                   variant="h1"
                   color="primary"
-                  sx={(theme) => ({ marginTop: theme.spacing(3) })}
+                  sx={(theme) => ({ paddingTop: theme.spacing(3) })}
                 >
                   Data dictionary
                 </Typography>
@@ -127,7 +127,7 @@ const LookupsView = () => {
           </Paper>
 
           {SETTINGS.map((recordType) => (
-            <Paper sx={{ paddingLeft: 3 }} key={recordType.key}>
+            <Paper sx={{ px: 3, pb: 3 }} key={recordType.key}>
               <Grid2
                 container
                 spacing={3}
@@ -135,50 +135,110 @@ const LookupsView = () => {
                 ref={refs[recordType.key]}
               >
                 <Grid2 size={12}>
-                  <Grid2
-                    container
-                    direction="row"
-                    spacing={1}
-                    sx={(theme) => ({
-                      marginTop: theme.spacing(3),
-                      alignItems: "center",
-                    })}
-                  >
-                    <Grid2>
-                      <Typography variant="h2">{recordType.label}</Typography>
-                    </Grid2>
-                    <Grid2>
-                      <Tooltip title="Return to top of page">
-                        <IconButton
-                          component={Link}
-                          to={"#"}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            scrollToTable("_scroll_to_top", refs);
-                            history.replace("");
-                          }}
-                          size="large"
+                  {TAG_TABLE_KEYS.includes(recordType.key) ? (
+                    <Can
+                      perform="lookups:edit"
+                      yes={
+                        recordType.key === "moped_component_tags" ? (
+                          <ComponentTagsTable
+                            canEdit={true}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        ) : (
+                          <ProjectTagsTable
+                            canEdit={true}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        )
+                      }
+                      no={
+                        recordType.key === "moped_component_tags" ? (
+                          <ComponentTagsTable
+                            canEdit={false}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        ) : (
+                          <ProjectTagsTable
+                            canEdit={false}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        )
+                      }
+                    />
+                  ) : (
+                    <Grid2
+                      container
+                      direction="row"
+                      spacing={1}
+                      sx={(theme) => ({
+                        paddingTop: theme.spacing(3),
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      })}
+                    >
+                      <Grid2>
+                        <Grid2
+                          container
+                          direction="row"
+                          spacing={1}
+                          sx={{ alignItems: "center" }}
                         >
-                          <ArrowUpwardIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                          <Grid2>
+                            <Typography variant="h2">
+                              {recordType.label}
+                            </Typography>
+                          </Grid2>
+                          <Grid2>
+                            <Tooltip title="Return to top of page">
+                              <IconButton
+                                component={Link}
+                                to={"#"}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  scrollToTable("_scroll_to_top", refs);
+                                  history.replace("");
+                                }}
+                                size="large"
+                              >
+                                <ArrowUpwardIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Grid2>
+                        </Grid2>
+                      </Grid2>
+                      <Grid2>
+                        <CopyTextButton
+                          copyButtonText="Copy link"
+                          textToCopy={`${
+                            window.location.origin
+                          }${pathname}${createRecordKeyHash(recordType.key)}`}
+                        />
+                      </Grid2>
+                      <Grid2 size={12}>
+                        <RecordTable
+                          rows={data?.[recordType.key]}
+                          columns={recordType.columns}
+                          loading={loading}
+                        />
+                      </Grid2>
                     </Grid2>
-                    <Grid2>
-                      <CopyTextButton
-                        copyButtonText="Copy link"
-                        textToCopy={`${
-                          window.location.origin
-                        }${pathname}${createRecordKeyHash(recordType.key)}`}
-                      />
-                    </Grid2>
-                    <Grid2 size={12}>
-                      <RecordTable
-                        rows={data?.[recordType.key]}
-                        columns={recordType.columns}
-                        loading={loading}
-                      />
-                    </Grid2>
-                  </Grid2>
+                  )}
                 </Grid2>
               </Grid2>
             </Paper>

@@ -1,5 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Box, Grid2, Stack, TextField, Typography } from "@mui/material";
+import React, { useState } from "react";
+import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
+import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
+import CopyTextButton from "src/components/CopyTextButton";
+import ExternalLink, { createBugReportLink } from "src/components/ExternalLink";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import { Box, Grid2, Stack, Typography } from "@mui/material";
+import { useMutation } from "@apollo/client";
+import { useUser } from "src/auth/user";
 
 import {
   fieldBox,
@@ -11,26 +19,6 @@ import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
-
-/**
- * Custom wrapper for the eCapris edit field
- * @param {JSX.Element} children - Any children
- * @param {boolean} noWrapper - If false, it provides a null wrapper
- * @returns {JSX.Element}
- * @constructor
- */
-const WrapperComponent = ({ children, noWrapper }) =>
-  noWrapper ? (
-    <>
-      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
-      {children}
-    </>
-  ) : (
-    <Grid2 sx={fieldGridItem} size={12}>
-      <Typography sx={fieldLabel}>eCAPRIS Subproject ID</Typography>
-      {children}
-    </Grid2>
-  );
 
 /**
  * ProjectSummaryProjectECapris Component
@@ -110,16 +98,9 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <WrapperComponent noWrapper={noWrapper}>
-      <Box
-        sx={[
-          {
-            display: "flex",
-            justifyContent: "flex-start",
-          },
-          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
-        ]}
-      >
+    <Grid2 size={12} sx={fieldGridItem}>
+      <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
+      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
           <>
             <Autocomplete
@@ -197,7 +178,7 @@ const ProjectSummaryProjectECapris = ({
           </Stack>
         )}
       </Box>
-    </Grid>
+    </Grid2>
   );
 };
 

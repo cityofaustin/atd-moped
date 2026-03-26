@@ -338,8 +338,8 @@ const DashboardView = () => {
                         width: "100%",
                       }}
                     >
-                      <DataGridPro
-                        sx={dataGridProStyleOverrides}
+                      <MopedDataGrid
+                        density="standard"
                         columns={dataGridColumns}
                         rows={rows || []}
                         loading={loading || !data}

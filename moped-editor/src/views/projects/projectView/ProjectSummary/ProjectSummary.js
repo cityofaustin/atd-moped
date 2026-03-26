@@ -172,9 +172,7 @@ const ProjectSummary = ({
                       data?.moped_project[0]?.ecapris_subproject_id
                     }
                     loading={loading}
-                    eCaprisSubprojectId={
-                      data?.moped_project?.[0]?.ecapris_subproject_id
-                    }
+                    options={data?.ecapris_subproject_funding ?? []}
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
