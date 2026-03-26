@@ -89,8 +89,9 @@ const ProjectNameForm = ({
           <Grid2
             size={{
               xs: 12,
-              lg: 6
-            }}>
+              lg: 6,
+            }}
+          >
             <ControlledTextInput
               autoFocus
               variant="standard"
@@ -114,8 +115,9 @@ const ProjectNameForm = ({
           <Grid2
             size={{
               xs: 12,
-              lg: 5
-            }}>
+              lg: 5,
+            }}
+          >
             <ControlledTextInput
               variant="standard"
               fullWidth
@@ -140,16 +142,20 @@ const ProjectNameForm = ({
           <Grid2
             container
             direction="row"
-            sx={[{
-              alignItems: "center",
-              alignContent: "center"
-            }, (theme) => ({
-              minWidth: theme.spacing(12),
-            })]}
+            sx={[
+              {
+                alignItems: "center",
+                alignContent: "center",
+              },
+              (theme) => ({
+                minWidth: theme.spacing(12),
+              }),
+            ]}
             size={{
               xs: 12,
-              lg: 1
-            }}>
+              lg: 1,
+            }}
+          >
             <ProjectSummaryIconButtons
               handleClose={handleCancelClick}
               disabledCondition={!isDirty}

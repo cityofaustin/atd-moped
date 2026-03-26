@@ -52,8 +52,9 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
           container
           sx={{
             display: "flex",
-            justifyContent: "flex-end"
-          }}>
+            justifyContent: "flex-end",
+          }}
+        >
           <Grid2 sx={{ marginTop: 2 }}>
             <Button
               variant="contained"

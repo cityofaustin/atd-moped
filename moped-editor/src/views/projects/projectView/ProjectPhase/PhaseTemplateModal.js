@@ -152,8 +152,9 @@ const PhaseTemplateModal = ({
           sx={{
             my: 3,
             display: "flex",
-            justifyContent: "space-between"
-          }}>
+            justifyContent: "space-between",
+          }}
+        >
           <Autocomplete
             style={{ width: "250px" }}
             defaultValue={null}
@@ -195,7 +196,8 @@ const PhaseTemplateModal = ({
               <ListItemButton
                 key={`${phase.phase_id}${phase.subphase_id}${phase.phase_description}`}
                 dense
-                onClick={() => handleToggle(phase)}>
+                onClick={() => handleToggle(phase)}
+              >
                 <ListItemIcon>
                   <Checkbox
                     edge="start"

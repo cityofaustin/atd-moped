@@ -81,10 +81,14 @@ const ProjectSummaryAutocomplete = ({
     <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>{field}</Typography>
       <Box
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         {editMode && (
           <>
             <Autocomplete

@@ -25,16 +25,22 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
     <Box
       sx={{
         display: "flex",
-        p: 0
-      }}>
-      <Box sx={{
-        p: 0
-      }}>{changeIcon}</Box>
+        p: 0,
+      }}
+    >
       <Box
         sx={{
           p: 0,
-          flexGrow: 1
-        }}>
+        }}
+      >
+        {changeIcon}
+      </Box>
+      <Box
+        sx={{
+          p: 0,
+          flexGrow: 1,
+        }}
+      >
         <Typography
           variant="body2"
           sx={{ padding: "0 0 0 .5rem" }}

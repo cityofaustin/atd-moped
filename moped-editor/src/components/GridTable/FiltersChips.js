@@ -119,9 +119,13 @@ const FiltersChips = ({
 
   return (
     <Box sx={filtersListStyle}>
-      <Grid2 container spacing={0.5} sx={{
-        justifyContent: "flex-start"
-      }}>
+      <Grid2
+        container
+        spacing={0.5}
+        sx={{
+          justifyContent: "flex-start",
+        }}
+      >
         <Grid2>
           <Tooltip
             placement="bottom-start"

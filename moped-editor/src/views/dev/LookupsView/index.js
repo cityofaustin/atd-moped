@@ -132,7 +132,10 @@ const LookupsView = () => {
                     container
                     direction="row"
                     spacing={1}
-                    sx={(theme) => ({ marginTop: theme.spacing(3), alignItems: "center" })}
+                    sx={(theme) => ({
+                      marginTop: theme.spacing(3),
+                      alignItems: "center",
+                    })}
                   >
                     <Grid2>
                       <Typography variant="h2">{recordType.label}</Typography>

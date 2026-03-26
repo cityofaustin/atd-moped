@@ -4,7 +4,13 @@ import { Box, Grid2, Typography } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import ExternalLink from "src/components/ExternalLink";
-import { fieldBox, fieldGridItem, fieldLabel, fieldLabelDataTrackerLink, fieldLabelTextSpanNoBorder } from "src/styles/reusableStyles";
+import {
+  fieldBox,
+  fieldGridItem,
+  fieldLabel,
+  fieldLabelDataTrackerLink,
+  fieldLabelTextSpanNoBorder,
+} from "src/styles/reusableStyles";
 
 /**
  * ProjectSummaryWorkOrders Component
@@ -21,10 +27,14 @@ const ProjectSummaryWorkOrders = ({ project }) => {
     <Grid2 size={{ xs: 12 }} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>Work orders</Typography>
       <Box
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         <ProjectSummaryLabel
           sxProp={fieldLabelDataTrackerLink}
           spanSxProp={fieldLabelTextSpanNoBorder}
@@ -36,7 +46,7 @@ const ProjectSummaryWorkOrders = ({ project }) => {
     </Grid2>
   ) : (
     // If there is no knack project url, render an empty grid space
-    (<Grid2 size={{ xs: 12 }} sx={fieldGridItem} />)
+    <Grid2 size={{ xs: 12 }} sx={fieldGridItem} />
   );
 };
 export default ProjectSummaryWorkOrders;

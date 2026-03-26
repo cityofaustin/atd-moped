@@ -319,17 +319,17 @@ const ProjectView = () => {
           <Container maxWidth="xl">
             <ErrorBoundary FallbackComponent={FallbackComponent}>
               <Card
-                sx={theme => ({
-                  marginTop: theme.spacing(3)
+                sx={(theme) => ({
+                  marginTop: theme.spacing(3),
                 })}
               >
                 {loading ? (
                   <CircularProgress />
                 ) : (
                   <Box
-                    sx={theme => ({
+                    sx={(theme) => ({
                       flexGrow: 1,
-                      backgroundColor: theme.palette.background.paper
+                      backgroundColor: theme.palette.background.paper,
                     })}
                   >
                     <Box
@@ -358,8 +358,9 @@ const ProjectView = () => {
                     <Box
                       sx={{
                         px: 3,
-                        pb: 1
-                      }}>
+                        pb: 1,
+                      }}
+                    >
                       <Grid2 container>
                         <Grid2
                           sx={(theme) => ({
@@ -371,7 +372,8 @@ const ProjectView = () => {
                               my: 1, // Add margin when on small screen and stacked vertically
                             },
                           })}
-                          size="grow">
+                          size="grow"
+                        >
                           <Box sx={{ minWidth: 0, width: "100%" }}>
                             <ProjectNameEditable
                               projectData={data.moped_project[0]}
@@ -391,7 +393,8 @@ const ProjectView = () => {
                             gap: 2,
                             flexShrink: 0,
                             marginLeft: 2,
-                          }}>
+                          }}
+                        >
                           <Box>
                             <ProjectStatusBadge
                               phaseKey={currentPhase?.phase_key}
@@ -435,14 +438,14 @@ const ProjectView = () => {
                             >
                               <MenuItem
                                 onClick={handleRenameClick}
-                                sx={theme => ({
-                                  minWidth: theme.spacing(14)
+                                sx={(theme) => ({
+                                  minWidth: theme.spacing(14),
                                 })}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  sx={theme => ({
-                                    minWidth: theme.spacing(2)
+                                  sx={(theme) => ({
+                                    minWidth: theme.spacing(2),
                                   })}
                                 >
                                   <CreateOutlinedIcon />
@@ -451,14 +454,14 @@ const ProjectView = () => {
                               </MenuItem>
                               <MenuItem
                                 onClick={handleDeleteClick}
-                                sx={theme => ({
-                                  minWidth: theme.spacing(14)
+                                sx={(theme) => ({
+                                  minWidth: theme.spacing(14),
                                 })}
                                 selected={false}
                               >
                                 <ListItemIcon
-                                  sx={theme => ({
-                                    minWidth: theme.spacing(2)
+                                  sx={(theme) => ({
+                                    minWidth: theme.spacing(2),
                                   })}
                                 >
                                   <DeleteOutlinedIcon />
@@ -472,17 +475,17 @@ const ProjectView = () => {
                     </Box>
                     <Divider />
                     <AppBar
-                      sx={theme => ({
+                      sx={(theme) => ({
                         backgroundColor: theme.palette.background.paper,
-                        color: theme.palette.text.secondary
+                        color: theme.palette.text.secondary,
                       })}
                       position="static"
                     >
                       <Tabs
-                        sx={theme => ({
+                        sx={(theme) => ({
                           "& .MuiTabs-indicator": {
                             backgroundColor: theme.palette.primary.light,
-                          }
+                          },
                         })}
                         value={activeTab}
                         onChange={handleChange}
@@ -492,11 +495,11 @@ const ProjectView = () => {
                         {TABS.map((tab, i) => {
                           return (
                             <Tab
-                              sx={theme => ({
+                              sx={(theme) => ({
                                 minWidth: "160px",
                                 "&.Mui-selected": {
                                   color: theme.palette.text.primary,
-                                }
+                                },
                               })}
                               key={tab.label}
                               label={tab.label}
@@ -595,8 +598,8 @@ const ProjectView = () => {
                   <Link
                     component={RouterLink}
                     to={allProjectsLink}
-                    sx={theme => ({
-                      color: theme.palette.primary.main
+                    sx={(theme) => ({
+                      color: theme.palette.primary.main,
                     })}
                   >
                     Back to all projects

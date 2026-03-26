@@ -9,7 +9,7 @@ const ProjectWorkActivitiesDialog = ({
   onClose,
   activity,
   onSubmitCallback,
-  handleSnackbar
+  handleSnackbar,
 }) => {
   const titleText = activity.id ? "Edit work activity" : "Add work activity";
   return (

@@ -72,8 +72,9 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
             <Grid2
               size={{
                 sm: 6,
-                xs: 12
-              }}>
+                xs: 12,
+              }}
+            >
               {!isSignalProject && (
                 <ControlledTextInput
                   autoFocus
@@ -117,12 +118,13 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
             </Grid2>
             <Grid2
               sx={{
-                alignContent: "flex-end"
+                alignContent: "flex-end",
               }}
               size={{
                 sm: 6,
-                xs: 12
-              }}>
+                xs: 12,
+              }}
+            >
               <Controller
                 name="isSignalProject"
                 control={control}
@@ -150,8 +152,9 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
             <Grid2
               size={{
                 sm: 6,
-                xs: 12
-              }}>
+                xs: 12,
+              }}
+            >
               <ControlledTextInput
                 variant="standard"
                 fullWidth
@@ -173,8 +176,9 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
             <Grid2
               size={{
                 sm: 6,
-                xs: 12
-              }}>
+                xs: 12,
+              }}
+            >
               <ControlledTextInput
                 variant="standard"
                 fullWidth

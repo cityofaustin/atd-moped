@@ -389,9 +389,10 @@ const ProjectNotes = ({
           container
           sx={{
             justifyContent: "space-between",
-            alignItems: "center"
+            alignItems: "center",
           }}
-          size={12}>
+          size={12}
+        >
           <Grid2>
             <FormControlLabel
               sx={{ margin: 2 }}

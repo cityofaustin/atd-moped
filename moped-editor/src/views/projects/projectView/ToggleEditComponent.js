@@ -30,9 +30,14 @@ const ToggleEditComponent = ({ id, value, field, hasFocus }) => {
   };
 
   return (
-    <Grid2 component="label" container spacing={1} sx={{
-      alignItems: "center"
-    }}>
+    <Grid2
+      component="label"
+      container
+      spacing={1}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <Grid2>
         <Switch
           checked={value ?? false}

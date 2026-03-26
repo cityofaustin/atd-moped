@@ -74,8 +74,9 @@ const MoveComponentForm = ({ onSave, component }) => {
         spacing={4}
         sx={{
           display: "flex",
-          justifyContent: "flex-end"
-        }}>
+          justifyContent: "flex-end",
+        }}
+      >
         <Grid2 style={{ margin: 5 }}>
           <Button
             variant="contained"

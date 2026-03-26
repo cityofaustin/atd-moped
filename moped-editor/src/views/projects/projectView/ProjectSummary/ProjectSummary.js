@@ -64,8 +64,9 @@ const ProjectSummary = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <Card sx={{ height: "fit-content" }}>
             <CardContent>
               <Typography variant="h2" color="primary" sx={{ mb: 3 }}>
@@ -192,8 +193,9 @@ const ProjectSummary = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <Grid2 container spacing={2}>
             <Grid2 size={12}>
               <Card sx={{ height: "fit-content" }}>

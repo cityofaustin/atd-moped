@@ -37,12 +37,16 @@ const ProjectSummaryStatusUpdate = ({
     <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Status update</Typography>
       <Box
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start",
-          flexWrap: "nowrap",
-          alignItems: "center"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+            flexWrap: "nowrap",
+            alignItems: "center",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         <DashboardStatusModal
           projectId={projectId}
           eCaprisSubprojectId={eCaprisSubprojectId}

@@ -74,9 +74,12 @@ const DashboardTimelineModal = ({
           <CardContent>
             <Grid2 container spacing={2}>
               <Grid2 size={12}>
-                <Box style={{ maxWidth: "100%" }} sx={{
-                  mb: 2
-                }}>
+                <Box
+                  style={{ maxWidth: "100%" }}
+                  sx={{
+                    mb: 2,
+                  }}
+                >
                   {table === "phases" && (
                     <ProjectPhases
                       projectId={projectId}

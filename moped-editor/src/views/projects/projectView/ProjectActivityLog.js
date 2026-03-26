@@ -252,11 +252,14 @@ const ProjectActivityLog = () => {
                       <Box
                         sx={{
                           p: 0,
-                          display: "flex"
-                        }}>
-                        <Box sx={{
-                          p: 0
-                        }}>
+                          display: "flex",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            p: 0,
+                          }}
+                        >
                           <CDNAvatar
                             size="small"
                             src={change?.updated_by_user?.picture}
@@ -269,8 +272,9 @@ const ProjectActivityLog = () => {
                           sx={{
                             p: 0,
                             flexGrow: 1,
-                            margin: "0.3rem 0 0 .5rem"
-                          }}>
+                            margin: "0.3rem 0 0 .5rem",
+                          }}
+                        >
                           {getUserFullName(change?.updated_by_user)}
                         </Box>
                       </Box>

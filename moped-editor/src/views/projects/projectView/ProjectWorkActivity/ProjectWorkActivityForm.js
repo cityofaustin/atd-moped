@@ -33,7 +33,11 @@ import {
   IMPLEMENTATION_WORKGROUP_OPTIONS,
 } from "./utils/form";
 
-const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar }) => {
+const ProjectWorkActivitiesForm = ({
+  activity,
+  onSubmitCallback,
+  handleSnackbar,
+}) => {
   /** Status lookup values */
   const {
     loading: loadingStatuses,
@@ -110,7 +114,13 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        onSubmitActivity({ data, mutate, onSubmitCallback, handleSnackbar, isNewActivity })
+        onSubmitActivity({
+          data,
+          mutate,
+          onSubmitCallback,
+          handleSnackbar,
+          isNewActivity,
+        })
       )}
       autoComplete="off"
     >
@@ -162,7 +172,9 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
               valueHandler={(value) => value || null}
             />
             {formErrors?.workgroup_contractor && (
-              <FormHelperText>{formErrors.workgroup_contractor.message}</FormHelperText>
+              <FormHelperText>
+                {formErrors.workgroup_contractor.message}
+              </FormHelperText>
             )}
           </FormControl>
         </Grid2>
@@ -282,8 +294,9 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar 
         container
         sx={{
           display: "flex",
-          justifyContent: "flex-end"
-        }}>
+          justifyContent: "flex-end",
+        }}
+      >
         <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"

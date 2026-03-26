@@ -128,10 +128,14 @@ const ProjectSummaryProjectECapris = ({
   return (
     <WrapperComponent noWrapper={noWrapper}>
       <Box
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         {editMode && (
           <>
             <TextField

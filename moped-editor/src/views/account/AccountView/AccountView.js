@@ -18,8 +18,9 @@ const Account = () => {
             size={{
               lg: 4,
               md: 6,
-              xs: 12
-            }}>
+              xs: 12,
+            }}
+          >
             <Profile />
           </Grid2>
         </Grid2>

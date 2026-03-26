@@ -205,8 +205,9 @@ const SubprojectFundingModal = ({
           sx={{
             my: 3,
             display: "flex",
-            flexDirection: "row-reverse"
-          }}>
+            flexDirection: "row-reverse",
+          }}
+        >
           <Button
             variant="contained"
             color="primary"

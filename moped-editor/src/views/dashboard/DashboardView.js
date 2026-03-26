@@ -285,15 +285,17 @@ const DashboardView = () => {
               <Box
                 sx={{
                   pl: 3,
-                  pt: 3
-                }}>
+                  pt: 3,
+                }}
+              >
                 <UserGreeting userName={userName} />
               </Box>
               <Box
                 sx={{
                   px: 3,
-                  py: 3
-                }}>
+                  py: 3,
+                }}
+              >
                 <Grid2>
                   <AppBar
                     sx={{
@@ -330,7 +332,13 @@ const DashboardView = () => {
                   {TABS[activeTab].label === "Saved views" ? (
                     <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
-                    <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                      }}
+                    >
                       <DataGridPro
                         sx={dataGridProStyleOverrides}
                         columns={dataGridColumns}

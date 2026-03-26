@@ -19,21 +19,24 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        justifyContent: "center"
-      }}>
+        justifyContent: "center",
+      }}
+    >
       <Container
         // Disable container's responsive maxWidth to override maxWidth in sx
         maxWidth={false}
-        sx={theme => ({
+        sx={(theme) => ({
           paddingY: 3,
           backgroundColor: theme.palette.background.paper,
           maxWidth: "525px",
-          marginTop: 2
+          marginTop: 2,
         })}
       >
-        <Box sx={{
-          textAlign: "center"
-        }}>
+        <Box
+          sx={{
+            textAlign: "center",
+          }}
+        >
           <Box
             component="img"
             alt="the moped logo with a flat rear tire"
@@ -72,11 +75,11 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
         <Box>
           <Typography variant="overline">error</Typography>
           <Typography
-            sx={theme => ({
+            sx={(theme) => ({
               backgroundColor: theme.palette.background.summaryHover,
               fontSize: ".75rem",
               padding: 1,
-              fontFamily: "monospace"
+              fontFamily: "monospace",
             })}
           >
             {error.message}

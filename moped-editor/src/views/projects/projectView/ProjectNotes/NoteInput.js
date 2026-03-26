@@ -188,15 +188,17 @@ const NoteInput = ({
         <Grid2
           size={{
             xs: 12,
-            sm: 12
-          }}>
+            sm: 12,
+          }}
+        >
           <LexicalComposer initialConfig={initialConfig}>
             <ToolbarPlugin noteAddSuccess={noteAddSuccess} />
             <Box
               sx={{
                 pt: 2,
-                position: "relative"
-              }}>
+                position: "relative",
+              }}
+            >
               <RichTextPlugin
                 contentEditable={
                   <Paper elevation={2}>
@@ -234,9 +236,10 @@ const NoteInput = ({
             <Grid2
               style={{ justifyContent: "flex-end" }}
               sx={{
-                display: "flex"
+                display: "flex",
               }}
-              size={12}>
+              size={12}
+            >
               <FormControl>
                 {!isEditingNote ? (
                   <NoteTypeRadioButtons
@@ -260,8 +263,9 @@ const NoteInput = ({
             style={{ justifyContent: "flex-end" }}
             sx={{
               pb: 2,
-              display: "flex"
-            }}>
+              display: "flex",
+            }}
+          >
             {isEditingNote && (
               <Box
                 sx={{

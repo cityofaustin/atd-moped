@@ -101,8 +101,9 @@ const NonLoginUserActivationButtons = ({
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-start"
-            }}>
+              justifyContent: "flex-start",
+            }}
+          >
             <Typography>Please Wait...</Typography>
           </Box>
         ),

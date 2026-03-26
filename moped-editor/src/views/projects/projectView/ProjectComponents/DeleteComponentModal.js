@@ -46,8 +46,9 @@ const DeleteComponentModal = ({
             <Box
               sx={{
                 borderLeft: 7,
-                borderColor: "secondary.main"
-              }}>
+                borderColor: "secondary.main",
+              }}
+            >
               <ListItem>
                 <ListItemText
                   primary={clickedComponent.moped_components?.component_name}
@@ -64,8 +65,9 @@ const DeleteComponentModal = ({
           spacing={2}
           sx={{
             display: "flex",
-            justifyContent: "flex-end"
-          }}>
+            justifyContent: "flex-end",
+          }}
+        >
           <Grid2>
             <Button
               size="small"

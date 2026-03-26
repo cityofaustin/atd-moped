@@ -140,8 +140,9 @@ const Profile = ({ ...rest }) => {
               sx={{
                 alignItems: "center",
                 display: "flex",
-                flexDirection: "column"
-              }}>
+                flexDirection: "column",
+              }}
+            >
               <Box>
                 <Avatar
                   sx={{ height: 100, width: 100, marginBottom: 8 }}
@@ -154,8 +155,8 @@ const Profile = ({ ...rest }) => {
                 </Avatar>
               </Box>
               <Typography
-                sx={theme => ({
-                  color: theme.palette.text.primary
+                sx={(theme) => ({
+                  color: theme.palette.text.primary,
                 })}
                 gutterBottom
                 variant="h3"
@@ -165,16 +166,16 @@ const Profile = ({ ...rest }) => {
                 ).toLowerCase()}
               </Typography>
               <Typography
-                sx={theme => ({
-                  color: theme.palette.text.secondary
+                sx={(theme) => ({
+                  color: theme.palette.text.secondary,
                 })}
                 variant="body1"
               >
                 {user?.userJobTitle ?? "Austin Transportation"}
               </Typography>
               <Typography
-                sx={theme => ({
-                  color: theme.palette.text.secondary
+                sx={(theme) => ({
+                  color: theme.palette.text.secondary,
                 })}
                 variant="body1"
               >
@@ -210,8 +211,9 @@ const Profile = ({ ...rest }) => {
               sx={{
                 alignItems: "center",
                 display: "flex",
-                flexDirection: "column"
-              }}>
+                flexDirection: "column",
+              }}
+            >
               <Box>
                 <CDNAvatar
                   src={userProfile?.picture ?? null}

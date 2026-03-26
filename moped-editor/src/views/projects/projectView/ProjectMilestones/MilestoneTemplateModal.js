@@ -160,8 +160,9 @@ const MilestoneTemplateModal = ({
           sx={{
             my: 3,
             display: "flex",
-            justifyContent: "space-between"
-          }}>
+            justifyContent: "space-between",
+          }}
+        >
           <Autocomplete
             style={{ width: "250px" }}
             defaultValue={null}
@@ -195,7 +196,8 @@ const MilestoneTemplateModal = ({
               <ListItemButton
                 key={milestone.milestone_id}
                 dense
-                onClick={() => handleToggle(milestone)}>
+                onClick={() => handleToggle(milestone)}
+              >
                 <ListItemIcon>
                   <Checkbox
                     edge="start"

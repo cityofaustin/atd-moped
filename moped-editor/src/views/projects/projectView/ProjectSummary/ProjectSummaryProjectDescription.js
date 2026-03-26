@@ -101,12 +101,16 @@ const ProjectSummaryProjectDescription = ({
       <Box
         component="form"
         onSubmit={handleSubmit(handleProjectDescriptionSave)}
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start",
-          flexWrap: "nowrap",
-          alignItems: "center"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+            flexWrap: "nowrap",
+            alignItems: "center",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         {editMode ? (
           <>
             <ControlledTextInput

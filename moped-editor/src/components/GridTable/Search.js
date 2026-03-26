@@ -194,17 +194,20 @@ const Search = ({
         as discussed in this thread https://github.com/mui/material-ui/issues/25578 
         so we have opted to use Autocompletes instead*/}
       <div>
-        <Box sx={{
-          mt: 3
-        }}>
+        <Box
+          sx={{
+            mt: 3,
+          }}
+        >
           <Paper ref={divRef}>
             <Grid2 container sx={searchBarContainerStyle}>
               <Grid2
                 sx={gridSearchPaddingStyle}
                 size={{
                   xs: 12,
-                  md: "grow"
-                }}>
+                  md: "grow",
+                }}
+              >
                 <SearchBar
                   searchFieldValue={searchFieldValue}
                   setSearchFieldValue={setSearchFieldValue}
@@ -228,8 +231,9 @@ const Search = ({
                 sx={downloadButtonGridStyle}
                 size={{
                   xs: 12,
-                  md: "auto"
-                }}>
+                  md: "auto",
+                }}
+              >
                 <div>
                   {queryConfig.showExport && (
                     <>

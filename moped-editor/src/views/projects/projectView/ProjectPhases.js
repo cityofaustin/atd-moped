@@ -110,9 +110,11 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
         minWidth: 50,
         renderCell: ({ row }) =>
           row.is_current_phase ? (
-            <Box sx={{
-              display: "flex"
-            }}>
+            <Box
+              sx={{
+                display: "flex",
+              }}
+            >
               <CheckCircleOutline style={{ color: green[500] }} />
             </Box>
           ) : (

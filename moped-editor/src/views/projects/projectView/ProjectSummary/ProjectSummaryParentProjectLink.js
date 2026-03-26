@@ -16,7 +16,8 @@ import {
  */
 const ProjectSummaryParentProjectLink = ({ data }) => {
   const parentProjectId = data?.moped_project?.[0]?.parent_project_id;
-  const parentProjectName = data?.moped_project[0].moped_project.project_name_full;
+  const parentProjectName =
+    data?.moped_project[0].moped_project.project_name_full;
 
   return (
     <Grid2 sx={fieldGridItem} size={12}>
@@ -26,11 +27,7 @@ const ProjectSummaryParentProjectLink = ({ data }) => {
           id="projectKnackSyncLink"
           to={`/moped/projects/${parentProjectId}`}
         >
-          <Typography
-            sx={fieldLabelText}
-            variant={"body1"}
-            color={"primary"}
-          >
+          <Typography sx={fieldLabelText} variant={"body1"} color={"primary"}>
             {parentProjectName}
           </Typography>
         </RouterLink>

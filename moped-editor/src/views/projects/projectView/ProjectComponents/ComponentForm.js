@@ -487,8 +487,9 @@ const ComponentForm = ({
         container
         sx={{
           display: "flex",
-          justifyContent: "flex-end"
-        }}>
+          justifyContent: "flex-end",
+        }}
+      >
         <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"

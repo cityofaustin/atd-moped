@@ -107,8 +107,9 @@ const useColumns = ({
                 variant="body2"
                 sx={{
                   color: "primary.main",
-                  fontWeight: 500
-                }}>
+                  fontWeight: 500,
+                }}
+              >
                 SYNCED FROM ECAPRIS
               </Typography>
             </>
@@ -708,8 +709,9 @@ const ProjectFundingTable = ({
                 <Grid2
                   size={{
                     xs: 6,
-                    md: 4
-                  }}>
+                    md: 4,
+                  }}
+                >
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}
@@ -721,9 +723,10 @@ const ProjectFundingTable = ({
                 <Grid2
                   container
                   sx={{
-                    justifyContent: "flex-end"
+                    justifyContent: "flex-end",
                   }}
-                  size={2}>
+                  size={2}
+                >
                   <Tooltip
                     placement="bottom"
                     title={

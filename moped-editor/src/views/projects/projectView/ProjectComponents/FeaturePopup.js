@@ -57,7 +57,8 @@ export default function FeaturePopup({
                     setClickedComponent(component);
                     onClose();
                   }}
-                  disableGutters>
+                  disableGutters
+                >
                   <ListItemIcon style={{ minWidth: 0, paddingRight: "1rem" }}>
                     <ChevronRightIcon />
                   </ListItemIcon>

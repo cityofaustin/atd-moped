@@ -25,15 +25,17 @@ export const CsvDownloadingDialog = ({ downloadingDialogOpen }) => (
         <Grid2
           size={{
             xs: 2,
-            lg: 2
-          }}>
+            lg: 2,
+          }}
+        >
           <CircularProgress />
         </Grid2>
         <Grid2
           size={{
             xs: 10,
-            lg: 10
-          }}>
+            lg: 10,
+          }}
+        >
           <DialogContentText>
             Preparing download, please wait.
           </DialogContentText>

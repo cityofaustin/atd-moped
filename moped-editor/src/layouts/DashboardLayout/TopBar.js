@@ -82,8 +82,8 @@ const TopBar = ({ className, ...rest }) => {
         <Box sx={{ display: { xs: "none", md: "contents" } }}>
           <Box>
             <Tabs
-              sx={theme => ({
-                marginLeft: theme.spacing(1.5)
+              sx={(theme) => ({
+                marginLeft: theme.spacing(1.5),
               })}
               value={false}
             >
@@ -119,13 +119,17 @@ const TopBar = ({ className, ...rest }) => {
               ))}
             </Tabs>
           </Box>
-          <Box sx={{
-            flexGrow: 1
-          }} />
+          <Box
+            sx={{
+              flexGrow: 1,
+            }}
+          />
           <NavigationSearchInput />
-          <Box sx={theme => ({
-            marginRight: theme.spacing(1)
-          })}>
+          <Box
+            sx={(theme) => ({
+              marginRight: theme.spacing(1),
+            })}
+          >
             <CanAddProjectButton />
           </Box>
         </Box>

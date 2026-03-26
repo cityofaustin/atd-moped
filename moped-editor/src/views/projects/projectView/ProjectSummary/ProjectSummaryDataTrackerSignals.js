@@ -32,8 +32,9 @@ const ProjectSummaryDataTrackerSignals = ({ project }) => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-start"
-        }}>
+          justifyContent: "flex-start",
+        }}
+      >
         <ProjectSummaryLabel
           sxProp={fieldLabelDataTrackerLink}
           spanSxProp={fieldLabelTextSpanNoBorder}

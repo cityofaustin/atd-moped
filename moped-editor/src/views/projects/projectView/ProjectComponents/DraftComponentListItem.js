@@ -23,7 +23,7 @@ const DraftComponentListItem = ({
         borderColor: COLORS.orange,
       }}
       sx={{
-        borderLeft: 7
+        borderLeft: 7,
       }}
     >
       <ListItem dense>

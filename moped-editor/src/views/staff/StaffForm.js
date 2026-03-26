@@ -124,8 +124,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             autoFocus
@@ -147,8 +148,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             id="last-name"
@@ -169,8 +171,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             id="title"
@@ -190,8 +193,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             id="email"
@@ -212,8 +216,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           {isPasswordFieldDisabled === false ||
           currentSelectedRole !== nonLoginUserRole ? (
             <TextField
@@ -252,8 +257,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           {workgroupLoading ? (
             <CircularProgress />
           ) : (
@@ -309,8 +315,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 3
-          }}>
+            md: 3,
+          }}
+        >
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
@@ -340,8 +347,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 3
-          }}>
+            md: 3,
+          }}
+        >
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">
               Moped User Group (MUG) Member
@@ -379,8 +387,9 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             multiline
@@ -397,15 +406,17 @@ const StaffForm = ({
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           &nbsp;
         </Grid2>
         <Grid2
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           {!userApiErrors && (isUserApiLoading || isSubmitting) ? (
             <CircularProgress />
           ) : (

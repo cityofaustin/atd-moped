@@ -17,15 +17,18 @@ const NotFoundView = () => {
           display: "flex",
           flexDirection: "column",
           height: "100%",
-          justifyContent: "center"
-        }}>
+          justifyContent: "center",
+        }}
+      >
         <Container maxWidth="md">
           <Typography align="center" color="textPrimary" variant="h2">
             404: The page you are looking for doesn't exist.
           </Typography>
-          <Box sx={{
-            textAlign: "center"
-          }}>
+          <Box
+            sx={{
+              textAlign: "center",
+            }}
+          >
             <Box
               component="img"
               alt="Under development"

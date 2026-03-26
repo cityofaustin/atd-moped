@@ -107,9 +107,11 @@ const NewStaffView = () => {
   return (
     <Page title="Staff">
       <Container maxWidth={false}>
-        <Box sx={{
-          mt: 3
-        }}>
+        <Box
+          sx={{
+            mt: 3,
+          }}
+        >
           <Card>
             <CardHeader title="Add User" />
             <Divider />

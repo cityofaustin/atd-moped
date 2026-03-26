@@ -246,9 +246,12 @@ const FileUpload = (props) => {
       {errors.length > 0 &&
         errors.map((err) => {
           return (
-            <Alert sx={theme => ({
-              margin: `${theme.spacing(2)} 0`
-            })} severity="error">
+            <Alert
+              sx={(theme) => ({
+                margin: `${theme.spacing(2)} 0`,
+              })}
+              severity="error"
+            >
               <b>Error:</b> {err}
             </Alert>
           );

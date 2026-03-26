@@ -18,8 +18,9 @@ const DeviasStyleView = () => {
         <Grid2 container spacing={3}>
           <Grid2
             size={{
-              lg: 12
-            }}>
+              lg: 12,
+            }}
+          >
             <Typography variant="h1" component="h2">
               Styles
             </Typography>
@@ -29,8 +30,9 @@ const DeviasStyleView = () => {
               lg: 8,
               md: 12,
               xl: 9,
-              xs: 12
-            }}>
+              xs: 12,
+            }}
+          >
             <TypographyView />
           </Grid2>
           <Grid2
@@ -38,8 +40,9 @@ const DeviasStyleView = () => {
               lg: 4,
               md: 6,
               xl: 3,
-              xs: 12
-            }}>
+              xs: 12,
+            }}
+          >
             <ColorsView />
           </Grid2>
         </Grid2>

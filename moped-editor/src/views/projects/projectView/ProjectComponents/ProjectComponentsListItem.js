@@ -103,8 +103,9 @@ const ProjectComponentsListItem = ({
           sx={{
             justifyContent: "flex-end",
             my: 1,
-            mr: 2.5
-          }}>
+            mr: 2.5,
+          }}
+        >
           <Tooltip title="Details">
             <IconButton
               color="primary"

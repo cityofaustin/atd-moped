@@ -8,7 +8,6 @@ const formButtonSx = (theme) => ({
   color: "white",
 });
 
-
 export const StaffFormSaveButton = ({ disabled }) => {
   return (
     <Button
@@ -25,7 +24,12 @@ export const StaffFormSaveButton = ({ disabled }) => {
 
 export const StaffFormResetButton = ({ onClick }) => {
   return (
-    <Button sx={formButtonSx} color="secondary" variant="contained" onClick={onClick}>
+    <Button
+      sx={formButtonSx}
+      color="secondary"
+      variant="contained"
+      onClick={onClick}
+    >
       Reset
     </Button>
   );

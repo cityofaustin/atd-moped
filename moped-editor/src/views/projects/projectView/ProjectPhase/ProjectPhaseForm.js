@@ -324,8 +324,9 @@ const ProjectPhaseForm = ({
         container
         sx={{
           display: "flex",
-          justifyContent: "flex-end"
-        }}>
+          justifyContent: "flex-end",
+        }}
+      >
         <Grid2 sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
           <Tooltip title="Mark this phase as the current phase of the project">
             <span>
