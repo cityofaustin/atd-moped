@@ -8,14 +8,12 @@ import {
   Typography,
   ListItemIcon,
 } from "@mui/material";
+import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import CDNAvatar from "../../../components/CDN/Avatar";
-import { useSessionDatabaseData, useUser } from "src/auth/user";
-import { getInitials } from "src/utils/userNames";
-import emailToInitials from "src/utils/emailToInitials";
+import UserInfo from "src/views/account/UserInfo";
 import { helpItems, analysisItems } from "./menuConfig";
 
 /**
@@ -30,13 +28,6 @@ const DropdownMenu = ({
   dropdownAnchorEl,
 }) => {
   const navigate = useNavigate();
-
-  const { user } = useUser();
-
-  const userDbData = useSessionDatabaseData();
-  const userInitials = userDbData
-    ? getInitials(userDbData)
-    : emailToInitials(userDbData?.email);
 
   return (
     <>
@@ -59,22 +50,9 @@ const DropdownMenu = ({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem
-          onClick={() => {
-            handleDropdownClose();
-            navigate("/moped/account");
-          }}
-        >
-          <ListItemIcon>
-            <CDNAvatar
-              size="small"
-              src={userDbData?.picture}
-              initials={userInitials}
-              userColor={user?.userColor}
-            />
-          </ListItemIcon>
-          Account
-        </MenuItem>
+        <Box sx={{ paddingX: 2, paddingY: 1 }}>
+          <UserInfo />
+        </Box>
         <Divider sx={{ marginY: 1 }} />
         {analysisItems.map((item) => (
           <Link

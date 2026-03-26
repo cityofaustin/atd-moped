@@ -37,7 +37,7 @@ const NewComponentToolbar = ({
           >
             New Component
           </Button>
-          <Box>
+          <Box sx={{ display: "flex" }}>
             <IconButton
               onClick={() => setAreSettingsOpen(!areSettingsOpen)}
               aria-label="settings"
