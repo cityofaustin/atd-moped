@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CircularProgress, Box, IconButton, Button } from "@mui/material";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { green } from "@mui/material/colors";
 import {
   EditOutlined as EditOutlinedIcon,
@@ -21,7 +21,6 @@ import {
   usePhaseNameLookup,
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import CurrentPhaseDeleteModal from "src/views/projects/projectView/ProjectPhase/CurrentPhaseDeleteModal";
 
@@ -243,16 +242,11 @@ const ProjectPhases = ({
 
   return (
     <>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         autoHeight
         columns={columns}
-        density="comfortable"
         getRowId={(row) => row.project_phase_id}
-        disableRowSelectionOnClick
         disableColumnMenu
-        getRowHeight={() => "auto"}
-        hideFooter
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
         rows={data?.moped_proj_phases || []}

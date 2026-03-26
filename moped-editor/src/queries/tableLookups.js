@@ -1,5 +1,91 @@
 import { gql } from "@apollo/client";
 
+export const COMPONENT_TAGS_QUERY = gql`
+  query ComponentTagsForDataDictionary(
+    $where: moped_component_tags_bool_exp
+  ) {
+    moped_component_tags(
+      where: $where
+      order_by: [{ type: asc }, { name: asc }]
+    ) {
+      id
+      name
+      type
+      slug
+      full_name
+      is_deleted
+    }
+  }
+`;
+
+export const ADD_COMPONENT_TAG = gql`
+  mutation AddComponentTag($object: moped_component_tags_insert_input!) {
+    insert_moped_component_tags_one(object: $object) {
+      id
+      name
+      type
+      slug
+      full_name
+      is_deleted
+    }
+  }
+`;
+
+export const UPDATE_COMPONENT_TAG = gql`
+  mutation UpdateComponentTag(
+    $id: Int!
+    $set: moped_component_tags_set_input!
+  ) {
+    update_moped_component_tags_by_pk(pk_columns: { id: $id }, _set: $set) {
+      id
+      name
+      type
+      slug
+      full_name
+      is_deleted
+    }
+  }
+`;
+
+export const PROJECT_TAGS_QUERY = gql`
+  query ProjectTagsForDataDictionary($where: moped_tags_bool_exp) {
+    moped_tags(where: $where, order_by: { name: asc }) {
+      id
+      name
+      type
+      slug
+      full_name
+      is_deleted
+    }
+  }
+`;
+
+export const ADD_PROJECT_TAG_LOOKUP = gql`
+  mutation AddProjectTagLookup($object: moped_tags_insert_input!) {
+    insert_moped_tags_one(object: $object) {
+      id
+      name
+      type
+      slug
+      full_name
+      is_deleted
+    }
+  }
+`;
+
+export const UPDATE_PROJECT_TAG_LOOKUP = gql`
+  mutation UpdateProjectTagLookup($id: Int!, $set: moped_tags_set_input!) {
+    update_moped_tags_by_pk(pk_columns: { id: $id }, _set: $set) {
+      id
+      name
+      type
+      slug
+      full_name
+      is_deleted
+    }
+  }
+`;
+
 export const TABLE_LOOKUPS_QUERY = gql`
   query TableLookupQuery {
     moped_phases(order_by: { phase_order: asc }) {

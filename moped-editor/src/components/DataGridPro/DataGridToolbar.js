@@ -9,7 +9,7 @@ import DocumentationIconLink from "src/components/DocumentationIconLink";
 /**
  * Custom toolbar for MUI DataGridPro for consistent titles, spacing, and layout
  *
- * @param {string} title - Main title displayed on the top left
+ * @param {React.ReactNode} title - Main title displayed on the top left (string or JSX)
  * @param {React.ReactNode} primaryActionButton - Primary action button on top right
  * @param {React.ReactNode} secondaryActionButton - Optional secondary action button on top right
  * @param {boolean} showColumnsButton - Whether to show the DataGridPro columns settings button
@@ -37,13 +37,13 @@ const DataGridToolbar = ({
           alignItems="flex-start"
           sx={{ pb: hasSecondRow ? 1 : 0 }}
         >
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="h2" color="primary">
               {title}
             </Typography>
             {documentationLink ? (
               <DocumentationIconLink
-                iconButtonSx={{ ml: 1, minWidth: 3 }}
+                iconButtonSx={{ minWidth: 3 }}
                 documentationLink={documentationLink}
               />
             ) : null}

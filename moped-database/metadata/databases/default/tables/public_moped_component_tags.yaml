@@ -9,6 +9,23 @@ array_relationships:
         table:
           name: moped_proj_component_tags
           schema: public
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+        - name
+        - type
+        - slug
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - name
+        - type
+        - slug
+        - is_deleted
+      filter: {}
 select_permissions:
   - role: moped-admin
     permission:

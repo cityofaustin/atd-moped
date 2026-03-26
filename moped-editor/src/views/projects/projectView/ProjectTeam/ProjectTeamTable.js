@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Box, Button, Icon, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { useQuery, useMutation } from "@apollo/client";
 
 import {
@@ -14,7 +15,6 @@ import {
   INSERT_PROJECT_PERSONNEL,
   DELETE_PROJECT_PERSONNEL,
 } from "src/queries/project";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -558,8 +558,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   return (
     <>
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
+      <MopedDataGrid
         apiRef={apiRef}
         ref={apiRef}
         autoHeight
@@ -576,11 +575,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         }}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
-        disableRowSelectionOnClick
         toolbar
-        density="comfortable"
-        getRowHeight={() => "auto"}
-        hideFooter
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
         initialState={{ pinnedColumns: { right: ["edit"] } }}
