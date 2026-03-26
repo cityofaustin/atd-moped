@@ -1,13 +1,7 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
-import ExternalLink from "src/components/ExternalLink";
+import ExternalLink, { createBugReportLink } from "src/components/ExternalLink";
 import { useUser } from "src/auth/user";
-
-// includes the error.message as the text in field 400 ("Describe the problem")
-// and the email of the user logged in in field 406
-const createBugReportLink = (error, userEmail) => {
-  return `https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%2C%22field_400%22%3A%22${error.message}%22%2C%22field_406%22%3A%22${userEmail}%22%7D`;
-};
 
 const FallbackComponent = ({ error, resetErrorBoundary }) => {
   const { user } = useUser();

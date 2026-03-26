@@ -163,10 +163,11 @@ const ProjectSummary = ({
                 <Grid item xs={12}>
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
-                    loading={loading}
                     eCaprisSubprojectId={
-                      data?.moped_project?.[0]?.ecapris_subproject_id
+                      data?.moped_project[0]?.ecapris_subproject_id
                     }
+                    loading={loading}
+                    options={data?.ecapris_subproject_funding ?? []}
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
                   />
