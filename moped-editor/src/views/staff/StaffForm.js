@@ -16,7 +16,7 @@ import {
   FormControlLabel,
   FormLabel,
   FormHelperText,
-  Grid,
+  Grid2,
   InputLabel,
   TextField,
   MenuItem,
@@ -120,8 +120,13 @@ const StaffForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+      <Grid2 container spacing={2}>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             autoFocus
@@ -139,8 +144,13 @@ const StaffForm = ({
               formatApiErrors(userApiErrors?.first_name)
             }
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             id="last-name"
@@ -157,8 +167,13 @@ const StaffForm = ({
               formatApiErrors(userApiErrors?.last_name)
             }
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             id="title"
@@ -174,8 +189,13 @@ const StaffForm = ({
               errors.title?.message || formatApiErrors(userApiErrors?.title)
             }
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             id="email"
@@ -191,9 +211,14 @@ const StaffForm = ({
               errors.email?.message || formatApiErrors(userApiErrors?.email)
             }
           />
-        </Grid>
+        </Grid2>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
-        <Grid item xs={12} md={6}>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           {isPasswordFieldDisabled === false ||
           currentSelectedRole !== nonLoginUserRole ? (
             <TextField
@@ -227,9 +252,14 @@ const StaffForm = ({
               helperText={"Password not required for non-login users"}
             />
           )}
-        </Grid>
+        </Grid2>
 
-        <Grid item xs={12} md={6}>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           {workgroupLoading ? (
             <CircularProgress />
           ) : (
@@ -280,9 +310,14 @@ const StaffForm = ({
               )}
             </FormControl>
           )}
-        </Grid>
+        </Grid2>
 
-        <Grid item xs={12} md={3}>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 3,
+          }}
+        >
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
@@ -308,8 +343,13 @@ const StaffForm = ({
               )}
             />
           </FormControl>
-        </Grid>
-        <Grid item xs={12} md={3}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 3,
+          }}
+        >
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">
               Moped User Group (MUG) Member
@@ -343,8 +383,13 @@ const StaffForm = ({
               )}
             />
           </FormControl>
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <TextField
             fullWidth
             multiline
@@ -357,11 +402,21 @@ const StaffForm = ({
             variant="outlined"
             {...register("note")}
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           &nbsp;
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           {!userApiErrors && (isUserApiLoading || isSubmitting) ? (
             <CircularProgress />
           ) : (
@@ -388,8 +443,8 @@ const StaffForm = ({
             isOpen={!!userApiErrors}
             onClose={clearApiErrors}
           />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </form>
   );
 };

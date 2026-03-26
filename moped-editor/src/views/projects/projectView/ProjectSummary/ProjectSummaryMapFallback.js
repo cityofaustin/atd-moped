@@ -27,20 +27,20 @@ const ProjectSummaryMapFallback = () => {
         }}
       />
       <Box
-        sx={{
-          color: (theme) => theme.palette.text.secondary,
+        sx={(theme) => ({
+          color: theme.palette.text.secondary,
           fontFamily: "Roboto",
           fontWeight: 500,
           fontSize: "18px",
-        }}
+        })}
       >
         Define and map the assets and features included in this project.
       </Box>
       <Link to="?tab=map">
         <Button
-          sx={{
-            margin: (theme) => theme.spacing(2),
-          }}
+          sx={(theme) => ({
+            margin: theme.spacing(2),
+          })}
           variant="contained"
           color="primary"
         >

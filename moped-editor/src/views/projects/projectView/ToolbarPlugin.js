@@ -207,7 +207,13 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
   }, [noteAddSuccess, onAction]);
 
   return (
-    <Box paddingTop="16px" display="flex" justifyContent="left">
+    <Box
+      sx={{
+        paddingTop: "16px",
+        display: "flex",
+        justifyContent: "left",
+      }}
+    >
       <ButtonGroup size="xs" variant="ghost">
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }, key) =>
           id === richTextAction.divider ? (
@@ -223,7 +229,6 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
                 // selectionMap[id] is true if the button is selected which
                 // applies conditional styling with this conditional object spread
                 ...(selectionMap[id] && {
-                  backgroundColor: theme.palette.primary.main,
                   "&:hover, &.Mui-focusVisible": {
                     backgroundColor: theme.palette.primary.main,
                   },

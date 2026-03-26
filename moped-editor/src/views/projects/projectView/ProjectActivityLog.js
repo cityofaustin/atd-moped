@@ -248,11 +248,19 @@ const ProjectActivityLog = () => {
                         verticalAlign: "top",
                       }}
                     >
-                      <Box p={0} display="flex">
+                      <Box
+                        p={0}
+                        sx={{
+                          p: 0,
+                          display: "flex",
+                        }}
+                      >
                         <Box
-                          p={0}
-                          flexGrow={1}
-                          sx={{ margin: "0.3rem 0 0 .5rem" }}
+                          sx={{
+                            p: 0,
+                            flexGrow: 1,
+                            margin: "0.3rem 0 0 .5rem",
+                          }}
                         >
                           {getUserFullName(change?.updated_by_user)}
                         </Box>

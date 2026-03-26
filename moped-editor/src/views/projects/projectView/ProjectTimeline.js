@@ -1,7 +1,7 @@
 import React from "react";
 
 // Material
-import { Grid } from "@mui/material";
+import { Grid2 } from "@mui/material";
 
 // Query
 import { TIMELINE_QUERY } from "src/queries/project";
@@ -37,8 +37,8 @@ const ProjectTimeline = ({ handleSnackbar }) => {
 
   return (
     <>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
+      <Grid2 container spacing={4}>
+        <Grid2 size={12}>
           <ProjectPhases
             projectId={projectId}
             loading={loading || !data}
@@ -46,8 +46,8 @@ const ProjectTimeline = ({ handleSnackbar }) => {
             refetch={refetch}
             handleSnackbar={handleSnackbar}
           />
-        </Grid>
-        <Grid item xs={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <ProjectMilestones
             projectId={projectId}
             loading={loading || !data}
@@ -55,8 +55,8 @@ const ProjectTimeline = ({ handleSnackbar }) => {
             refetch={refetch}
             handleSnackbar={handleSnackbar}
           />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </>
   );
 };

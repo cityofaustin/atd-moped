@@ -30,14 +30,42 @@ const DataGridToolbar = ({
 
   return (
     <>
-      <Box sx={{ p: 2, pb: hasSecondRow ? 1 : 2 }}>
+      <Box
+        sx={[
+          {
+            p: 2,
+          },
+          hasSecondRow
+            ? {
+                pb: 1,
+              }
+            : {
+                pb: 2,
+              },
+        ]}
+      >
         <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          sx={{ pb: hasSecondRow ? 1 : 0 }}
+          sx={[
+            {
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            },
+            hasSecondRow
+              ? {
+                  pb: 1,
+                }
+              : {
+                  pb: 0,
+                },
+          ]}
         >
-          <Box display="flex" alignItems="center" gap={1}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="h2" color="primary">
               {title}
             </Typography>
@@ -49,7 +77,13 @@ const DataGridToolbar = ({
             ) : null}
           </Box>
           {(primaryActionButton || secondaryActionButton) && (
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               {secondaryActionButton}
               {primaryActionButton}
             </Stack>
@@ -67,5 +101,4 @@ const DataGridToolbar = ({
     </>
   );
 };
-
 export default DataGridToolbar;

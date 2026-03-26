@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider, Typography, Box, Grid } from "@mui/material";
+import { Divider, Typography, Box, Grid2 } from "@mui/material";
 
 const dividerSx = {
   marginTop: 2,
@@ -22,27 +22,27 @@ const ComponentProperties = ({ component }) => {
   return (
     <>
       <Divider sx={dividerSx} />
-      <Grid item xs={12} sx={propertyItemSx}>
+      <Grid2 sx={propertyItemSx} size={12}>
         <Typography sx={propertyLabelSx}>Component ID</Typography>
         <Box>
           <Typography>{component.projectComponentId}</Typography>
         </Box>
-      </Grid>
-      <Grid item xs={12} sx={propertyItemSx}>
+      </Grid2>
+      <Grid2 sx={propertyItemSx} size={12}>
         <Typography sx={propertyLabelSx}>Council district(s)</Typography>
         <Box>
           <Typography>{component.councilDistrict}</Typography>
         </Box>
-      </Grid>
+      </Grid2>
       {component.componentLength > 0 && (
-        <Grid item xs={12} sx={propertyItemSx}>
+        <Grid2 sx={propertyItemSx} size={12}>
           <Typography sx={propertyLabelSx}>Length</Typography>
           <Box>
             <Typography>
               {component.componentLength.toLocaleString()}'
             </Typography>
           </Box>
-        </Grid>
+        </Grid2>
       )}
     </>
   );

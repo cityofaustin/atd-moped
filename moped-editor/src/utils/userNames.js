@@ -6,7 +6,7 @@ export const unknownUserNameValue = "Unknown User";
  * @param {object} moped_user - The user object from Hasura or Local Storage
  * @return {string}
  */
-export const getUserFullName = moped_user => {
+export const getUserFullName = (moped_user) => {
   const firstName = moped_user?.first_name ?? "";
   const lastName = moped_user?.last_name ?? "";
 
@@ -21,7 +21,7 @@ export const getUserFullName = moped_user => {
  * @param {object} moped_user - The user object from Hasura or Local Storage
  * @return {string}
  */
-export const getInitials = moped_user => {
+export const getInitials = (moped_user) => {
   const firstInitial = moped_user?.first_name?.[0];
   const lastInitial = moped_user?.last_name?.[0];
   const initials = `${firstInitial}${lastInitial}`;

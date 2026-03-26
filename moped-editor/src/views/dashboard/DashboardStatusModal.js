@@ -77,7 +77,9 @@ const DashboardStatusModal = ({
                 title="Create new status update"
               >
                 <ControlPointIcon
-                  sx={{ fontSize: (theme) => theme.spacing(2.5) }}
+                  sx={(theme) => ({
+                    fontSize: theme.spacing(2.5),
+                  })}
                 />
               </Tooltip>
             </Box>

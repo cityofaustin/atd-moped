@@ -10,7 +10,9 @@ const CreateComponentModal = ({
   onSaveDraftSignalComponent,
 }) => {
   const onSave = (formData) => {
-    const isSavingKnackFeature = Boolean(formData.signal || formData.schoolBeacon);
+    const isSavingKnackFeature = Boolean(
+      formData.signal || formData.schoolBeacon
+    );
 
     let {
       component: {
@@ -77,8 +79,7 @@ const CreateComponentModal = ({
   };
 
   const onClose = (event, reason) => {
-    if (reason && reason === "backdropClick")
-      return;
+    if (reason && reason === "backdropClick") return;
     setLinkMode(null);
     createDispatch({ type: "cancel_create" });
   };

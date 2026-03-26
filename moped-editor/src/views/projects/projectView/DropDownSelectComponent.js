@@ -49,7 +49,8 @@ const DropDownSelectComponent = ({ name, data, rowData, value, onChange }) => {
         variant="standard"
         id={name}
         value={value ?? ""}
-        style={{ minWidth: "8em" }}>
+        style={{ minWidth: "8em" }}
+      >
         {subphaseOptions.map(({ value, label }) => (
           <MenuItem
             onChange={() => onChange(value)}

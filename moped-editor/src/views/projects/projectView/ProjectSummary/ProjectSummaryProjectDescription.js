@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid2, Typography } from "@mui/material";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 
@@ -96,17 +96,20 @@ const ProjectSummaryProjectDescription = ({
   };
 
   return (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Description</Typography>
-
       <Box
-        display="flex"
-        justifyContent="flex-start"
-        sx={fieldBox}
-        flexWrap="nowrap"
-        alignItems="center"
         component="form"
         onSubmit={handleSubmit(handleProjectDescriptionSave)}
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+            flexWrap: "nowrap",
+            alignItems: "center",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
       >
         {editMode ? (
           <>
@@ -144,7 +147,7 @@ const ProjectSummaryProjectDescription = ({
           />
         )}
       </Box>
-    </Grid>
+    </Grid2>
   );
 };
 

@@ -100,10 +100,11 @@ const ProjectComponentsListItem = ({
         <Stack
           spacing={2}
           direction="row"
-          justifyContent="flex-end"
-          my={1}
-          // estimating alignment with zoom ListItemSecondaryAction button
-          mr={2.5}
+          sx={{
+            justifyContent: "flex-end",
+            my: 1,
+            mr: 2.5,
+          }}
         >
           <Tooltip title="Details">
             <IconButton
@@ -114,7 +115,6 @@ const ProjectComponentsListItem = ({
               <EditNoteOutlinedIcon />
             </IconButton>
           </Tooltip>
-
           <Tooltip
             title={
               isSignal || isSchoolBeacon
@@ -136,7 +136,6 @@ const ProjectComponentsListItem = ({
               </IconButton>
             </span>
           </Tooltip>
-
           <Tooltip
             PopperProps={{
               disablePortal: true,
@@ -161,7 +160,6 @@ const ProjectComponentsListItem = ({
               </Tooltip>
             </span>
           </Tooltip>
-
           <Tooltip title="Move to another project">
             <IconButton
               color="primary"
@@ -171,7 +169,6 @@ const ProjectComponentsListItem = ({
               <DriveFileMoveOutlinedIcon />
             </IconButton>
           </Tooltip>
-
           <Tooltip title="Delete">
             <IconButton
               color="primary"
@@ -186,5 +183,4 @@ const ProjectComponentsListItem = ({
     />
   );
 };
-
 export default ProjectComponentsListItem;

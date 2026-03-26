@@ -52,16 +52,23 @@ const NewComponentToolbar = ({
           </Box>
         </ListItem>
         <Collapse in={areSettingsOpen}>
-          <Box borderLeft={7} borderColor="white">
+          <Box
+            sx={{
+              borderLeft: 7,
+              borderColor: "white",
+            }}
+          >
             <ListItem
-              sx={{
-                paddingLeft: (theme) => theme.spacing(1),
+              sx={(theme) => ({
+                paddingLeft: theme.spacing(1),
                 paddingTop: 0,
-              }}
+              })}
             >
               <Icon />
               <ListItemText
-                sx={{ marginLeft: (theme) => theme.spacing(1) }}
+                sx={(theme) => ({
+                  marginLeft: theme.spacing(1),
+                })}
                 secondary="Show related projects"
               />
               <ListItemSecondaryAction>

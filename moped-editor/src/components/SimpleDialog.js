@@ -4,7 +4,7 @@ import { Dialog } from "@mui/material";
 const SimpleDialog = ({ content: { link, body } }) => {
   const [open, setOpen] = React.useState(false);
 
-  const handleOpen = event => {
+  const handleOpen = (event) => {
     event.preventDefault();
     setOpen(true);
   };

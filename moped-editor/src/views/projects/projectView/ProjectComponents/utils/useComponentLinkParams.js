@@ -108,7 +108,7 @@ export const useComponentLinkParams = ({
               errorMessageDispatch({ type: "hide_component_error" });
               updateParamsWithoutRender("project_component_id", null);
             },
-            messageType: "componentLinkError"
+            messageType: "componentLinkError",
           },
         });
       }

@@ -98,7 +98,12 @@ const NonLoginUserActivationButtons = ({
         open: true,
         title: "Activating",
         message: (
-          <Box display="flex" justifyContent="flex-start">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
             <Typography>Please Wait...</Typography>
           </Box>
         ),
@@ -109,7 +114,6 @@ const NonLoginUserActivationButtons = ({
       });
     }
   };
-
   const handleActivateNonLoginUser = () => {
     setModalState({
       open: true,
@@ -118,7 +122,6 @@ const NonLoginUserActivationButtons = ({
       action: handleActivateNonLoginUserConfirm,
     });
   };
-
   return (
     <>
       {/* Need to create a save button to update only the moped_user row with a new mutation */}

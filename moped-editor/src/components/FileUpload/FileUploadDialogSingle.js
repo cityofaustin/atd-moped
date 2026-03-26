@@ -5,7 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
+  Grid2,
   Icon,
   TextField,
   FormControl,
@@ -15,7 +15,6 @@ import {
   Select,
   MenuItem,
   Switch,
-  useTheme,
 } from "@mui/material";
 import FileUpload from "src/components/FileUpload/FileUpload";
 
@@ -27,7 +26,6 @@ const FileUploadDialogSingle = ({
   projectId,
   fileTypesLookup,
 }) => {
-  const theme = useTheme();
   /**
    * @constant {string} fileName - Contains a human-readable file name
    * @constant {string} fileType- Contains an integer representing file type
@@ -158,14 +156,19 @@ const FileUploadDialogSingle = ({
     >
       <DialogTitle variant="h4">{title ? title : "Upload Media"}</DialogTitle>
       <DialogContent>
-        <Grid container style={{ marginTop: "5px" }}>
-          <Grid item xs={12} md={12}>
+        <Grid2 container style={{ marginTop: "5px" }}>
+          <Grid2
+            size={{
+              xs: 12,
+              md: 12,
+            }}
+          >
             <TextField
               autoFocus
-              sx={{
+              sx={(theme) => ({
                 marginTop: theme.spacing(2),
                 marginBottom: theme.spacing(2),
-              }}
+              })}
               id="file-name-input"
               multiline={false}
               label={"File name"}
@@ -179,7 +182,7 @@ const FileUploadDialogSingle = ({
               <InputLabel id="select-dropdown-filetype">Type</InputLabel>
               <Select
                 labelId="select-dropdown-filetype"
-                sx={{ width: theme.spacing(25) }}
+                sx={(theme) => ({ width: theme.spacing(25) })}
                 value={fileType}
                 label="Type"
                 onChange={handleFileTypeChange}
@@ -194,10 +197,10 @@ const FileUploadDialogSingle = ({
             </FormControl>
 
             <TextField
-              sx={{
+              sx={(theme) => ({
                 marginTop: theme.spacing(2),
                 marginBottom: theme.spacing(2),
-              }}
+              })}
               id="standard-multiline-static"
               label={"Description"}
               multiline
@@ -221,8 +224,14 @@ const FileUploadDialogSingle = ({
                 labelPlacement="start"
               />
             </FormControl>
-          </Grid>
-          <Grid item xs={12} md={12} sx={{ marginTop: theme.spacing(2) }}>
+          </Grid2>
+          <Grid2
+            sx={(theme) => ({ marginTop: theme.spacing(2) })}
+            size={{
+              xs: 12,
+              md: 12,
+            }}
+          >
             {externalFile ? (
               <TextField
                 autoFocus
@@ -243,8 +252,8 @@ const FileUploadDialogSingle = ({
                 onFileAdded={handleOnFileAdded}
               />
             )}
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="primary">

@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 import { useLocation, Link } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
+import Grid2 from "@mui/material/Grid2";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
@@ -91,19 +91,23 @@ const LookupsView = () => {
       <Page title="Data Dictionary">
         <Container maxWidth="xl">
           <Paper sx={{ paddingLeft: 3 }}>
-            <Grid
+            <Grid2
               container
               spacing={3}
               sx={{ marginTop: 3, scrollMarginTop: 24 }}
               ref={refs._scroll_to_top}
             >
-              <Grid item xs={12}>
-                <Typography variant="h1" color="primary">
+              <Grid2 size={12}>
+                <Typography
+                  variant="h1"
+                  color="primary"
+                  sx={(theme) => ({ paddingTop: theme.spacing(3) })}
+                >
                   Data dictionary
                 </Typography>
-              </Grid>
+              </Grid2>
               {SETTINGS.map((recordType) => (
-                <Grid item key={recordType.key} sx={{ marginBottom: 3 }}>
+                <Grid2 key={recordType.key} sx={{ marginBottom: 3 }}>
                   <Button
                     color="primary"
                     variant="outlined"
@@ -117,20 +121,20 @@ const LookupsView = () => {
                   >
                     {recordType.label}
                   </Button>
-                </Grid>
+                </Grid2>
               ))}
-            </Grid>
+            </Grid2>
           </Paper>
 
           {SETTINGS.map((recordType) => (
             <Paper sx={{ px: 3, pb: 3 }} key={recordType.key}>
-              <Grid
+              <Grid2
                 container
                 spacing={3}
                 sx={{ marginTop: 3 }}
                 ref={refs[recordType.key]}
               >
-                <Grid item xs={12}>
+                <Grid2 size={12}>
                   {TAG_TABLE_KEYS.includes(recordType.key) ? (
                     <Can
                       perform="lookups:edit"
@@ -178,26 +182,29 @@ const LookupsView = () => {
                       }
                     />
                   ) : (
-                    <Grid
+                    <Grid2
                       container
                       direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
                       spacing={1}
+                      sx={(theme) => ({
+                        paddingTop: theme.spacing(3),
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      })}
                     >
-                      <Grid item>
-                        <Grid
+                      <Grid2>
+                        <Grid2
                           container
                           direction="row"
-                          alignItems="center"
                           spacing={1}
+                          sx={{ alignItems: "center" }}
                         >
-                          <Grid item>
+                          <Grid2>
                             <Typography variant="h2">
                               {recordType.label}
                             </Typography>
-                          </Grid>
-                          <Grid item>
+                          </Grid2>
+                          <Grid2>
                             <Tooltip title="Return to top of page">
                               <IconButton
                                 component={Link}
@@ -212,28 +219,28 @@ const LookupsView = () => {
                                 <ArrowUpwardIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Grid item>
+                          </Grid2>
+                        </Grid2>
+                      </Grid2>
+                      <Grid2>
                         <CopyTextButton
                           copyButtonText="Copy link"
                           textToCopy={`${
                             window.location.origin
                           }${pathname}${createRecordKeyHash(recordType.key)}`}
                         />
-                      </Grid>
-                      <Grid item xs={12}>
+                      </Grid2>
+                      <Grid2 size={12}>
                         <RecordTable
                           rows={data?.[recordType.key]}
                           columns={recordType.columns}
                           loading={loading}
                         />
-                      </Grid>
-                    </Grid>
+                      </Grid2>
+                    </Grid2>
                   )}
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </Paper>
           ))}
         </Container>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid2, Typography } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 import {
   fieldBox,
@@ -16,26 +16,23 @@ import {
  */
 const ProjectSummaryParentProjectLink = ({ data }) => {
   const parentProjectId = data?.moped_project?.[0]?.parent_project_id;
-  const parentProjectName = data?.moped_project[0].moped_project.project_name_full;
+  const parentProjectName =
+    data?.moped_project[0].moped_project.project_name_full;
 
   return (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid2 sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Parent project</Typography>
       <Box sx={fieldBox}>
         <RouterLink
           id="projectKnackSyncLink"
           to={`/moped/projects/${parentProjectId}`}
         >
-          <Typography
-            sx={fieldLabelText}
-            variant={"body1"}
-            color={"primary"}
-          >
+          <Typography sx={fieldLabelText} variant={"body1"} color={"primary"}>
             {parentProjectName}
           </Typography>
         </RouterLink>
       </Box>
-    </Grid>
+    </Grid2>
   );
 };
 

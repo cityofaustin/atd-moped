@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid,
+  Grid2,
   Radio,
   RadioGroup,
   FormControl,
@@ -21,16 +21,26 @@ export const CsvDownloadingDialog = ({ downloadingDialogOpen }) => (
   <Dialog open={downloadingDialogOpen} aria-labelledby="form-dialog-title">
     <DialogTitle variant="h4" />
     <DialogContent>
-      <Grid container spacing={3}>
-        <Grid item xs={2} lg={2}>
+      <Grid2 container spacing={3}>
+        <Grid2
+          size={{
+            xs: 2,
+            lg: 2,
+          }}
+        >
           <CircularProgress />
-        </Grid>
-        <Grid item xs={10} lg={10}>
+        </Grid2>
+        <Grid2
+          size={{
+            xs: 10,
+            lg: 10,
+          }}
+        >
           <DialogContentText>
             Preparing download, please wait.
           </DialogContentText>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </DialogContent>
   </Dialog>
 );

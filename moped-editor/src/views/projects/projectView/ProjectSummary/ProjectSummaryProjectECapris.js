@@ -5,7 +5,7 @@ import CopyTextButton from "src/components/CopyTextButton";
 import ExternalLink, { createBugReportLink } from "src/components/ExternalLink";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid2, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { useUser } from "src/auth/user";
 
@@ -98,7 +98,7 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <Grid item xs={12} sx={fieldGridItem}>
+    <Grid2 size={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
       <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
@@ -178,7 +178,7 @@ const ProjectSummaryProjectECapris = ({
           </Stack>
         )}
       </Box>
-    </Grid>
+    </Grid2>
   );
 };
 

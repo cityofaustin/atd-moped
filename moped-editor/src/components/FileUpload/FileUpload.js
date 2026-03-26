@@ -12,8 +12,8 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert, useTheme } from "@mui/material";
-import { Grid } from "@mui/material";
+import { Alert } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import { useUser, getCognitoIdJwt } from "src/auth/user";
 
 registerPlugin(
@@ -23,7 +23,6 @@ registerPlugin(
 );
 
 const FileUpload = (props) => {
-  const theme = useTheme();
   const { getCognitoSession } = useUser();
 
   /**
@@ -243,11 +242,16 @@ const FileUpload = (props) => {
   };
 
   return (
-    <Grid>
+    <Grid2>
       {errors.length > 0 &&
         errors.map((err) => {
           return (
-            <Alert sx={{ margin: `${theme.spacing(2)} 0` }} severity="error">
+            <Alert
+              sx={(theme) => ({
+                margin: `${theme.spacing(2)} 0`,
+              })}
+              severity="error"
+            >
               <b>Error:</b> {err}
             </Alert>
           );
@@ -266,8 +270,7 @@ const FileUpload = (props) => {
         beforeAddFile={handleBeforeAdd}
         onprocessfile={(error, file) => handleFileAdded(error, file)}
       />
-    </Grid>
+    </Grid2>
   );
 };
-
 export default FileUpload;

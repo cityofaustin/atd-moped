@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import FormControl from "@mui/material/FormControl";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid2 } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
 import ActivityMetrics from "src/components/ActivityMetrics";
 
@@ -29,8 +29,8 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
   return (
     <ActivityMetrics eventName={"projects_saved_view"}>
       <form onSubmit={handleSubmit(onSave)}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Grid2 container spacing={2}>
+          <Grid2 size={12}>
             <FormControl fullWidth>
               <ControlledTextInput
                 fullWidth
@@ -46,10 +46,16 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
                 }}
               />
             </FormControl>
-          </Grid>
-        </Grid>
-        <Grid container display="flex" justifyContent="flex-end">
-          <Grid item sx={{ marginTop: 2 }}>
+          </Grid2>
+        </Grid2>
+        <Grid2
+          container
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Grid2 sx={{ marginTop: 2 }}>
             <Button
               variant="contained"
               color="primary"
@@ -59,11 +65,10 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
             >
               Save view
             </Button>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </form>
     </ActivityMetrics>
   );
 };
-
 export default SaveUserViewForm;

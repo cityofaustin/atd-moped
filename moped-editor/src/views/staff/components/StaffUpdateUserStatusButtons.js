@@ -114,7 +114,12 @@ const StaffUpdateUserStatusButtons = ({
         open: true,
         title: "Activating",
         message: (
-          <Box display="flex" justifyContent="flex-start">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
             <Typography>Please Wait...</Typography>
           </Box>
         ),
@@ -125,7 +130,6 @@ const StaffUpdateUserStatusButtons = ({
       });
     }
   };
-
   /**
    * Activate User
    */
@@ -137,7 +141,6 @@ const StaffUpdateUserStatusButtons = ({
       action: handleActivateConfirm,
     });
   };
-
   /**
    * Handles the deactivation of user
    */
@@ -149,7 +152,6 @@ const StaffUpdateUserStatusButtons = ({
       action: handleDeleteConfirm,
     });
   };
-
   return (
     <>
       {isUserActive === true && (

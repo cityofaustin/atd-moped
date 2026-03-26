@@ -10,7 +10,6 @@ import {
   List,
   ListItemText,
   ListItemIcon,
-  ListItem,
   TextField,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material";
@@ -20,6 +19,8 @@ import { returnArterialManagementPhaseTemplate } from "../../../../utils/timelin
 
 import { ADD_PROJECT_PHASE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
+
+import ListItemButton from "@mui/material/ListItemButton";
 
 const templateChoices = ["Arterial Management"];
 
@@ -147,7 +148,13 @@ const PhaseTemplateModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Box my={3} sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            my: 3,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Autocomplete
             style={{ width: "250px" }}
             defaultValue={null}
@@ -186,8 +193,7 @@ const PhaseTemplateModal = ({
               }
             }
             return (
-              <ListItem
-                button
+              <ListItemButton
                 key={`${phase.phase_id}${phase.subphase_id}${phase.phase_description}`}
                 dense
                 onClick={() => handleToggle(phase)}
@@ -205,7 +211,7 @@ const PhaseTemplateModal = ({
                   primary={phaseNameLookup[phase.phase_id]}
                   secondary={secondaryText}
                 />
-              </ListItem>
+              </ListItemButton>
             );
           })}
         </List>
