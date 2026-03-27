@@ -464,7 +464,7 @@ const ProjectMilestones = ({
         loading={loading || !data}
         getRowId={(row) => row.project_milestone_id}
         editMode="row"
-        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowEditStop={handleFundingRowEditStop}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}

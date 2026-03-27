@@ -556,6 +556,25 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     setRowModesModel(newRowModesModel);
   };
 
+  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
+  // controls does not save the current row and create inconsistent state.
+  const handleFundingRowEditStop = useCallback(
+    (params, event) => {
+      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+        event.defaultMuiPrevented = true;
+        return;
+      }
+      handleRowEditStop(rows, setRows)(params, event);
+    },
+    [rows]
+  );
+
+  // Disable "Add Manually" button when any row is in edit mode to prevent
+  // creating multiple unsaved rows which leads to inconsistent state
+  const isEditMode = Object.values(rowModesModel).some(
+    (m) => m?.mode === GridRowModes.Edit
+  );
+
   return (
     <>
       <MopedDataGrid
@@ -569,7 +588,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowEditStop={handleFundingRowEditStop}
         onProcessRowUpdateError={(error) => {
           console.error("Unexpected error in processRowUpdate:", error);
         }}
@@ -591,6 +610,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
                 color="primary"
                 startIcon={<AddCircleIcon />}
                 onClick={onClickAddTeamMember}
+                disabled={isEditMode}
               >
                 Add team member
               </Button>
