@@ -3,7 +3,11 @@ import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@mui/material";
-import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import {
+  GridRowModes,
+  GridRowEditStopReasons,
+  useGridApiRef,
+} from "@mui/x-data-grid-pro";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
@@ -430,6 +434,25 @@ const ProjectMilestones = ({
     setIsDialogOpen(false);
   };
 
+  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
+  // controls does not save the current row and create inconsistent state.
+  const handleFundingRowEditStop = useCallback(
+    (params, event) => {
+      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+        event.defaultMuiPrevented = true;
+        return;
+      }
+      handleRowEditStop(rows, setRows)(params, event);
+    },
+    [rows]
+  );
+
+  // Disable "Add Manually" button when any row is in edit mode to prevent
+  // creating multiple unsaved rows which leads to inconsistent state
+  const isEditMode = Object.values(rowModesModel).some(
+    (m) => m?.mode === GridRowModes.Edit
+  );
+
   return (
     <>
       <MopedDataGrid
@@ -461,6 +484,7 @@ const ProjectMilestones = ({
                 color="primary"
                 onClick={onClickAddMilestone}
                 startIcon={<AddCircleIcon />}
+                disabled={isEditMode}
               >
                 {"Add milestone"}
               </Button>
