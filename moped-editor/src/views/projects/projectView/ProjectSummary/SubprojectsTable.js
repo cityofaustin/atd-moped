@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 import { Box, Button } from "@mui/material";
-import { GridRowModes, GridRowEditStopReasons } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import { GridRowModes } from "@mui/x-data-grid-pro";
+import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { v4 as uuidv4 } from "uuid";
@@ -22,7 +22,7 @@ import {
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
 
 const requiredFields = ["project_name_full"];
 
@@ -365,19 +365,6 @@ const SubprojectsTable = ({
     ? "No parent project set"
     : "No subprojects to display";
 
-  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
-  // controls does not save the current row and create inconsistent state.
-  const handleFundingRowEditStop = useCallback(
-    (params, event) => {
-      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-        event.defaultMuiPrevented = true;
-        return;
-      }
-      handleRowEditStop(rows, setRows)(params, event);
-    },
-    [rows]
-  );
-
   // Disable "Add Manually" button when any row is in edit mode to prevent
   // creating multiple unsaved rows which leads to inconsistent state
   const isEditMode = Object.values(rowModesModel).some(
@@ -390,7 +377,7 @@ const SubprojectsTable = ({
 
   return (
     <>
-      <MopedDataGrid
+      <MopedInlineEditDataGrid
         sx={{ border: 0 }}
         columns={dataGridColumns}
         rows={rows || []}
@@ -416,11 +403,9 @@ const SubprojectsTable = ({
             ),
           },
         }}
-        editMode="row"
         processRowUpdate={processRowUpdate}
-        onRowEditStop={handleFundingRowEditStop}
+        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
         localeText={{ noRowsLabel: noRelatedProjectsLabel }}
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows
         }}

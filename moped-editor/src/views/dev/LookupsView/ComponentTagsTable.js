@@ -17,7 +17,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import CopyTextButton from "src/components/CopyTextButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 import {
   COMPONENT_TAGS_QUERY,
   ADD_COMPONENT_TAG,

@@ -3,11 +3,7 @@ import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@mui/material";
-import {
-  GridRowModes,
-  GridRowEditStopReasons,
-  useGridApiRef,
-} from "@mui/x-data-grid-pro";
+import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
@@ -30,7 +26,7 @@ import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -430,19 +426,6 @@ const ProjectMilestones = ({
     setIsDialogOpen(false);
   };
 
-  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
-  // controls does not save the current row and create inconsistent state.
-  const handleFundingRowEditStop = useCallback(
-    (params, event) => {
-      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-        event.defaultMuiPrevented = true;
-        return;
-      }
-      handleRowEditStop(rows, setRows)(params, event);
-    },
-    [rows]
-  );
-
   // Disable "Add Manually" button when any row is in edit mode to prevent
   // creating multiple unsaved rows which leads to inconsistent state
   const isEditMode = Object.values(rowModesModel).some(
@@ -458,7 +441,7 @@ const ProjectMilestones = ({
         rows={rows}
         loading={loading || !data}
         getRowId={(row) => row.project_milestone_id}
-        onRowEditStop={handleFundingRowEditStop}
+        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}

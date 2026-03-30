@@ -5,12 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Box, Button, Icon, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-import {
-  GridRowModes,
-  GridRowEditStopReasons,
-  useGridApiRef,
-} from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import { useQuery, useMutation } from "@apollo/client";
 
 import {
@@ -27,7 +23,7 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import { mopedUserAutocompleteProps } from "./utils";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
 
 const useWorkgroupLookup = (data) =>
   useMemo(() => {
@@ -556,19 +552,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     }
   };
 
-  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
-  // controls does not save the current row and create inconsistent state.
-  const handleFundingRowEditStop = useCallback(
-    (params, event) => {
-      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-        event.defaultMuiPrevented = true;
-        return;
-      }
-      handleRowEditStop(rows, setRows)(params, event);
-    },
-    [rows]
-  );
-
   // Disable "Add Manually" button when any row is in edit mode to prevent
   // creating multiple unsaved rows which leads to inconsistent state
   const isEditMode = Object.values(rowModesModel).some(
@@ -577,23 +560,21 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   return (
     <>
-      <MopedDataGrid
+      <MopedInlineEditDataGrid
         apiRef={apiRef}
         autoHeight
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}
         getRowId={getRowIdMemoized}
-        editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        onRowEditStop={handleFundingRowEditStop}
+        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,
         }}
