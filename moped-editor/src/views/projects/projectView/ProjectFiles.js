@@ -466,9 +466,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) =>
-          handleSnackbar(true, "Error updating table", "error", error)
-        }
         toolbar
         localeText={{ noRowsLabel: "No files to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}

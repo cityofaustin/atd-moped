@@ -190,9 +190,6 @@ const SubprojectFundingModal = ({
           localeText={{ noRowsLabel: "No FDUs available" }}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}
-          onProcessRowUpdateError={(error) =>
-            handleSnackbar(true, "Error updating table", "error", error)
-          }
           isRowSelectable={(row) =>
             !fdusArray.some((fdu) => fdu?.fdu === row.id)
           }

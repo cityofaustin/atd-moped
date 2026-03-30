@@ -592,9 +592,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleFundingRowEditStop}
-        onProcessRowUpdateError={(error) => {
-          console.error("Unexpected error in processRowUpdate:", error);
-        }}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar
