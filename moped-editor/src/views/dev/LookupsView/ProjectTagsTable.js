@@ -13,7 +13,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import CopyTextButton from "src/components/CopyTextButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 import {
   PROJECT_TAGS_QUERY,
   ADD_PROJECT_TAG_LOOKUP,
@@ -294,7 +294,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         getRowId={(row) => row.id}
         loading={loading}
         rowModesModel={rowModesModel}
-        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No project tags" }}

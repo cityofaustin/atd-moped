@@ -23,7 +23,7 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import { mopedUserAutocompleteProps } from "./utils";
-import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 
 const useWorkgroupLookup = (data) =>
   useMemo(() => {
@@ -569,7 +569,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         getRowId={getRowIdMemoized}
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar

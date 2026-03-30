@@ -42,7 +42,7 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 import {
   transformDatabaseToGrid,
@@ -629,7 +629,7 @@ const ProjectFundingTable = ({
         rows={rows}
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
-        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         isCellEditable={isCellEditable}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}

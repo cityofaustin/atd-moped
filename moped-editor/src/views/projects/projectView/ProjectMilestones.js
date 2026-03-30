@@ -26,7 +26,7 @@ import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -441,7 +441,7 @@ const ProjectMilestones = ({
         rows={rows}
         loading={loading || !data}
         getRowId={(row) => row.project_milestone_id}
-        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}

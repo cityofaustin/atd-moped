@@ -22,7 +22,7 @@ import {
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
-import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 
 const requiredFields = ["project_name_full"];
 
@@ -404,7 +404,7 @@ const SubprojectsTable = ({
           },
         }}
         processRowUpdate={processRowUpdate}
-        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         localeText={{ noRowsLabel: noRelatedProjectsLabel }}
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows

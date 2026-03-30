@@ -13,7 +13,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import CopyTextButton from "src/components/CopyTextButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 import {
   COMPONENT_TAGS_QUERY,
   ADD_COMPONENT_TAG,
@@ -299,7 +299,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         getRowId={(row) => row.id}
         loading={loading}
         rowModesModel={rowModesModel}
-        onRowEditStop={handleRowEditStopPreventClickAway}
+        onRowEditStop={handleRowEditStop}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No component tags" }}

@@ -17,7 +17,7 @@ import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
 import { FormattedDateString } from "src/utils/dateAndTime";
-import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 
 const requiredFields = ["description"];
 
@@ -232,7 +232,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         rows={rows || []}
         loading={loading || !data}
         getRowId={(row) => row.id}
-        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No saved views to display" }}
       />
