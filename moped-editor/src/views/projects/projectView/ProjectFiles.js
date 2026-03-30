@@ -10,7 +10,7 @@ import {
   useGridApiRef,
   gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
@@ -343,10 +343,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   const handleEditClick = useCallback(
     (id) => () => {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -455,20 +451,18 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   return (
     <>
-      <MopedDataGrid
+      <MopedInlineEditDataGrid
         apiRef={apiRef}
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}
         getRowId={(row) => row.project_file_id}
-        editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         toolbar
         localeText={{ noRowsLabel: "No files to display" }}
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,
         }}

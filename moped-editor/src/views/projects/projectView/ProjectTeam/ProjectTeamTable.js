@@ -556,10 +556,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     }
   };
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
   // controls does not save the current row and create inconsistent state.
   const handleFundingRowEditStop = useCallback(
@@ -590,7 +586,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         getRowId={getRowIdMemoized}
         editMode="row"
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         onRowEditStop={handleFundingRowEditStop}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}

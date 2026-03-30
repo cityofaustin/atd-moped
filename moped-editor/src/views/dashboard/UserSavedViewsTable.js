@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import { GridRowModes } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import Link from "@mui/material/Link";
 
 import {
@@ -131,10 +131,6 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
     }
   }, [data]);
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   const handleEditClick = useCallback(
     (id) => () => {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -229,19 +225,16 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
 
   return (
     <>
-      <MopedDataGrid
+      <MopedInlineEditDataGrid
+        rowModesModel={rowModesModel}
+        setRowModesModel={setRowModesModel}
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}
-        autoHeight
         getRowId={(row) => row.id}
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No saved views to display" }}
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
       />
       <DeleteConfirmationModal
         type={"saved view"}

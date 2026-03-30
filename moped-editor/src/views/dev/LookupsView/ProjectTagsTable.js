@@ -10,7 +10,7 @@ import {
   GridRowEditStopReasons,
   useGridApiRef,
 } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import { useLocation } from "react-router-dom";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -130,9 +130,8 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
 
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(
-    false
-  );
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   useEffect(() => {
@@ -146,10 +145,6 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
     },
     []
   );
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
 
   const handleProjectTagsRowEditStop = useCallback(
     (params, event) => {
@@ -223,12 +218,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
             handleSnackbar(true, "Project tag removed", "success");
           })
           .catch((error) => {
-            handleSnackbar(
-              true,
-              "Error removing project tag",
-              "error",
-              error
-            );
+            handleSnackbar(true, "Error removing project tag", "error", error);
           });
       } else {
         setIsDeleteConfirmationOpen(false);
@@ -311,20 +301,19 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
 
   return (
     <>
-      <MopedDataGrid
+      <MopedInlineEditDataGrid
         sx={{ border: "none" }}
         apiRef={apiRef}
         columns={columns}
         rows={rows}
         getRowId={(row) => row.id}
-        editMode="row"
         loading={loading}
         rowModesModel={rowModesModel}
         onRowEditStop={handleProjectTagsRowEditStop}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No project tags" }}
-        initialState={{ pinnedColumns: canEdit ? { right: ["edit"] } : {} }}
+        canEdit={canEdit}
         slots={{
           toolbar: DataGridToolbar,
         }}

@@ -297,10 +297,6 @@ const SubprojectsTable = ({
       });
   };
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   // handles insert mutation triggered by row mode switching from edit to view
   const processRowUpdate = useCallback(
     (newRow) => {
@@ -402,7 +398,7 @@ const SubprojectsTable = ({
         autoHeight
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{
           toolbar: {

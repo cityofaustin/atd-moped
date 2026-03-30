@@ -10,7 +10,7 @@ import {
   GridRowEditStopReasons,
   useGridApiRef,
 } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import { useLocation } from "react-router-dom";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -130,9 +130,8 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
 
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(
-    false
-  );
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   useEffect(() => {
@@ -146,10 +145,6 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
     },
     []
   );
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
 
   const handleComponentTagsRowEditStop = useCallback(
     (params, event) => {
@@ -311,20 +306,19 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
 
   return (
     <>
-      <MopedDataGrid
+      <MopedInlineEditDataGrid
         sx={{ border: "none" }}
         apiRef={apiRef}
         columns={columns}
         rows={rows}
         getRowId={(row) => row.id}
-        editMode="row"
         loading={loading}
         rowModesModel={rowModesModel}
         onRowEditStop={handleComponentTagsRowEditStop}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No component tags" }}
-        initialState={{ pinnedColumns: canEdit ? { right: ["edit"] } : {} }}
+        canEdit={canEdit}
         slots={{
           toolbar: DataGridToolbar,
         }}

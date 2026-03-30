@@ -401,10 +401,6 @@ const ProjectFundingTable = ({
     [apiRef]
   );
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
   // controls does not save the current row and create inconsistent state.
   const handleFundingRowEditStop = useCallback(
@@ -650,7 +646,7 @@ const ProjectFundingTable = ({
         rowModesModel={rowModesModel}
         onRowEditStop={handleFundingRowEditStop}
         isCellEditable={isCellEditable}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         toolbar
         onCellKeyDown={handleTabKeyDown}
