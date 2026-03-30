@@ -457,8 +457,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
     <>
       <MopedDataGrid
         apiRef={apiRef}
-        ref={apiRef}
-        autoHeight
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}

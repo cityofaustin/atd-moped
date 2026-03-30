@@ -5,7 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 import { Box, Button, Icon, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import {
+  GridRowModes,
+  GridRowEditStopReasons,
+  useGridApiRef,
+} from "@mui/x-data-grid-pro";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { useQuery, useMutation } from "@apollo/client";
 
@@ -579,7 +583,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     <>
       <MopedDataGrid
         apiRef={apiRef}
-        ref={apiRef}
         autoHeight
         columns={dataGridColumns}
         rows={rows || []}

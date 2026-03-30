@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 import { Box, Button } from "@mui/material";
-import { GridRowModes } from "@mui/x-data-grid-pro";
+import { GridRowModes, GridRowEditStopReasons } from "@mui/x-data-grid-pro";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
@@ -369,9 +369,28 @@ const SubprojectsTable = ({
     ? "No parent project set"
     : "No subprojects to display";
 
+  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
+  // controls does not save the current row and create inconsistent state.
+  const handleFundingRowEditStop = useCallback(
+    (params, event) => {
+      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+        event.defaultMuiPrevented = true;
+        return;
+      }
+      handleRowEditStop(rows, setRows)(params, event);
+    },
+    [rows]
+  );
+
+  // Disable "Add Manually" button when any row is in edit mode to prevent
+  // creating multiple unsaved rows which leads to inconsistent state
+  const isEditMode = Object.values(rowModesModel).some(
+    (m) => m?.mode === GridRowModes.Edit
+  );
+
   // Disable adding if viewing a subproject and a parent already exists
   const hasParent = isSubproject && rows.length > 0;
-  const addButtonDisabled = isSubproject ? hasParent : false;
+  const addButtonDisabled = isEditMode || (isSubproject ? hasParent : false);
 
   return (
     <>
@@ -403,7 +422,7 @@ const SubprojectsTable = ({
         }}
         editMode="row"
         processRowUpdate={processRowUpdate}
-        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowEditStop={handleFundingRowEditStop}
         localeText={{ noRowsLabel: noRelatedProjectsLabel }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
         onRowEditStart={(params, event) => {

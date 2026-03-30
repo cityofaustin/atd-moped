@@ -457,7 +457,6 @@ const ProjectMilestones = ({
     <>
       <MopedDataGrid
         apiRef={apiRef}
-        ref={apiRef}
         autoHeight
         columns={dataGridColumns}
         rows={rows}

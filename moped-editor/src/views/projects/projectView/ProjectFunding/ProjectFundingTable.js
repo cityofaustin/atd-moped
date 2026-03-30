@@ -643,7 +643,6 @@ const ProjectFundingTable = ({
           loadingProjectFunding || loadingFduOptions || !dataProjectFunding
         }
         apiRef={apiRef}
-        ref={apiRef}
         columns={dataGridColumns}
         rows={rows}
         getRowId={(row) => row.id}
