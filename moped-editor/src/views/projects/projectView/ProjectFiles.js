@@ -30,7 +30,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
 import { useUser } from "src/auth/user";
 
 // reshape the array of file types into an object with key id, value name
@@ -457,7 +457,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         rows={rows || []}
         loading={loading || !data}
         getRowId={(row) => row.project_file_id}
-        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}

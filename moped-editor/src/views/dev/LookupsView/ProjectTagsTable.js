@@ -5,11 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Button, Tooltip, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import {
-  GridRowModes,
-  GridRowEditStopReasons,
-  useGridApiRef,
-} from "@mui/x-data-grid-pro";
+import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
 import { useLocation } from "react-router-dom";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
@@ -17,7 +13,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import CopyTextButton from "src/components/CopyTextButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import { handleRowEditStopPreventClickAway } from "src/components/DataGridPro/utils/helpers.js";
 import {
   PROJECT_TAGS_QUERY,
   ADD_PROJECT_TAG_LOOKUP,
@@ -144,17 +140,6 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
       setDeleteConfirmationId(id);
     },
     []
-  );
-
-  const handleProjectTagsRowEditStop = useCallback(
-    (params, event) => {
-      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-        event.defaultMuiPrevented = true;
-        return;
-      }
-      handleRowEditStop(rows, setRows)(params, event);
-    },
-    [rows]
   );
 
   const handleAddRecordClick = () => {
@@ -309,7 +294,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         getRowId={(row) => row.id}
         loading={loading}
         rowModesModel={rowModesModel}
-        onRowEditStop={handleProjectTagsRowEditStop}
+        onRowEditStop={handleRowEditStopPreventClickAway(rows, setRows)}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No project tags" }}
