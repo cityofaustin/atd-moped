@@ -299,7 +299,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         getRowId={(row) => row.id}
         loading={loading}
         rowModesModel={rowModesModel}
-        onRowEditStop={handleRowEditStop}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         localeText={{ noRowsLabel: "No component tags" }}
