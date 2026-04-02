@@ -479,7 +479,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
                 color="primary"
                 startIcon={<AddCircleIcon />}
                 onClick={handleClickUploadFile}
-                disabled={loading || !fileTypesLookup || isEditMode}
+                disabled={isEditMode}
               >
                 Add File
               </Button>
