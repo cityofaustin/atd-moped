@@ -22,7 +22,10 @@ import {
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 const requiredFields = ["project_name_full"];
 
@@ -184,6 +187,7 @@ const SubprojectsTable = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   // sets the data grid row data when query data is fetched
   useEffect(() => {
@@ -364,12 +368,6 @@ const SubprojectsTable = ({
   const noRelatedProjectsLabel = isSubproject
     ? "No parent project set"
     : "No subprojects to display";
-
-  // Disable "Add Manually" button when any row is in edit mode to prevent
-  // creating multiple unsaved rows which leads to inconsistent state
-  const isEditMode = Object.values(rowModesModel).some(
-    (m) => m?.mode === GridRowModes.Edit
-  );
 
   // Disable adding if viewing a subproject and a parent already exists
   const hasParent = isSubproject && rows.length > 0;

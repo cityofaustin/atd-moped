@@ -23,7 +23,10 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import { mopedUserAutocompleteProps } from "./utils";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 const useWorkgroupLookup = (data) =>
   useMemo(() => {
@@ -324,6 +327,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -551,12 +555,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
       setUsingShiftKey(event.shiftKey);
     }
   };
-
-  // Disable "Add Manually" button when any row is in edit mode to prevent
-  // creating multiple unsaved rows which leads to inconsistent state
-  const isEditMode = Object.values(rowModesModel).some(
-    (m) => m?.mode === GridRowModes.Edit
-  );
 
   return (
     <>

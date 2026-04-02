@@ -1,4 +1,4 @@
-import { GridRowEditStopReasons } from "@mui/x-data-grid-pro";
+import { GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid-pro";
 
 export const defaultEditColumnIconStyle = { fontSize: "24px" };
 
@@ -25,3 +25,13 @@ export const handleRowEditStop = (rows, setRows) => (params, event) => {
     }
   }
 };
+
+/**
+ * Uses the rowModesModel to determine if any row is currently in edit mode
+ * Example: Disable "Add Manually" button when any row is in edit mode to prevent
+ * creating multiple unsaved rows which leads to inconsistent state
+ * @param {Object} rowModesModel - The row modes model from the DataGrid
+ * @returns {boolean} - True if any row is in edit mode, false otherwise
+ */
+export const getIsEditMode = (rowModesModel) =>
+  Object.values(rowModesModel).some((m) => m?.mode === GridRowModes.Edit);

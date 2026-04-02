@@ -42,7 +42,10 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 import {
   transformDatabaseToGrid,
@@ -339,6 +342,7 @@ const ProjectFundingTable = ({
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -611,12 +615,6 @@ const ProjectFundingTable = ({
       return true;
     }
   };
-
-  // Disable "Add Manually" button when any row is in edit mode to prevent
-  // creating multiple unsaved rows which leads to inconsistent state
-  const isEditMode = Object.values(rowModesModel).some(
-    (m) => m?.mode === GridRowModes.Edit
-  );
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>

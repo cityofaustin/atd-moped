@@ -26,7 +26,10 @@ import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -217,6 +220,7 @@ const ProjectMilestones = ({
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
     if (data && data.moped_proj_milestones.length > 0) {
@@ -426,12 +430,6 @@ const ProjectMilestones = ({
     setIsDialogOpen(false);
   };
 
-  // Disable "Add Manually" button when any row is in edit mode to prevent
-  // creating multiple unsaved rows which leads to inconsistent state
-  const isEditMode = Object.values(rowModesModel).some(
-    (m) => m?.mode === GridRowModes.Edit
-  );
-
   return (
     <>
       <MopedInlineEditDataGrid
@@ -470,6 +468,7 @@ const ProjectMilestones = ({
                 variant="outlined"
                 onClick={() => setIsDialogOpen(true)}
                 startIcon={<AddCircleIcon />}
+                disabled={isEditMode}
               >
                 {"From template"}
               </Button>

@@ -13,7 +13,10 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import CopyTextButton from "src/components/CopyTextButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 import {
   COMPONENT_TAGS_QUERY,
   ADD_COMPONENT_TAG,
@@ -129,6 +132,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
     setRows(tableRows);
@@ -284,10 +288,6 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
     handleEditClick,
     canEdit,
   });
-
-  const isEditMode = Object.values(rowModesModel).some(
-    (m) => m?.mode === GridRowModes.Edit
-  );
 
   return (
     <>

@@ -30,7 +30,10 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 import { useUser } from "src/auth/user";
 
 // reshape the array of file types into an object with key id, value name
@@ -261,6 +264,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -475,6 +479,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
                 color="primary"
                 startIcon={<AddCircleIcon />}
                 onClick={handleClickUploadFile}
+                disabled={loading || !fileTypesLookup || isEditMode}
               >
                 Add File
               </Button>
