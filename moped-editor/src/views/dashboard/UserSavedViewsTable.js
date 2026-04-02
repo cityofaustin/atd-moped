@@ -227,7 +227,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
     <>
       <MopedInlineEditDataGrid
         rowModesModel={rowModesModel}
-        setRowModesModel={setRowModesModel}
+        onRowModesModelChange={setRowModesModel}
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}

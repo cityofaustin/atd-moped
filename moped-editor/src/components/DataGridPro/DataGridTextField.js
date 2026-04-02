@@ -52,6 +52,7 @@ const DataGridTextField = ({
       helperText={!!helperText && helperText}
       error={error}
       multiline={multiline}
+      slotProps={{ htmlInput: { "data-1p-ignore": true } }}
     />
   );
 };
