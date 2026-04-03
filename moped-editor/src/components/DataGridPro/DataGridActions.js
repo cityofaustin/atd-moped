@@ -18,11 +18,11 @@ import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
  * @param {Number} id - Data Grid row id (same as project id)
  * @param {Array} requiredFields - fields that are required in order to save row
  * @param {Object} rowModesModel - row modes state from data grid
- * @param {Function} handleCancelClick - handles cancel button click
- * @param {Function} handleDeleteClick - handles delete button click
- * @param {Function} handleSaveClick - handles save button click
- * @param {Function} handleEditClick - handles edit button click, optional
- * @param {Function} handleAttachmentClick - handles attachment button click, optional
+ * @param {Function} handleCancelClick - handles cancel button click, optionally render cancel button if handler is passed
+ * @param {Function} handleDeleteClick - handles delete button click, optionally render delete button if handler is passed
+ * @param {Function} handleSaveClick - handles save button click, optionally render save button if handler is passed
+ * @param {Function} handleEditClick - handles edit button click, optionally render edit button if handler is passed
+ * @param {Function} handleAttachmentClick - handles attachment button click, optionally render attachment button if handler is passed
  * @param {React.ReactNode} deleteIcon - custom delete icon, defaults to DeleteOutlineIcon
  * @param {Boolean} editDisabled - disables edit button when true, optional
  * @param {Boolean} deleteDisabled - disables delete button when true, optional
@@ -33,10 +33,10 @@ const DataGridActions = ({
   id,
   requiredFields = [],
   rowModesModel,
-  handleCancelClick,
-  handleDeleteOpen,
-  handleSaveClick,
-  handleEditClick,
+  handleCancelClick = null,
+  handleDeleteOpen = null,
+  handleSaveClick = null,
+  handleEditClick = null,
   handleAttachmentClick = null,
   deleteIcon,
   editDisabled = false,
@@ -68,24 +68,28 @@ const DataGridActions = ({
 
   if (isInEditMode) {
     return [
-      <GridActionsCellItem
-        icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-        label="Save"
-        key="save"
-        sx={{
-          color: "primary.main",
-        }}
-        onClick={handleSaveClick(id)}
-        disabled={!hasRequiredFields}
-      />,
-      <GridActionsCellItem
-        icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-        label="Cancel"
-        key="cancel"
-        className="textPrimary"
-        onClick={handleCancelClick(id)}
-        color="inherit"
-      />,
+      handleSaveClick && (
+        <GridActionsCellItem
+          icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
+          label="Save"
+          key="save"
+          sx={{
+            color: "primary.main",
+          }}
+          onClick={handleSaveClick(id)}
+          disabled={!hasRequiredFields}
+        />
+      ),
+      handleCancelClick && (
+        <GridActionsCellItem
+          icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
+          label="Cancel"
+          key="cancel"
+          className="textPrimary"
+          onClick={handleCancelClick(id)}
+          color="inherit"
+        />
+      ),
     ];
   }
 
@@ -94,7 +98,6 @@ const DataGridActions = ({
   );
 
   return [
-    // only render edit button if we were passed an edit handler and are not currently in edit mode
     handleEditClick && (
       <GridActionsCellItem
         icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
@@ -112,18 +115,20 @@ const DataGridActions = ({
         label="Attachment"
         key="attachment"
         className="textPrimary"
-        onClick={handleAttachmentClick}
+        onClick={handleAttachmentClick(id)}
         color="inherit"
       />
     ),
-    <GridActionsCellItem
-      icon={DeleteIcon}
-      label="Delete"
-      key="delete"
-      onClick={handleDeleteOpen(id)}
-      color="inherit"
-      disabled={deleteDisabled}
-    />,
+    handleDeleteOpen && (
+      <GridActionsCellItem
+        icon={DeleteIcon}
+        label="Delete"
+        key="delete"
+        onClick={handleDeleteOpen(id)}
+        color="inherit"
+        disabled={deleteDisabled}
+      />
+    ),
   ];
 };
 
