@@ -17,15 +17,6 @@ insert_permissions:
         - name
         - type
         - slug
-update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-        - name
-        - type
-        - slug
-        - is_deleted
-      filter: {}
 select_permissions:
   - role: moped-admin
     permission:
@@ -57,3 +48,13 @@ select_permissions:
         - is_deleted
         - full_name
       filter: {}
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - name
+        - type
+        - slug
+        - is_deleted
+      filter: {}
+      check: null
