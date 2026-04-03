@@ -9,6 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   EditOutlined as EditOutlinedIcon,
   DeleteOutline as DeleteOutlineIcon,
+  AttachFileOutlined as AttachFileOutlinedIcon,
 } from "@mui/icons-material";
 
 import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
@@ -21,6 +22,7 @@ import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
  * @param {Function} handleDeleteClick - handles delete button click
  * @param {Function} handleSaveClick - handles save button click
  * @param {Function} handleEditClick - handles edit button click, optional
+ * @param {Function} handleAttachmentClick - handles attachment button click, optional
  * @param {React.ReactNode} deleteIcon - custom delete icon, defaults to DeleteOutlineIcon
  * @param {Boolean} editDisabled - disables edit button when true, optional
  * @param {Boolean} deleteDisabled - disables delete button when true, optional
@@ -35,6 +37,7 @@ const DataGridActions = ({
   handleDeleteOpen,
   handleSaveClick,
   handleEditClick,
+  handleAttachmentClick = null,
   deleteIcon,
   editDisabled = false,
   deleteDisabled = false,
@@ -85,9 +88,11 @@ const DataGridActions = ({
       />,
     ];
   }
+
   const DeleteIcon = deleteIcon || (
     <DeleteOutlineIcon sx={defaultEditColumnIconStyle} />
   );
+
   return [
     // only render edit button if we were passed an edit handler and are not currently in edit mode
     handleEditClick && (
@@ -99,6 +104,16 @@ const DataGridActions = ({
         onClick={handleEditClick(id)}
         color="inherit"
         disabled={editDisabled}
+      />
+    ),
+    handleAttachmentClick && (
+      <GridActionsCellItem
+        icon={<AttachFileOutlinedIcon sx={defaultEditColumnIconStyle} />}
+        label="Attachment"
+        key="attachment"
+        className="textPrimary"
+        onClick={handleAttachmentClick}
+        color="inherit"
       />
     ),
     <GridActionsCellItem

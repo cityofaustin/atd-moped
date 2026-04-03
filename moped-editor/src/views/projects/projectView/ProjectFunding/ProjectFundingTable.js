@@ -32,7 +32,11 @@ import {
   DELETE_PROJECT_FUNDING,
   ECAPRIS_FDU_OPTIONS_QUERY,
 } from "src/queries/funding";
-import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
+import {
+  ATTACH_FILE_TO_ECAPRIS_FUNDING,
+  DETACH_FILE_FROM_ECAPRIS_FUNDING,
+  PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC,
+} from "src/queries/project";
 
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -227,6 +231,9 @@ const useColumns = ({
               handleEditClick={handleEditClick}
               editDisabled={row.is_synced_from_ecapris}
               deleteDisabled={row.is_synced_from_ecapris}
+              handleAttachmentClick={() => {
+                console.log("attachment click");
+              }}
             />
           ) : (
             <>

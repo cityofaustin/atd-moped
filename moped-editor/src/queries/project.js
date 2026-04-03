@@ -930,6 +930,36 @@ export const PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC = gql`
   }
 `;
 
+export const ATTACH_FILE_TO_ECAPRIS_FUNDING = gql`
+  mutation InsertEcaprisFundingFile(
+    $project_id: Int!
+    $entity_id: Int!
+    $file_id: Int!
+  ) {
+    insert_ecapris_funding_files_one(
+      object: {
+        project_id: $project_id
+        entity_id: $entity_id
+        file_id: $file_id
+      }
+    ) {
+      id
+      project_id
+      entity_id
+      file_id
+      created_at
+    }
+  }
+`;
+
+export const DETACH_FILE_FROM_ECAPRIS_FUNDING = gql`
+  mutation DeleteEcaprisFundingFile($id: Int!) {
+    delete_ecapris_funding_files_by_pk(id: $id) {
+      id
+    }
+  }
+`;
+
 export const UPDATE_PROJECT_NAMES_QUERY = gql`
   mutation UpdateProjectName(
     $projectId: Int!
