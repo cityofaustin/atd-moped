@@ -2,7 +2,7 @@
 CREATE TABLE public.files_ecapris_funding (
     id SERIAL PRIMARY KEY,
     project_id int4 NOT NULL REFERENCES public.moped_project(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    entity_id int4 NOT NULL REFERENCES public.ecapris_subproject_funding(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    entity_id int4 NOT NULL REFERENCES public.ecapris_subproject_funding(fao_id) ON DELETE CASCADE ON UPDATE CASCADE,
     file_id int4 NOT NULL REFERENCES public.moped_project_files(project_file_id) ON DELETE CASCADE ON UPDATE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

@@ -57,7 +57,7 @@ import {
 import { useLogUserEvent } from "src/utils/userEvents";
 
 // TODO: Open dialog to view attachments on click of attachment icon in actions column
-// TODO: Upload (create link file) and associate when saving in dialog
+// TODO: Update files_ecapris_funding table to use id instead of fao_id for ecapris funding reference
 // TODO: Detach in dialog
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 
