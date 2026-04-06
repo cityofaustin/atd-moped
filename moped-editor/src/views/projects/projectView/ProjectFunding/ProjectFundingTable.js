@@ -15,6 +15,7 @@ import {
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import {
   GridRowModes,
   GridRowEditStopReasons,
@@ -91,6 +92,7 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
+  handleAttachmentClick,
   setOverrideFundingRecord,
   usingShiftKey,
   logUserEvent,
@@ -219,6 +221,7 @@ const useColumns = ({
         filterable: false,
         sortable: false,
         editable: false,
+        width: 110,
         type: "actions",
         renderCell: ({ id, row }) =>
           row.is_manual ? (
@@ -231,9 +234,7 @@ const useColumns = ({
               handleEditClick={handleEditClick}
               editDisabled={row.is_synced_from_ecapris}
               deleteDisabled={row.is_synced_from_ecapris}
-              handleAttachmentClick={() => {
-                console.log("attachment click");
-              }}
+              handleAttachmentClick={handleAttachmentClick}
             />
           ) : (
             <>
@@ -246,6 +247,13 @@ const useColumns = ({
                 }}
               >
                 <EditOutlinedIcon />
+              </IconButton>
+              <IconButton
+                aria-label="attachment"
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={handleAttachmentClick(id)}
+              >
+                <AttachFileOutlinedIcon />
               </IconButton>
               <IconButton
                 aria-label="delete"
@@ -267,6 +275,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    handleAttachmentClick,
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
@@ -513,6 +522,19 @@ const ProjectFundingTable = ({
     }
   };
 
+  /* File attachment state and handlers */
+  const [fileAttachmentId, setFileAttachmentId] = useState(null);
+  const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
+    useState(false);
+
+  const handleAttachmentClick = useCallback(
+    (id) => () => {
+      setFileAttachmentId(id);
+      setIsFileAttachmentDialogOpen(true);
+    },
+    []
+  );
+
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
     const mutationData = transformGridToDatabase(updatedRow);
@@ -594,6 +616,7 @@ const ProjectFundingTable = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    handleAttachmentClick,
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
@@ -650,7 +673,6 @@ const ProjectFundingTable = ({
           loadingProjectFunding || loadingFduOptions || !dataProjectFunding
         }
         apiRef={apiRef}
-        ref={apiRef}
         columns={dataGridColumns}
         rows={rows}
         getRowId={(row) => row.id}
