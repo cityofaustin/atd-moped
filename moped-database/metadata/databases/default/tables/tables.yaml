@@ -17,6 +17,7 @@
 - "!include public_feature_street_segments.yaml"
 - "!include public_features.yaml"
 - "!include public_features_council_districts.yaml"
+- "!include public_files_ecapris_funding.yaml"
 - "!include public_layer_council_district.yaml"
 - "!include public_moped_activity_log.yaml"
 - "!include public_moped_component_tags.yaml"

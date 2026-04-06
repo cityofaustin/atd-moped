@@ -220,11 +220,9 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        flex: 1,
-        width: 100,
-        renderCell: (params) => (
+        renderCell: ({ id }) => (
           <DataGridActions
-            id={params.id}
+            id={id}
             requiredFields={requiredFields}
             rowModesModel={rowModesModel}
             handleCancelClick={handleCancelClick}

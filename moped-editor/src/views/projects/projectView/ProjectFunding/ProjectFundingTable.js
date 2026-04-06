@@ -56,6 +56,11 @@ import {
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 
+// TODO: Open dialog to view attachments on click of attachment icon in actions column
+// TODO: Upload (create link file) and associate when saving in dialog
+// TODO: Detach in dialog
+// TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
+
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
   getOptionLabel: (option) =>
@@ -535,6 +540,36 @@ const ProjectFundingTable = ({
     []
   );
 
+  /**
+   * Persists the file data into the database
+   * @param {Object} fileDataBundle - The file bundle as provided by the FileUpload component
+   */
+  const handleClickSaveFile = (fileDataBundle) => {
+    createProjectFileAttachment({
+      variables: {
+        object: {
+          project_id: projectId,
+          file_name: fileDataBundle?.name,
+          file_type: fileDataBundle?.type,
+          file_description: fileDataBundle?.description,
+          file_key: fileDataBundle?.key,
+          file_size: fileDataBundle?.file?.fileSize ?? 0,
+          file_url: fileDataBundle?.url,
+        },
+      },
+    })
+      .then(() => {
+        setIsFileAttachmentDialogOpen(false);
+        handleSnackbar(true, "File attachment saved", "success");
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error saving file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
+  };
+
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
     const mutationData = transformGridToDatabase(updatedRow);
@@ -808,6 +843,18 @@ const ProjectFundingTable = ({
           onClose={() => setOverrideFundingRecord(null)}
           handleSnackbar={handleSnackbar}
           dataProjectFunding={dataProjectFunding}
+        />
+      )}
+      {isFileAttachmentDialogOpen && (
+        <FileUploadDialogSingle
+          title={"Add file"}
+          dialogOpen={isFileAttachmentDialogOpen}
+          handleClickCloseUploadFile={() =>
+            setIsFileAttachmentDialogOpen(false)
+          }
+          handleClickSaveFile={handleClickSaveFile}
+          projectId={projectId}
+          fileTypesLookup={fileTypesLookup}
         />
       )}
     </div>

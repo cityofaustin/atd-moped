@@ -43,7 +43,7 @@ import ProjectFunding from "src/views/projects/projectView/ProjectFunding";
 import ProjectTeam from "src/views/projects/projectView/ProjectTeam/ProjectTeam";
 import ProjectTimeline from "src/views/projects/projectView/ProjectTimeline";
 import ProjectNotes from "src/views/projects/projectView/ProjectNotes";
-import ProjectFiles from "src/views/projects/projectView/ProjectFiles";
+import ProjectFiles from "src/views/projects/projectView/ProjectFiles/ProjectFiles";
 import TabPanel from "src/views/projects/projectView/TabPanel";
 import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "src/queries/project";
 import ProjectActivityLog from "src/views/projects/projectView/ProjectActivityLog";
