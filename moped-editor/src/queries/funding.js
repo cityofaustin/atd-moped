@@ -25,6 +25,10 @@ export const COMBINED_FUNDING_QUERY = gql`
       unit_long_name
       ecapris_subproject_id
       should_use_ecapris_amount
+      ecapris_funding_files {
+        id
+        file_id
+      }
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id

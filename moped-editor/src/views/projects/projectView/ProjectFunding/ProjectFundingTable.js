@@ -58,6 +58,7 @@ import { useLogUserEvent } from "src/utils/userEvents";
 
 // TODO: Open dialog to view attachments on click of attachment icon in actions column
 // TODO: Update files_ecapris_funding table to use id instead of fao_id for ecapris funding reference
+// TODO: Fetch funding attachments id and render way to detach in dialog if there is an attachment
 // TODO: Detach in dialog
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 
@@ -320,6 +321,8 @@ const ProjectFundingTable = ({
     variables: { ...queryVariables },
     fetchPolicy: "no-cache",
   });
+  // TODO: Fix id used in this component for eCAPRIS to be ecapris_subproject_funding id and not fao_id to fix relationship
+  console.log("dataProjectFunding", dataProjectFunding);
 
   const tableFundingRows = useMemo(() => {
     const fundingRows = dataProjectFunding?.combined_project_funding_view;
