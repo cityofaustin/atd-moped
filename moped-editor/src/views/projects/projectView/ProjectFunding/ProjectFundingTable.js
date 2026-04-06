@@ -31,14 +31,14 @@ import {
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
-  ECAPRIS_FDU_OPTIONS_QUERY,
+  GET_FUNDING_LOOKUPS,
 } from "src/queries/funding";
 import {
-  ATTACH_FILE_TO_ECAPRIS_FUNDING,
-  DETACH_FILE_FROM_ECAPRIS_FUNDING,
+  CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC,
 } from "src/queries/project";
 
+import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
@@ -91,7 +91,7 @@ const fduAutocompleteDependentFields = [
 /** Hook that provides memoized column settings */
 const useColumns = ({
   dataProjectFunding,
-  dataFduOptions,
+  dataLookups,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -130,7 +130,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"ecapris_funding"}
-            options={dataFduOptions?.ecapris_subproject_funding}
+            options={dataLookups?.ecapris_subproject_funding}
             fullWidthPopper={true}
             autocompleteProps={{
               ...fduAutocompleteProps,
@@ -274,7 +274,7 @@ const useColumns = ({
     ];
   }, [
     dataProjectFunding,
-    dataFduOptions,
+    dataLookups,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -337,8 +337,8 @@ const ProjectFundingTable = ({
     return tableFundingRows.map((row) => row.fdu) || [];
   }, [tableFundingRows]);
 
-  const { loading: loadingFduOptions, data: dataFduOptions } = useQuery(
-    ECAPRIS_FDU_OPTIONS_QUERY,
+  const { loading: loadingLookups, data: dataLookups } = useQuery(
+    GET_FUNDING_LOOKUPS,
     {
       fetchPolicy: "no-cache",
     }
@@ -528,6 +528,9 @@ const ProjectFundingTable = ({
   };
 
   /* File attachment state and handlers */
+  const [addFundingFileAttachment] = useMutation(
+    CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
+  );
   const [fileAttachmentId, setFileAttachmentId] = useState(null);
   const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
     useState(false);
@@ -545,7 +548,10 @@ const ProjectFundingTable = ({
    * @param {Object} fileDataBundle - The file bundle as provided by the FileUpload component
    */
   const handleClickSaveFile = (fileDataBundle) => {
-    createProjectFileAttachment({
+    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
+    const eCaprisFundingId = fundingRecord?.fdu?.ecapris_funding_id;
+
+    addFundingFileAttachment({
       variables: {
         object: {
           project_id: projectId,
@@ -555,6 +561,13 @@ const ProjectFundingTable = ({
           file_key: fileDataBundle?.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
           file_url: fileDataBundle?.url,
+          // nested insert into files_ecapris_funding
+          files_ecapris_fundings: {
+            data: {
+              project_id: projectId,
+              entity_id: eCaprisFundingId,
+            },
+          },
         },
       },
     })
@@ -645,7 +658,7 @@ const ProjectFundingTable = ({
 
   const dataGridColumns = useColumns({
     dataProjectFunding,
-    dataFduOptions,
+    dataLookups,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -704,9 +717,7 @@ const ProjectFundingTable = ({
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <MopedDataGrid
-        loading={
-          loadingProjectFunding || loadingFduOptions || !dataProjectFunding
-        }
+        loading={loadingProjectFunding || loadingLookups || !dataProjectFunding}
         apiRef={apiRef}
         columns={dataGridColumns}
         rows={rows}
@@ -854,7 +865,7 @@ const ProjectFundingTable = ({
           }
           handleClickSaveFile={handleClickSaveFile}
           projectId={projectId}
-          fileTypesLookup={fileTypesLookup}
+          fileTypesLookup={dataLookups?.moped_file_types ?? []}
         />
       )}
     </div>

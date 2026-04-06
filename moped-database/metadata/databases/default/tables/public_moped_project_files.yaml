@@ -8,6 +8,14 @@ object_relationships:
   - name: moped_user
     using:
       foreign_key_constraint_on: created_by_user_id
+array_relationships:
+  - name: files_ecapris_fundings
+    using:
+      foreign_key_constraint_on:
+        column: file_id
+        table:
+          name: files_ecapris_funding
+          schema: public
 insert_permissions:
   - role: moped-admin
     permission:

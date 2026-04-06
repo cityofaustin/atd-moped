@@ -44,8 +44,8 @@ export const COMBINED_FUNDING_QUERY = gql`
   }
 `;
 
-export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
-  query EcaprisFdu {
+export const GET_FUNDING_LOOKUPS = gql`
+  query GetFundingLookups {
     ecapris_subproject_funding {
       ecapris_funding_id: fao_id
       ecapris_subproject_id
@@ -62,6 +62,10 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
         funding_program_id
         funding_program_name
       }
+    }
+    moped_file_types {
+      id
+      name
     }
   }
 `;

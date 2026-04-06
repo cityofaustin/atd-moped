@@ -27,7 +27,7 @@ import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
-import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesTypeSelect";
+import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFiles/ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import { handleRowEditStop } from "src/utils/dataGridHelpers";
