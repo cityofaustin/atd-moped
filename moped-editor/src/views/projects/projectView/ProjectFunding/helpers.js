@@ -107,6 +107,7 @@ export const transformGridToDatabase = (gridRecord) => {
     proj_funding_id,
     isNew,
     is_manual,
+    ecapris_funding_files,
     ...databaseFields
   } = gridRecord;
 

@@ -71,6 +71,7 @@ import { useLogUserEvent } from "src/utils/userEvents";
 // TODO: Detach in dialog
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 // TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
+// TODO: Handle if file override - need to have attachment copy to new record. Leave old association in case override is reverted.
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -119,7 +120,7 @@ const useColumns = ({
       {
         headerName: "FDU",
         field: "fdu",
-        width: 200,
+        width: 180,
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
@@ -171,7 +172,7 @@ const useColumns = ({
       {
         headerName: "Source",
         field: "fund_source",
-        width: 200,
+        width: 180,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
         renderEditCell: (props) => (
@@ -186,7 +187,7 @@ const useColumns = ({
       {
         headerName: "Program",
         field: "fund_program",
-        width: 200,
+        width: 180,
         editable: true,
         valueFormatter: (value) => value?.funding_program_name,
         renderEditCell: (props) => (
@@ -209,7 +210,7 @@ const useColumns = ({
         headerName: "Status",
         field: "fund_status",
         editable: true,
-        width: 200,
+        width: 100,
         valueFormatter: (value) => value?.funding_status_name,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
@@ -234,7 +235,8 @@ const useColumns = ({
       {
         headerName: "Files",
         field: "file_url",
-        width: 100,
+        minWidth: 150,
+        flex: 1,
         editable: false,
         renderCell: ({ row }) => {
           return row.ecapris_funding_files.map((file_record) => {
