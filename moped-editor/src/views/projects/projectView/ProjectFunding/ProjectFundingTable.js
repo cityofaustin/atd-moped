@@ -12,6 +12,7 @@ import {
   Tooltip,
   IconButton,
   Typography,
+  Stack,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -72,6 +73,8 @@ import { useLogUserEvent } from "src/utils/userEvents";
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 // TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
 // TODO: Handle if file override - need to have attachment copy to new record. Leave old association in case override is reverted.
+// TODO: Show both moped_proj_files and ecapris funding files in Files table
+// TODO: Add copy icon to network path files
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -239,46 +242,54 @@ const useColumns = ({
         flex: 1,
         editable: false,
         renderCell: ({ row }) => {
-          return row.ecapris_funding_files.map((file_record) => {
-            const file = file_record.moped_project_file;
+          return (
+            <Stack direction="column" spacing={0.5}>
+              {row.ecapris_funding_files.map((file_record) => {
+                const file = file_record.moped_project_file;
 
-            if (file.file_key) {
-              return (
-                <Link
-                  onClick={() =>
-                    downloadFileAttachment(file?.file_key, getCognitoSession)
-                  }
-                  sx={clickableTextStyles}
-                >
-                  {cleanUpFileKey(file?.file_key)}
-                </Link>
-              );
-            }
-            return isValidUrl(file?.file_url) ? (
-              <ExternalLink
-                linkProps={{
-                  sx: clickableTextStyles,
-                }}
-                url={file?.file_url}
-                // text={file?.file_url}
-              />
-            ) : (
-              // if the user provided file_url is not a valid url, just render the text
-              <Typography
-                sx={{
-                  backgroundColor: "#eee",
-                  fontFamily: "monospace",
-                  display: "block",
-                  wordWrap: "break-word",
-                  paddingLeft: "4px",
-                  paddingRight: "4px",
-                  fontSize: "14px",
-                }}
-              >
-                {file?.file_url}
-              </Typography>
-            );
-          });
+                if (!file) return null;
+                if (file.file_key) {
+                  return (
+                    <Link
+                      onClick={() =>
+                        downloadFileAttachment(
+                          file?.file_key,
+                          getCognitoSession
+                        )
+                      }
+                      sx={clickableTextStyles}
+                    >
+                      {cleanUpFileKey(file?.file_key)}
+                    </Link>
+                  );
+                }
+                return isValidUrl(file?.file_url) ? (
+                  <ExternalLink
+                    linkProps={{
+                      sx: clickableTextStyles,
+                    }}
+                    url={file?.file_url}
+                    // text={file?.file_url}
+                  />
+                ) : (
+                  // if the user provided file_url is not a valid url, just render the text
+                  <Typography
+                    sx={{
+                      backgroundColor: "#eee",
+                      fontFamily: "monospace",
+                      display: "block",
+                      wordWrap: "break-word",
+                      paddingLeft: "4px",
+                      paddingRight: "4px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    {file?.file_url}
+                  </Typography>
+                );
+              })}
+            </Stack>
+          );
         },
       },
       {
