@@ -260,7 +260,7 @@ const useColumns = ({
                   sx: clickableTextStyles,
                 }}
                 url={file?.file_url}
-                text={file?.file_url}
+                // text={file?.file_url}
               />
             ) : (
               // if the user provided file_url is not a valid url, just render the text
