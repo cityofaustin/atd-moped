@@ -49,12 +49,12 @@ export const useFileTypeObject = (fileTypes) =>
 
 // remove the FilePond and s3 added path for display, ex:
 // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
-const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
+export const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
 const requiredFields = ["file_name", "file_type"];
 
 // Reusable styles for clickable text elements with ellipsis
-const clickableTextStyles = {
+export const clickableTextStyles = {
   cursor: "pointer",
   overflow: "hidden",
   display: "block",

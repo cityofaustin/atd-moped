@@ -7,6 +7,7 @@ import {
   Button,
   FormControlLabel,
   Grid2,
+  Link,
   Switch,
   Tooltip,
   IconButton,
@@ -23,8 +24,16 @@ import {
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import ExternalLink from "src/components/ExternalLink";
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "src/utils/numberFormatters";
+import downloadFileAttachment from "src/utils/downloadFileAttachment";
+import {
+  cleanUpFileKey,
+  clickableTextStyles,
+} from "src/views/projects/projectView/ProjectFiles/ProjectFiles";
+import { isValidUrl } from "src/utils/urls";
+import { useUser } from "src/auth/user";
 
 import {
   COMBINED_FUNDING_QUERY,
@@ -61,6 +70,7 @@ import { useLogUserEvent } from "src/utils/userEvents";
 // TODO: Fetch funding attachments id and render way to detach in dialog if there is an attachment
 // TODO: Detach in dialog
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
+// TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -102,6 +112,7 @@ const useColumns = ({
   setOverrideFundingRecord,
   usingShiftKey,
   logUserEvent,
+  getCognitoSession,
 }) =>
   useMemo(() => {
     return [
@@ -221,6 +232,54 @@ const useColumns = ({
         type: "currency",
       },
       {
+        headerName: "Files",
+        field: "file_url",
+        width: 100,
+        editable: false,
+        renderCell: ({ row }) => {
+          return row.ecapris_funding_files.map((file_record) => {
+            const file = file_record.moped_project_file;
+
+            if (file.file_key) {
+              return (
+                <Link
+                  onClick={() =>
+                    downloadFileAttachment(file?.file_key, getCognitoSession)
+                  }
+                  sx={clickableTextStyles}
+                >
+                  {cleanUpFileKey(file?.file_key)}
+                </Link>
+              );
+            }
+            return isValidUrl(file?.file_url) ? (
+              <ExternalLink
+                linkProps={{
+                  sx: clickableTextStyles,
+                }}
+                url={file?.file_url}
+                text={file?.file_url}
+              />
+            ) : (
+              // if the user provided file_url is not a valid url, just render the text
+              <Typography
+                sx={{
+                  backgroundColor: "#eee",
+                  fontFamily: "monospace",
+                  display: "block",
+                  wordWrap: "break-word",
+                  paddingLeft: "4px",
+                  paddingRight: "4px",
+                  fontSize: "14px",
+                }}
+              >
+                {file?.file_url}
+              </Typography>
+            );
+          });
+        },
+      },
+      {
         headerName: "",
         field: "edit",
         hideable: false,
@@ -285,6 +344,7 @@ const useColumns = ({
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
+    getCognitoSession,
   ]);
 
 const ProjectFundingTable = ({
@@ -295,6 +355,7 @@ const ProjectFundingTable = ({
   shouldSyncEcaprisFunding,
 }) => {
   const apiRef = useGridApiRef();
+  const { getCognitoSession } = useUser();
 
   /* Query Moped and eCAPRIS funding with matching filters */
   const queryVariables =
@@ -671,6 +732,7 @@ const ProjectFundingTable = ({
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
+    getCognitoSession,
   });
 
   const handleECaprisSwitch = () => {
