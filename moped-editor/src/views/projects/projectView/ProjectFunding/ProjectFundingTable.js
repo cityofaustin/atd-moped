@@ -552,7 +552,7 @@ const ProjectFundingTable = ({
    */
   const handleClickSaveFile = (fileDataBundle) => {
     const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
-    const eCaprisFundingId = fundingRecord?.fdu?.ecapris_funding_id;
+    const entityId = fundingRecord?.proj_funding_id;
 
     addFundingFileAttachment({
       variables: {
@@ -568,7 +568,7 @@ const ProjectFundingTable = ({
           files_ecapris_fundings: {
             data: {
               project_id: projectId,
-              entity_id: eCaprisFundingId,
+              entity_id: entityId,
             },
           },
         },
