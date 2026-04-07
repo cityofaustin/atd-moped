@@ -42,7 +42,7 @@ export const helpItems = [
   },
   {
     linkType: "internal",
-    link: "/moped/dev/lookups",
+    link: "/moped/data-dictionary",
     title: "Data dictionary",
     Icon: <MenuBookOutlined fontSize="small" />,
   },
