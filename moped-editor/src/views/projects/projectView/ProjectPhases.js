@@ -274,9 +274,6 @@ const ProjectPhases = ({
             ),
           },
         }}
-        onProcessRowUpdateError={(error) =>
-          handleSnackbar(true, "Error updating table", "error", error)
-        }
       />
       {editPhase && (
         <ProjectPhaseDialog

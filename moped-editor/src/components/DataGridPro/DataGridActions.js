@@ -12,7 +12,7 @@ import {
   AttachFileOutlined as AttachFileOutlinedIcon,
 } from "@mui/icons-material";
 
-import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
+import { defaultEditColumnIconStyle } from "src/components/DataGridPro/utils/helpers.js";
 
 /** Component for Data Grid table action buttons
  * @param {Number} id - Data Grid row id (same as project id)

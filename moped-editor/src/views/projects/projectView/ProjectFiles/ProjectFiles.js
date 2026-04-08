@@ -10,7 +10,7 @@ import {
   useGridApiRef,
   gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
@@ -30,7 +30,10 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFiles/ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 import { useUser } from "src/auth/user";
 
 // reshape the array of file types into an object with key id, value name
@@ -261,6 +264,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -342,10 +346,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
   const [createProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
 
   const handleEditClick = useCallback(
     (id) => () => {
@@ -455,25 +455,18 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   return (
     <>
-      <MopedDataGrid
+      <MopedDataGridInlineEdit
         apiRef={apiRef}
-        ref={apiRef}
-        autoHeight
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}
         getRowId={(row) => row.project_file_id}
-        editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) =>
-          handleSnackbar(true, "Error updating table", "error", error)
-        }
         toolbar
         localeText={{ noRowsLabel: "No files to display" }}
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,
         }}
@@ -486,6 +479,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
                 color="primary"
                 startIcon={<AddCircleIcon />}
                 onClick={handleClickUploadFile}
+                disabled={isEditMode}
               >
                 Add File
               </Button>

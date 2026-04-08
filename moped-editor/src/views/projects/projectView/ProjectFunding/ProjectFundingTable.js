@@ -20,11 +20,10 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import {
   GridRowModes,
-  GridRowEditStopReasons,
   useGridApiRef,
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import ExternalLink from "src/components/ExternalLink";
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "src/utils/numberFormatters";
@@ -58,7 +57,10 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 import {
   transformDatabaseToGrid,
@@ -438,6 +440,7 @@ const ProjectFundingTable = ({
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -497,23 +500,6 @@ const ProjectFundingTable = ({
       }
     },
     [apiRef]
-  );
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
-  // Prevent save on click-away (rowFocusOut) so that clicking "Add Manually" or other
-  // controls does not save the current row and create inconsistent state.
-  const handleFundingRowEditStop = useCallback(
-    (params, event) => {
-      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-        event.defaultMuiPrevented = true;
-        return;
-      }
-      handleRowEditStop(rows, setRows)(params, event);
-    },
-    [rows]
   );
 
   // adds a blank row to the table and updates the row modes model
@@ -786,31 +772,23 @@ const ProjectFundingTable = ({
     }
   };
 
-  // Disable "Add Manually" button when any row is in edit mode to prevent
-  // creating multiple unsaved rows which leads to inconsistent state
-  const isEditMode = Object.values(rowModesModel).some(
-    (m) => m?.mode === GridRowModes.Edit
-  );
-
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <MopedDataGrid
+      <MopedDataGridInlineEdit
         loading={loadingProjectFunding || loadingLookups || !dataProjectFunding}
         apiRef={apiRef}
         columns={dataGridColumns}
         rows={rows}
         getRowId={(row) => row.id}
-        editMode="row"
         rowModesModel={rowModesModel}
-        onRowEditStop={handleFundingRowEditStop}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         isCellEditable={isCellEditable}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         toolbar
         onCellKeyDown={handleTabKeyDown}
         onCellDoubleClick={doubleClickListener}
         localeText={{ noRowsLabel: "No funding sources" }}
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,
         }}
@@ -867,6 +845,7 @@ const ProjectFundingTable = ({
                     }
                     refetch={refetchProjectSummary}
                     handleSnackbar={handleSnackbar}
+                    disabled={isEditMode}
                   />
                 </Grid2>
                 <Grid2

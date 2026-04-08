@@ -13,6 +13,8 @@ import {
   fieldBox,
   fieldGridItem,
   fieldLabel,
+  fieldLabelText,
+  fieldLabelTextNoHover,
   fieldSelectItem,
 } from "src/styles/reusableStyles";
 import {
@@ -28,6 +30,7 @@ import {
  * @param {boolean} loading - True if project summary refetch is loading
  * @param {function} refetch - The refetch function from apollo
  * @param {function} handleSnackbar - The function to show the snackbar
+ * @param {boolean} disabled - Whether the edit functionality should be disabled, optional
  * @returns {JSX.Element}
  * @constructor
  */
@@ -38,6 +41,7 @@ const ProjectSummaryProjectECapris = ({
   loading,
   refetch,
   handleSnackbar,
+  disabled = false,
 }) => {
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
@@ -144,13 +148,14 @@ const ProjectSummaryProjectECapris = ({
                   to report.
                 </Typography>
               }
+              disabled={disabled}
             />
             <ProjectSummaryIconButtons
               handleSave={handleFieldSave}
               handleClose={handleFieldClose}
               disabledCondition={
                 eCaprisSubprojectId ===
-                (selectedValue?.ecapris_subproject_id ?? null)
+                  (selectedValue?.ecapris_subproject_id ?? null) || disabled
               }
               loading={loading || updateLoading || clearLoading}
             />
@@ -164,7 +169,11 @@ const ProjectSummaryProjectECapris = ({
           >
             <ProjectSummaryLabel
               text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
-              onClickEdit={() => setEditMode(true)}
+              onClickEdit={() => {
+                if (disabled) return;
+                setEditMode(true);
+              }}
+              sxProp={disabled ? fieldLabelTextNoHover : fieldLabelText}
             />
             {eCaprisSubprojectId ? (
               <CopyTextButton
