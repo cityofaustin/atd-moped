@@ -170,6 +170,7 @@ const ProjectSummaryProjectECapris = ({
             <ProjectSummaryLabel
               text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => {
+                if (disabled) return;
                 setEditMode(true);
               }}
               sxProp={disabled ? fieldLabelTextNoHover : fieldLabelText}
