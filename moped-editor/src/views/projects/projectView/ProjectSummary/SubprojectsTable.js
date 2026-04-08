@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 import { Box, Button } from "@mui/material";
 import { GridRowModes } from "@mui/x-data-grid-pro";
-import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { v4 as uuidv4 } from "uuid";
@@ -375,7 +375,7 @@ const SubprojectsTable = ({
 
   return (
     <>
-      <MopedInlineEditDataGrid
+      <MopedDataGridInlineEdit
         sx={{ border: 0 }}
         columns={dataGridColumns}
         rows={rows || []}

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@mui/material";
 import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
-import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -432,7 +432,7 @@ const ProjectMilestones = ({
 
   return (
     <>
-      <MopedInlineEditDataGrid
+      <MopedDataGridInlineEdit
         apiRef={apiRef}
         autoHeight
         columns={dataGridColumns}

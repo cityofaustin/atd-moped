@@ -6,7 +6,7 @@ import { Button, Tooltip, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
-import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { useLocation } from "react-router-dom";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -291,7 +291,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
 
   return (
     <>
-      <MopedInlineEditDataGrid
+      <MopedDataGridInlineEdit
         sx={{ border: "none" }}
         apiRef={apiRef}
         columns={columns}

@@ -10,7 +10,7 @@ import {
   useGridApiRef,
   gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
-import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
@@ -455,7 +455,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   return (
     <>
-      <MopedInlineEditDataGrid
+      <MopedDataGridInlineEdit
         apiRef={apiRef}
         columns={dataGridColumns}
         rows={rows || []}

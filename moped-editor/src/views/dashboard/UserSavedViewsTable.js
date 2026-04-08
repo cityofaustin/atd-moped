@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import { GridRowModes } from "@mui/x-data-grid-pro";
-import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import Link from "@mui/material/Link";
 
 import {
@@ -225,7 +225,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
 
   return (
     <>
-      <MopedInlineEditDataGrid
+      <MopedDataGridInlineEdit
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         columns={dataGridColumns}

@@ -6,7 +6,7 @@ import { Box, Button, Icon, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
-import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { useQuery, useMutation } from "@apollo/client";
 
 import {
@@ -558,7 +558,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   return (
     <>
-      <MopedInlineEditDataGrid
+      <MopedDataGridInlineEdit
         apiRef={apiRef}
         autoHeight
         columns={dataGridColumns}

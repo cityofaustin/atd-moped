@@ -20,7 +20,7 @@ import {
   useGridApiRef,
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
-import MopedInlineEditDataGrid from "src/components/DataGridPro/MopedInlineEditDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
@@ -618,7 +618,7 @@ const ProjectFundingTable = ({
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <MopedInlineEditDataGrid
+      <MopedDataGridInlineEdit
         loading={
           loadingProjectFunding || loadingFduOptions || !dataProjectFunding
         }
@@ -691,6 +691,7 @@ const ProjectFundingTable = ({
                     }
                     refetch={refetchProjectSummary}
                     handleSnackbar={handleSnackbar}
+                    disabled={isEditMode}
                   />
                 </Grid2>
                 <Grid2
