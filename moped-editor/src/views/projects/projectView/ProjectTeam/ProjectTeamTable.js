@@ -6,7 +6,7 @@ import { Box, Button, Icon, Link, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { useQuery, useMutation } from "@apollo/client";
 
 import {
@@ -23,7 +23,10 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import { mopedUserAutocompleteProps } from "./utils";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 const useWorkgroupLookup = (data) =>
   useMemo(() => {
@@ -144,7 +147,7 @@ const useColumns = ({
           <Box sx={{ fontWeight: 500 }}>
             Role{" "}
             <Link
-              href="dev/lookups#moped-project_roles"
+              href="data-dictionary#moped-project-roles"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -324,6 +327,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -552,33 +556,23 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     }
   };
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   return (
     <>
-      <MopedDataGrid
+      <MopedDataGridInlineEdit
         apiRef={apiRef}
-        ref={apiRef}
         autoHeight
         columns={dataGridColumns}
         rows={rows || []}
         loading={loading || !data}
         getRowId={getRowIdMemoized}
-        editMode="row"
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         onRowEditStop={handleRowEditStop(rows, setRows)}
-        onProcessRowUpdateError={(error) => {
-          console.error("Unexpected error in processRowUpdate:", error);
-        }}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar
         localeText={{ noRowsLabel: "No team members found" }}
         disableColumnMenu
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,
         }}
@@ -591,6 +585,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
                 color="primary"
                 startIcon={<AddCircleIcon />}
                 onClick={onClickAddTeamMember}
+                disabled={isEditMode}
               >
                 Add team member
               </Button>

@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 import { Box, Button } from "@mui/material";
 import { GridRowModes } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { v4 as uuidv4 } from "uuid";
@@ -22,7 +22,10 @@ import {
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 const requiredFields = ["project_name_full"];
 
@@ -184,6 +187,7 @@ const SubprojectsTable = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   // sets the data grid row data when query data is fetched
   useEffect(() => {
@@ -297,10 +301,6 @@ const SubprojectsTable = ({
       });
   };
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   // handles insert mutation triggered by row mode switching from edit to view
   const processRowUpdate = useCallback(
     (newRow) => {
@@ -371,11 +371,11 @@ const SubprojectsTable = ({
 
   // Disable adding if viewing a subproject and a parent already exists
   const hasParent = isSubproject && rows.length > 0;
-  const addButtonDisabled = isSubproject ? hasParent : false;
+  const addButtonDisabled = isEditMode || (isSubproject ? hasParent : false);
 
   return (
     <>
-      <MopedDataGrid
+      <MopedDataGridInlineEdit
         sx={{ border: 0 }}
         columns={dataGridColumns}
         rows={rows || []}
@@ -383,7 +383,7 @@ const SubprojectsTable = ({
         autoHeight
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{
           toolbar: {
@@ -401,11 +401,9 @@ const SubprojectsTable = ({
             ),
           },
         }}
-        editMode="row"
         processRowUpdate={processRowUpdate}
         onRowEditStop={handleRowEditStop(rows, setRows)}
         localeText={{ noRowsLabel: noRelatedProjectsLabel }}
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows
         }}

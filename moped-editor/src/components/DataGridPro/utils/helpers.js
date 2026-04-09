@@ -1,14 +1,37 @@
-/**
- * Get lookup value for a given table using a record ID and returning a name
- * @param {Array|Object} lookupTable - Lookup table
- * @param {string} attribute - Prefix version of attribute name relying on the pattern of _id and _name
- * @param {number} id - ID used to find target record in lookup table
- * @return {string} - Name of attribute in the given row.
- */
-export const getLookupValueByID = (lookupTable, attribute, id) => {
-  if (!id) return null;
+import { GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid-pro";
 
-  return lookupTable.find((item) => item[`${attribute}_id`] === id)[
-    `${attribute}_name`
-  ];
+export const defaultEditColumnIconStyle = { fontSize: "24px" };
+
+/**
+ * Custom event handler for the DataGrid `onRowEditStop` event that:
+ * 1. Prevents saving on Enter key press
+ * 2. Prevents saving on click-away
+ * 3. Deletes unsaved new rows on Escape
+ * @param {Array} rows - The current rows state
+ * @param {Function} setRows - The rows state setter
+ * @returns {Function} - A DataGrid `onRowEditStop` event handler
+ */
+export const handleRowEditStop = (rows, setRows) => (params, event) => {
+  if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+    event.defaultMuiPrevented = true;
+    return;
+  }
+  if (params.reason === GridRowEditStopReasons.enterKeyDown) {
+    event.defaultMuiPrevented = true;
+  }
+  if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
+    if (params.row.isNew) {
+      setRows(rows.filter((row) => row.id !== params.row.id));
+    }
+  }
 };
+
+/**
+ * Uses the rowModesModel to determine if any row is currently in edit mode
+ * Example: Disable "Add Manually" button when any row is in edit mode to prevent
+ * creating multiple unsaved rows which leads to inconsistent state
+ * @param {Object} rowModesModel - The row modes model from the DataGrid
+ * @returns {boolean} - True if any row is in edit mode, false otherwise
+ */
+export const getIsEditMode = (rowModesModel) =>
+  Object.values(rowModesModel).some((m) => m?.mode === GridRowModes.Edit);

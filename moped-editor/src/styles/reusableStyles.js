@@ -22,7 +22,7 @@ export const fieldLabelText = (theme) => ({
 
 export const fieldLabelTextNoHover = (theme) => ({
   width: "calc(100% - 2rem)",
-  paddingLeft: theme.spacing(0.5),
+  padding: theme.spacing(0.5),
   overflowWrap: "break-word",
 });
 

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@mui/material";
 import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
-import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
+import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -26,7 +26,10 @@ import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/utils/dataGridHelpers";
+import {
+  getIsEditMode,
+  handleRowEditStop,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -217,6 +220,7 @@ const ProjectMilestones = ({
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
+  const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
     if (data && data.moped_proj_milestones.length > 0) {
@@ -234,10 +238,6 @@ const ProjectMilestones = ({
     },
     []
   );
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
 
   const handleEditClick = useCallback(
     (id) => () => {
@@ -432,23 +432,20 @@ const ProjectMilestones = ({
 
   return (
     <>
-      <MopedDataGrid
+      <MopedDataGridInlineEdit
         apiRef={apiRef}
-        ref={apiRef}
         autoHeight
         columns={dataGridColumns}
         rows={rows}
         loading={loading || !data}
         getRowId={(row) => row.project_milestone_id}
-        editMode="row"
         onRowEditStop={handleRowEditStop(rows, setRows)}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar
         localeText={{ noRowsLabel: "No project milestones to display" }}
-        initialState={{ pinnedColumns: { right: ["edit"] } }}
         slots={{
           toolbar: DataGridToolbar,
         }}
@@ -461,6 +458,7 @@ const ProjectMilestones = ({
                 color="primary"
                 onClick={onClickAddMilestone}
                 startIcon={<AddCircleIcon />}
+                disabled={isEditMode}
               >
                 {"Add milestone"}
               </Button>
@@ -470,6 +468,7 @@ const ProjectMilestones = ({
                 variant="outlined"
                 onClick={() => setIsDialogOpen(true)}
                 startIcon={<AddCircleIcon />}
+                disabled={isEditMode}
               >
                 {"From template"}
               </Button>
