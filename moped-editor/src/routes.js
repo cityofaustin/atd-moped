@@ -75,9 +75,14 @@ export const routes = [
         element: <DeviasStyleView />,
       },
       {
-        path: "dev/lookups",
-        action: "style:visit",
+        path: "data-dictionary",
+        action: "dictionary:visit",
         element: <LookupsView />,
+      },
+      {
+        path: "dev/lookups",
+        action: "dictionary:visit",
+        element: <Navigate to="/moped/data-dictionary" />,
       },
       {
         path: "views/signal-projects",
