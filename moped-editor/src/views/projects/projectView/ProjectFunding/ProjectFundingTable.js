@@ -4,7 +4,9 @@ import isEqual from "lodash.isequal";
 
 // Material
 import {
+  Box,
   Button,
+  Divider,
   FormControlLabel,
   Grid2,
   Link,
@@ -67,6 +69,7 @@ import {
   transformGridToDatabase,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
+import { LinkOff } from "@mui/icons-material";
 
 // TODO: Open dialog to view attachments on click of attachment icon in actions column
 // TODO: Fetch funding attachments id and render way to detach in dialog if there is an attachment
@@ -598,6 +601,15 @@ const ProjectFundingTable = ({
   const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
     useState(false);
 
+  const filesAttachedToId = useMemo(() => {
+    return rows
+      .find((row) => row.id === fileAttachmentId)
+      ?.ecapris_funding_files.map(
+        (file_record) => file_record.moped_project_file
+      );
+  }, [fileAttachmentId, rows]);
+  console.log(filesAttachedToId);
+
   const handleAttachmentClick = useCallback(
     (id) => () => {
       setFileAttachmentId(id);
@@ -624,7 +636,6 @@ const ProjectFundingTable = ({
           file_key: fileDataBundle?.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
           file_url: fileDataBundle?.url,
-          // nested insert into files_ecapris_funding
           files_ecapris_fundings: {
             data: {
               project_id: projectId,
@@ -636,14 +647,23 @@ const ProjectFundingTable = ({
     })
       .then(() => {
         setIsFileAttachmentDialogOpen(false);
+        setFileAttachmentId(null);
         handleSnackbar(true, "File attachment saved", "success");
       })
       .catch((error) => {
+        setFileAttachmentId(null);
         handleSnackbar(true, "Error saving file attachment", "error", error);
       })
       .finally(() => {
         refetch();
       });
+  };
+
+  const handleUnlinkFileAttachment = () => {
+    console.log(
+      "unlinking file attachment from funding record with id",
+      fileAttachmentId
+    );
   };
 
   // saves row update, either editing an existing row or saving a new row
@@ -924,6 +944,63 @@ const ProjectFundingTable = ({
           handleClickSaveFile={handleClickSaveFile}
           projectId={projectId}
           fileTypesLookup={dataLookups?.moped_file_types ?? []}
+          children={
+            <Box>
+              <Divider />
+              <Stack direction="column" spacing={1} sx={{ marginTop: 2 }}>
+                <Typography variant="h4">Attached files</Typography>
+                <Stack direction="row" spacing={1}>
+                  {filesAttachedToId.map((file) => {
+                    if (!file) return null;
+                    if (file.file_key) {
+                      return (
+                        <Link
+                          onClick={() =>
+                            downloadFileAttachment(
+                              file?.file_key,
+                              getCognitoSession
+                            )
+                          }
+                          sx={clickableTextStyles}
+                          key={file?.file_key}
+                        >
+                          {cleanUpFileKey(file?.file_key)}
+                        </Link>
+                      );
+                    }
+                    return isValidUrl(file?.file_url) ? (
+                      <ExternalLink
+                        linkProps={{
+                          sx: clickableTextStyles,
+                          key: file?.file_url,
+                        }}
+                        url={file?.file_url}
+                      />
+                    ) : (
+                      // if the user provided file_url is not a valid url, just render the text
+                      <Typography
+                        sx={{
+                          backgroundColor: "#eee",
+                          fontFamily: "monospace",
+                          display: "block",
+                          wordWrap: "break-word",
+                          paddingLeft: "4px",
+                          paddingRight: "4px",
+                          fontSize: "14px",
+                        }}
+                        key={file?.file_key}
+                      >
+                        {file?.file_url}
+                      </Typography>
+                    );
+                  })}
+                  <IconButton onClick={handleUnlinkFileAttachment}>
+                    <LinkOff />
+                  </IconButton>
+                </Stack>
+              </Stack>
+            </Box>
+          }
         />
       )}
     </div>

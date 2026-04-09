@@ -18,6 +18,26 @@ import {
 } from "@mui/material";
 import FileUpload from "src/components/FileUpload/FileUpload";
 
+/**
+ * Wrapper component for uploading a single file to S3 and saving the file metadata to the database
+ * @param {string} title - title of the dialog
+ * @param {boolean} dialogOpen - boolean that controls whether the dialog is open or not
+ * @param {function} handleClickCloseUploadFile - handles closing the file upload dialog and other actions
+ * @param {function} handleClickSaveFile - handles saving the file to the database and receives a file bundle object with the following shape:
+ * {
+ *   name: string,
+ *   type: number,
+ *   description: string,
+ *   key: string,
+ *   file: file object as returned by the file uploader,
+ *   url: string (external file link, if applicable)
+ * }
+ * @param {number} projectId - integer representing the project id. This is used to generate the S3 presigned URL for file upload
+ * @param {Object[]} fileTypesLookup - array of file types lookup options
+ * @param {Object} children - React children elements
+ * @param {} param0
+ * @returns {JSX.Element}
+ */
 const FileUploadDialogSingle = ({
   title,
   dialogOpen,
@@ -25,6 +45,7 @@ const FileUploadDialogSingle = ({
   handleClickSaveFile,
   projectId,
   fileTypesLookup,
+  children,
 }) => {
   /**
    * @constant {string} fileName - Contains a human-readable file name
@@ -254,6 +275,7 @@ const FileUploadDialogSingle = ({
             )}
           </Grid2>
         </Grid2>
+        {children}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="primary">
