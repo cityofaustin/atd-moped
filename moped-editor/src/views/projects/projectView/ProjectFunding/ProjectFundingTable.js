@@ -46,6 +46,7 @@ import {
 } from "src/queries/funding";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC,
 } from "src/queries/project";
 
@@ -597,6 +598,9 @@ const ProjectFundingTable = ({
   const [addFundingFileAttachment] = useMutation(
     CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
   );
+  const [detachFundingFileAttachment] = useMutation(
+    DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
+  );
   const [fileAttachmentId, setFileAttachmentId] = useState(null);
   const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
     useState(false);
@@ -659,11 +663,29 @@ const ProjectFundingTable = ({
       });
   };
 
-  const handleUnlinkFileAttachment = () => {
-    console.log(
-      "unlinking file attachment from funding record with id",
-      fileAttachmentId
-    );
+  const handleUnlinkFileAttachment = (id) => {
+    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
+    const entityId = fundingRecord?.proj_funding_id;
+
+    detachFundingFileAttachment({
+      variables: {
+        fileId: id,
+        entityId,
+        projectId,
+      },
+    })
+      .then(() => {
+        setIsFileAttachmentDialogOpen(false);
+        setFileAttachmentId(null);
+        handleSnackbar(true, "File attachment unlinked", "success");
+      })
+      .catch((error) => {
+        setFileAttachmentId(null);
+        handleSnackbar(true, "Error unlinking file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
   };
 
   // saves row update, either editing an existing row or saving a new row
@@ -949,11 +971,14 @@ const ProjectFundingTable = ({
               <Divider />
               <Stack direction="column" spacing={1} sx={{ marginTop: 2 }}>
                 <Typography variant="h4">Attached files</Typography>
-                <Stack direction="row" spacing={1}>
-                  {filesAttachedToId.map((file) => {
-                    if (!file) return null;
-                    if (file.file_key) {
-                      return (
+
+                {filesAttachedToId.map((file) => {
+                  if (!file) return null;
+                  console.log("file in dialog", file);
+
+                  return (
+                    <Stack direction="row" spacing={1}>
+                      {file.file_key && (
                         <Link
                           onClick={() =>
                             downloadFileAttachment(
@@ -966,38 +991,42 @@ const ProjectFundingTable = ({
                         >
                           {cleanUpFileKey(file?.file_key)}
                         </Link>
-                      );
-                    }
-                    return isValidUrl(file?.file_url) ? (
-                      <ExternalLink
-                        linkProps={{
-                          sx: clickableTextStyles,
-                          key: file?.file_url,
-                        }}
-                        url={file?.file_url}
-                      />
-                    ) : (
-                      // if the user provided file_url is not a valid url, just render the text
-                      <Typography
-                        sx={{
-                          backgroundColor: "#eee",
-                          fontFamily: "monospace",
-                          display: "block",
-                          wordWrap: "break-word",
-                          paddingLeft: "4px",
-                          paddingRight: "4px",
-                          fontSize: "14px",
-                        }}
-                        key={file?.file_key}
+                      )}
+                      {isValidUrl(file?.file_url) ? (
+                        <ExternalLink
+                          linkProps={{
+                            sx: clickableTextStyles,
+                            key: file?.file_url,
+                          }}
+                          url={file?.file_url}
+                        />
+                      ) : (
+                        // if the user provided file_url is not a valid url, just render the text
+                        <Typography
+                          sx={{
+                            backgroundColor: "#eee",
+                            fontFamily: "monospace",
+                            display: "block",
+                            wordWrap: "break-word",
+                            paddingLeft: "4px",
+                            paddingRight: "4px",
+                            fontSize: "14px",
+                          }}
+                          key={file?.file_key}
+                        >
+                          {file?.file_url}
+                        </Typography>
+                      )}
+                      <IconButton
+                        onClick={() =>
+                          handleUnlinkFileAttachment(file.project_file_id)
+                        }
                       >
-                        {file?.file_url}
-                      </Typography>
-                    );
-                  })}
-                  <IconButton onClick={handleUnlinkFileAttachment}>
-                    <LinkOff />
-                  </IconButton>
-                </Stack>
+                        <LinkOff />
+                      </IconButton>
+                    </Stack>
+                  );
+                })}
               </Stack>
             </Box>
           }

@@ -717,6 +717,24 @@ export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
   }
 `;
 
+export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+  mutation DetachFileFromEcaprisFunding(
+    $fileId: Int!
+    $entityId: Int!
+    $projectId: Int!
+  ) {
+    delete_files_ecapris_funding(
+      where: {
+        file_id: { _eq: $fileId }
+        entity_id: { _eq: $entityId }
+        project_id: { _eq: $projectId }
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
     update_moped_project(
