@@ -166,7 +166,7 @@ export const generateProjectComponent = (
 
   return {
     component_id: componentDef.component_id,
-    location_description: signalRecord.location_name.trim(),
+    location_description: `${signalRecord.signal_id}: ${signalRecord.location_name?.trim()}`,
     feature_signals: {
       data: [signalRecord],
     },
