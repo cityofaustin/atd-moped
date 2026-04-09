@@ -255,10 +255,6 @@ const DashboardView = () => {
     }
   }, [data, activeTab]);
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
@@ -345,7 +341,7 @@ const DashboardView = () => {
                         loading={loading || !data}
                         getRowId={(row) => row.project_id}
                         rowModesModel={rowModesModel}
-                        onRowModesModelChange={handleRowModesModelChange}
+                        onRowModesModelChange={setRowModesModel}
                         localeText={{
                           noRowsLabel: "No projects to display",
                         }}
