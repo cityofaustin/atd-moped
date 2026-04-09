@@ -69,13 +69,11 @@ import {
 import { useLogUserEvent } from "src/utils/userEvents";
 
 // TODO: Open dialog to view attachments on click of attachment icon in actions column
-// TODO: Update files_ecapris_funding table to use id instead of fao_id for ecapris funding reference
 // TODO: Fetch funding attachments id and render way to detach in dialog if there is an attachment
 // TODO: Detach in dialog
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 // TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
 // TODO: Handle if file override - need to have attachment copy to new record. Leave old association in case override is reverted.
-// TODO: Show both moped_proj_files and ecapris funding files in Files table
 // TODO: Add copy icon to network path files
 
 // object to pass to the Fund column's LookupAutocomplete component
@@ -260,6 +258,7 @@ const useColumns = ({
                         )
                       }
                       sx={clickableTextStyles}
+                      key={file?.file_key}
                     >
                       {cleanUpFileKey(file?.file_key)}
                     </Link>
@@ -269,9 +268,9 @@ const useColumns = ({
                   <ExternalLink
                     linkProps={{
                       sx: clickableTextStyles,
+                      key: file?.file_url,
                     }}
                     url={file?.file_url}
-                    // text={file?.file_url}
                   />
                 ) : (
                   // if the user provided file_url is not a valid url, just render the text
@@ -285,6 +284,7 @@ const useColumns = ({
                       paddingRight: "4px",
                       fontSize: "14px",
                     }}
+                    key={file?.file_key}
                   >
                     {file?.file_url}
                   </Typography>
@@ -892,6 +892,7 @@ const ProjectFundingTable = ({
       />
       {eCaprisSubprojectId && (
         <SubprojectFundingModal
+          loading={loadingLookups}
           isDialogOpen={isDialogOpen}
           handleDialogClose={handleSubprojectDialogClose}
           eCaprisID={eCaprisSubprojectId}

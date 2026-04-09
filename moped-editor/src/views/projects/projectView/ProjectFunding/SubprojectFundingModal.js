@@ -81,7 +81,7 @@ const SubprojectFundingModal = ({
   handleSnackbar,
   refetch,
 }) => {
-  const { data } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
+  const { loading, data } = useQuery(ECAPRIS_SUBPROJECT_FDU_QUERY, {
     variables: { ecapris_subproject_id: eCaprisID },
     fetchPolicy: "no-cache",
   });
@@ -195,6 +195,7 @@ const SubprojectFundingModal = ({
           }
           slots={{ row: CustomRow }}
           slotProps={{ row: { fdusArray } }}
+          loading={loading}
         />
         <Box
           sx={{

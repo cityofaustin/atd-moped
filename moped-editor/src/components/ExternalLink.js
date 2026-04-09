@@ -32,7 +32,7 @@ export const createBugReportLink = (error, userEmail) => {
  */
 const ExternalLink = ({
   url,
-  text,
+  text = null,
   linkColor,
   linkProps,
   stopPropagation = false,
