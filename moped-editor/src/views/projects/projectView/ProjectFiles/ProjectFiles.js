@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash.isequal";
 
-import { Button, Link, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import {
@@ -14,7 +14,6 @@ import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInl
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
-import ExternalLink from "src/components/ExternalLink";
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
 import {
   PROJECT_FILE_ATTACHMENTS,
@@ -22,9 +21,7 @@ import {
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "src/queries/project";
-import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
-import { isValidUrl } from "src/utils/urls";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFiles/ProjectFilesTypeSelect";
@@ -34,7 +31,7 @@ import {
   getIsEditMode,
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
-import { useUser } from "src/auth/user";
+import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
@@ -65,7 +62,6 @@ export const clickableTextStyles = {
 };
 
 const useColumns = ({
-  getCognitoSession,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -101,43 +97,9 @@ const useColumns = ({
         width: 200,
         editable: true,
         preProcessEditCellProps: validateFileInput,
-        renderCell: ({ row }) => {
-          if (row.file_key) {
-            return (
-              <Link
-                onClick={() =>
-                  downloadFileAttachment(row?.file_key, getCognitoSession)
-                }
-                sx={clickableTextStyles}
-              >
-                {cleanUpFileKey(row?.file_key)}
-              </Link>
-            );
-          }
-          return isValidUrl(row?.file_url) ? (
-            <ExternalLink
-              linkProps={{
-                sx: clickableTextStyles,
-              }}
-              url={row?.file_url}
-            />
-          ) : (
-            // if the user provided file_url is not a valid url, just render the text
-            <Typography
-              sx={{
-                backgroundColor: "#eee",
-                fontFamily: "monospace",
-                display: "block",
-                wordWrap: "break-word",
-                paddingLeft: "4px",
-                paddingRight: "4px",
-                fontSize: "14px",
-              }}
-            >
-              {row?.file_url}
-            </Typography>
-          );
-        },
+        renderCell: ({ row }) => (
+          <ProjectFileLink file_key={row?.file_key} file_url={row?.file_url} />
+        ),
         renderEditCell: (props) =>
           // users cannot edit the file_key, since its provided by the FilePond upload interface
           props.row.file_key ? (
@@ -236,7 +198,6 @@ const useColumns = ({
       },
     ];
   }, [
-    getCognitoSession,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -256,7 +217,6 @@ const useColumns = ({
 const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const { projectId } = useParams();
-  const { getCognitoSession } = useUser();
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -441,7 +401,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
   };
 
   const dataGridColumns = useColumns({
-    getCognitoSession,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

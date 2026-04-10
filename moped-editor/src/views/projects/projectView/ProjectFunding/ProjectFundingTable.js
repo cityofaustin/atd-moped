@@ -71,6 +71,7 @@ import {
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { LinkOff } from "@mui/icons-material";
+import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 // TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
@@ -1019,46 +1020,10 @@ const ProjectFundingTable = ({
                             </IconButton>
                           </Box>
                           <Box sx={{ flex: 1 }}>
-                            {file.file_key && (
-                              <Link
-                                onClick={() =>
-                                  downloadFileAttachment(
-                                    file?.file_key,
-                                    getCognitoSession
-                                  )
-                                }
-                                sx={clickableTextStyles}
-                                key={file?.file_key}
-                              >
-                                {cleanUpFileKey(file?.file_key)}
-                              </Link>
-                            )}
-                            {isValidUrl(file?.file_url) ? (
-                              <ExternalLink
-                                linkProps={{
-                                  sx: clickableTextStyles,
-                                  key: file?.file_url,
-                                }}
-                                url={file?.file_url}
-                                showExternalLinkIcon={false}
-                              />
-                            ) : (
-                              // if the user provided file_url is not a valid url, just render the text
-                              <Typography
-                                sx={{
-                                  backgroundColor: "#eee",
-                                  fontFamily: "monospace",
-                                  display: "block",
-                                  wordWrap: "break-word",
-                                  paddingLeft: "4px",
-                                  paddingRight: "4px",
-                                  fontSize: "14px",
-                                }}
-                                key={file?.file_key}
-                              >
-                                {file?.file_url}
-                              </Typography>
-                            )}
+                            <ProjectFileLink
+                              file_key={file?.file_key}
+                              file_url={file?.file_url}
+                            />
                           </Box>
                         </Stack>
                       </>
