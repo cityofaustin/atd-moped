@@ -2,18 +2,12 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 
-// Material
 import {
-  Box,
   Button,
-  Divider,
   FormControlLabel,
   Grid2,
   Switch,
   Tooltip,
-  IconButton,
-  Typography,
-  Stack,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
@@ -31,13 +25,8 @@ import {
   DELETE_PROJECT_FUNDING,
   GET_FUNDING_LOOKUPS,
 } from "src/queries/funding";
-import {
-  CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
-  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
-  PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC,
-} from "src/queries/project";
+import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
 
-import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
@@ -47,6 +36,7 @@ import {
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
+import ProjectFundingFilesAttachmentDialog from "src/views/projects/projectView/ProjectFunding/ProjectFundingFilesAttachmentDialog";
 import {
   transformDatabaseToGrid,
   transformGridToDatabase,
@@ -54,8 +44,6 @@ import {
   useColumns,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
-import { LinkOff } from "@mui/icons-material";
-import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 // TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
@@ -292,27 +280,9 @@ const ProjectFundingTable = ({
   };
 
   /* File attachment state and handlers */
-  const [addFundingFileAttachment] = useMutation(
-    CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
-  );
-  const [detachFundingFileAttachment] = useMutation(
-    DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
-  );
   const [fileAttachmentId, setFileAttachmentId] = useState(null);
   const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
     useState(false);
-  const [isFileUnlinkConfirmationOpen, setIsFileUnlinkConfirmationOpen] =
-    useState(false);
-
-  const filesAttachedToId = useMemo(() => {
-    const filesAttachedToId = rows
-      .find((row) => row.id === fileAttachmentId)
-      ?.ecapris_funding_files.map(
-        (file_record) => file_record.moped_project_file
-      );
-
-    return filesAttachedToId ? filesAttachedToId : [];
-  }, [fileAttachmentId, rows]);
 
   const handleAttachmentClick = useCallback(
     (id) => () => {
@@ -321,73 +291,6 @@ const ProjectFundingTable = ({
     },
     []
   );
-
-  /**
-   * Persists the file data into the database
-   * @param {Object} fileDataBundle - The file bundle as provided by the FileUpload component
-   */
-  const handleClickSaveFile = (fileDataBundle) => {
-    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
-    const entityId = fundingRecord?.proj_funding_id;
-
-    addFundingFileAttachment({
-      variables: {
-        object: {
-          project_id: projectId,
-          file_name: fileDataBundle?.name,
-          file_type: fileDataBundle?.type,
-          file_description: fileDataBundle?.description,
-          file_key: fileDataBundle?.key,
-          file_size: fileDataBundle?.file?.fileSize ?? 0,
-          file_url: fileDataBundle?.url,
-          files_ecapris_fundings: {
-            data: {
-              project_id: projectId,
-              entity_id: entityId,
-            },
-          },
-        },
-      },
-    })
-      .then(() => {
-        setIsFileAttachmentDialogOpen(false);
-        setFileAttachmentId(null);
-        handleSnackbar(true, "File attachment linked", "success");
-      })
-      .catch((error) => {
-        setFileAttachmentId(null);
-        handleSnackbar(true, "Error linking file attachment", "error", error);
-      })
-      .finally(() => {
-        refetch();
-      });
-  };
-
-  const handleUnlinkFileAttachment = (id) => {
-    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
-    const entityId = fundingRecord?.proj_funding_id;
-
-    detachFundingFileAttachment({
-      variables: {
-        fileId: id,
-        entityId,
-        projectId,
-      },
-    })
-      .then(() => {
-        setIsFileUnlinkConfirmationOpen(false);
-        setFileAttachmentId(null);
-        handleSnackbar(true, "File attachment unlinked", "success");
-      })
-      .catch((error) => {
-        setIsFileUnlinkConfirmationOpen(false);
-        setFileAttachmentId(null);
-        handleSnackbar(true, "Error unlinking file attachment", "error", error);
-      })
-      .finally(() => {
-        refetch();
-      });
-  };
 
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
@@ -643,76 +546,19 @@ const ProjectFundingTable = ({
         />
       )}
       {isFileAttachmentDialogOpen && (
-        <FileUploadDialogSingle
-          title={"Add file"}
-          dialogOpen={isFileAttachmentDialogOpen}
-          handleClickCloseUploadFile={() =>
-            setIsFileAttachmentDialogOpen(false)
-          }
-          handleClickSaveFile={handleClickSaveFile}
+        <ProjectFundingFilesAttachmentDialog
           projectId={projectId}
-          fileTypesLookup={dataLookups?.moped_file_types ?? []}
-        >
-          <Box>
-            <Divider sx={{ marginY: 4 }} />
-            <Stack direction="column">
-              <Typography variant="h4" sx={{ mb: 1 }}>
-                Attached files
-              </Typography>
-
-              {filesAttachedToId?.length > 0 ? (
-                filesAttachedToId.map((file) => {
-                  if (!file) return null;
-
-                  return (
-                    <>
-                      <DeleteConfirmationModal
-                        type="file attachment"
-                        actionButtonText="Unlink"
-                        actionButtonIcon={<LinkOff />}
-                        submitDelete={() =>
-                          handleUnlinkFileAttachment(file.project_file_id)
-                        }
-                        isDeleteConfirmationOpen={isFileUnlinkConfirmationOpen}
-                        setIsDeleteConfirmationOpen={
-                          setIsFileUnlinkConfirmationOpen
-                        }
-                      />
-                      <Stack
-                        direction="row"
-                        sx={{
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                        key={file.project_file_id}
-                        spacing={0.5}
-                      >
-                        <Box>
-                          <IconButton
-                            onClick={() =>
-                              setIsFileUnlinkConfirmationOpen(true)
-                            }
-                            size="small"
-                          >
-                            <LinkOff />
-                          </IconButton>
-                        </Box>
-                        <Box sx={{ flex: 1 }}>
-                          <ProjectFileLink
-                            file_key={file?.file_key}
-                            file_url={file?.file_url}
-                          />
-                        </Box>
-                      </Stack>
-                    </>
-                  );
-                })
-              ) : (
-                <Typography variant="body2">No files attached</Typography>
-              )}
-            </Stack>
-          </Box>
-        </FileUploadDialogSingle>
+          fileAttachmentId={fileAttachmentId}
+          isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
+          handleSnackbar={handleSnackbar}
+          onClose={() => {
+            setFileAttachmentId(null);
+            setIsFileAttachmentDialogOpen(false);
+          }}
+          refetch={refetch}
+          dataLookups={dataLookups}
+          rows={rows}
+        />
       )}
     </div>
   );

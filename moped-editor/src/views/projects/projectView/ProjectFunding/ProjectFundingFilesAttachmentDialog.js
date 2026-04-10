@@ -1,0 +1,192 @@
+import React, { useState, useMemo } from "react";
+import { useMutation } from "@apollo/client";
+
+import { Box, Divider, IconButton, Typography, Stack } from "@mui/material";
+import {
+  CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+} from "src/queries/project";
+
+import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import { LinkOff } from "@mui/icons-material";
+import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
+
+/**
+ * Dialog for attaching files to project funding records, as well as unlinking existing attachments
+ * @param {} projectId - ID of the project to which the funding record (and thus file attachment) belongs
+ * @param {} fileAttachmentId - ID of the funding record to which files are being attached/linked
+ * @param {*} handleSnackbar - Snackbar handler function for user feedback on success/failure of attaching/unlinking files
+ * @param {*} isFileAttachmentDialogOpen - Boolean state for whether the dialog is open
+ * @param {*} setIsFileAttachmentDialogOpen - State setter for opening/closing the dialog
+ * @param {*} refetch - Function to refetch project funding data after attaching/unlinking files
+ * @param {*} dataLookups - Lookup data for file types, passed to the FileUploadDialogSingle component
+ * @param {*} rows - Array of project funding records, used to determine which files are currently attached to the given funding record (fileAttachmentId)
+ * @returns
+ */
+const ProjectFundingFilesAttachmentDialog = ({
+  projectId,
+  fileAttachmentId,
+  handleSnackbar,
+  isFileAttachmentDialogOpen,
+  onClose,
+  refetch,
+  dataLookups,
+  rows,
+}) => {
+  const [addFundingFileAttachment] = useMutation(
+    CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
+  );
+  const [detachFundingFileAttachment] = useMutation(
+    DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
+  );
+  const [unlinkConfirmationFileId, setUnlinkConfirmationFileId] =
+    useState(null);
+
+  const filesAttachedToId = useMemo(() => {
+    const filesAttachedToId = rows
+      .find((row) => row.id === fileAttachmentId)
+      ?.ecapris_funding_files.map(
+        (file_record) => file_record.moped_project_file
+      );
+
+    return filesAttachedToId ? filesAttachedToId : [];
+  }, [fileAttachmentId, rows]);
+
+  const handleClickSaveFile = (fileDataBundle) => {
+    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
+    const entityId = fundingRecord?.proj_funding_id;
+
+    addFundingFileAttachment({
+      variables: {
+        object: {
+          project_id: projectId,
+          file_name: fileDataBundle?.name,
+          file_type: fileDataBundle?.type,
+          file_description: fileDataBundle?.description,
+          file_key: fileDataBundle?.key,
+          file_size: fileDataBundle?.file?.fileSize ?? 0,
+          file_url: fileDataBundle?.url,
+          files_ecapris_fundings: {
+            data: {
+              project_id: projectId,
+              entity_id: entityId,
+            },
+          },
+        },
+      },
+    })
+      .then(() => {
+        onClose();
+        handleSnackbar(true, "File attachment linked", "success");
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error linking file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
+  };
+
+  const handleUnlinkFileAttachment = (id) => {
+    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
+    const entityId = fundingRecord?.proj_funding_id;
+
+    detachFundingFileAttachment({
+      variables: {
+        fileId: id,
+        entityId,
+        projectId,
+      },
+    })
+      .then(() => {
+        setUnlinkConfirmationFileId(null);
+        onClose();
+        handleSnackbar(true, "File attachment unlinked", "success");
+      })
+      .catch((error) => {
+        setUnlinkConfirmationFileId(null);
+        handleSnackbar(true, "Error unlinking file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
+  };
+
+  return (
+    <FileUploadDialogSingle
+      title={"Add file"}
+      dialogOpen={isFileAttachmentDialogOpen}
+      handleClickCloseUploadFile={onClose}
+      handleClickSaveFile={handleClickSaveFile}
+      projectId={projectId}
+      fileTypesLookup={dataLookups?.moped_file_types ?? []}
+    >
+      <Box>
+        <Divider sx={{ marginY: 4 }} />
+        <Stack direction="column">
+          <Typography variant="h4" sx={{ mb: 1 }}>
+            Attached files
+          </Typography>
+
+          {filesAttachedToId.length > 0 ? (
+            filesAttachedToId.map((file) => {
+              if (!file) return null;
+
+              return (
+                <React.Fragment key={file.project_file_id}>
+                  <DeleteConfirmationModal
+                    type="file attachment"
+                    actionButtonText="Unlink"
+                    additionalConfirmationText="This will not delete the file, only unlink it from this funding record."
+                    actionButtonIcon={<LinkOff />}
+                    submitDelete={() =>
+                      handleUnlinkFileAttachment(file.project_file_id)
+                    }
+                    isDeleteConfirmationOpen={
+                      unlinkConfirmationFileId === file.project_file_id
+                    }
+                    setIsDeleteConfirmationOpen={(open) =>
+                      setUnlinkConfirmationFileId(
+                        open ? file.project_file_id : null
+                      )
+                    }
+                  />
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                    spacing={0.5}
+                  >
+                    <Box>
+                      <IconButton
+                        onClick={() =>
+                          setUnlinkConfirmationFileId(file.project_file_id)
+                        }
+                        size="small"
+                      >
+                        <LinkOff />
+                      </IconButton>
+                    </Box>
+                    <Box sx={{ flex: 1 }}>
+                      <ProjectFileLink
+                        file_key={file?.file_key}
+                        file_url={file?.file_url}
+                      />
+                    </Box>
+                  </Stack>
+                </React.Fragment>
+              );
+            })
+          ) : (
+            <Typography variant="body2">No files attached</Typography>
+          )}
+        </Stack>
+      </Box>
+    </FileUploadDialogSingle>
+  );
+};
+
+export default ProjectFundingFilesAttachmentDialog;
