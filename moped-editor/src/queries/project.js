@@ -693,6 +693,9 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
     ) {
       affected_rows
     }
+    delete_files_ecapris_funding(where: { file_id: { _eq: $fileId } }) {
+      affected_rows
+    }
   }
 `;
 
