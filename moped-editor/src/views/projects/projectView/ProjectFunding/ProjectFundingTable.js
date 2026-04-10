@@ -9,7 +9,6 @@ import {
   Divider,
   FormControlLabel,
   Grid2,
-  Link,
   Switch,
   Tooltip,
   IconButton,
@@ -17,25 +16,13 @@ import {
   Stack,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import {
   GridRowModes,
   useGridApiRef,
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
 import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
-import ExternalLink from "src/components/ExternalLink";
 import { v4 as uuidv4 } from "uuid";
-import { currencyFormatter } from "src/utils/numberFormatters";
-import downloadFileAttachment from "src/utils/downloadFileAttachment";
-import {
-  cleanUpFileKey,
-  clickableTextStyles,
-} from "src/views/projects/projectView/ProjectFiles/ProjectFiles";
-import { isValidUrl } from "src/utils/urls";
-import { useUser } from "src/auth/user";
 
 import {
   COMBINED_FUNDING_QUERY,
@@ -51,15 +38,10 @@ import {
 } from "src/queries/project";
 
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
-import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
-import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
-import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
-import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
-import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import {
   getIsEditMode,
   handleRowEditStop,
@@ -68,6 +50,8 @@ import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding
 import {
   transformDatabaseToGrid,
   transformGridToDatabase,
+  isCellEditable,
+  useColumns,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { LinkOff } from "@mui/icons-material";
@@ -82,307 +66,6 @@ import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/Project
 //       - Example: click file that directs to funding table and highlight associated funding record row.
 // TODO: Confirmation dialog when unlinking file with typical text plus that file will not be removed from project
 
-// object to pass to the Fund column's LookupAutocomplete component
-const fduAutocompleteProps = {
-  getOptionLabel: (option) =>
-    option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value, option) =>
-    value?.ecapris_funding_id === option?.ecapris_funding_id,
-};
-
-const fduAutocompleteDependentFields = [
-  {
-    fieldName: "unit_long_name",
-    setFieldValue: (newValue) => newValue?.unit_long_name,
-  },
-  {
-    fieldName: "fund_source",
-    setFieldValue: (newValue) => newValue?.moped_fund_source,
-  },
-  {
-    fieldName: "fund_program",
-    setFieldValue: (newValue) => newValue?.moped_fund_program,
-  },
-  {
-    fieldName: "funding_amount",
-    setFieldValue: (newValue) => newValue?.amount,
-  },
-];
-
-const isCellEditable = (params) => {
-  if (params.row.is_synced_from_ecapris) {
-    return false;
-  } else {
-    // if record is not synced from ecapris, but is also not manual, it means its been overriden
-    // dont edit using data grid
-    if (!params.row.is_manual) {
-      return false;
-    }
-    // records that are not synced from ecapris and are manual are editable
-    return true;
-  }
-};
-
-/** Hook that provides memoized column settings */
-const useColumns = ({
-  dataProjectFunding,
-  dataLookups,
-  rowModesModel,
-  handleDeleteOpen,
-  handleSaveClick,
-  handleCancelClick,
-  handleEditClick,
-  handleAttachmentClick,
-  setOverrideFundingRecord,
-  usingShiftKey,
-  logUserEvent,
-  getCognitoSession,
-}) =>
-  useMemo(() => {
-    return [
-      {
-        headerName: "FDU",
-        field: "fdu",
-        width: 180,
-        editable: true,
-        renderCell: ({ row, value }) =>
-          row.is_synced_from_ecapris ? (
-            <>
-              <span>{value?.fdu}</span>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "primary.main",
-                  fontWeight: 500,
-                }}
-              >
-                SYNCED FROM ECAPRIS
-              </Typography>
-            </>
-          ) : (
-            value?.fdu
-          ),
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"ecapris_funding"}
-            options={dataLookups?.ecapris_subproject_funding}
-            fullWidthPopper={true}
-            autocompleteProps={{
-              ...fduAutocompleteProps,
-              value: props?.row?.fdu,
-            }}
-            dependentFieldsArray={fduAutocompleteDependentFields}
-          />
-        ),
-      },
-      {
-        headerName: "Unit Name",
-        field: "unit_long_name",
-        editable: true, // this is to be able to use the renderEditCell option to update the related phase
-        // during editing -- the input field is always disabled
-        width: 175,
-        renderEditCell: (props) => (
-          <ViewOnlyTextField
-            {...props}
-            value={props.row.unit_long_name}
-            usingShiftKey={usingShiftKey}
-            previousColumnField="fdu"
-            nextColumnField="amount"
-          />
-        ),
-      },
-      {
-        headerName: "Source",
-        field: "fund_source",
-        width: 180,
-        editable: true,
-        valueFormatter: (value) => value?.funding_source_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_source"}
-            options={dataProjectFunding?.moped_fund_sources ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Program",
-        field: "fund_program",
-        width: 180,
-        editable: true,
-        valueFormatter: (value) => value?.funding_program_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_program"}
-            options={dataProjectFunding?.moped_fund_programs ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Description",
-        field: "funding_description",
-        width: 200,
-        editable: true,
-        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
-      },
-      {
-        headerName: "Status",
-        field: "fund_status",
-        editable: true,
-        width: 100,
-        valueFormatter: (value) => value?.funding_status_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_status"}
-            defaultValue={1}
-            options={dataProjectFunding?.moped_fund_status ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Amount",
-        field: "funding_amount",
-        width: 100,
-        editable: true,
-        valueFormatter: (value) =>
-          value === null ? null : currencyFormatter.format(value),
-        renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
-        type: "currency",
-      },
-      {
-        headerName: "Files",
-        field: "file_url",
-        minWidth: 150,
-        flex: 1,
-        editable: false,
-        renderCell: ({ row }) => {
-          return (
-            <Stack direction="column" spacing={0.5}>
-              {row.ecapris_funding_files.map((file_record) => {
-                const file = file_record.moped_project_file;
-
-                if (!file) return null;
-                if (file.file_key) {
-                  return (
-                    <Link
-                      onClick={() =>
-                        downloadFileAttachment(
-                          file?.file_key,
-                          getCognitoSession
-                        )
-                      }
-                      sx={clickableTextStyles}
-                      key={file?.file_key}
-                    >
-                      {cleanUpFileKey(file?.file_key)}
-                    </Link>
-                  );
-                }
-                return isValidUrl(file?.file_url) ? (
-                  <ExternalLink
-                    linkProps={{
-                      sx: clickableTextStyles,
-                      key: file?.file_url,
-                    }}
-                    url={file?.file_url}
-                    showExternalLinkIcon={false}
-                  />
-                ) : (
-                  // if the user provided file_url is not a valid url, just render the text
-                  <Typography
-                    sx={{
-                      backgroundColor: "#eee",
-                      fontFamily: "monospace",
-                      display: "block",
-                      wordWrap: "break-word",
-                      paddingLeft: "4px",
-                      paddingRight: "4px",
-                      fontSize: "14px",
-                    }}
-                    key={file?.file_key}
-                  >
-                    {file?.file_url}
-                  </Typography>
-                );
-              })}
-            </Stack>
-          );
-        },
-      },
-      {
-        headerName: "",
-        field: "edit",
-        hideable: false,
-        filterable: false,
-        sortable: false,
-        editable: false,
-        width: 110,
-        type: "actions",
-        renderCell: ({ id, row }) =>
-          row.is_manual ? (
-            <DataGridActions
-              id={id}
-              rowModesModel={rowModesModel}
-              handleCancelClick={handleCancelClick}
-              handleDeleteOpen={handleDeleteOpen}
-              handleSaveClick={handleSaveClick}
-              handleEditClick={handleEditClick}
-              editDisabled={row.is_synced_from_ecapris}
-              deleteDisabled={row.is_synced_from_ecapris}
-              handleAttachmentClick={handleAttachmentClick}
-            />
-          ) : (
-            <>
-              <IconButton
-                aria-label="edit"
-                sx={{ color: "inherit", padding: "5px" }}
-                onClick={() => {
-                  logUserEvent("funding_ecapris_override_form_load");
-                  setOverrideFundingRecord(row);
-                }}
-              >
-                <EditOutlinedIcon />
-              </IconButton>
-              <IconButton
-                aria-label="attachment"
-                sx={{ color: "inherit", padding: "5px" }}
-                onClick={handleAttachmentClick(id)}
-              >
-                <AttachFileOutlinedIcon />
-              </IconButton>
-              <IconButton
-                aria-label="delete"
-                sx={{ color: "inherit", padding: "5px" }}
-                disabled={!!row.is_synced_from_ecapris}
-                onClick={handleDeleteOpen(id)}
-              >
-                <DeleteOutlineIcon />
-              </IconButton>
-            </>
-          ),
-      },
-    ];
-  }, [
-    dataProjectFunding,
-    dataLookups,
-    rowModesModel,
-    handleDeleteOpen,
-    handleSaveClick,
-    handleCancelClick,
-    handleEditClick,
-    handleAttachmentClick,
-    setOverrideFundingRecord,
-    usingShiftKey,
-    logUserEvent,
-    getCognitoSession,
-  ]);
-
 const ProjectFundingTable = ({
   projectId,
   handleSnackbar,
@@ -391,7 +74,6 @@ const ProjectFundingTable = ({
   shouldSyncEcaprisFunding,
 }) => {
   const apiRef = useGridApiRef();
-  const { getCognitoSession } = useUser();
 
   /* Query Moped and eCAPRIS funding with matching filters */
   const queryVariables =
@@ -631,7 +313,6 @@ const ProjectFundingTable = ({
 
     return filesAttachedToId ? filesAttachedToId : [];
   }, [fileAttachmentId, rows]);
-  console.log(filesAttachedToId);
 
   const handleAttachmentClick = useCallback(
     (id) => () => {
@@ -793,7 +474,6 @@ const ProjectFundingTable = ({
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
-    getCognitoSession,
   });
 
   const handleECaprisSwitch = () => {
@@ -972,70 +652,67 @@ const ProjectFundingTable = ({
           handleClickSaveFile={handleClickSaveFile}
           projectId={projectId}
           fileTypesLookup={dataLookups?.moped_file_types ?? []}
-          children={
-            <Box>
-              <Divider sx={{ marginY: 4 }} />
-              <Stack direction="column">
-                <Typography variant="h4" sx={{ mb: 1 }}>
-                  Attached files
-                </Typography>
+        >
+          <Box>
+            <Divider sx={{ marginY: 4 }} />
+            <Stack direction="column">
+              <Typography variant="h4" sx={{ mb: 1 }}>
+                Attached files
+              </Typography>
 
-                {filesAttachedToId?.length > 0 ? (
-                  filesAttachedToId.map((file) => {
-                    if (!file) return null;
+              {filesAttachedToId?.length > 0 ? (
+                filesAttachedToId.map((file) => {
+                  if (!file) return null;
 
-                    return (
-                      <>
-                        <DeleteConfirmationModal
-                          type="file attachment"
-                          actionButtonText="Unlink"
-                          actionButtonIcon={<LinkOff />}
-                          submitDelete={() =>
-                            handleUnlinkFileAttachment(file.project_file_id)
-                          }
-                          isDeleteConfirmationOpen={
-                            isFileUnlinkConfirmationOpen
-                          }
-                          setIsDeleteConfirmationOpen={
-                            setIsFileUnlinkConfirmationOpen
-                          }
-                        />
-                        <Stack
-                          direction="row"
-                          sx={{
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                          key={file.project_file_id}
-                          spacing={0.5}
-                        >
-                          <Box>
-                            <IconButton
-                              onClick={() =>
-                                setIsFileUnlinkConfirmationOpen(true)
-                              }
-                              size="small"
-                            >
-                              <LinkOff />
-                            </IconButton>
-                          </Box>
-                          <Box sx={{ flex: 1 }}>
-                            <ProjectFileLink
-                              file_key={file?.file_key}
-                              file_url={file?.file_url}
-                            />
-                          </Box>
-                        </Stack>
-                      </>
-                    );
-                  })
-                ) : (
-                  <Typography variant="body2">No files attached</Typography>
-                )}
-              </Stack>
-            </Box>
-          }
-        />
+                  return (
+                    <>
+                      <DeleteConfirmationModal
+                        type="file attachment"
+                        actionButtonText="Unlink"
+                        actionButtonIcon={<LinkOff />}
+                        submitDelete={() =>
+                          handleUnlinkFileAttachment(file.project_file_id)
+                        }
+                        isDeleteConfirmationOpen={isFileUnlinkConfirmationOpen}
+                        setIsDeleteConfirmationOpen={
+                          setIsFileUnlinkConfirmationOpen
+                        }
+                      />
+                      <Stack
+                        direction="row"
+                        sx={{
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                        key={file.project_file_id}
+                        spacing={0.5}
+                      >
+                        <Box>
+                          <IconButton
+                            onClick={() =>
+                              setIsFileUnlinkConfirmationOpen(true)
+                            }
+                            size="small"
+                          >
+                            <LinkOff />
+                          </IconButton>
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                          <ProjectFileLink
+                            file_key={file?.file_key}
+                            file_url={file?.file_url}
+                          />
+                        </Box>
+                      </Stack>
+                    </>
+                  );
+                })
+              ) : (
+                <Typography variant="body2">No files attached</Typography>
+              )}
+            </Stack>
+          </Box>
+        </FileUploadDialogSingle>
       )}
     </div>
   );

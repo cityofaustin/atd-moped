@@ -7,7 +7,7 @@ import { cleanUpFileKey, clickableTextStyles } from "./ProjectFiles";
 import { useUser } from "src/auth/user";
 
 /**
- * Renders a file link based on the file type:
+ * Renders a file link based on the file type
  * @param {string} file_key S3 upload: clickable link that triggers a download
  * @param {string} file_url Valid URL: external link or Network path: monospace text block
  */
