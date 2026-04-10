@@ -72,13 +72,14 @@ import {
 import { useLogUserEvent } from "src/utils/userEvents";
 import { LinkOff } from "@mui/icons-material";
 
-// TODO: Open dialog to view attachments on click of attachment icon in actions column
-// TODO: Fetch funding attachments id and render way to detach in dialog if there is an attachment
-// TODO: Detach in dialog
 // TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 // TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
 // TODO: Handle if file override - need to have attachment copy to new record. Leave old association in case override is reverted.
 // TODO: Add copy icon to network path files
+// TODO: Ability to highlight row when navigating between files and funding tables.
+//       - Example: click edit icon that directs to files table with associated file, highlight row of associated file.
+//       - Example: click file that directs to funding table and highlight associated funding record row.
+// TODO: Confirmation dialog when unlinking file with typical text plus that file will not be removed from project
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -652,11 +653,11 @@ const ProjectFundingTable = ({
       .then(() => {
         setIsFileAttachmentDialogOpen(false);
         setFileAttachmentId(null);
-        handleSnackbar(true, "File attachment saved", "success");
+        handleSnackbar(true, "File attachment linked", "success");
       })
       .catch((error) => {
         setFileAttachmentId(null);
-        handleSnackbar(true, "Error saving file attachment", "error", error);
+        handleSnackbar(true, "Error linking file attachment", "error", error);
       })
       .finally(() => {
         refetch();
@@ -968,65 +969,80 @@ const ProjectFundingTable = ({
           fileTypesLookup={dataLookups?.moped_file_types ?? []}
           children={
             <Box>
-              <Divider />
-              <Stack direction="column" spacing={1} sx={{ marginTop: 2 }}>
+              <Divider sx={{ marginY: 4 }} />
+              <Stack direction="column" spacing={1}>
                 <Typography variant="h4">Attached files</Typography>
 
-                {filesAttachedToId.map((file) => {
-                  if (!file) return null;
-                  console.log("file in dialog", file);
+                {filesAttachedToId.length > 0 ? (
+                  filesAttachedToId.map((file) => {
+                    if (!file) return null;
 
-                  return (
-                    <Stack direction="row" spacing={1}>
-                      {file.file_key && (
-                        <Link
-                          onClick={() =>
-                            downloadFileAttachment(
-                              file?.file_key,
-                              getCognitoSession
-                            )
-                          }
-                          sx={clickableTextStyles}
-                          key={file?.file_key}
-                        >
-                          {cleanUpFileKey(file?.file_key)}
-                        </Link>
-                      )}
-                      {isValidUrl(file?.file_url) ? (
-                        <ExternalLink
-                          linkProps={{
-                            sx: clickableTextStyles,
-                            key: file?.file_url,
-                          }}
-                          url={file?.file_url}
-                        />
-                      ) : (
-                        // if the user provided file_url is not a valid url, just render the text
-                        <Typography
-                          sx={{
-                            backgroundColor: "#eee",
-                            fontFamily: "monospace",
-                            display: "block",
-                            wordWrap: "break-word",
-                            paddingLeft: "4px",
-                            paddingRight: "4px",
-                            fontSize: "14px",
-                          }}
-                          key={file?.file_key}
-                        >
-                          {file?.file_url}
-                        </Typography>
-                      )}
-                      <IconButton
-                        onClick={() =>
-                          handleUnlinkFileAttachment(file.project_file_id)
-                        }
+                    return (
+                      <Stack
+                        direction="row"
+                        sx={{
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                        key={file.project_file_id}
                       >
-                        <LinkOff />
-                      </IconButton>
-                    </Stack>
-                  );
-                })}
+                        <Box sx={{ flex: 1 }}>
+                          {file.file_key && (
+                            <Link
+                              onClick={() =>
+                                downloadFileAttachment(
+                                  file?.file_key,
+                                  getCognitoSession
+                                )
+                              }
+                              sx={clickableTextStyles}
+                              key={file?.file_key}
+                            >
+                              {cleanUpFileKey(file?.file_key)}
+                            </Link>
+                          )}
+                          {isValidUrl(file?.file_url) ? (
+                            <ExternalLink
+                              linkProps={{
+                                sx: clickableTextStyles,
+                                key: file?.file_url,
+                              }}
+                              url={file?.file_url}
+                            />
+                          ) : (
+                            // if the user provided file_url is not a valid url, just render the text
+                            <Typography
+                              sx={{
+                                backgroundColor: "#eee",
+                                fontFamily: "monospace",
+                                display: "block",
+                                wordWrap: "break-word",
+                                paddingLeft: "4px",
+                                paddingRight: "4px",
+                                fontSize: "14px",
+                              }}
+                              key={file?.file_key}
+                            >
+                              {file?.file_url}
+                            </Typography>
+                          )}
+                        </Box>
+                        <Box>
+                          <IconButton
+                            onClick={() =>
+                              handleUnlinkFileAttachment(file.project_file_id)
+                            }
+                            size="small"
+                          >
+                            <LinkOff />
+                          </IconButton>
+                        </Box>
+                      </Stack>
+                    );
+                  })
+                ) : (
+                  <Typography variant="body2">No files attached</Typography>
+                )}
               </Stack>
             </Box>
           }
