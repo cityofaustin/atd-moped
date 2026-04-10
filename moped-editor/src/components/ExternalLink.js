@@ -27,6 +27,7 @@ export const createBugReportLink = (error, userEmail) => {
  * @param {string} linkColor - color of the link
  * @param {Object} linkProps - Props supported by MUI Link to override defaults or set other options
  * @param {Boolean} stopPropagation - stop propagation of the click event from link click event or not
+ * @param {Boolean} showExternalLinkIcon - show external link icon or not
  * @returns {JSX.Element}
  * @constructor
  */
@@ -36,6 +37,7 @@ const ExternalLink = ({
   linkColor,
   linkProps,
   stopPropagation = false,
+  showExternalLinkIcon = true,
 }) => {
   return (
     <span
@@ -53,14 +55,16 @@ const ExternalLink = ({
         {...linkProps}
       >
         {text || getExternalLinkText(url)}
-        <OpenInNewIcon
-          sx={{
-            fontSize: "1rem",
-            marginLeft: "2px",
-            position: "relative",
-            bottom: "-3px",
-          }}
-        />
+        {showExternalLinkIcon && (
+          <OpenInNewIcon
+            sx={{
+              fontSize: "1rem",
+              marginLeft: "2px",
+              position: "relative",
+              bottom: "-3px",
+            }}
+          />
+        )}
       </Link>
     </span>
   );

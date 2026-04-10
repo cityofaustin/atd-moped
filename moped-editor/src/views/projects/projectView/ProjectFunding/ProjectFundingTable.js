@@ -985,7 +985,18 @@ const ProjectFundingTable = ({
                           alignItems: "center",
                         }}
                         key={file.project_file_id}
+                        spacing={0.5}
                       >
+                        <Box>
+                          <IconButton
+                            onClick={() =>
+                              handleUnlinkFileAttachment(file.project_file_id)
+                            }
+                            size="small"
+                          >
+                            <LinkOff />
+                          </IconButton>
+                        </Box>
                         <Box sx={{ flex: 1 }}>
                           {file.file_key && (
                             <Link
@@ -1008,6 +1019,7 @@ const ProjectFundingTable = ({
                                 key: file?.file_url,
                               }}
                               url={file?.file_url}
+                              showExternalLinkIcon={false}
                             />
                           ) : (
                             // if the user provided file_url is not a valid url, just render the text
@@ -1026,16 +1038,6 @@ const ProjectFundingTable = ({
                               {file?.file_url}
                             </Typography>
                           )}
-                        </Box>
-                        <Box>
-                          <IconButton
-                            onClick={() =>
-                              handleUnlinkFileAttachment(file.project_file_id)
-                            }
-                            size="small"
-                          >
-                            <LinkOff />
-                          </IconButton>
                         </Box>
                       </Stack>
                     );
