@@ -9,6 +9,9 @@ insert_permissions:
   - role: moped-admin
     permission:
       check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
       columns:
         - created_at
         - entity_id
@@ -19,6 +22,9 @@ insert_permissions:
   - role: moped-editor
     permission:
       check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
       columns:
         - created_at
         - entity_id

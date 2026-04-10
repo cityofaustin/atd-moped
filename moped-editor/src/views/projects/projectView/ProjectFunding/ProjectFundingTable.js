@@ -108,6 +108,20 @@ const fduAutocompleteDependentFields = [
   },
 ];
 
+const isCellEditable = (params) => {
+  if (params.row.is_synced_from_ecapris) {
+    return false;
+  } else {
+    // if record is not synced from ecapris, but is also not manual, it means its been overriden
+    // dont edit using data grid
+    if (!params.row.is_manual) {
+      return false;
+    }
+    // records that are not synced from ecapris and are manual are editable
+    return true;
+  }
+};
+
 /** Hook that provides memoized column settings */
 const useColumns = ({
   dataProjectFunding,
@@ -276,6 +290,7 @@ const useColumns = ({
                       key: file?.file_url,
                     }}
                     url={file?.file_url}
+                    showExternalLinkIcon={false}
                   />
                 ) : (
                   // if the user provided file_url is not a valid url, just render the text
@@ -402,8 +417,6 @@ const ProjectFundingTable = ({
     variables: { ...queryVariables },
     fetchPolicy: "no-cache",
   });
-  // TODO: Fix id used in this component for eCAPRIS to be ecapris_subproject_funding id and not fao_id to fix relationship
-  console.log("dataProjectFunding", dataProjectFunding);
 
   const tableFundingRows = useMemo(() => {
     const fundingRows = dataProjectFunding?.combined_project_funding_view;
@@ -605,13 +618,17 @@ const ProjectFundingTable = ({
   const [fileAttachmentId, setFileAttachmentId] = useState(null);
   const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
     useState(false);
+  const [isFileUnlinkConfirmationOpen, setIsFileUnlinkConfirmationOpen] =
+    useState(false);
 
   const filesAttachedToId = useMemo(() => {
-    return rows
+    const filesAttachedToId = rows
       .find((row) => row.id === fileAttachmentId)
       ?.ecapris_funding_files.map(
         (file_record) => file_record.moped_project_file
       );
+
+    return filesAttachedToId ? filesAttachedToId : [];
   }, [fileAttachmentId, rows]);
   console.log(filesAttachedToId);
 
@@ -676,11 +693,12 @@ const ProjectFundingTable = ({
       },
     })
       .then(() => {
-        setIsFileAttachmentDialogOpen(false);
+        setIsFileUnlinkConfirmationOpen(false);
         setFileAttachmentId(null);
         handleSnackbar(true, "File attachment unlinked", "success");
       })
       .catch((error) => {
+        setIsFileUnlinkConfirmationOpen(false);
         setFileAttachmentId(null);
         handleSnackbar(true, "Error unlinking file attachment", "error", error);
       })
@@ -799,20 +817,6 @@ const ProjectFundingTable = ({
           error
         )
       );
-  };
-
-  const isCellEditable = (params) => {
-    if (params.row.is_synced_from_ecapris) {
-      return false;
-    } else {
-      // if record is not synced from ecapris, but is also not manual, it means its been overriden
-      // dont edit using data grid
-      if (!params.row.is_manual) {
-        return false;
-      }
-      // records that are not synced from ecapris and are manual are editable
-      return true;
-    }
   };
 
   return (
@@ -970,76 +974,94 @@ const ProjectFundingTable = ({
           children={
             <Box>
               <Divider sx={{ marginY: 4 }} />
-              <Stack direction="column" spacing={1}>
-                <Typography variant="h4">Attached files</Typography>
+              <Stack direction="column">
+                <Typography variant="h4" sx={{ mb: 1 }}>
+                  Attached files
+                </Typography>
 
-                {filesAttachedToId.length > 0 ? (
+                {filesAttachedToId?.length > 0 ? (
                   filesAttachedToId.map((file) => {
                     if (!file) return null;
 
                     return (
-                      <Stack
-                        direction="row"
-                        sx={{
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                        key={file.project_file_id}
-                        spacing={0.5}
-                      >
-                        <Box>
-                          <IconButton
-                            onClick={() =>
-                              handleUnlinkFileAttachment(file.project_file_id)
-                            }
-                            size="small"
-                          >
-                            <LinkOff />
-                          </IconButton>
-                        </Box>
-                        <Box sx={{ flex: 1 }}>
-                          {file.file_key && (
-                            <Link
+                      <>
+                        <DeleteConfirmationModal
+                          type="file attachment"
+                          actionButtonText="Unlink"
+                          actionButtonIcon={<LinkOff />}
+                          submitDelete={() =>
+                            handleUnlinkFileAttachment(file.project_file_id)
+                          }
+                          isDeleteConfirmationOpen={
+                            isFileUnlinkConfirmationOpen
+                          }
+                          setIsDeleteConfirmationOpen={
+                            setIsFileUnlinkConfirmationOpen
+                          }
+                        />
+                        <Stack
+                          direction="row"
+                          sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                          key={file.project_file_id}
+                          spacing={0.5}
+                        >
+                          <Box>
+                            <IconButton
                               onClick={() =>
-                                downloadFileAttachment(
-                                  file?.file_key,
-                                  getCognitoSession
-                                )
+                                setIsFileUnlinkConfirmationOpen(true)
                               }
-                              sx={clickableTextStyles}
-                              key={file?.file_key}
+                              size="small"
                             >
-                              {cleanUpFileKey(file?.file_key)}
-                            </Link>
-                          )}
-                          {isValidUrl(file?.file_url) ? (
-                            <ExternalLink
-                              linkProps={{
-                                sx: clickableTextStyles,
-                                key: file?.file_url,
-                              }}
-                              url={file?.file_url}
-                              showExternalLinkIcon={false}
-                            />
-                          ) : (
-                            // if the user provided file_url is not a valid url, just render the text
-                            <Typography
-                              sx={{
-                                backgroundColor: "#eee",
-                                fontFamily: "monospace",
-                                display: "block",
-                                wordWrap: "break-word",
-                                paddingLeft: "4px",
-                                paddingRight: "4px",
-                                fontSize: "14px",
-                              }}
-                              key={file?.file_key}
-                            >
-                              {file?.file_url}
-                            </Typography>
-                          )}
-                        </Box>
-                      </Stack>
+                              <LinkOff />
+                            </IconButton>
+                          </Box>
+                          <Box sx={{ flex: 1 }}>
+                            {file.file_key && (
+                              <Link
+                                onClick={() =>
+                                  downloadFileAttachment(
+                                    file?.file_key,
+                                    getCognitoSession
+                                  )
+                                }
+                                sx={clickableTextStyles}
+                                key={file?.file_key}
+                              >
+                                {cleanUpFileKey(file?.file_key)}
+                              </Link>
+                            )}
+                            {isValidUrl(file?.file_url) ? (
+                              <ExternalLink
+                                linkProps={{
+                                  sx: clickableTextStyles,
+                                  key: file?.file_url,
+                                }}
+                                url={file?.file_url}
+                                showExternalLinkIcon={false}
+                              />
+                            ) : (
+                              // if the user provided file_url is not a valid url, just render the text
+                              <Typography
+                                sx={{
+                                  backgroundColor: "#eee",
+                                  fontFamily: "monospace",
+                                  display: "block",
+                                  wordWrap: "break-word",
+                                  paddingLeft: "4px",
+                                  paddingRight: "4px",
+                                  fontSize: "14px",
+                                }}
+                                key={file?.file_key}
+                              >
+                                {file?.file_url}
+                              </Typography>
+                            )}
+                          </Box>
+                        </Stack>
+                      </>
                     );
                   })
                 ) : (

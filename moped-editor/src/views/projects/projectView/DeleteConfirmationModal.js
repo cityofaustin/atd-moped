@@ -22,7 +22,7 @@ const DeleteConfirmationModal = ({
     setIsDeleteConfirmationOpen(false);
   };
 
-  const defaultConfirmationText = `Are you sure you want to delete this ${type}?`;
+  const defaultConfirmationText = `Are you sure you want to ${actionButtonText.toLowerCase()} this ${type}?`;
   const ActionIcon = actionButtonIcon || <DeleteIcon />;
 
   return (
