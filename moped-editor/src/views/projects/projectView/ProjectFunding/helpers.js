@@ -190,7 +190,7 @@ export const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
-  handleAttachmentClick,
+  handleFileAttachmentClick,
   setOverrideFundingRecord,
   usingShiftKey,
   logUserEvent,
@@ -357,7 +357,7 @@ export const useColumns = ({
               handleEditClick={handleEditClick}
               editDisabled={row.is_synced_from_ecapris}
               deleteDisabled={row.is_synced_from_ecapris}
-              handleAttachmentClick={handleAttachmentClick}
+              handleFileAttachmentClick={handleFileAttachmentClick}
             />
           ) : (
             <>
@@ -374,7 +374,7 @@ export const useColumns = ({
               <IconButton
                 aria-label="attachment"
                 sx={{ color: "inherit", padding: "5px" }}
-                onClick={handleAttachmentClick(id)}
+                onClick={handleFileAttachmentClick(id)}
               >
                 <AttachFileOutlinedIcon />
               </IconButton>
@@ -398,7 +398,7 @@ export const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    handleAttachmentClick,
+    handleFileAttachmentClick,
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,

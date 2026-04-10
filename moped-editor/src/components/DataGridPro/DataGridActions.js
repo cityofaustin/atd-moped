@@ -22,7 +22,7 @@ import { defaultEditColumnIconStyle } from "src/components/DataGridPro/utils/hel
  * @param {Function} handleDeleteClick - handles delete button click, optionally render delete button if handler is passed
  * @param {Function} handleSaveClick - handles save button click, optionally render save button if handler is passed
  * @param {Function} handleEditClick - handles edit button click, optionally render edit button if handler is passed
- * @param {Function} handleAttachmentClick - handles attachment button click, optionally render attachment button if handler is passed
+ * @param {Function} handleFileAttachmentClick - handles attachment button click, optionally render attachment button if handler is passed
  * @param {React.ReactNode} deleteIcon - custom delete icon, defaults to DeleteOutlineIcon
  * @param {Boolean} editDisabled - disables edit button when true, optional
  * @param {Boolean} deleteDisabled - disables delete button when true, optional
@@ -37,7 +37,7 @@ const DataGridActions = ({
   handleDeleteOpen = null,
   handleSaveClick = null,
   handleEditClick = null,
-  handleAttachmentClick = null,
+  handleFileAttachmentClick = null,
   deleteIcon,
   editDisabled = false,
   deleteDisabled = false,
@@ -109,13 +109,13 @@ const DataGridActions = ({
         disabled={editDisabled}
       />
     ),
-    handleAttachmentClick && (
+    handleFileAttachmentClick && (
       <GridActionsCellItem
         icon={<AttachFileOutlinedIcon sx={defaultEditColumnIconStyle} />}
         label="Attachment"
         key="attachment"
         className="textPrimary"
-        onClick={handleAttachmentClick(id)}
+        onClick={handleFileAttachmentClick(id)}
         color="inherit"
       />
     ),

@@ -13,16 +13,16 @@ import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 
 /**
- * Dialog for attaching files to project funding records, as well as unlinking existing attachments
- * @param {} projectId - ID of the project to which the funding record (and thus file attachment) belongs
- * @param {} fileAttachmentId - ID of the funding record to which files are being attached/linked
- * @param {*} handleSnackbar - Snackbar handler function for user feedback on success/failure of attaching/unlinking files
- * @param {*} isFileAttachmentDialogOpen - Boolean state for whether the dialog is open
- * @param {*} setIsFileAttachmentDialogOpen - State setter for opening/closing the dialog
- * @param {*} refetch - Function to refetch project funding data after attaching/unlinking files
- * @param {*} dataLookups - Lookup data for file types, passed to the FileUploadDialogSingle component
- * @param {*} rows - Array of project funding records, used to determine which files are currently attached to the given funding record (fileAttachmentId)
- * @returns
+ * Dialog for attaching files to project funding record and unlinking existing attachments
+ * @param {number} projectId - ID of the project to which the funding record (and thus file attachment) belongs
+ * @param {number} fileAttachmentId - ID of the funding record to which files are being attached/linked
+ * @param {function} handleSnackbar - Snackbar handler function for user feedback on success/failure of attaching/unlinking files
+ * @param {boolean} isFileAttachmentDialogOpen - Boolean state for whether the dialog is open
+ * @param {function} onClose - Fires when closing this dialog
+ * @param {function} refetch - Refetch project funding data after attaching/unlinking files
+ * @param {Array} dataLookups - Lookup data for file types
+ * @param {Array} rows - Array of project funding records, used to determine which files are currently attached to the given funding record (fileAttachmentId)
+ * @returns {JSX.Element}
  */
 const ProjectFundingFilesAttachmentDialog = ({
   projectId,

@@ -45,14 +45,11 @@ import {
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 
-// TODO: Rename existing file mutations so they don't include "attachments" in name (example: PROJECT_FILE_ATTACHMENTS)
 // TODO: Handle if file is deleted - need to detach too. Detach in delete handler in ProjectFiles
-// TODO: Handle if file override - need to have attachment copy to new record. Leave old association in case override is reverted.
 // TODO: Add copy icon to network path files
 // TODO: Ability to highlight row when navigating between files and funding tables.
 //       - Example: click edit icon that directs to files table with associated file, highlight row of associated file.
 //       - Example: click file that directs to funding table and highlight associated funding record row.
-// TODO: Confirmation dialog when unlinking file with typical text plus that file will not be removed from project
 
 const ProjectFundingTable = ({
   projectId,
@@ -112,6 +109,7 @@ const ProjectFundingTable = ({
     }
   );
 
+  /* Mutations for adding, editing, deleting funding records, and updating eCAPRIS sync status */
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
@@ -130,6 +128,19 @@ const ProjectFundingTable = ({
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
   const isEditMode = getIsEditMode(rowModesModel);
+
+  /* File attachment state and handlers */
+  const [fileAttachmentId, setFileAttachmentId] = useState(null);
+  const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
+    useState(false);
+
+  const handleFileAttachmentClick = useCallback(
+    (id) => () => {
+      setFileAttachmentId(id);
+      setIsFileAttachmentDialogOpen(true);
+    },
+    []
+  );
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -210,6 +221,7 @@ const ProjectFundingTable = ({
         isNew: true,
         proj_funding_id: id,
         is_manual: true,
+        ecapris_funding_files: [],
       },
       ...oldRows,
     ]);
@@ -278,19 +290,6 @@ const ProjectFundingTable = ({
       setRows(rows.filter((row) => row.id !== id));
     }
   };
-
-  /* File attachment state and handlers */
-  const [fileAttachmentId, setFileAttachmentId] = useState(null);
-  const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
-    useState(false);
-
-  const handleAttachmentClick = useCallback(
-    (id) => () => {
-      setFileAttachmentId(id);
-      setIsFileAttachmentDialogOpen(true);
-    },
-    []
-  );
 
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
@@ -373,7 +372,7 @@ const ProjectFundingTable = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    handleAttachmentClick,
+    handleFileAttachmentClick,
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
@@ -474,7 +473,7 @@ const ProjectFundingTable = ({
                     options={
                       dataProjectFunding?.ecapris_subproject_funding ?? []
                     }
-                    refetch={refetchProjectSummary}
+                    refetch={refetchFundingData}
                     handleSnackbar={handleSnackbar}
                     disabled={isEditMode}
                   />
@@ -552,8 +551,8 @@ const ProjectFundingTable = ({
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
           handleSnackbar={handleSnackbar}
           onClose={() => {
-            setFileAttachmentId(null);
             setIsFileAttachmentDialogOpen(false);
+            setFileAttachmentId(null);
           }}
           refetch={refetch}
           dataLookups={dataLookups}
