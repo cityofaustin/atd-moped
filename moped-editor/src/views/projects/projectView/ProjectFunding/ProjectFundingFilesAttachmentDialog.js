@@ -115,7 +115,7 @@ const ProjectFundingFilesAttachmentDialog = ({
 
   return (
     <FileUploadDialogSingle
-      title={"Add file"}
+      title={"Attach file"}
       dialogOpen={isFileAttachmentDialogOpen}
       handleClickCloseUploadFile={onClose}
       handleClickSaveFile={handleClickSaveFile}
