@@ -24,6 +24,7 @@ export const createBugReportLink = (error, userEmail) => {
  * ExternalLink component
  * @param {string} url - link url
  * @param {string} text - link text, optional but prioritized over url-based text when both are available
+ * @param {boolean} useFriendlyUrl - whether to use friendly url text based on known url patterns, optional
  * @param {string} linkColor - color of the link
  * @param {Object} linkProps - Props supported by MUI Link to override defaults or set other options
  * @param {Boolean} stopPropagation - stop propagation of the click event from link click event or not
@@ -34,11 +35,16 @@ export const createBugReportLink = (error, userEmail) => {
 const ExternalLink = ({
   url,
   text = null,
+  useFriendlyUrl = false,
   linkColor,
   linkProps,
   stopPropagation = false,
   showExternalLinkIcon = true,
 }) => {
+  /* Prefer friendly text if useFriendlyUrl is true, then fallback to the text prop, and finally to the URL */
+  const friendlyText = useFriendlyUrl ? getExternalLinkText(url) : null;
+  const displayText = friendlyText || text || url;
+
   return (
     <span
       onClick={(e) => {
@@ -56,8 +62,7 @@ const ExternalLink = ({
         title={url}
         {...linkProps}
       >
-        {/* Prefer text prop, then try to match known URLs to friendly names, then fallback to the URL */}
-        {text || getExternalLinkText(url) || url}
+        {displayText}
         {showExternalLinkIcon && (
           <OpenInNewIcon
             sx={{

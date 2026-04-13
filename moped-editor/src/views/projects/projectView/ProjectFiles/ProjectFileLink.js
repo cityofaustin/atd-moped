@@ -55,10 +55,11 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
             ...(condensed && { minWidth: 0 }),
           },
           noWrap: condensed,
-          title: fileName,
+          title: fileUrl,
         }}
         url={fileUrl}
         text={fileName}
+        useFriendlyUrl={true}
         showExternalLinkIcon={false}
       />
     );
