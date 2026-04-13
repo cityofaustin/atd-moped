@@ -23,7 +23,7 @@ export const createBugReportLink = (error, userEmail) => {
 /**
  * ExternalLink component
  * @param {string} url - link url
- * @param {string} text - link text
+ * @param {string} text - link text, optional but prioritized over url-based text when both are available
  * @param {string} linkColor - color of the link
  * @param {Object} linkProps - Props supported by MUI Link to override defaults or set other options
  * @param {Boolean} stopPropagation - stop propagation of the click event from link click event or not
@@ -56,7 +56,8 @@ const ExternalLink = ({
         title={url}
         {...linkProps}
       >
-        {getExternalLinkText(url) || text}
+        {/* Prefer text prop, then try to match known URLs to friendly names, then fallback to the URL */}
+        {text || getExternalLinkText(url) || url}
         {showExternalLinkIcon && (
           <OpenInNewIcon
             sx={{

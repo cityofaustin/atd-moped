@@ -35,7 +35,6 @@ import FileUpload from "src/components/FileUpload/FileUpload";
  * @param {number} projectId - integer representing the project id. This is used to generate the S3 presigned URL for file upload
  * @param {Object[]} fileTypesLookup - array of file types lookup options
  * @param {Object} children - React children elements
- * @param {} param0
  * @returns {JSX.Element}
  */
 const FileUploadDialogSingle = ({

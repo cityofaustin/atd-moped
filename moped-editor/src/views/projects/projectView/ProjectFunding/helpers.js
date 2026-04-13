@@ -333,6 +333,7 @@ export const useColumns = ({
                       fileKey={file.file_key}
                       fileUrl={file.file_url}
                       fileName={file.file_name}
+                      condensed
                     />
                   </React.Fragment>
                 );

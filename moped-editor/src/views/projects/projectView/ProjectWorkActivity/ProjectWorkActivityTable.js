@@ -73,17 +73,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         defaultVisible: true,
         renderCell: ({ row }) =>
           row.work_order_url ? (
-            <ExternalLink
-              url={row.work_order_url}
-              linkColor="primary"
-              linkProps={{
-                sx: {
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "block",
-                },
-              }}
-            />
+            <ExternalLink url={row.work_order_url} linkColor="primary" />
           ) : null,
       },
       {

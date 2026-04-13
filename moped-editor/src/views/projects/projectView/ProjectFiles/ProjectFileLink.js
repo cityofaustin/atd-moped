@@ -6,7 +6,7 @@ import ExternalLink from "src/components/ExternalLink";
 import CopyTextButton from "src/components/CopyTextButton";
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { isValidUrl } from "src/utils/urls";
-import { cleanUpFileKey, clickableTextStyles } from "./ProjectFiles";
+import { cleanUpFileKey } from "./ProjectFiles";
 import { useUser } from "src/auth/user";
 
 /**
@@ -14,8 +14,9 @@ import { useUser } from "src/auth/user";
  * @param {string} fileKey S3 upload: clickable link that triggers a download
  * @param {string} fileUrl Valid URL: external link or Network path: monospace text block
  * @param {string} fileName Name of the file
+ * @param {boolean} condensed Whether to display a condensed version of the file link
  */
-const ProjectFileLink = ({ fileKey, fileUrl, fileName }) => {
+const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
   const { getCognitoSession } = useUser();
 
   /* Download file */
@@ -23,7 +24,17 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName }) => {
     return (
       <Link
         onClick={() => downloadFileAttachment(fileKey, getCognitoSession)}
-        sx={clickableTextStyles}
+        noWrap={condensed ? true : false}
+        sx={
+          condensed
+            ? {
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }
+            : null
+        }
+        title={cleanUpFileKey(fileKey)}
       >
         {cleanUpFileKey(fileKey)}
       </Link>
@@ -34,7 +45,17 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName }) => {
   if (isValidUrl(fileUrl)) {
     return (
       <ExternalLink
-        linkProps={{ sx: clickableTextStyles }}
+        linkProps={{
+          sx: {
+            cursor: "pointer",
+            overflow: "hidden",
+            display: "block",
+            textOverflow: "ellipsis",
+            ...(condensed && { minWidth: 0 }),
+          },
+          noWrap: condensed,
+          title: fileName,
+        }}
         url={fileUrl}
         text={fileName}
         showExternalLinkIcon={false}
@@ -46,17 +67,29 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName }) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
       <Typography
-        noWrap
-        sx={{
-          backgroundColor: "#eee",
-          fontFamily: "monospace",
-          fontSize: "14px",
-          px: 0.5,
-          minWidth: 0,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          cursor: "default",
-        }}
+        noWrap={condensed ? true : false}
+        sx={
+          condensed
+            ? {
+                backgroundColor: "#eee",
+                fontFamily: "monospace",
+                fontSize: "14px",
+                px: 0.5,
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                cursor: "default",
+              }
+            : {
+                backgroundColor: "#eee",
+                fontFamily: "monospace",
+                display: "block",
+                wordWrap: "break-word",
+                paddingLeft: "4px",
+                paddingRight: "4px",
+                fontSize: "14px",
+              }
+        }
         title={fileUrl}
       >
         {fileUrl}

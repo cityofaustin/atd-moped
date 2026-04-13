@@ -53,14 +53,6 @@ export const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
 const requiredFields = ["file_name", "file_type"];
 
-// Reusable styles for clickable text elements with ellipsis
-export const clickableTextStyles = {
-  cursor: "pointer",
-  overflow: "hidden",
-  display: "block",
-  textOverflow: "ellipsis",
-};
-
 const useColumns = ({
   rowModesModel,
   handleEditClick,
@@ -79,7 +71,7 @@ const useColumns = ({
         width: 200,
         editable: true,
         renderCell: ({ row }) => (
-          <Typography sx={clickableTextStyles}>{row?.file_name}</Typography>
+          <Typography variant="body2">{row?.file_name}</Typography>
         ),
         // validate input
         preProcessEditCellProps: (params) => {
