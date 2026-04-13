@@ -44,17 +44,20 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName }) => {
 
   /* Show network path or invalid url as monospace text */
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
       <Typography
+        noWrap
         sx={{
           backgroundColor: "#eee",
           fontFamily: "monospace",
-          display: "block",
-          wordWrap: "break-word",
-          paddingLeft: "4px",
-          paddingRight: "4px",
           fontSize: "14px",
+          px: 0.5,
+          minWidth: 0,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          cursor: "default",
         }}
+        title={fileUrl}
       >
         {fileUrl}
       </Typography>

@@ -27,7 +27,7 @@ const CopyTextButton = ({
   const [copied, setCopied] = useState(false);
   const buttonText = copied ? copiedButtonText : copyButtonText;
   const startIcon = copied ? (
-    <CheckCircleOutline {...iconProps} />
+    <CheckCircleOutline color="success" {...iconProps} />
   ) : (
     <ContentCopyOutlined {...iconProps} />
   );

@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Typography, Stack, IconButton } from "@mui/material";
+import React, { useMemo } from "react";
+import { Divider, Typography, Stack, IconButton } from "@mui/material";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -321,17 +321,20 @@ export const useColumns = ({
         renderCell: ({ row }) => {
           return (
             <Stack direction="column" spacing={0.5}>
-              {row.ecapris_funding_files.map((file_record) => {
+              {row.ecapris_funding_files.map((file_record, index) => {
                 const file = file_record.moped_project_file;
 
                 if (!file) return null;
+
                 return (
-                  <ProjectFileLink
-                    key={file.project_file_id}
-                    fileKey={file.file_key}
-                    fileUrl={file.file_url}
-                    fileName={file.file_name}
-                  />
+                  <React.Fragment key={file.project_file_id}>
+                    {index > 0 && <Divider sx={{ my: 0.5 }} />}
+                    <ProjectFileLink
+                      fileKey={file.file_key}
+                      fileUrl={file.file_url}
+                      fileName={file.file_name}
+                    />
+                  </React.Fragment>
                 );
               })}
             </Stack>

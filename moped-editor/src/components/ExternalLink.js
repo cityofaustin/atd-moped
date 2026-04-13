@@ -53,6 +53,7 @@ const ExternalLink = ({
         rel="noopener noreferrer"
         color={linkColor ?? "primary"}
         variant="body2"
+        title={url}
         {...linkProps}
       >
         {getExternalLinkText(url) || text}
