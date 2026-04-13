@@ -362,7 +362,6 @@ export const useColumns = ({
               handleEditClick={handleEditClick}
               editDisabled={row.is_synced_from_ecapris}
               deleteDisabled={row.is_synced_from_ecapris}
-              handleFileAttachmentClick={handleFileAttachmentClick}
             />
           ) : (
             <>
