@@ -45,10 +45,6 @@ import {
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 
-// TODO: Ability to highlight row when navigating between files and funding tables.
-//       - Example: click edit icon that directs to files table with associated file, highlight row of associated file.
-//       - Example: click file that directs to funding table and highlight associated funding record row.
-
 const ProjectFundingTable = ({
   projectId,
   handleSnackbar,
@@ -59,8 +55,8 @@ const ProjectFundingTable = ({
   const apiRef = useGridApiRef();
 
   /* Query Moped and eCAPRIS funding with matching filters */
-  const queryVariables =
-    eCaprisSubprojectId && shouldSyncEcaprisFunding
+  const queryVariables = useMemo(() => {
+    return eCaprisSubprojectId && shouldSyncEcaprisFunding
       ? {
           projectFundingConditions: {
             project_id: { _eq: Number(projectId) },
@@ -74,6 +70,7 @@ const ProjectFundingTable = ({
             ],
           },
         };
+  }, [projectId, eCaprisSubprojectId, shouldSyncEcaprisFunding]);
 
   const {
     loading: loadingProjectFunding,

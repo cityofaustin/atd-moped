@@ -21,10 +21,11 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
 
   /* Download file */
   if (fileKey) {
+    const displayName = cleanUpFileKey(fileKey);
     return (
       <Link
         onClick={() => downloadFileAttachment(fileKey, getCognitoSession)}
-        noWrap={condensed ? true : false}
+        noWrap={condensed}
         sx={
           condensed
             ? {
@@ -34,9 +35,9 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
               }
             : null
         }
-        title={cleanUpFileKey(fileKey)}
+        title={displayName}
       >
-        {cleanUpFileKey(fileKey)}
+        {displayName}
       </Link>
     );
   }
@@ -65,31 +66,32 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
 
   /* Show network path or invalid url as monospace text */
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 0.5,
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
       <Typography
-        noWrap={condensed ? true : false}
-        sx={
-          condensed
+        noWrap={condensed}
+        sx={{
+          backgroundColor: "#eee",
+          fontFamily: "monospace",
+          fontSize: "14px",
+          px: 0.5,
+          flexShrink: 1,
+          minWidth: 0,
+          ...(condensed
             ? {
-                backgroundColor: "#eee",
-                fontFamily: "monospace",
-                fontSize: "14px",
-                px: 0.5,
-                minWidth: 0,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 cursor: "default",
               }
-            : {
-                backgroundColor: "#eee",
-                fontFamily: "monospace",
-                display: "block",
-                wordWrap: "break-word",
-                paddingLeft: "4px",
-                paddingRight: "4px",
-                fontSize: "14px",
-              }
-        }
+            : { display: "block", wordWrap: "break-word" }),
+        }}
         title={fileUrl}
       >
         {fileUrl}
