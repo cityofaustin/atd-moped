@@ -1,6 +1,9 @@
 import React from "react";
-import { Link, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 import ExternalLink from "src/components/ExternalLink";
+import CopyTextButton from "src/components/CopyTextButton";
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { isValidUrl } from "src/utils/urls";
 import { cleanUpFileKey, clickableTextStyles } from "./ProjectFiles";
@@ -8,47 +11,60 @@ import { useUser } from "src/auth/user";
 
 /**
  * Renders a file link based on the file type
- * @param {string} file_key S3 upload: clickable link that triggers a download
- * @param {string} file_url Valid URL: external link or Network path: monospace text block
+ * @param {string} fileKey S3 upload: clickable link that triggers a download
+ * @param {string} fileUrl Valid URL: external link or Network path: monospace text block
+ * @param {string} fileName Name of the file
  */
-const ProjectFileLink = ({ file_key, file_url }) => {
+const ProjectFileLink = ({ fileKey, fileUrl, fileName }) => {
   const { getCognitoSession } = useUser();
 
-  if (file_key) {
+  /* Download file */
+  if (fileKey) {
     return (
       <Link
-        onClick={() => downloadFileAttachment(file_key, getCognitoSession)}
+        onClick={() => downloadFileAttachment(fileKey, getCognitoSession)}
         sx={clickableTextStyles}
       >
-        {cleanUpFileKey(file_key)}
+        {cleanUpFileKey(fileKey)}
       </Link>
     );
   }
 
-  if (isValidUrl(file_url)) {
+  /* Show url to file */
+  if (isValidUrl(fileUrl)) {
     return (
       <ExternalLink
         linkProps={{ sx: clickableTextStyles }}
-        url={file_url}
+        url={fileUrl}
+        text={fileName}
         showExternalLinkIcon={false}
       />
     );
   }
 
+  /* Show network path or invalid url as monospace text */
   return (
-    <Typography
-      sx={{
-        backgroundColor: "#eee",
-        fontFamily: "monospace",
-        display: "block",
-        wordWrap: "break-word",
-        paddingLeft: "4px",
-        paddingRight: "4px",
-        fontSize: "14px",
-      }}
-    >
-      {file_url}
-    </Typography>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Typography
+        sx={{
+          backgroundColor: "#eee",
+          fontFamily: "monospace",
+          display: "block",
+          wordWrap: "break-word",
+          paddingLeft: "4px",
+          paddingRight: "4px",
+          fontSize: "14px",
+        }}
+      >
+        {fileUrl}
+      </Typography>
+      <CopyTextButton
+        textToCopy={fileUrl}
+        buttonProps={{ size: "small" }}
+        iconProps={{ fontSize: "small" }}
+        iconOnly
+      />
+    </Box>
   );
 };
 

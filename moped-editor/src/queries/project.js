@@ -720,8 +720,8 @@ export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
   }
 `;
 
-export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
-  mutation DetachFileFromEcaprisFunding(
+export const DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+  mutation DeleteFileEcaprisFunding(
     $fileId: Int!
     $entityId: Int!
     $projectId: Int!

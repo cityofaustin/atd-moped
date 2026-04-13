@@ -45,7 +45,6 @@ import {
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 
-// TODO: Add copy icon to network path files
 // TODO: Ability to highlight row when navigating between files and funding tables.
 //       - Example: click edit icon that directs to files table with associated file, highlight row of associated file.
 //       - Example: click file that directs to funding table and highlight associated funding record row.

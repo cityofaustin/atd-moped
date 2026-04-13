@@ -30,6 +30,7 @@ export const COMBINED_FUNDING_QUERY = gql`
           project_file_id
           file_url
           file_key
+          file_name
         }
       }
     }

@@ -98,7 +98,11 @@ const useColumns = ({
         editable: true,
         preProcessEditCellProps: validateFileInput,
         renderCell: ({ row }) => (
-          <ProjectFileLink file_key={row?.file_key} file_url={row?.file_url} />
+          <ProjectFileLink
+            fileKey={row?.file_key}
+            fileUrl={row?.file_url}
+            fileName={row?.file_name}
+          />
         ),
         renderEditCell: (props) =>
           // users cannot edit the file_key, since its provided by the FilePond upload interface

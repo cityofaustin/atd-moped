@@ -328,8 +328,9 @@ export const useColumns = ({
                 return (
                   <ProjectFileLink
                     key={file.project_file_id}
-                    file_key={file.file_key}
-                    file_url={file.file_url}
+                    fileKey={file.file_key}
+                    fileUrl={file.file_url}
+                    fileName={file.file_name}
                   />
                 );
               })}

@@ -4,7 +4,7 @@ import { useMutation } from "@apollo/client";
 import { Box, Divider, IconButton, Typography, Stack } from "@mui/material";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
-  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
@@ -38,7 +38,7 @@ const ProjectFundingFilesAttachmentDialog = ({
     CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
   );
   const [detachFundingFileAttachment] = useMutation(
-    DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
+    DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
   );
   const [unlinkConfirmationFileId, setUnlinkConfirmationFileId] =
     useState(null);
@@ -172,8 +172,9 @@ const ProjectFundingFilesAttachmentDialog = ({
                     </Box>
                     <Box sx={{ flex: 1 }}>
                       <ProjectFileLink
-                        file_key={file?.file_key}
-                        file_url={file?.file_url}
+                        fileKey={file?.file_key}
+                        fileUrl={file?.file_url}
+                        fileName={file?.file_name}
                       />
                     </Box>
                   </Stack>

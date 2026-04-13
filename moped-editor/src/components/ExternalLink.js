@@ -10,7 +10,7 @@ const getExternalLinkText = (url) => {
     case url.toLowerCase().includes("https://atd.knack.com/signs-markings"):
       return "Signs & Markings";
     default:
-      return "Open";
+      return null;
   }
 };
 
@@ -55,7 +55,7 @@ const ExternalLink = ({
         variant="body2"
         {...linkProps}
       >
-        {text || getExternalLinkText(url)}
+        {getExternalLinkText(url) || text}
         {showExternalLinkIcon && (
           <OpenInNewIcon
             sx={{
