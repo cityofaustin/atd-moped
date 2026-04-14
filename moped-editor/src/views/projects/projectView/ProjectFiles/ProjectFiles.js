@@ -94,6 +94,7 @@ const useColumns = ({
             fileKey={row?.file_key}
             fileUrl={row?.file_url}
             fileName={row?.file_url}
+            useFriendlyUrl={false}
           />
         ),
         renderEditCell: (props) =>

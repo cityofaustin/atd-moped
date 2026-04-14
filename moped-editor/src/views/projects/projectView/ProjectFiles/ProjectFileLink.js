@@ -59,7 +59,7 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
         }}
         url={fileUrl}
         text={fileName}
-        useFriendlyUrl={true}
+        useFriendlyUrl={false}
         showExternalLinkIcon={false}
       />
     );
@@ -99,6 +99,7 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
       </Typography>
       <CopyTextButton
         textToCopy={fileUrl}
+        copyButtonText="Copy network location"
         buttonProps={{ size: "small" }}
         iconProps={{ fontSize: "small" }}
         iconOnly
