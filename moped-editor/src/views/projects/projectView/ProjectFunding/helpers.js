@@ -335,6 +335,7 @@ export const useColumns = ({
                       fileUrl={file.file_url}
                       fileName={file.file_name}
                       condensed
+                      showNetworkPathStyles={false}
                     />
                   </React.Fragment>
                 );

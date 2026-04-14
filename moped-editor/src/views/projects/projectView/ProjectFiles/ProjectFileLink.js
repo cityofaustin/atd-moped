@@ -15,8 +15,16 @@ import { useUser } from "src/auth/user";
  * @param {string} fileUrl Valid URL: external link or Network path: monospace text block
  * @param {string} fileName Name of the file
  * @param {boolean} condensed Whether to display a condensed version of the file link
+ * @param {boolean} showNetworkPathStyles Whether to show the network path style for valid URLs that are not http/https
+ * @returns {JSX.Element}
  */
-const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
+const ProjectFileLink = ({
+  fileKey,
+  fileUrl,
+  fileName,
+  condensed = false,
+  showNetworkPathStyles = true,
+}) => {
   const { getCognitoSession } = useUser();
 
   /* Download file */
@@ -79,10 +87,12 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
       <Typography
         noWrap={condensed}
         sx={{
-          backgroundColor: "#eee",
-          fontFamily: "monospace",
+          ...(showNetworkPathStyles && {
+            backgroundColor: "#eee",
+            fontFamily: "monospace",
+            px: 0.5,
+          }),
           fontSize: "14px",
-          px: 0.5,
           flexShrink: 1,
           minWidth: 0,
           ...(condensed
@@ -95,7 +105,7 @@ const ProjectFileLink = ({ fileKey, fileUrl, fileName, condensed = false }) => {
         }}
         title={fileUrl}
       >
-        {fileUrl}
+        {fileName}
       </Typography>
       <CopyTextButton
         textToCopy={fileUrl}

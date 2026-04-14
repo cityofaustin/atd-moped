@@ -93,8 +93,7 @@ const useColumns = ({
           <ProjectFileLink
             fileKey={row?.file_key}
             fileUrl={row?.file_url}
-            fileName={row?.file_url}
-            useFriendlyUrl={false}
+            fileName={row?.file_url} // Pass url as fileName to match edit cell value
           />
         ),
         renderEditCell: (props) =>
