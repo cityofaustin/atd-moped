@@ -13,13 +13,13 @@ import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 
 /**
- * Dialog for attaching files to project funding record and unlinking existing attachments
+ * Dialog for attaching files to project funding record and detaching existing attachments
  * @param {number} projectId - ID of the project to which the funding record (and thus file attachment) belongs
- * @param {number} fileAttachmentId - ID of the funding record to which files are being attached/linked
- * @param {function} handleSnackbar - Snackbar handler function for user feedback on success/failure of attaching/unlinking files
+ * @param {number} fileAttachmentId - ID of the funding record to which files are being attached/detached
+ * @param {function} handleSnackbar - Snackbar handler function for user feedback on success/failure of attaching/detaching files
  * @param {boolean} isFileAttachmentDialogOpen - Boolean state for whether the dialog is open
  * @param {function} onClose - Fires when closing this dialog
- * @param {function} refetch - Refetch project funding data after attaching/unlinking files
+ * @param {function} refetch - Refetch project funding data after attaching/detaching files
  * @param {Array} dataLookups - Lookup data for file types
  * @param {Array} rows - Array of project funding records, used to determine which files are currently attached to the given funding record (fileAttachmentId)
  * @returns {JSX.Element}
@@ -40,7 +40,7 @@ const ProjectFundingFilesAttachmentDialog = ({
   const [detachFundingFileAttachment] = useMutation(
     DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
   );
-  const [unlinkConfirmationFileId, setUnlinkConfirmationFileId] =
+  const [detachConfirmationFileId, setDetachConfirmationFileId] =
     useState(null);
 
   const filesAttachedToId = useMemo(() => {
@@ -100,13 +100,13 @@ const ProjectFundingFilesAttachmentDialog = ({
       },
     })
       .then(() => {
-        setUnlinkConfirmationFileId(null);
+        setDetachConfirmationFileId(null);
         onClose();
-        handleSnackbar(true, "File attachment unlinked", "success");
+        handleSnackbar(true, "File attachment detached", "success");
       })
       .catch((error) => {
-        setUnlinkConfirmationFileId(null);
-        handleSnackbar(true, "Error unlinking file attachment", "error", error);
+        setDetachConfirmationFileId(null);
+        handleSnackbar(true, "Error detaching file attachment", "error", error);
       })
       .finally(() => {
         refetch();
@@ -137,17 +137,17 @@ const ProjectFundingFilesAttachmentDialog = ({
                 <React.Fragment key={file.project_file_id}>
                   <DeleteConfirmationModal
                     type="file attachment"
-                    actionButtonText="Unlink"
-                    additionalConfirmationText="This will not delete the file, only unlink it from this funding record."
+                    actionButtonText="Detach"
+                    additionalConfirmationText="This will not delete the file, only detach it from this funding record."
                     actionButtonIcon={<LinkOff />}
                     submitDelete={() =>
                       handleUnlinkFileAttachment(file.project_file_id)
                     }
                     isDeleteConfirmationOpen={
-                      unlinkConfirmationFileId === file.project_file_id
+                      detachConfirmationFileId === file.project_file_id
                     }
                     setIsDeleteConfirmationOpen={(open) =>
-                      setUnlinkConfirmationFileId(
+                      setDetachConfirmationFileId(
                         open ? file.project_file_id : null
                       )
                     }
@@ -163,7 +163,7 @@ const ProjectFundingFilesAttachmentDialog = ({
                     <Box>
                       <IconButton
                         onClick={() =>
-                          setUnlinkConfirmationFileId(file.project_file_id)
+                          setDetachConfirmationFileId(file.project_file_id)
                         }
                         size="small"
                       >

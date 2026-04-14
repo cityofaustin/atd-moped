@@ -93,13 +93,15 @@ const useColumns = ({
           <ProjectFileLink
             fileKey={row?.file_key}
             fileUrl={row?.file_url}
-            fileName={row?.file_name}
+            fileName={row?.file_url}
           />
         ),
         renderEditCell: (props) =>
           // users cannot edit the file_key, since its provided by the FilePond upload interface
           props.row.file_key ? (
-            <Typography>{cleanUpFileKey(props.row.file_key)}</Typography>
+            <Typography variant="body2">
+              {cleanUpFileKey(props.row.file_key)}
+            </Typography>
           ) : (
             <DataGridTextField
               helperText="Required"

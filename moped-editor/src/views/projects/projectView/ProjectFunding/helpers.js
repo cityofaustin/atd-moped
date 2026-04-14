@@ -318,6 +318,7 @@ export const useColumns = ({
         minWidth: 150,
         flex: 1,
         editable: false,
+        sortable: false,
         renderCell: ({ row }) => {
           return (
             <Stack direction="column" spacing={0.5}>
