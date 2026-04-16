@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
@@ -47,7 +47,10 @@ const ProjectSummaryProjectECapris = ({
   const userEmail = user?.idToken?.payload?.email;
 
   // Helper: find full option object by id and format option labels
-  const findOptionById = (id) => options?.find((o) => o?.ecapris_subproject_id === id);
+  const findOptionById = useCallback(
+    (id) => options?.find((o) => o?.ecapris_subproject_id === id),
+    [options]
+  );
   const formatOptionLabel = (o) => {
     if (!o) return "";
     const id = o?.ecapris_subproject_id ?? "";
@@ -56,7 +59,9 @@ const ProjectSummaryProjectECapris = ({
   };
 
   const initialValue = eCaprisSubprojectId
-    ? findOptionById(eCaprisSubprojectId) ?? { ecapris_subproject_id: eCaprisSubprojectId }
+    ? (findOptionById(eCaprisSubprojectId) ?? {
+        ecapris_subproject_id: eCaprisSubprojectId,
+      })
     : null;
 
   const [editMode, setEditMode] = useState(false);
@@ -82,8 +87,12 @@ const ProjectSummaryProjectECapris = ({
       return;
     }
 
-    setSelectedValue(findOptionById(eCaprisSubprojectId) ?? { ecapris_subproject_id: eCaprisSubprojectId });
-  }, [editMode, options, eCaprisSubprojectId]);
+    setSelectedValue(
+      findOptionById(eCaprisSubprojectId) ?? {
+        ecapris_subproject_id: eCaprisSubprojectId,
+      }
+    );
+  }, [editMode, findOptionById, eCaprisSubprojectId]);
 
   const handleFieldClose = () => {
     setSelectedValue(initialValue);
@@ -189,7 +198,9 @@ const ProjectSummaryProjectECapris = ({
           >
             <ProjectSummaryLabel
               text={formatOptionLabel(
-                findOptionById(eCaprisSubprojectId) ?? { ecapris_subproject_id: eCaprisSubprojectId }
+                findOptionById(eCaprisSubprojectId) ?? {
+                  ecapris_subproject_id: eCaprisSubprojectId,
+                }
               )}
               onClickEdit={() => {
                 if (disabled) return;
