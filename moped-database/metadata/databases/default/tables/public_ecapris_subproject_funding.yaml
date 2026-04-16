@@ -12,42 +12,45 @@ select_permissions:
   - role: moped-admin
     permission:
       columns:
+        - app
+        - ecapris_subproject_id
         - fao_id
         - fdu
-        - id
-        - unit_long_name
         - fdu_status
-        - ecapris_subproject_id
-        - app
         - funding_program_id
         - funding_source_id
+        - id
+        - subproject_name
+        - unit_long_name
       filter: {}
     comment: ""
   - role: moped-editor
     permission:
       columns:
+        - app
+        - ecapris_subproject_id
         - fao_id
         - fdu
-        - id
-        - unit_long_name
         - fdu_status
-        - ecapris_subproject_id
-        - app
         - funding_program_id
         - funding_source_id
+        - id
+        - subproject_name
+        - unit_long_name
       filter: {}
     comment: ""
   - role: moped-viewer
     permission:
       columns:
+        - app
+        - ecapris_subproject_id
         - fao_id
         - fdu
-        - id
-        - unit_long_name
         - fdu_status
-        - ecapris_subproject_id
-        - app
         - funding_program_id
         - funding_source_id
+        - id
+        - subproject_name
+        - unit_long_name
       filter: {}
     comment: ""

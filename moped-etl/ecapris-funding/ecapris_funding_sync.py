@@ -66,6 +66,7 @@ def main(args):
                 "updated_by_user_id": 1,
                 "fdu_status": record.get("fdu_status"),
                 "bond_year": record.get("bond_year"),
+                "subproject_name": record.get("sp_name"),
             }
         )
 

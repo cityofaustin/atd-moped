@@ -111,7 +111,11 @@ const ProjectSummaryProjectECapris = ({
               value={selectedValue}
               sx={fieldSelectItem}
               options={options}
-              getOptionLabel={(e) => e?.["ecapris_subproject_id"] ?? ""}
+              getOptionLabel={(e) =>
+                e?.["ecapris_subproject_id"] && e?.["subproject_name"]
+                  ? `${e["ecapris_subproject_id"]} - ${e["subproject_name"]}`
+                  : ""
+              } // Display subproject name in dropdown to provide more context for user when selecting
               isOptionEqualToValue={(option, value) =>
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]

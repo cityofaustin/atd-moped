@@ -144,6 +144,7 @@ export const SUMMARY_QUERY = gql`
     }
     ecapris_subproject_funding(distinct_on: ecapris_subproject_id) {
       ecapris_subproject_id
+      subproject_name
     }
   }
 `;
