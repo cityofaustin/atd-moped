@@ -1,4 +1,1 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."ecapris_subproject_funding" add column "subproject_name" text
---  null;
+alter table "public"."ecapris_subproject_funding" drop column "subproject_name";
