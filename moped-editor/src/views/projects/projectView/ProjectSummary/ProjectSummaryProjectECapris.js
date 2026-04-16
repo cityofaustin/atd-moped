@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
@@ -46,10 +46,17 @@ const ProjectSummaryProjectECapris = ({
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
+  // Helper: find full option object by id and format option labels
+  const findOptionById = (id) => options?.find((o) => o?.ecapris_subproject_id === id);
+  const formatOptionLabel = (o) => {
+    if (!o) return "";
+    const id = o?.ecapris_subproject_id ?? "";
+    const name = o?.subproject_name ?? "";
+    return name ? `${id} - ${name}` : id;
+  };
+
   const initialValue = eCaprisSubprojectId
-    ? {
-        ecapris_subproject_id: eCaprisSubprojectId,
-      }
+    ? findOptionById(eCaprisSubprojectId) ?? { ecapris_subproject_id: eCaprisSubprojectId }
     : null;
 
   const [editMode, setEditMode] = useState(false);
@@ -64,6 +71,19 @@ const ProjectSummaryProjectECapris = ({
   const [clearECaprisId, { loading: clearLoading }] = useMutation(
     PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID
   );
+
+  // When entering edit mode, prefer the full option object from `options`
+  // so the Autocomplete can display both the id and the name if available.
+  useEffect(() => {
+    if (!editMode) return;
+
+    if (!eCaprisSubprojectId) {
+      setSelectedValue(null);
+      return;
+    }
+
+    setSelectedValue(findOptionById(eCaprisSubprojectId) ?? { ecapris_subproject_id: eCaprisSubprojectId });
+  }, [editMode, options, eCaprisSubprojectId]);
 
   const handleFieldClose = () => {
     setSelectedValue(initialValue);
@@ -111,11 +131,7 @@ const ProjectSummaryProjectECapris = ({
               value={selectedValue}
               sx={fieldSelectItem}
               options={options}
-              getOptionLabel={(e) =>
-                e?.["ecapris_subproject_id"] && e?.["subproject_name"]
-                  ? `${e["ecapris_subproject_id"]} - ${e["subproject_name"]}`
-                  : ""
-              } // Display subproject name in dropdown to provide more context for user when selecting
+              getOptionLabel={(e) => formatOptionLabel(e)} // Display subproject name in dropdown to provide more context for user when selecting
               isOptionEqualToValue={(option, value) =>
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
@@ -172,7 +188,9 @@ const ProjectSummaryProjectECapris = ({
             sx={!eCaprisSubprojectId ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
             <ProjectSummaryLabel
-              text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
+              text={formatOptionLabel(
+                findOptionById(eCaprisSubprojectId) ?? { ecapris_subproject_id: eCaprisSubprojectId }
+              )}
               onClickEdit={() => {
                 if (disabled) return;
                 setEditMode(true);
