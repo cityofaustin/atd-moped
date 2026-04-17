@@ -1,3 +1,52 @@
 table:
   name: files_project_funding
   schema: public
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - updated_at
+    comment: ""
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - updated_at
+    comment: ""
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - id
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - id
+        - updated_at
+      filter: {}
+    comment: ""
+delete_permissions:
+  - role: moped-admin
+    permission:
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      filter: {}
+    comment: ""
