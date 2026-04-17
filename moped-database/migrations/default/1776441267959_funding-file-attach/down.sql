@@ -1,1 +1,1 @@
-DROP TABLE public.files_ecapris_funding;
+DROP TABLE public.files_project_funding;
