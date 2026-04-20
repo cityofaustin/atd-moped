@@ -37,7 +37,6 @@ const ProjectFundingFilesAttachmentDialog = ({
   rows,
 }) => {
   const fundingRecord = rows.find((row) => row.id === fileAttachmentId); // should i memoize this
-  console.log(fundingRecord);
   const isSyncedFromECapris = fundingRecord.is_synced_from_ecapris;
   const [addFundingFileAttachment] = useMutation(
     isSyncedFromECapris
@@ -65,7 +64,6 @@ const ProjectFundingFilesAttachmentDialog = ({
 
   const handleClickSaveFile = (fileDataBundle) => {
     const entityId = fundingRecord?.proj_funding_id;
-    console.log(entityId);
     const fileConnectionData = isSyncedFromECapris
       ? {
           files_ecapris_fundings: {
