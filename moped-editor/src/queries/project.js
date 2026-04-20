@@ -738,6 +738,36 @@ export const DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
   }
 `;
 
+export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
+  mutation InsertFileWithMopedFundingConnection(
+    $object: moped_project_files_insert_input!
+  ) {
+    insert_moped_project_files_one(object: $object) {
+      project_file_id
+      files_project_fundings {
+        id
+      }
+    }
+  }
+`;
+
+export const DELETE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
+  mutation DeleteFileProjectFunding(
+    $fileId: Int!
+    $entityId: Int!
+  ) {
+    delete_files_project_funding(
+      where: {
+        file_id: { _eq: $fileId }
+        entity_id: { _eq: $entityId }
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+
 export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
     update_moped_project(
