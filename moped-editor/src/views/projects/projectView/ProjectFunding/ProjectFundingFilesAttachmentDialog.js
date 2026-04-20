@@ -60,7 +60,7 @@ const ProjectFundingFilesAttachmentDialog = ({
       ?.[filesType].map((file_record) => file_record.moped_project_file);
 
     return filesAttachedToId ? filesAttachedToId : [];
-  }, [fileAttachmentId, rows]);
+  }, [fileAttachmentId, rows, isSyncedFromECapris]);
 
   const handleClickSaveFile = (fileDataBundle) => {
     const entityId = fundingRecord?.proj_funding_id;
