@@ -52,7 +52,7 @@ const ProjectFundingFilesAttachmentDialog = ({
     useState(null);
 
   const filesAttachedToId = useMemo(() => {
-    const filesType  = isSyncedFromECapris
+    const filesType = isSyncedFromECapris
       ? "ecapris_funding_files"
       : "moped_funding_files";
     const filesAttachedToId = rows
