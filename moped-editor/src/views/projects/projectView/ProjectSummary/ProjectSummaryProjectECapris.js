@@ -47,14 +47,13 @@ const ProjectSummaryProjectECapris = ({
   const userEmail = user?.idToken?.payload?.email;
 
   // Helper: find full option object by id and format option labels
-  const findOptionById = useCallback(
-    (id) => options?.find((o) => o?.ecapris_subproject_id === id),
-    [options]
-  );
-  const formatOptionLabel = (o) => {
-    if (!o) return "";
-    const id = o?.ecapris_subproject_id ?? "";
-    const name = o?.subproject_name ?? "";
+  const findOptionById = (id) =>
+    options?.find((option) => option?.ecapris_subproject_id === id);
+
+  const formatOptionLabel = (option) => {
+    if (!option) return "";
+    const id = option?.ecapris_subproject_id ?? "";
+    const name = option?.subproject_name ?? "";
     return name ? `${id} - ${name}` : id;
   };
 
@@ -76,23 +75,6 @@ const ProjectSummaryProjectECapris = ({
   const [clearECaprisId, { loading: clearLoading }] = useMutation(
     PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID
   );
-
-  // When entering edit mode, prefer the full option object from `options`
-  // so the Autocomplete can display both the id and the name if available.
-  useEffect(() => {
-    if (!editMode) return;
-
-    if (!eCaprisSubprojectId) {
-      setSelectedValue(null);
-      return;
-    }
-
-    setSelectedValue(
-      findOptionById(eCaprisSubprojectId) ?? {
-        ecapris_subproject_id: eCaprisSubprojectId,
-      }
-    );
-  }, [editMode, findOptionById, eCaprisSubprojectId]);
 
   const handleFieldClose = () => {
     setSelectedValue(initialValue);
