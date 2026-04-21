@@ -50,7 +50,7 @@ const ProjectSummaryProjectECapris = ({
   const findOptionById = (id) =>
     options?.find((option) => option?.ecapris_subproject_id === id);
 
-  // Format option label to include subproject name if available to provide more context for user when selecting an eCAPRIS subproject ID
+  // Format option label to include subproject name if available
   const formatOptionLabel = (option) => {
     if (!option) return "";
     const id = option?.ecapris_subproject_id ?? "";
