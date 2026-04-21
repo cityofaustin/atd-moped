@@ -36,7 +36,10 @@ const ProjectFundingFilesAttachmentDialog = ({
   dataLookups,
   rows,
 }) => {
-  const fundingRecord = rows.find((row) => row.id === fileAttachmentId); // should i memoize this
+  const fundingRecord = useMemo(
+    () => rows.find((row) => row.id === fileAttachmentId),
+    [rows, fileAttachmentId]
+  );
   const isSyncedFromECapris = fundingRecord.is_synced_from_ecapris;
   const [addFundingFileAttachment] = useMutation(
     isSyncedFromECapris
