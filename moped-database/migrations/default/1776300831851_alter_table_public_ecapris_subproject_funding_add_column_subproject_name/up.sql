@@ -1,1 +1,2 @@
-alter table "public"."ecapris_subproject_funding" add column "subproject_name" text not null;
+alter table "public"."ecapris_subproject_funding" add column "subproject_name" text
+ null;
