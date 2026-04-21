@@ -58,6 +58,7 @@ const ProjectSummaryProjectECapris = ({
     return name ? `${id} - ${name}` : id;
   };
 
+  // Display subproject name in summary view if available
   const initialValue = eCaprisSubprojectId
     ? findOptionById(eCaprisSubprojectId)
     : null;
