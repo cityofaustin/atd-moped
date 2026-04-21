@@ -46,10 +46,11 @@ const ProjectSummaryProjectECapris = ({
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
-  // Helper: find full option object by id and format option labels
+  // Find full option object by id and format option labels
   const findOptionById = (id) =>
     options?.find((option) => option?.ecapris_subproject_id === id);
 
+  // Format option label to include subproject name if available to provide more context for user when selecting an eCAPRIS subproject ID
   const formatOptionLabel = (option) => {
     if (!option) return "";
     const id = option?.ecapris_subproject_id ?? "";
@@ -58,9 +59,7 @@ const ProjectSummaryProjectECapris = ({
   };
 
   const initialValue = eCaprisSubprojectId
-    ? (findOptionById(eCaprisSubprojectId) ?? {
-        ecapris_subproject_id: eCaprisSubprojectId,
-      })
+    ? findOptionById(eCaprisSubprojectId)
     : null;
 
   const [editMode, setEditMode] = useState(false);
@@ -122,7 +121,7 @@ const ProjectSummaryProjectECapris = ({
               value={selectedValue}
               sx={fieldSelectItem}
               options={options}
-              getOptionLabel={(e) => formatOptionLabel(e)} // Display subproject name in dropdown to provide more context for user when selecting
+              getOptionLabel={(e) => formatOptionLabel(e)}
               isOptionEqualToValue={(option, value) =>
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
