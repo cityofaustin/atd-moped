@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
@@ -47,8 +47,9 @@ const ProjectSummaryProjectECapris = ({
   const userEmail = user?.idToken?.payload?.email;
 
   // Find full option object by id and format option labels
-  const findOptionById = (id) =>
-    options?.find((option) => option?.ecapris_subproject_id === id);
+  const findOptionById = useCallback((id) => {
+    return options?.find((option) => option?.ecapris_subproject_id === id);
+  }, [options]);
 
   // Format option label to include subproject name if available
   const formatOptionLabel = (option) => {
