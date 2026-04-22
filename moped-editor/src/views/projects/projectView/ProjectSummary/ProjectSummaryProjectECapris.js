@@ -194,11 +194,15 @@ const ProjectSummaryProjectECapris = ({
           >
             <ProjectSummaryLabel
               // Display subproject name in summary view if available
-              text={formatOptionLabel(
-                findOptionById(options, eCaprisSubprojectId) ?? {
-                  ecapris_subproject_id: eCaprisSubprojectId,
-                }
-              )}
+              text={
+                eCaprisSubprojectId
+                  ? formatOptionLabel(
+                      findOptionById(options, eCaprisSubprojectId) ?? {
+                        ecapris_subproject_id: eCaprisSubprojectId,
+                      }
+                    )
+                  : ""
+              }
               onClickEdit={() => {
                 if (disabled) return;
                 setEditMode(true);
