@@ -19,8 +19,6 @@ const DollarAmountIntegerField = ({ id, value, field, hasFocus, error }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
-  console.log(error)
-
   React.useEffect(() => {
     if (hasFocus) {
       ref.current.focus();
@@ -55,7 +53,7 @@ const DollarAmountIntegerField = ({ id, value, field, hasFocus, error }) => {
       value={value ?? ""}
       onChange={handleChange}
       error={error}
-      helperText={isAmountOutOfRange(value) ?  "Value is out of range" : null}
+      helperText={error ? "Value is out of range" : null}
     />
   );
 };
