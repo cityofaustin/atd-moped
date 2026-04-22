@@ -61,7 +61,7 @@
     "aws-amplify": "^5.3.33",
     "axios": "^1.13.5",
     "date-fns": "^2.30.0",
-    "dompurify": "^3.3.2",
+    "dompurify": "^3.4.0",
     "env-cmd": "^10.1.0",
     "filepond": "^3.9.0",
     "filepond-plugin-file-validate-size": "^2.2.8",
