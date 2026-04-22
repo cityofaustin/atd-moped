@@ -52,6 +52,7 @@ import {
   transformGridToDatabase,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
+import { isAmountOutOfRange } from "src/utils/numberFormatters";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -205,6 +206,10 @@ const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
+        preProcessEditCellProps: (params) => ({
+          ...params.props,
+          error: isAmountOutOfRange(params.props.value),
+        }),
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
