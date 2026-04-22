@@ -68,7 +68,9 @@ const ProjectSummaryProjectECapris = ({
   const userEmail = user?.idToken?.payload?.email;
 
   const initialValue = eCaprisSubprojectId
-    ? findOptionById(options, eCaprisSubprojectId)
+    ? (findOptionById(options, eCaprisSubprojectId) ?? {
+        ecapris_subproject_id: eCaprisSubprojectId,
+      })
     : null;
 
   const [editMode, setEditMode] = useState(false);
@@ -190,11 +192,11 @@ const ProjectSummaryProjectECapris = ({
           >
             <ProjectSummaryLabel
               // Display subproject name in summary view if available
-              text={
-                formatOptionLabel(
-                  findOptionById(options, eCaprisSubprojectId)
-                ) ?? findOptionById(options, eCaprisSubprojectId)
-              }
+              text={formatOptionLabel(
+                findOptionById(options, eCaprisSubprojectId) ?? {
+                  ecapris_subproject_id: eCaprisSubprojectId,
+                }
+              )}
               onClickEdit={() => {
                 if (disabled) return;
                 setEditMode(true);
