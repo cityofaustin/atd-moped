@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
@@ -27,13 +27,21 @@ export const findOptionById = (options, id) => {
   return options?.find((option) => option?.ecapris_subproject_id === id);
 };
 
-// Format option label to include subproject name if available
-export const formatOptionLabel = (option) => {
-  if (!option) return "";
-  const id = option?.ecapris_subproject_id ?? "";
-  const name = option?.subproject_name ?? "";
-  return name ? `${id} - ${name}` : id;
-};
+// Memoized formatter to avoid recomputing labels repeatedly
+const useFormatOptionLabel = () =>
+  useMemo(() => {
+    const cache = new Map();
+    return (option) => {
+      if (!option) return "";
+      const id = option?.ecapris_subproject_id ?? "";
+      const name = option?.subproject_name ?? "";
+      const key = `${id}|${name}`;
+      if (cache.has(key)) return cache.get(key);
+      const label = name ? `${id} - ${name}` : id;
+      cache.set(key, label);
+      return label;
+    };
+  }, []);
 
 /**
  * ProjectSummaryProjectECapris Component
@@ -112,6 +120,8 @@ const ProjectSummaryProjectECapris = ({
         );
       });
   };
+
+  const formatOptionLabel = useFormatOptionLabel();
 
   return (
     <Grid2 size={12} sx={fieldGridItem}>
