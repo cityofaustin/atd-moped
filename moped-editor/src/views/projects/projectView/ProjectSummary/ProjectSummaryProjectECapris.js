@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
@@ -21,6 +21,19 @@ import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
+
+// Find full option object by id
+export const findOptionById = (options, id) => {
+  return options?.find((option) => option?.ecapris_subproject_id === id);
+};
+
+// Format option label to include subproject name if available
+export const formatOptionLabel = (option) => {
+  if (!option) return "";
+  const id = option?.ecapris_subproject_id ?? "";
+  const name = option?.subproject_name ?? "";
+  return name ? `${id} - ${name}` : id;
+};
 
 /**
  * ProjectSummaryProjectECapris Component
@@ -46,22 +59,9 @@ const ProjectSummaryProjectECapris = ({
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
-  // Find full option object by id and format option labels
-  const findOptionById = useCallback((id) => {
-    return options?.find((option) => option?.ecapris_subproject_id === id);
-  }, [options]);
-
-  // Format option label to include subproject name if available
-  const formatOptionLabel = (option) => {
-    if (!option) return "";
-    const id = option?.ecapris_subproject_id ?? "";
-    const name = option?.subproject_name ?? "";
-    return name ? `${id} - ${name}` : id;
-  };
-
   // Display subproject name in summary view if available
   const initialValue = eCaprisSubprojectId
-    ? findOptionById(eCaprisSubprojectId)
+    ? findOptionById(options, eCaprisSubprojectId)
     : null;
 
   const [editMode, setEditMode] = useState(false);
@@ -181,7 +181,7 @@ const ProjectSummaryProjectECapris = ({
           >
             <ProjectSummaryLabel
               text={formatOptionLabel(
-                findOptionById(eCaprisSubprojectId) ?? {
+                findOptionById(options, eCaprisSubprojectId) ?? {
                   ecapris_subproject_id: eCaprisSubprojectId,
                 }
               )}
