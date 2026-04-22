@@ -38,7 +38,7 @@ export const activityValidationSchema = yup.object().shape({
     .nullable(),
   contract_amount: yup
     .number()
-    .max(2_147_483_647, "Amount is out of range")
+    .max(2_147_483_647, "Amount is out of range") // max number an int can be in the db
     .nullable(),
   status_id: yup.number().required(),
   status_note: yup
