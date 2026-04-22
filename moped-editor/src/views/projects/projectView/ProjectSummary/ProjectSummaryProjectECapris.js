@@ -134,7 +134,9 @@ const ProjectSummaryProjectECapris = ({
               value={selectedValue}
               sx={fieldSelectItem}
               options={options}
-              getOptionLabel={(e) => formatOptionLabel(e)}
+              getOptionLabel={(e) =>
+                e?.["ecapris_subproject_id"] ? formatOptionLabel(e) : ""
+              }
               isOptionEqualToValue={(option, value) =>
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
