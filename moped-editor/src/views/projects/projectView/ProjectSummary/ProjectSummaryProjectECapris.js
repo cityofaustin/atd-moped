@@ -67,7 +67,6 @@ const ProjectSummaryProjectECapris = ({
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
-  // Display subproject name in summary view if available
   const initialValue = eCaprisSubprojectId
     ? findOptionById(options, eCaprisSubprojectId)
     : null;
@@ -190,6 +189,7 @@ const ProjectSummaryProjectECapris = ({
             sx={!eCaprisSubprojectId ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
             <ProjectSummaryLabel
+              // Display subproject name in summary view if available
               text={formatOptionLabel(
                 findOptionById(options, eCaprisSubprojectId) ?? {
                   ecapris_subproject_id: eCaprisSubprojectId,
