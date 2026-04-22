@@ -36,7 +36,10 @@ export const activityValidationSchema = yup.object().shape({
     .string()
     .max(500, "Must be less than 500 characters")
     .nullable(),
-  contract_amount: yup.number().nullable(),
+  contract_amount: yup
+    .number()
+    .max(2_147_483_647, "Amount is out of range")
+    .nullable(),
   status_id: yup.number().required(),
   status_note: yup
     .string()

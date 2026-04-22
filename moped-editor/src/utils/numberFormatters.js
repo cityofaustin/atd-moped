@@ -25,4 +25,4 @@ export const removeDecimalsAndTrailingNumbers = (number) =>
  */
 export const removeNonIntegers = (number) => number.replace(/[^0-9]/g, "");
 
-export const isAmountOutOfRange = number => number >= 2_147_483_647;
+export const isAmountOutOfRange = (number) => number >= 2_147_483_647;

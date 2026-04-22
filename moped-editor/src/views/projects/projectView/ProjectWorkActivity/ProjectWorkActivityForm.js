@@ -220,7 +220,13 @@ const ProjectWorkActivitiesForm = ({
               control={control}
               onChangeHandler={amountOnChangeHandler}
               size="small"
+              error={formErrors.contract_amount}
             />
+            {formErrors?.contract_amount && (
+              <FormHelperText>
+                {formErrors.contract_amount.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid2>
         <Grid2 size={12}>

@@ -3,7 +3,6 @@ import { TextField } from "@mui/material";
 import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
-  isAmountOutOfRange,
 } from "src/utils/numberFormatters";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
