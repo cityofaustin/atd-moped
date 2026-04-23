@@ -349,9 +349,12 @@ HELP_EOM
 
 function __check_export_complete() {
   local file_path="$1"
-  local last_line=$(tail -n 3 "$file_path" | head -n 1)
-  
-  if [[ "$last_line" == *"PostgreSQL database dump complete"* ]]; then
+  local end_of_file
+  end_of_file=$(tail -n 20 "$file_path")
+
+  # New pg_dump output can include additional trailer lines (for example
+  # "\unrestrict <token>") after the completion marker.
+  if [[ "$end_of_file" == *"PostgreSQL database dump complete"* ]]; then
     # echo "PostgreSQL database export is complete."
     return 0
   else
