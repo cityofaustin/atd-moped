@@ -27,6 +27,7 @@ export const findOptionById = (options, id) => {
   return options?.find((option) => option?.ecapris_subproject_id === id);
 };
 
+// Get option label for autocomplete display
 export const getOptionLabel = (option) => {
   return option
     ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
