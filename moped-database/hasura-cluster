@@ -32,6 +32,8 @@ function __set_postgresql_image() {
 }
 
 HIDE_HASURA_KIT_BANNER="FALSE";
+HASURA_CLUSTER_VERBOSE="FALSE";
+HASURA_CLUSTER_LOG_FOLLOW_PID="";
 __set_postgresql_image; # into HASURA_CLUSTER_POSTGRES_IMAGE
 
 
@@ -94,6 +96,31 @@ function __wait_server_ready() {
   echo "[λ] Hasura server ready!                    ✅";
 }
 
+function __start_log_passthrough() {
+  local compose_file="$1"
+  if [[ "${HASURA_CLUSTER_VERBOSE}" != "TRUE" ]]; then
+    return
+  fi
+
+  echo "Verbose mode enabled: streaming container output during startup..."
+  if [[ "${compose_file}" = "" ]]; then
+    docker compose -f docker-compose.yml logs --follow --tail=50 &
+  else
+    docker compose -f "${compose_file}" logs --follow --tail=50 &
+  fi
+  HASURA_CLUSTER_LOG_FOLLOW_PID=$!
+}
+
+function __stop_log_passthrough() {
+  if [[ "${HASURA_CLUSTER_LOG_FOLLOW_PID}" = "" ]]; then
+    return
+  fi
+
+  kill "${HASURA_CLUSTER_LOG_FOLLOW_PID}" &> /dev/null || true
+  wait "${HASURA_CLUSTER_LOG_FOLLOW_PID}" 2> /dev/null || true
+  HASURA_CLUSTER_LOG_FOLLOW_PID="";
+}
+
 
 #
 # Waits until the local hasura server is ready
@@ -143,6 +170,7 @@ function run_migration() {
 function start_only() {
   __get_platform;
   START_MODE=$1;
+  __start_log_passthrough "${START_MODE}";
   if [[ "${START_MODE}" = "" ]]; then
     docker compose -f docker-compose.yml up -d;
   else
@@ -151,6 +179,7 @@ function start_only() {
 
   echo "Checking the Hasura server is ready...";
   __wait_server_ready;
+  __stop_log_passthrough;
 }
 
 #
@@ -292,6 +321,7 @@ Usage: ./hasura-cluster [options] <command> [args]
 
 Options:
   -h, --help              Show this help message and exit
+  -v, --verbose           Stream container logs during startup
   -j, --use-any-snapshot  Use most recent local snapshot during replicate
 
 Commands:
@@ -386,6 +416,10 @@ while (( "$#" )); do
       positional_args=("help")
       shift
       ;;
+    -v|--verbose)
+      HASURA_CLUSTER_VERBOSE="TRUE"
+      shift
+      ;;
     -j|--use-any-snapshot)
       use_any_snapshot=true
       shift
@@ -397,6 +431,8 @@ while (( "$#" )); do
       ;;
   esac
 done
+
+trap __stop_log_passthrough EXIT
 
 #
 # Let's make sure docker is running...
