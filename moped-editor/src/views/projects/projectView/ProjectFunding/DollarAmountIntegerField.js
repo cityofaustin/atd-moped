@@ -14,7 +14,7 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {String} field - name of field
  * @return {JSX.Element}
  */
-const DollarAmountIntegerField = ({ id, value, field, hasFocus }) => {
+const DollarAmountIntegerField = ({ id, value, field, hasFocus, error }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -24,7 +24,7 @@ const DollarAmountIntegerField = ({ id, value, field, hasFocus }) => {
     }
   }, [hasFocus]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event) => {
     const { value: inputValue } = event.target;
 
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
@@ -43,7 +43,7 @@ const DollarAmountIntegerField = ({ id, value, field, hasFocus }) => {
   return (
     <TextField
       variant="standard"
-      style={{ width: "80px" }}
+      style={{ minWidth: "80px" }}
       id="funding_amount"
       inputRef={ref}
       name="funding_amount"
@@ -51,6 +51,8 @@ const DollarAmountIntegerField = ({ id, value, field, hasFocus }) => {
       inputMode="numeric"
       value={value ?? ""}
       onChange={handleChange}
+      error={error}
+      helperText={error ? "Value is out of range" : null}
     />
   );
 };

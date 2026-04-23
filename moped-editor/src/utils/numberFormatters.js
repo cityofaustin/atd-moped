@@ -24,3 +24,6 @@ export const removeDecimalsAndTrailingNumbers = (number) =>
  * @return {String} Number string with only 0-9 integer characters
  */
 export const removeNonIntegers = (number) => number.replace(/[^0-9]/g, "");
+
+// check if number exceeds the maximum number that can be saved in the db
+export const isAmountOutOfRange = (number) => number >= 2_147_483_647;
