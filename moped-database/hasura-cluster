@@ -32,6 +32,8 @@ function __set_postgresql_image() {
 }
 
 HIDE_HASURA_KIT_BANNER="FALSE";
+HASURA_CLUSTER_VERBOSE="FALSE";
+HASURA_CLUSTER_LOG_FOLLOW_PID="";
 __set_postgresql_image; # into HASURA_CLUSTER_POSTGRES_IMAGE
 
 
@@ -94,6 +96,31 @@ function __wait_server_ready() {
   echo "[λ] Hasura server ready!                    ✅";
 }
 
+function __start_log_passthrough() {
+  local compose_file="$1"
+  if [[ "${HASURA_CLUSTER_VERBOSE}" != "TRUE" ]]; then
+    return
+  fi
+
+  echo "Verbose mode enabled: streaming container output during startup..."
+  if [[ "${compose_file}" = "" ]]; then
+    docker compose -f docker-compose.yml logs --follow --tail=50 &
+  else
+    docker compose -f "${compose_file}" logs --follow --tail=50 &
+  fi
+  HASURA_CLUSTER_LOG_FOLLOW_PID=$!
+}
+
+function __stop_log_passthrough() {
+  if [[ "${HASURA_CLUSTER_LOG_FOLLOW_PID}" = "" ]]; then
+    return
+  fi
+
+  kill "${HASURA_CLUSTER_LOG_FOLLOW_PID}" &> /dev/null || true
+  wait "${HASURA_CLUSTER_LOG_FOLLOW_PID}" 2> /dev/null || true
+  HASURA_CLUSTER_LOG_FOLLOW_PID="";
+}
+
 
 #
 # Waits until the local hasura server is ready
@@ -143,6 +170,7 @@ function run_migration() {
 function start_only() {
   __get_platform;
   START_MODE=$1;
+  __start_log_passthrough "${START_MODE}";
   if [[ "${START_MODE}" = "" ]]; then
     docker compose -f docker-compose.yml up -d;
   else
@@ -151,6 +179,7 @@ function start_only() {
 
   echo "Checking the Hasura server is ready...";
   __wait_server_ready;
+  __stop_log_passthrough;
 }
 
 #
@@ -286,11 +315,46 @@ function show_banner() {
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
 }
 
+function help() {
+  cat <<'HELP_EOM'
+Usage: ./hasura-cluster [options] <command> [args]
+
+Options:
+  -h, --help              Show this help message and exit
+  -v, --verbose           Stream container logs during startup
+  -j, --use-any-snapshot  Use most recent local snapshot during replicate
+
+Commands:
+  start [compose_file]    Start cluster and run migrations/metadata/seeds
+  start_only [compose_file]
+                          Start cluster without running migrations
+  stop                    Stop cluster and remove volumes
+  restart                 Stop and start cluster (with migrations)
+  reload                  Stop and start cluster (without migrations)
+  status                  Show Hasura health and version
+  follow                  Follow logs for all services
+  console                 Open Hasura console
+  setenv <local|staging|production>
+                          Switch hasura config environment
+  prune                   Remove Docker volumes named moped*
+  replicate               Copy production DB into local DB and apply metadata
+  help                    Show this help message
+
+Examples:
+  ./hasura-cluster setenv local
+  ./hasura-cluster start
+  ./hasura-cluster replicate --use-any-snapshot
+HELP_EOM
+}
+
 function __check_export_complete() {
   local file_path="$1"
-  local last_line=$(tail -n 3 "$file_path" | head -n 1)
-  
-  if [[ "$last_line" == *"PostgreSQL database dump complete"* ]]; then
+  local end_of_file
+  end_of_file=$(tail -n 20 "$file_path")
+
+  # New pg_dump output can include additional trailer lines (for example
+  # "\unrestrict <token>") after the completion marker.
+  if [[ "$end_of_file" == *"PostgreSQL database dump complete"* ]]; then
     # echo "PostgreSQL database export is complete."
     return 0
   else
@@ -351,6 +415,14 @@ use_any_snapshot=false
 # Process named arguments
 while (( "$#" )); do
   case "$1" in
+    -h|--help)
+      positional_args=("help")
+      shift
+      ;;
+    -v|--verbose)
+      HASURA_CLUSTER_VERBOSE="TRUE"
+      shift
+      ;;
     -j|--use-any-snapshot)
       use_any_snapshot=true
       shift
@@ -363,10 +435,12 @@ while (( "$#" )); do
   esac
 done
 
+trap __stop_log_passthrough EXIT
+
 #
 # Let's make sure docker is running...
 #
-if [[ "$(__get_docker_running)" != "TRUE" ]]; then
+if [[ "${positional_args[0]}" != "help" ]] && [[ "$(__get_docker_running)" != "TRUE" ]]; then
     show_banner "${positional_args[0]}" && echo "Docker is not running. Please start docker on your computer"
   exit;
 fi;
