@@ -5,6 +5,8 @@ import { Box, Divider, IconButton, Typography, Stack } from "@mui/material";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
+  DELETE_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
@@ -34,28 +36,53 @@ const ProjectFundingFilesAttachmentDialog = ({
   dataLookups,
   rows,
 }) => {
+  const fundingRecord = useMemo(
+    () => rows.find((row) => row.id === fileAttachmentId),
+    [rows, fileAttachmentId]
+  );
+  const isSyncedFromECapris = fundingRecord.is_synced_from_ecapris;
   const [addFundingFileAttachment] = useMutation(
-    CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
+    isSyncedFromECapris
+      ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
+      : CREATE_FILE_MOPED_FUNDING_ATTACHMENT
   );
   const [detachFundingFileAttachment] = useMutation(
-    DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
+    isSyncedFromECapris
+      ? DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
+      : DELETE_FILE_MOPED_FUNDING_ATTACHMENT
   );
   const [detachConfirmationFileId, setDetachConfirmationFileId] =
     useState(null);
 
   const filesAttachedToId = useMemo(() => {
+    const filesType = isSyncedFromECapris
+      ? "ecapris_funding_files"
+      : "moped_funding_files";
     const filesAttachedToId = rows
       .find((row) => row.id === fileAttachmentId)
-      ?.ecapris_funding_files.map(
-        (file_record) => file_record.moped_project_file
-      );
+      ?.[filesType].map((file_record) => file_record.moped_project_file);
 
     return filesAttachedToId ? filesAttachedToId : [];
-  }, [fileAttachmentId, rows]);
+  }, [fileAttachmentId, rows, isSyncedFromECapris]);
 
   const handleClickSaveFile = (fileDataBundle) => {
-    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
     const entityId = fundingRecord?.proj_funding_id;
+    const fileConnectionData = isSyncedFromECapris
+      ? {
+          files_ecapris_fundings: {
+            data: {
+              project_id: projectId,
+              entity_id: entityId,
+            },
+          },
+        }
+      : {
+          files_project_fundings: {
+            data: {
+              entity_id: entityId,
+            },
+          },
+        };
 
     addFundingFileAttachment({
       variables: {
@@ -67,12 +94,7 @@ const ProjectFundingFilesAttachmentDialog = ({
           file_key: fileDataBundle?.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
           file_url: fileDataBundle?.url,
-          files_ecapris_fundings: {
-            data: {
-              project_id: projectId,
-              entity_id: entityId,
-            },
-          },
+          ...fileConnectionData,
         },
       },
     })

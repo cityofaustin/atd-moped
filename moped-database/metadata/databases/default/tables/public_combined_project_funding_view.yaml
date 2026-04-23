@@ -12,6 +12,15 @@ array_relationships:
         remote_table:
           name: files_ecapris_funding
           schema: public
+  - name: moped_funding_files
+    using:
+      manual_configuration:
+        column_mapping:
+          original_id: entity_id
+        insertion_order: null
+        remote_table:
+          name: files_project_funding
+          schema: public
 select_permissions:
   - role: moped-admin
     permission:
