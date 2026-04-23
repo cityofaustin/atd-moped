@@ -181,7 +181,6 @@ const ProjectSummaryProjectECapris = ({
             sx={!eCaprisSubprojectId ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
             <ProjectSummaryLabel
-              // Display subproject name in summary view if available
               text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => {
                 if (disabled) return;
