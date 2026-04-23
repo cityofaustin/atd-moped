@@ -22,6 +22,18 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 
+// Find full option object by id
+export const findOptionById = (options, id) => {
+  return options?.find((option) => option?.ecapris_subproject_id === id);
+};
+
+// Get option label for autocomplete display
+export const getOptionLabel = (option) => {
+  return option
+    ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
+    : "";
+};
+
 /**
  * ProjectSummaryProjectECapris Component
  * @param {Number} projectId - The id of the current project being viewed
@@ -47,9 +59,9 @@ const ProjectSummaryProjectECapris = ({
   const userEmail = user?.idToken?.payload?.email;
 
   const initialValue = eCaprisSubprojectId
-    ? {
+    ? (findOptionById(options, eCaprisSubprojectId) ?? {
         ecapris_subproject_id: eCaprisSubprojectId,
-      }
+      })
     : null;
 
   const [editMode, setEditMode] = useState(false);
@@ -111,7 +123,9 @@ const ProjectSummaryProjectECapris = ({
               value={selectedValue}
               sx={fieldSelectItem}
               options={options}
-              getOptionLabel={(e) => e?.["ecapris_subproject_id"] ?? ""}
+              getOptionLabel={(e) =>
+                e?.["ecapris_subproject_id"] ? getOptionLabel(e) : ""
+              }
               isOptionEqualToValue={(option, value) =>
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
