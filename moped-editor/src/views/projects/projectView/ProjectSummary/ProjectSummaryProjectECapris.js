@@ -27,21 +27,11 @@ export const findOptionById = (options, id) => {
   return options?.find((option) => option?.ecapris_subproject_id === id);
 };
 
-// Memoized formatter to avoid recomputing labels repeatedly
-const useFormatOptionLabel = () =>
-  useMemo(() => {
-    const cache = new Map();
-    return (option) => {
-      if (!option) return "";
-      const id = option?.ecapris_subproject_id ?? "";
-      const name = option?.subproject_name ?? "";
-      const key = `${id}|${name}`;
-      if (cache.has(key)) return cache.get(key);
-      const label = name ? `${id} - ${name}` : id;
-      cache.set(key, label);
-      return label;
-    };
-  }, []);
+export const getOptionLabel = (option) => {
+  return option
+    ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
+    : "";
+};
 
 /**
  * ProjectSummaryProjectECapris Component
@@ -122,8 +112,6 @@ const ProjectSummaryProjectECapris = ({
       });
   };
 
-  const formatOptionLabel = useFormatOptionLabel();
-
   return (
     <Grid2 size={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
@@ -135,7 +123,7 @@ const ProjectSummaryProjectECapris = ({
               sx={fieldSelectItem}
               options={options}
               getOptionLabel={(e) =>
-                e?.["ecapris_subproject_id"] ? formatOptionLabel(e) : ""
+                e?.["ecapris_subproject_id"] ? getOptionLabel(e) : ""
               }
               isOptionEqualToValue={(option, value) =>
                 option?.["ecapris_subproject_id"] ===
@@ -194,15 +182,7 @@ const ProjectSummaryProjectECapris = ({
           >
             <ProjectSummaryLabel
               // Display subproject name in summary view if available
-              text={
-                eCaprisSubprojectId
-                  ? formatOptionLabel(
-                      findOptionById(options, eCaprisSubprojectId) ?? {
-                        ecapris_subproject_id: eCaprisSubprojectId,
-                      }
-                    )
-                  : ""
-              }
+              text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => {
                 if (disabled) return;
                 setEditMode(true);
