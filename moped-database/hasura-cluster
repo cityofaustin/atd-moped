@@ -286,6 +286,37 @@ function show_banner() {
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
 }
 
+function help() {
+  cat <<'HELP_EOM'
+Usage: ./hasura-cluster [options] <command> [args]
+
+Options:
+  -h, --help              Show this help message and exit
+  -j, --use-any-snapshot  Use most recent local snapshot during replicate
+
+Commands:
+  start [compose_file]    Start cluster and run migrations/metadata/seeds
+  start_only [compose_file]
+                          Start cluster without running migrations
+  stop                    Stop cluster and remove volumes
+  restart                 Stop and start cluster (with migrations)
+  reload                  Stop and start cluster (without migrations)
+  status                  Show Hasura health and version
+  follow                  Follow logs for all services
+  console                 Open Hasura console
+  setenv <local|staging|production>
+                          Switch hasura config environment
+  prune                   Remove Docker volumes named moped*
+  replicate               Copy production DB into local DB and apply metadata
+  help                    Show this help message
+
+Examples:
+  ./hasura-cluster setenv local
+  ./hasura-cluster start
+  ./hasura-cluster replicate --use-any-snapshot
+HELP_EOM
+}
+
 function __check_export_complete() {
   local file_path="$1"
   local last_line=$(tail -n 3 "$file_path" | head -n 1)
@@ -351,6 +382,10 @@ use_any_snapshot=false
 # Process named arguments
 while (( "$#" )); do
   case "$1" in
+    -h|--help)
+      positional_args=("help")
+      shift
+      ;;
     -j|--use-any-snapshot)
       use_any_snapshot=true
       shift
@@ -366,7 +401,7 @@ done
 #
 # Let's make sure docker is running...
 #
-if [[ "$(__get_docker_running)" != "TRUE" ]]; then
+if [[ "${positional_args[0]}" != "help" ]] && [[ "$(__get_docker_running)" != "TRUE" ]]; then
     show_banner "${positional_args[0]}" && echo "Docker is not running. Please start docker on your computer"
   exit;
 fi;
