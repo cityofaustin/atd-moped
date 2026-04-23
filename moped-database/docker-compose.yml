@@ -26,7 +26,7 @@ services:
     moped-pgsql:
         image: "atddocker/postgis:unified-db"
         volumes:
-            - moped-db-vol:/var/lib/postgresql/data
+            - moped-db-vol:/var/lib/postgresql
         expose:
             - 5432
         ports:
