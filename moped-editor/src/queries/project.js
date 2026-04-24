@@ -693,12 +693,46 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
     ) {
       affected_rows
     }
+    delete_files_ecapris_funding(where: { file_id: { _eq: $fileId } }) {
+      affected_rows
+    }
   }
 `;
 
 export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
   mutation insert_single_article($object: moped_project_files_insert_input!) {
     insert_moped_project_files(objects: [$object]) {
+      affected_rows
+    }
+  }
+`;
+
+export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+  mutation InsertFileWithEcaprisConnection(
+    $object: moped_project_files_insert_input!
+  ) {
+    insert_moped_project_files_one(object: $object) {
+      project_file_id
+      files_ecapris_fundings {
+        id
+      }
+    }
+  }
+`;
+
+export const DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+  mutation DeleteFileEcaprisFunding(
+    $fileId: Int!
+    $entityId: Int!
+    $projectId: Int!
+  ) {
+    delete_files_ecapris_funding(
+      where: {
+        file_id: { _eq: $fileId }
+        entity_id: { _eq: $entityId }
+        project_id: { _eq: $projectId }
+      }
+    ) {
       affected_rows
     }
   }

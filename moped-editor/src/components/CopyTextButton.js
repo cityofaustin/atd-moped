@@ -17,7 +17,7 @@ import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
  */
 const CopyTextButton = ({
   textToCopy,
-  copyButtonText = "Copy to Clipboard",
+  copyButtonText = "Copy to clipboard",
   copiedButtonText = "Copied!",
   buttonProps,
   iconProps,
@@ -27,7 +27,7 @@ const CopyTextButton = ({
   const [copied, setCopied] = useState(false);
   const buttonText = copied ? copiedButtonText : copyButtonText;
   const startIcon = copied ? (
-    <CheckCircleOutline {...iconProps} />
+    <CheckCircleOutline color="success" {...iconProps} />
   ) : (
     <ContentCopyOutlined {...iconProps} />
   );
