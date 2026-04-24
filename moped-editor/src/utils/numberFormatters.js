@@ -25,5 +25,7 @@ export const removeDecimalsAndTrailingNumbers = (number) =>
  */
 export const removeNonIntegers = (number) => number.replace(/[^0-9]/g, "");
 
+export const INT_4_MAX = 2_147_483_647
+
 // check if number exceeds the maximum number that can be saved in the db
-export const isAmountOutOfRange = (number) => number >= 2_147_483_647;
+export const isAmountOutOfRange = (number) => number >= INT_4_MAX;

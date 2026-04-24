@@ -3,6 +3,7 @@ import * as yup from "yup";
 import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
+  INT_4_MAX,
 } from "src/utils/numberFormatters";
 
 export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
@@ -38,7 +39,7 @@ export const activityValidationSchema = yup.object().shape({
     .nullable(),
   contract_amount: yup
     .number()
-    .max(2_147_483_647, "Amount is out of range") // max number an int can be in the db
+    .max(INT_4_MAX, "Amount is out of range") // max number an int can be in the db
     .nullable(),
   status_id: yup.number().required(),
   status_note: yup
