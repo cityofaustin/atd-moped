@@ -26,6 +26,9 @@ import Can from "src/auth/Can";
 
 /**
  * Scroll to a page element based on its key
+ * @param {string} recordKey - The key representing the record type to scroll to
+ * @param {Object} refs - An object containing refs for each table element on the page
+ * @param {string} behavior - The scroll behavior
  */
 const scrollToTable = (recordKey, refs, behavior = "smooth") => {
   const ref = refs?.[recordKey];
@@ -37,6 +40,9 @@ const scrollToTable = (recordKey, refs, behavior = "smooth") => {
 /**
  * Custom hook to scroll to a table when the hash in the URL changes. Listens for changes to the hash and
  * uses a ResizeObserver to ensure that the element is scrolled into view after any layout shifts.
+ * @param {Object} props
+ * @param {string} props.recordKeyHash - The hash from the URL representing the record key to scroll to
+ * @param {Object} props.refs - An object containing refs for each table element on the page
  * */
 const useScrollToHash = ({ recordKeyHash, refs }) => {
   useEffect(() => {
