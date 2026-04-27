@@ -25,6 +25,20 @@ import FeedbackSnackbar, {
 import Can from "src/auth/Can";
 
 /**
+ * Use the record hash from the URL, if present. This only happens once after
+ * data fetch.
+ * */
+const useScrollToHash = ({ recordKeyHash, loading, refs }) => {
+  useEffect(() => {
+    if (!recordKeyHash || loading) {
+      return;
+    }
+    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
+    scrollToTable(recordKey, refs);
+  }, [recordKeyHash, loading, refs]);
+};
+
+/**
  * Scroll to a page element based on its key
  */
 const scrollToTable = (recordKey, refs) => {
@@ -73,18 +87,8 @@ const LookupsView = () => {
     []
   );
 
-  /**
-   * Use the record hash from the URL, if present. This only happens once after
-   * data fetch.
-   * */
   let { hash: recordKeyHash, pathname } = useLocation();
-  useEffect(() => {
-    if (!recordKeyHash || loading) {
-      return;
-    }
-    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
-    scrollToTable(recordKey, refs);
-  }, [recordKeyHash, loading, refs]);
+  useScrollToHash({ recordKeyHash, loading, refs });
 
   return (
     <ApolloErrorHandler error={error}>
