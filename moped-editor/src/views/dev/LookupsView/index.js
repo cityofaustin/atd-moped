@@ -25,27 +25,32 @@ import FeedbackSnackbar, {
 import Can from "src/auth/Can";
 
 /**
- * Use the record hash from the URL, if present. This only happens once after
- * data fetch.
- * */
-const useScrollToHash = ({ recordKeyHash, loading, refs }) => {
-  useEffect(() => {
-    if (!recordKeyHash || loading) {
-      return;
-    }
-    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
-    scrollToTable(recordKey, refs);
-  }, [recordKeyHash, loading, refs]);
+ * Scroll to a page element based on its key
+ */
+const scrollToTable = (recordKey, refs, behavior = "smooth") => {
+  const ref = refs?.[recordKey];
+  if (ref?.current) {
+    ref.current.scrollIntoView({ behavior });
+  }
 };
 
 /**
- * Scroll to a page element based on its key
- */
-const scrollToTable = (recordKey, refs) => {
-  const ref = refs?.[recordKey];
-  if (ref?.current) {
-    ref.current.scrollIntoView({ behavior: "smooth" });
-  }
+ * Custom hook to scroll to a table when the hash in the URL changes. Listens for changes to the hash and
+ * uses a ResizeObserver to ensure that the element is scrolled into view after any layout shifts.
+ * */
+const useScrollToHash = ({ recordKeyHash, refs }) => {
+  useEffect(() => {
+    if (!recordKeyHash) return;
+
+    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
+    const resizeObserver = new ResizeObserver(() => {
+      // Use "instant" since browsers don't handle smooth scroll well with layout shifts
+      scrollToTable(recordKey, refs, "instant");
+    });
+    resizeObserver.observe(document.body);
+
+    return () => resizeObserver.disconnect();
+  }, [recordKeyHash, refs]);
 };
 
 const TAG_TABLE_KEYS = ["moped_component_tags", "moped_tags"];
@@ -88,7 +93,7 @@ const LookupsView = () => {
   );
 
   let { hash: recordKeyHash, pathname } = useLocation();
-  useScrollToHash({ recordKeyHash, loading, refs });
+  useScrollToHash({ recordKeyHash, refs });
 
   return (
     <ApolloErrorHandler error={error}>
