@@ -216,7 +216,6 @@ const ProjectFundingTable = ({
         isNew: true,
         proj_funding_id: id,
         is_manual: true,
-        ecapris_funding_files: [],
       },
       ...oldRows,
     ]);

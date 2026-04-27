@@ -323,6 +323,9 @@ export const useColumns = ({
           const filesType = row.is_synced_from_ecapris
             ? "ecapris_funding_files"
             : "moped_funding_files";
+          if (!row?.[filesType]) {
+            return;
+          }
           return (
             <Stack direction="column" spacing={0.5}>
               {row?.[filesType].map((file_record, index) => {
