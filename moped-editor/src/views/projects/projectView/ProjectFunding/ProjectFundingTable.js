@@ -206,10 +206,15 @@ const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
-        preProcessEditCellProps: (params) => ({
-          ...params.props,
-          error: isAmountOutOfRange(params.props.value),
-        }),
+        preProcessEditCellProps: (params) => {
+          console.log(params, params.props.value);
+          if (params.hasRowChanged) {
+            return {
+              ...params.props,
+              error: isAmountOutOfRange(params.props.value),
+            };
+          }
+        },
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
