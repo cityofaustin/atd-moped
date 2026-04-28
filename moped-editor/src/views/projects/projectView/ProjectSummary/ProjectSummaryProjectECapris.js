@@ -65,7 +65,7 @@ const ProjectSummaryProjectECapris = ({
     : null;
 
   const [editMode, setEditMode] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(initialValue);
+  const [selectedValue, setSelectedValue] = useState(null);
   // Capture input value to include in service request if user encounters missing eCAPRIS subproject ID in options list
   const [inputValue, setInputValue] = useState("");
 
@@ -78,7 +78,7 @@ const ProjectSummaryProjectECapris = ({
   );
 
   const handleFieldClose = () => {
-    setSelectedValue(initialValue);
+    setSelectedValue(null);
     setInputValue("");
     setEditMode(false);
   };
@@ -103,7 +103,7 @@ const ProjectSummaryProjectECapris = ({
       })
       .catch((error) => {
         setEditMode(false);
-        setSelectedValue(initialValue);
+        setSelectedValue(null);
         handleSnackbar(
           true,
           "Error updating eCAPRIS subproject ID",
@@ -184,8 +184,9 @@ const ProjectSummaryProjectECapris = ({
             <ProjectSummaryLabel
               text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => {
-                if (disabled) return;
+                if (disabled || loading) return;
                 setEditMode(true);
+                setSelectedValue(initialValue);
               }}
               sxProp={disabled ? fieldLabelTextNoHover : fieldLabelText}
             />
