@@ -207,13 +207,10 @@ const useColumns = ({
         width: 100,
         editable: true,
         preProcessEditCellProps: (params) => {
-          console.log(params, params.props.value);
-          if (params.hasRowChanged) {
-            return {
-              ...params.props,
-              error: isAmountOutOfRange(params.props.value),
-            };
-          }
+          return {
+            ...params.props,
+            error: isAmountOutOfRange(params.props.value),
+          };
         },
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),

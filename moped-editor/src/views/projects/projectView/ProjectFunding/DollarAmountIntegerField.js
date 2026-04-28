@@ -14,7 +14,7 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {String} field - name of field
  * @return {JSX.Element}
  */
-const DollarAmountIntegerField = (props, { id, value, field, hasFocus, error }) => {
+const DollarAmountIntegerField = ({ id, value, field, hasFocus, error }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -24,19 +24,13 @@ const DollarAmountIntegerField = (props, { id, value, field, hasFocus, error }) 
     }
   }, [hasFocus]);
 
-  console.log(id, value, field, props);
-
-  const handleChange = (event, newValue) => {
+  const handleChange = (event) => {
     const { value: inputValue } = event.target;
-    console.log(newValue);
-
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
     const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(inputValue);
 
     // Then, remove all non-integers
     const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
-
-    console.log(apiRef)
 
     apiRef.current.setEditCellValue({
       id,

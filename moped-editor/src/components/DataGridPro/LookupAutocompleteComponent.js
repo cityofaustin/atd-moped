@@ -65,6 +65,7 @@ const LookupAutocompleteComponent = ({
           id,
           field: field.fieldName,
           value: field.setFieldValue(newValue),
+          debounceMs: 200
         });
       });
     }
