@@ -1,7 +1,7 @@
 # Architecture Independent Docker Stack Components for Moped Development Environment
 services:
     hasura:
-        image: hasura/graphql-engine:v2.48.15
+        image: hasura/graphql-engine:v2.48.16
         depends_on:
             - moped-pgsql
         expose:
@@ -26,7 +26,7 @@ services:
     moped-pgsql:
         image: "atddocker/postgis:unified-db"
         volumes:
-            - moped-db-vol:/var/lib/postgresql/data
+            - moped-db-vol:/var/lib/postgresql
         expose:
             - 5432
         ports:
