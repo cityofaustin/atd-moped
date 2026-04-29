@@ -113,7 +113,7 @@ const LookupsView = () => {
             <Grid2
               container
               spacing={3}
-              sx={{ marginTop: 3, scrollMarginTop: 32 }}
+              sx={{ marginTop: 3, scrollMarginTop: 24 }}
               ref={refs._scroll_to_top}
             >
               <Grid2 size={12}>
