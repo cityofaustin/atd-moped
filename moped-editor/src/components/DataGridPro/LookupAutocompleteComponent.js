@@ -65,7 +65,8 @@ const LookupAutocompleteComponent = ({
           id,
           field: field.fieldName,
           value: field.setFieldValue(newValue),
-          debounceMs: 200
+          // multiple fields being updated and potentially validated, debounce helps prevent race conditions
+          debounceMs: 100
         });
       });
     }
