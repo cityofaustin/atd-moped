@@ -32,6 +32,12 @@ import Can from "src/auth/Can";
  */
 const scrollToTable = (recordKey, refs, behavior = "smooth") => {
   const ref = refs?.[recordKey];
+  console.log("scrollToTable", {
+    recordKey,
+    hasRef: !!ref?.current,
+    availableKeys: Object.keys(refs),
+  });
+
   if (ref?.current) {
     ref.current.scrollIntoView({ behavior });
   }
@@ -109,7 +115,7 @@ const LookupsView = () => {
             <Grid2
               container
               spacing={3}
-              sx={{ marginTop: 3, scrollMarginTop: 24 }}
+              sx={{ marginTop: 3, scrollMarginTop: 32 }}
               ref={refs._scroll_to_top}
             >
               <Grid2 size={12}>
