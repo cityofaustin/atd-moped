@@ -32,11 +32,6 @@ import Can from "src/auth/Can";
  */
 const scrollToTable = (recordKey, refs, behavior = "smooth") => {
   const ref = refs?.[recordKey];
-  console.log("scrollToTable", {
-    recordKey,
-    hasRef: !!ref?.current,
-    availableKeys: Object.keys(refs),
-  });
 
   if (ref?.current) {
     ref.current.scrollIntoView({ behavior });
@@ -56,10 +51,13 @@ const useScrollToHash = ({ recordKeyHash, refs }) => {
 
     const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
     const resizeObserver = new ResizeObserver(() => {
-      // Use "instant" since browsers don't handle smooth scroll well with layout shifts
       scrollToTable(recordKey, refs, "instant");
     });
-    resizeObserver.observe(document.body);
+
+    // Observe resize of every table so we keep scrolling until layout is fully populated with async data
+    Object.values(refs).forEach((ref) => {
+      if (ref.current) resizeObserver.observe(ref.current);
+    });
 
     return () => resizeObserver.disconnect();
   }, [recordKeyHash, refs]);
