@@ -12,9 +12,19 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {Integer} id - Data Grid row id
  * @param {String} value - field value
  * @param {String} field - name of field
+ * @param {Boolean} hasFocus - if field hasFocus
+ * @param {Boolean} error - if input validation failed
+ * @param {String} errorMessage - error message text from input validation
  * @return {JSX.Element}
  */
-const DollarAmountIntegerField = ({ id, value, field, hasFocus, error }) => {
+const DollarAmountIntegerField = ({
+  id,
+  value,
+  field,
+  hasFocus,
+  error,
+  errorMessage,
+}) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -51,7 +61,7 @@ const DollarAmountIntegerField = ({ id, value, field, hasFocus, error }) => {
       value={value ?? ""}
       onChange={handleChange}
       error={error}
-      helperText={error ? "Value is out of range" : null}
+      helperText={error ? errorMessage : null}
     />
   );
 };

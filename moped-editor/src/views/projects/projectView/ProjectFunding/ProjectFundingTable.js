@@ -52,7 +52,10 @@ import {
   transformGridToDatabase,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
-import { isAmountOutOfRange } from "src/utils/numberFormatters";
+import {
+  isAmountOutOfRange,
+  outOfRangeErrorMessage,
+} from "src/utils/numberFormatters";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -210,6 +213,7 @@ const useColumns = ({
           return {
             ...params.props,
             error: isAmountOutOfRange(params.props.value),
+            errorMessage: outOfRangeErrorMessage,
           };
         },
         valueFormatter: (value) =>
