@@ -207,11 +207,11 @@ const useColumns = ({
         width: 100,
         editable: true,
         renderCell: ({ row, value }) => {
+          // Make sure not to give asterisk to empty cells
+          const hasValue = value !== null && value !== undefined;
           const formattedValue = hasValue
             ? currencyFormatter.format(value)
             : "";
-          // Make sure not to give asterisk to empty cells
-          const hasValue = value !== null && value !== undefined;
           const showOverrideIndicator =
             hasValue &&
             !row.should_use_ecapris_amount &&
