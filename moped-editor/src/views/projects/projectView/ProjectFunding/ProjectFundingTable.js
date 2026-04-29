@@ -42,6 +42,7 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import NotableCellPopover from "src/components/NotableCellPopover";
 import {
   getIsEditMode,
   handleRowEditStop,
@@ -205,6 +206,26 @@ const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
+        renderCell: ({ row, value }) => {
+          const formattedValue = hasValue
+            ? currencyFormatter.format(value)
+            : "";
+          // Make sure not to give asterisk to empty cells
+          const hasValue = value !== null && value !== undefined;
+          const showOverrideIndicator =
+            hasValue &&
+            !row.should_use_ecapris_amount &&
+            !row.is_manual &&
+            !row.is_synced_from_ecapris;
+
+          return (
+            <NotableCellPopover
+              value={formattedValue}
+              isEnabled={showOverrideIndicator}
+              popoverText="eCAPRIS override"
+            />
+          );
+        },
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
