@@ -1,1 +1,15 @@
+VITE_AWS_COGNITO_REGION=us-east-1
+VITE_AWS_COGNITO_USER_POOL_ID=us-east-1_U2dzkxfTv
+VITE_AWS_COGNITO_APP_CLIENT_ID=3u9n9373e37v603tbp25gs5fdc
+VITE_HASURA_ENDPOINT=http://localhost:8082/v1/graphql
+VITE_API_ENDPOINT=http://localhost:5001
+VITE_HASURA_ENV=local
+VITE_AWS_COGNITO_REDIRECT_SIGN_IN=https://localhost:3000/moped/session/signin
+VITE_AWS_COGNITO_REDIRECT_SIGN_OUT=https://localhost:3000/moped/session/signin
+VITE_AWS_COGNITO_DOMAIN=atd-moped-staging.auth.us-east-1.amazoncognito.com
+VITE_KNACK_DATA_TRACKER_SIGNAL_VIEW=1483
+VITE_KNACK_DATA_TRACKER_APP_ID=621958d0b5ab96001edcb4b1
+VITE_KNACK_DATA_TRACKER_URL_BASE=https://mobility.austin.gov/moped/projects/
 VITE_MUIX_LICENSE_KEY=Find in "Moped MUI X Pro License Key" entry
+VITE_NEARMAP_TOKEN=Find in "Moped Nearmap API Key" entry
+VITE_MAPBOX_TOKEN=Find in "Moped Mapbox API Key" entry
