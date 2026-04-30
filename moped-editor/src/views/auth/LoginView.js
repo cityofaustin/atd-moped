@@ -200,9 +200,7 @@ const LoginView = () => {
               size="large"
               variant="contained"
               disabled={
-                !["staging", "production"].includes(
-                  process.env.REACT_APP_HASURA_ENV
-                )
+                !["staging", "production"].includes(process.env.VITE_HASURA_ENV)
               }
             >
               City of Austin Sign-In

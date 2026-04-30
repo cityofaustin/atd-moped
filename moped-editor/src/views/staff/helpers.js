@@ -27,7 +27,7 @@ export function useUserApi() {
   const requestApi = async ({ method, path, payload, callback }) => {
     setError(null); // Clear errors from previous attempts
 
-    const url = process.env.REACT_APP_API_ENDPOINT + path;
+    const url = process.env.VITE_API_ENDPOINT + path;
 
     const session = await getCognitoSession();
     const token = getCognitoIdJwt(session);

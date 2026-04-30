@@ -27,7 +27,7 @@ import { onError } from "@apollo/client/link/error";
 
 import { LicenseInfo } from "@mui/x-license";
 
-const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
+const HASURA_ENDPOINT = process.env.VITE_HASURA_ENDPOINT;
 
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
@@ -97,7 +97,7 @@ const useApolloClient = () => {
   return { apolloClient, error, setError };
 };
 
-LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
+LicenseInfo.setLicenseKey(process.env.VITE_MUIX_LICENSE_KEY);
 
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
