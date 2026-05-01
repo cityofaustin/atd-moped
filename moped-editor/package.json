@@ -17,8 +17,6 @@
     "build:staging": "vite build --mode staging",
     "build:development": "vite build --mode development",
     "build:production": "vite build --mode production",
-    "build:netlifypr": "vite build --mode netlifypr",
-    "build:netlifybranch": "./set_env_branch_build.py",
     "preview": "vite preview",
     "test": "vitest"
   },

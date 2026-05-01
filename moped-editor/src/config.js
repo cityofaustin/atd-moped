@@ -1,6 +1,6 @@
 const config = {
   env: {
-    APP_ENVIRONMENT: process.env.VITE_HASURA_ENV,
+    APP_ENVIRONMENT: process.env.VITE_APP_ENV,
     APP_HASURA_ENDPOINT: process.env.VITE_HASURA_ENDPOINT,
     APP_API_ENDPOINT: process.env.VITE_API_ENDPOINT,
   },

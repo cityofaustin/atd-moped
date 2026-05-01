@@ -8,7 +8,7 @@ Web application for interacting with Moped data.
 
 2. Follow [steps](https://github.com/cityofaustin/atd-moped/tree/main/moped-database#readme) to start the Moped database.
 
-3. Copy the environment variables template and fill in the values from the DTS password store. You will see the [MUI X Missing license key warning](https://v7.mui.com/x/introduction/licensing/#1-missing-license-key) without the MUI X environment variable.
+3. Copy the environment variables template and fill in the missing values from the DTS password store - these secrets should not be captured in this repository. You will see the [MUI X Missing license key warning](https://v7.mui.com/x/introduction/licensing/#1-missing-license-key) without the MUI X environment variable. Mapbox tiles and NearMap aerial imagery will not be unavailable without the map tokens.
 ```shell
 cp env_template .env.local
 ```
