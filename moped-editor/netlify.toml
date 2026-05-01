@@ -4,6 +4,12 @@
   ignore = "/bin/false"
   command = "npm run build:production"
 
+# Redirect root to the app URL space, "/moped/"
+[[redirects]]
+  from = "/"
+  to = "/moped/"
+  status = 302
+
 # Redirect to the index page of the SPA
 [[redirects]]
   from = "/moped/*"
