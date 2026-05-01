@@ -28,7 +28,7 @@ const getAlertBannerSeverity = (env) => {
 };
 
 const EnvAlertBanner = () => {
-  const env = process.env.VITE_APP_ENV;
+  const env = import.meta.env.VITE_APP_ENV;
   if (env === "production") {
     return null;
   }

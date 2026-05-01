@@ -170,7 +170,7 @@ const LoginView = () => {
             >
               <img
                 alt="Logo"
-                src={`${process.env.PUBLIC_URL}/static/moped.svg`}
+                src={`${import.meta.env.PUBLIC_URL}/static/moped.svg`}
                 width="160px"
                 height="160px"
               />
@@ -200,7 +200,9 @@ const LoginView = () => {
               size="large"
               variant="contained"
               disabled={
-                !["staging", "production"].includes(process.env.VITE_APP_ENV)
+                !["staging", "production"].includes(
+                  import.meta.env.VITE_APP_ENV
+                )
               }
             >
               City of Austin Sign-In

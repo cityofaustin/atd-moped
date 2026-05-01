@@ -13,7 +13,7 @@ const Logo = (props) => {
     >
       <img
         alt="Logo"
-        src={`${process.env.PUBLIC_URL}/static/moped.svg`}
+        src={`${import.meta.env.PUBLIC_URL}/static/moped.svg`}
         {...props}
       />
     </div>
