@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import fs from "node:fs/promises";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(() => {
   return {
@@ -10,9 +9,12 @@ export default defineConfig(() => {
     build: {
       outDir: "build/moped",
     },
-    /* Use SSL for Cognito sign-in using callback set up with port 3000 in local development;
-    tsconfigPaths so we respect the import path aliases set in tsconfig.json */
-    plugins: [react(), basicSsl(), tsconfigPaths()],
+    /* Use SSL for Cognito sign-in using callback set up with port 3000 in local development */
+    plugins: [react(), basicSsl()],
+    resolve: {
+      /* Respect the import path aliases set in tsconfig.json */
+      tsconfigPaths: true,
+    },
     server: {
       https: true,
       port: 3000,
