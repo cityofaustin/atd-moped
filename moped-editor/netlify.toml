@@ -23,5 +23,5 @@
 # TODO: Remove after testing
 [context."mike/27809_vite"]
   command = "echo 'Build Context Mode: Sandbox / Staging' && npm run build:staging"
-  [context.mike/27809_vite.environment]
+  [context."mike/27809_vite".environment]
     VITE_APP_ENV = "Vite"
