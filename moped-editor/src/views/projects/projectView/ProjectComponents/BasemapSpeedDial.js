@@ -39,8 +39,8 @@ const getFabVariantSx = (basemapKey) => ({
   color: basemapKey !== "streets" ? "black" : "white",
   backgroundImage:
     basemapKey !== "streets"
-      ? `url(${import.meta.env.PUBLIC_URL}/static/images/mapStreets.jpg)`
-      : `url(${import.meta.env.PUBLIC_URL}/static/images/mapAerial.jpg)`,
+      ? `url(${import.meta.env.BASE_URL}static/images/mapStreets.jpg)`
+      : `url(${import.meta.env.BASE_URL}static/images/mapAerial.jpg)`,
 });
 
 const getFabLabelOverlaySx = (isSpeedDialOpen) => ({
@@ -70,13 +70,13 @@ const speedDialActionStreetsSx = {
   position: "relative",
   bottom: 0,
   color: "black",
-  backgroundImage: `url(${import.meta.env.PUBLIC_URL}/static/images/mapStreets.jpg)`,
+  backgroundImage: `url(${import.meta.env.BASE_URL}static/images/mapStreets.jpg)`,
 };
 
 const speedDialActionAerialSx = {
   ...speedDialActionBaseSx,
   color: "white",
-  backgroundImage: `url(${import.meta.env.PUBLIC_URL}/static/images/mapAerial.jpg)`,
+  backgroundImage: `url(${import.meta.env.BASE_URL}static/images/mapAerial.jpg)`,
 };
 
 /**

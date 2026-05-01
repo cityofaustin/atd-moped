@@ -32,7 +32,7 @@ const NotFoundView = () => {
             <Box
               component="img"
               alt="Under development"
-              src={`${import.meta.env.PUBLIC_URL}/static/images/moped-flat.svg`}
+              src={`${import.meta.env.BASE_URL}static/images/moped-flat.svg`}
               sx={{
                 marginTop: 6,
                 display: "inline-block",

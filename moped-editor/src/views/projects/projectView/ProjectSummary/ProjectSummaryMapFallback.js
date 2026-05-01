@@ -20,7 +20,7 @@ const ProjectSummaryMapFallback = () => {
     >
       <img
         alt="Map Unavailable"
-        src={`${import.meta.env.PUBLIC_URL}/static/images/map_unavailable.png`}
+        src={`${import.meta.env.BASE_URL}static/images/map_unavailable.png`}
         style={{
           width: "40%",
           marginBottom: "2%",

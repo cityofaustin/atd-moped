@@ -34,7 +34,7 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
           <Box
             component="img"
             alt="the moped logo with a flat rear tire"
-            src={`${import.meta.env.PUBLIC_URL}/static/images/moped-flat.svg`}
+            src={`${import.meta.env.BASE_URL}static/images/moped-flat.svg`}
             sx={{
               display: "inline-block",
               maxWidth: "100%",
