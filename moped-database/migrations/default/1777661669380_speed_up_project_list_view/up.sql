@@ -13,6 +13,15 @@
 -- moped_proj_components (project_id), moped_proj_tags (project_id), moped_project (parent_project_id).
 
 CREATE OR REPLACE VIEW project_list_view AS
+-- Ordering: match down.sql / legacy view — no ORDER BY inside aggregates except where the original
+-- explicitly has it (funding distinct values, component_work_type_names by work type name).
+--
+-- project_tags, project_inspector, project_designer, project_feature, project_partners, project_team_members,
+-- work_activities string/json aggs, child_project_lookup, district jsonb aggs, components list: legacy uses
+-- aggregates without ORDER BY, so element order is plan-defined. The old view evaluated some of these as
+-- scalar subqueries per project; this view uses grouped CTEs, so PostgreSQL may feed rows in a different
+-- order even with identical SQL — byte-for-byte list/JSON order parity is not guaranteed without adding
+-- explicit ORDER BY (which would go beyond legacy semantics) or reverting to per-row subqueries.
 WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
@@ -26,19 +35,31 @@ WITH project_person_list_lookup AS (
     GROUP BY mpp.project_id
 ),
 
-project_inspector_designer_lookup AS (
+project_inspector_lookup AS (
     SELECT
         mpp.project_id,
-        string_agg(concat(mu.first_name, ' ', mu.last_name), ', '::text)
-            FILTER (WHERE mpr.project_role_name = 'Inspector'::text) AS project_inspector,
-        string_agg(concat(mu.first_name, ' ', mu.last_name), ', '::text)
-            FILTER (WHERE mpr.project_role_name = 'Designer'::text) AS project_designer
+        string_agg(concat(mu.first_name, ' ', mu.last_name), ', '::text) AS project_inspector
     FROM moped_proj_personnel mpp
     JOIN moped_users mu ON mpp.user_id = mu.user_id
     JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
     JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
     WHERE mpp.is_deleted = false
       AND mppr.is_deleted = false
+      AND mpr.project_role_name = 'Inspector'::text
+    GROUP BY mpp.project_id
+),
+
+project_designer_lookup AS (
+    SELECT
+        mpp.project_id,
+        string_agg(concat(mu.first_name, ' ', mu.last_name), ', '::text) AS project_designer
+    FROM moped_proj_personnel mpp
+    JOIN moped_users mu ON mpp.user_id = mu.user_id
+    JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
+    JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
+    WHERE mpp.is_deleted = false
+      AND mppr.is_deleted = false
+      AND mpr.project_role_name = 'Designer'::text
     GROUP BY mpp.project_id
 ),
 
@@ -150,7 +171,7 @@ project_signals_feature AS (
             )
         ) AS project_feature
     FROM moped_proj_components components
-    JOIN feature_signals ON components.project_component_id = feature_signals.component_id
+    LEFT JOIN feature_signals ON components.project_component_id = feature_signals.component_id
     WHERE components.is_deleted = false
       AND feature_signals.signal_id IS NOT null
       AND feature_signals.is_deleted = false
@@ -294,8 +315,8 @@ SELECT
         WHEN mcpd.min_phase_date IS NOT null THEN null::timestamp with time zone
         ELSE mepd.min_phase_date
     END AS substantial_completion_date_estimated,
-    pidd.project_inspector,
-    pidd.project_designer,
+    pil.project_inspector,
+    pdl.project_designer,
     ptl.project_tags,
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     mpcs.components,
@@ -305,7 +326,8 @@ SELECT
 FROM moped_project mp
 LEFT JOIN moped_project mp_parent ON mp.parent_project_id = mp_parent.project_id
 LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
-LEFT JOIN project_inspector_designer_lookup pidd ON mp.project_id = pidd.project_id
+LEFT JOIN project_inspector_lookup pil ON mp.project_id = pil.project_id
+LEFT JOIN project_designer_lookup pdl ON mp.project_id = pdl.project_id
 LEFT JOIN project_tags_lookup ptl ON mp.project_id = ptl.project_id
 LEFT JOIN project_partners_lookup ppl ON mp.project_id = ppl.project_id
 LEFT JOIN project_signals_feature psf ON mp.project_id = psf.project_id
