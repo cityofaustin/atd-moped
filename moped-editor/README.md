@@ -26,9 +26,9 @@ npm install
 
 6. Start the server: 
 ```shell
-npm run start
+npm run dev
 ```
 
 7. Open `https://localhost:3000/moped`
 
-8. To login, locate the username and pw in the DTS password store under the name "Moped Local Editor User Login."
+8. To login, locate the username and pw in the DTS password store under the name "Moped Test Editor (local, staging, prod)" or "Moped Test Admin (local, staging, prod)"

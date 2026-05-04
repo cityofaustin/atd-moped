@@ -1,5 +1,5 @@
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
-// This API key is managed by CTM. Contact help desk for maintenance and troubleshooting.
+// This API key is managed by ATS. Contact help desk for maintenance and troubleshooting.
 const NEARMAP_KEY = import.meta.env.VITE_NEARMAP_TOKEN;
 
 // minimum map zoom to display selectable features, and
