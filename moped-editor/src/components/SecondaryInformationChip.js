@@ -1,8 +1,7 @@
 import Chip from "@mui/material/Chip";
 
 /**
- * chia fill this out
- *
+ * Shared component for secondary information
  * @param {string} chipLabel - text displayed in chip
  * @param {object} chipStyles - additional styles to apply to chip
  */

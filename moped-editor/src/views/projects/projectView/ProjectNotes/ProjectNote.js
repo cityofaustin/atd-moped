@@ -100,52 +100,50 @@ const ProjectNotes = ({
         }
         secondary={secondary}
       />
-      {
-        <ListItemSecondaryAction
-          sx={{
-            top: 0,
-            marginTop: 3,
-          }}
-        >
-          <Grid2 container spacing={0.5}>
-            <Grid2
-              sx={{
-                alignItems: "center",
-                display: "flex",
-                marginRight: theme.spacing(1),
-              }}
+      <ListItemSecondaryAction
+        sx={{
+          top: 0,
+          marginTop: 3,
+        }}
+      >
+        <Grid2 container spacing={0.5}>
+          <Grid2
+            sx={{
+              alignItems: "center",
+              display: "flex",
+              marginRight: theme.spacing(1),
+            }}
+          >
+            <SecondaryInformationChip chipLabel={note.note_type_name} />
+          </Grid2>
+          <Grid2>
+            <IconButton
+              edge="end"
+              aria-label="edit"
+              onClick={() => handleEditClick(noteIndex, note)}
+              size="small"
+              disabled={!isNoteEditable}
+              sx={editButtonStyles}
             >
-              <SecondaryInformationChip chipLabel={note.note_type_name} />
-            </Grid2>
-            <Grid2>
+              <EditIcon />
+            </IconButton>
+          </Grid2>
+          <Grid2>
+            {!isEditingNote && (
               <IconButton
                 edge="end"
-                aria-label="edit"
-                onClick={() => handleEditClick(noteIndex, note)}
+                aria-label="delete"
+                onClick={() => handleDeleteOpen(note.original_id)}
                 size="small"
                 disabled={!isNoteEditable}
                 sx={editButtonStyles}
               >
-                <EditIcon />
+                <DeleteIcon />
               </IconButton>
-            </Grid2>
-            <Grid2>
-              {!isEditingNote && (
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => handleDeleteOpen(note.original_id)}
-                  size="small"
-                  disabled={!isNoteEditable}
-                  sx={editButtonStyles}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </Grid2>
+            )}
           </Grid2>
-        </ListItemSecondaryAction>
-      }
+        </Grid2>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 };
