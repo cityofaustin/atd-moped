@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 
-// Material
 import {
   Button,
   FormControlLabel,
@@ -46,6 +45,7 @@ import {
   getIsEditMode,
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
+import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 import {
   transformDatabaseToGrid,
@@ -98,12 +98,16 @@ const useColumns = ({
       {
         headerName: "FDU",
         field: "fdu",
-        width: 200,
+        width: 225,
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
             <>
               <span>{value?.fdu}</span>
+              <SecondaryInformationChip
+                chipLabel="eCAPRIS"
+                chipStyles={{ marginLeft: "8px" }}
+              />
               <Typography
                 variant="body2"
                 sx={{
