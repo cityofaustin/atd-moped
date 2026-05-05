@@ -9,7 +9,6 @@ import {
   Switch,
   Tooltip,
   IconButton,
-  Typography,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
