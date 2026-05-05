@@ -6,6 +6,8 @@ import {
   DialogTitle,
   Icon,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 /**
  * Dialog wrapper component for displaying forms
@@ -18,6 +20,8 @@ import {
  * @param {function} handleCancel - handles canceling the form
  * @param {boolean} dialogOpen - boolean that controls whether the dialog is open or not
  * @param {Object} children - React children elements
+ * @param {boolean} showDialogActions - boolean that controls whether the dialog action buttons are shown or not
+ * @param {Object} dialogProps - additional props to pass to the MUI Dialog component
  * @returns {JSX.Element}
  */
 const FormDialog = ({
@@ -30,6 +34,8 @@ const FormDialog = ({
   handleCancel,
   dialogOpen,
   children,
+  showDialogActions = true,
+  dialogProps = {},
 }) => {
   return (
     <Dialog
@@ -37,23 +43,40 @@ const FormDialog = ({
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      fullWidth
+      scroll="body"
+      {...dialogProps}
     >
-      <DialogTitle variant="h4">{title}</DialogTitle>
-      <DialogContent>{children}</DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancel} color="primary">
-          {cancelButtonLabel}
-        </Button>
-        <Button
-          onClick={handleSave}
-          color="primary"
-          variant="contained"
-          startIcon={<Icon>save</Icon>}
-          disabled={saveDisabled}
-        >
-          {saveButtonLabel}
-        </Button>
-      </DialogActions>
+      <DialogTitle
+        variant="h4"
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        {title}
+        <IconButton onClick={handleClose} size="large">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers={true}>{children}</DialogContent>
+      {showDialogActions && (
+        <DialogActions>
+          <Button onClick={handleCancel} color="primary">
+            {cancelButtonLabel}
+          </Button>
+          <Button
+            onClick={handleSave}
+            color="primary"
+            variant="contained"
+            startIcon={<Icon>save</Icon>}
+            disabled={saveDisabled}
+          >
+            {saveButtonLabel}
+          </Button>
+        </DialogActions>
+      )}
     </Dialog>
   );
 };

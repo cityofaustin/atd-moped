@@ -59,7 +59,7 @@ const OverrideFundingForm = ({
   refetchFundingQuery,
   setOverrideFundingRecord,
   handleSnackbar,
-  onClose,
+  handleClose,
   dataProjectFunding,
 }) => {
   const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
@@ -140,7 +140,7 @@ const OverrideFundingForm = ({
         handleSnackbar(true, `Funding source ${snackbarVerb}ed`, "success");
         refetchFundingQuery();
         setOverrideFundingRecord(null);
-        onClose();
+        handleClose();
       })
       .catch((error) => {
         handleSnackbar(
