@@ -4,7 +4,11 @@ import { useMutation } from "@apollo/client";
 import {
   Box,
   Divider,
+  FormControl,
+  FormHelperText,
   IconButton,
+  MenuItem,
+  Select,
   Stack,
   Tabs,
   Tab,
@@ -189,6 +193,15 @@ const ProjectFundingFilesAttachmentDialog = ({
     setValue(newValue);
   };
 
+  // TODO: replace with actual existing file attachments to choose from
+  // TODO: Get project files that are attached to this project or this project and eCAPRIS id
+  // moped_project_files > files_project_fundings OR files_ecapris_fundings
+  const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
+  const fileAttachments = [
+    { id: 1, file_name: "Test file" },
+    { id: 2, file_name: "Test file 2" },
+  ];
+
   return (
     <FormDialog
       title="Attach files"
@@ -220,7 +233,21 @@ const ProjectFundingFilesAttachmentDialog = ({
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Item Two
+          <FormControl variant="standard" sx={{ width: "100%", m: 2 }}>
+            <Select
+              variant="outlined"
+              name="File name"
+              value={existingFileIdToAttach}
+              onChange={(e) => setExistingFileIdToAttach(e.target.value)}
+            >
+              {fileAttachments.map((type) => (
+                <MenuItem key={type.id} value={type.id}>
+                  {type.file_name}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>Required</FormHelperText>
+          </FormControl>
         </CustomTabPanel>
       </Box>
       <Box>
