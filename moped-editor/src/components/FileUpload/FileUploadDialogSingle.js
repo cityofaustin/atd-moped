@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid2,
-  Icon,
   TextField,
   FormControl,
   FormControlLabel,
@@ -17,6 +11,7 @@ import {
   Switch,
 } from "@mui/material";
 import FileUpload from "src/components/FileUpload/FileUpload";
+import FormDialog from "src/components/FormDialog";
 
 /**
  * Wrapper component for uploading a single file to S3 and saving the file metadata to the database
@@ -168,14 +163,16 @@ const FileUploadDialogSingle = ({
       fileObject != null;
 
   return (
-    <Dialog
-      open={dialogOpen}
-      onClose={handleClickCloseUploadFile}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+    <FormDialog
+      title={title ? title : "Upload Media"}
+      dialogOpen={dialogOpen}
+      handleClose={handleClickCloseUploadFile}
+      handleSave={handleSaveFile}
+      handleCancel={handleCancel}
+      saveDisabled={!fileReady}
+      saveButtonLabel={externalFile ? "Save" : "Upload"}
     >
-      <DialogTitle variant="h4">{title ? title : "Upload Media"}</DialogTitle>
-      <DialogContent>
+      <>
         <Grid2 container style={{ marginTop: "5px" }}>
           <Grid2
             size={{
@@ -274,23 +271,9 @@ const FileUploadDialogSingle = ({
             )}
           </Grid2>
         </Grid2>
-        {children}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancel} color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSaveFile}
-          color="primary"
-          variant="contained"
-          startIcon={<Icon>save</Icon>}
-          disabled={!fileReady}
-        >
-          {externalFile ? "Save" : "Upload"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </>
+      {children}
+    </FormDialog>
   );
 };
 
