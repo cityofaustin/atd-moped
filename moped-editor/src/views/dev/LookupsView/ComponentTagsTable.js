@@ -28,7 +28,7 @@ import {
 } from "./componentTagsHelpers";
 import { createRecordKeyHash } from "src/utils/urls";
 
-const requiredFields = ["name", "type", "slug"];
+const requiredFields = ["slug"];
 
 const useColumns = ({
   rowModesModel,
