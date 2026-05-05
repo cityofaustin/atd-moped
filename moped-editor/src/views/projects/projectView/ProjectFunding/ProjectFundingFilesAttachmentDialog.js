@@ -1,7 +1,15 @@
 import React, { useState, useMemo } from "react";
 import { useMutation } from "@apollo/client";
 
-import { Box, Divider, IconButton, Typography, Stack } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  Stack,
+  Tabs,
+  Tab,
+  Typography,
+} from "@mui/material";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
@@ -15,6 +23,29 @@ import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
 import { useFileUploadForm } from "src/components/FileUpload/FileUploadDialogSingle";
+
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 /**
  * Dialog for attaching files to project funding record and detaching existing attachments
@@ -151,6 +182,13 @@ const ProjectFundingFilesAttachmentDialog = ({
     onClose();
   };
 
+  /* Tabs state and handlers */
+  const [value, setValue] = useState(0);
+
+  const handleChange = (_, newValue) => {
+    setValue(newValue);
+  };
+
   return (
     <FormDialog
       title="Attach files"
@@ -161,13 +199,30 @@ const ProjectFundingFilesAttachmentDialog = ({
       saveDisabled={!fileReady}
       saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
     >
-      <FileUploadDialogSingle
-        handleClickCloseUploadFile={onClose}
-        handleClickSaveFile={handleClickSaveFile}
-        projectId={projectId}
-        fileTypesLookup={dataLookups?.moped_file_types ?? []}
-        {...formProps}
-      />
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="add new or existing file attachment tabs"
+          >
+            <Tab label="New" {...a11yProps(0)} />
+            <Tab label="Existing" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={value} index={0}>
+          <FileUploadDialogSingle
+            handleClickCloseUploadFile={onClose}
+            handleClickSaveFile={handleClickSaveFile}
+            projectId={projectId}
+            fileTypesLookup={dataLookups?.moped_file_types ?? []}
+            {...formProps}
+          />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          Item Two
+        </CustomTabPanel>
+      </Box>
       <Box>
         <Divider sx={{ marginY: 4 }} />
         <Stack direction="column">

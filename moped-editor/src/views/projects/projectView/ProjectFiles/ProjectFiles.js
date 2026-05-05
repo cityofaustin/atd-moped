@@ -412,7 +412,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
   });
 
   /* File upload state and handlers */
-
   const { fileReady, buildFileBundle, clearState, ...formProps } =
     useFileUploadForm();
 
