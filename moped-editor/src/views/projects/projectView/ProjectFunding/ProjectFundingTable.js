@@ -108,15 +108,6 @@ const useColumns = ({
                 chipLabel="eCAPRIS"
                 chipStyles={{ marginLeft: "8px" }}
               />
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "primary.main",
-                  fontWeight: 500,
-                }}
-              >
-                SYNCED FROM ECAPRIS
-              </Typography>
             </>
           ) : (
             value?.fdu
