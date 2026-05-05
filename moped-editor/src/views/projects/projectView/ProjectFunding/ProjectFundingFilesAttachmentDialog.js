@@ -13,6 +13,8 @@ import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSi
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
+import FormDialog from "src/components/FormDialog";
+import { useFileUploadForm } from "src/components/FileUpload/FileUploadDialogSingle";
 
 /**
  * Dialog for attaching files to project funding record and detaching existing attachments
@@ -135,15 +137,37 @@ const ProjectFundingFilesAttachmentDialog = ({
       });
   };
 
+  /* Form state and handlers */
+  const { fileReady, buildFileBundle, clearState, ...formProps } =
+    useFileUploadForm();
+
+  const handleSave = () => {
+    handleClickSaveFile(buildFileBundle());
+    clearState();
+  };
+
+  const handleCancel = () => {
+    clearState();
+    onClose();
+  };
+
   return (
-    <FileUploadDialogSingle
-      title={"Attach file"}
+    <FormDialog
+      title="Attach files"
       dialogOpen={isFileAttachmentDialogOpen}
-      handleClickCloseUploadFile={onClose}
-      handleClickSaveFile={handleClickSaveFile}
-      projectId={projectId}
-      fileTypesLookup={dataLookups?.moped_file_types ?? []}
+      handleClose={onClose}
+      handleSave={handleSave}
+      handleCancel={handleCancel}
+      saveDisabled={!fileReady}
+      saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
     >
+      <FileUploadDialogSingle
+        handleClickCloseUploadFile={onClose}
+        handleClickSaveFile={handleClickSaveFile}
+        projectId={projectId}
+        fileTypesLookup={dataLookups?.moped_file_types ?? []}
+        {...formProps}
+      />
       <Box>
         <Divider sx={{ marginY: 4 }} />
         <Stack direction="column">
@@ -208,7 +232,7 @@ const ProjectFundingFilesAttachmentDialog = ({
           )}
         </Stack>
       </Box>
-    </FileUploadDialogSingle>
+    </FormDialog>
   );
 };
 
