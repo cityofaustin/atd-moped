@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import { Box, Grid2, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { useUser } from "src/auth/user";
+import { filterOptions } from "src/utils/autocompleteHelpers";
 
 import {
   fieldBox,
@@ -130,6 +131,7 @@ const ProjectSummaryProjectECapris = ({
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
               }
+              filterOptions={filterOptions}
               onChange={(_, newValue) => {
                 setSelectedValue(newValue);
               }}
