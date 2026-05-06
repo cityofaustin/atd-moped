@@ -100,7 +100,9 @@ parent_child_project_map AS (
     SELECT
         projects.project_id,
         jsonb_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
-        jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts
+        jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts,
+        string_agg(DISTINCT project_districts.council_district_id::text, ', '::text ORDER BY (project_districts.council_district_id::text)) AS project_council_districts_str,
+        string_agg(DISTINCT project_and_children_districts.council_district_id::text, ', '::text ORDER BY (project_and_children_districts.council_district_id::text)) AS project_and_child_project_council_districts_str
     FROM moped_project projects
     LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
     LEFT JOIN parent_child_project_map project_family ON projects.project_id = project_family.project_id
@@ -251,6 +253,8 @@ SELECT
     mpcs.components,
     districts.project_council_districts,
     districts.project_and_child_project_council_districts,
+    districts.project_council_districts_str,
+    districts.project_and_child_project_council_districts_str,
     pcwt.component_work_type_names
 FROM moped_project mp
 LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
