@@ -131,6 +131,7 @@ const ProjectSummaryProjectECapris = ({
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
               }
+              // Use custom filterOptions function to limit number of options rendered for performance
               filterOptions={filterOptions}
               onChange={(_, newValue) => {
                 setSelectedValue(newValue);
