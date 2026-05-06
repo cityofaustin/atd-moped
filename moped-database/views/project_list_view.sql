@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1769119215514_combined_funding_toggle/up.sql
+-- Most recent migration: moped-database/migrations/default/1777661669380_speed_up_project_list_view/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -44,8 +44,7 @@ child_project_lookup AS (
         jsonb_agg(children.project_id) AS children_project_ids,
         children.parent_project_id AS parent_id
     FROM moped_project children
-    JOIN moped_project parent ON children.parent_project_id = parent.project_id
-    WHERE children.is_deleted = false
+    WHERE children.is_deleted = false AND children.parent_project_id IS NOT null
     GROUP BY children.parent_project_id
 ),
 
@@ -59,7 +58,7 @@ work_activities AS (
         string_agg(mpwa.contract_number, ', '::text) AS contract_numbers
     FROM moped_proj_work_activity mpwa
     LEFT JOIN LATERAL jsonb_array_elements(mpwa.task_orders) task_order_objects (task_order_object) ON true
-    WHERE 1 = 1 AND mpwa.is_deleted = false
+    WHERE mpwa.is_deleted = false
     GROUP BY mpwa.project_id
 ),
 
@@ -76,85 +75,66 @@ moped_proj_components_subtypes AS (
 project_district_association AS (
     WITH project_council_district_map AS (
         SELECT DISTINCT
-            moped_project.project_id,
-            features_council_districts.council_district_id
-        FROM moped_project
-        LEFT JOIN moped_proj_components ON moped_project.project_id = moped_proj_components.project_id
-        LEFT JOIN features ON moped_proj_components.project_component_id = features.component_id
-        LEFT JOIN features_council_districts ON features.id = features_council_districts.feature_id
-        WHERE features.is_deleted IS false AND moped_proj_components.is_deleted IS false
+            mpc.project_id,
+            fcd.council_district_id
+        FROM moped_proj_components mpc
+        JOIN features f ON mpc.project_component_id = f.component_id
+        JOIN features_council_districts fcd ON f.id = fcd.feature_id
+        WHERE f.is_deleted = false AND mpc.is_deleted = false
     ),
 
 parent_child_project_map AS (
         SELECT
             parent_projects.project_id,
-            unnest(ARRAY[parent_projects.project_id] || array_agg(child_projects.project_id)) AS self_and_children_project_ids
+            parent_projects.project_id AS self_and_children_project_id
         FROM moped_project parent_projects
-        LEFT JOIN moped_project child_projects ON parent_projects.project_id = child_projects.parent_project_id
-        GROUP BY parent_projects.project_id
-        ORDER BY parent_projects.project_id
+        UNION ALL
+        SELECT
+            parent_projects.project_id,
+            child_projects.project_id AS self_and_children_project_id
+        FROM moped_project parent_projects
+        JOIN moped_project child_projects ON parent_projects.project_id = child_projects.parent_project_id
+        WHERE child_projects.is_deleted = false
     )
 
     SELECT
         projects.project_id,
         jsonb_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
         jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts
-    FROM parent_child_project_map projects
-    LEFT JOIN project_council_district_map project_and_children_districts ON projects.self_and_children_project_ids = project_and_children_districts.project_id
+    FROM moped_project projects
     LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
+    LEFT JOIN parent_child_project_map project_family ON projects.project_id = project_family.project_id
+    LEFT JOIN project_council_district_map project_and_children_districts ON project_family.self_and_children_project_id = project_and_children_districts.project_id
     GROUP BY projects.project_id
 ),
 
-min_confirmed_phase_dates AS (
-    WITH min_dates AS (
-        SELECT
-            phases.project_id,
-            min(phases.phase_start) AS min_date
-        FROM moped_proj_phases phases
-        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-        WHERE true AND phases.phase_start IS NOT null AND phases.is_phase_start_confirmed = true AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
-        GROUP BY phases.project_id
-        UNION ALL
-        SELECT
-            phases.project_id,
-            min(phases.phase_end) AS min_date
-        FROM moped_proj_phases phases
-        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-        WHERE true AND phases.phase_end IS NOT null AND phases.is_phase_end_confirmed = true AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
-        GROUP BY phases.project_id
-    )
-
+phase_date_inputs AS (
     SELECT
-        min_dates.project_id,
-        min(min_dates.min_date) AS min_phase_date
-    FROM min_dates
-    GROUP BY min_dates.project_id
+        phases.project_id,
+        min(phases.phase_start) FILTER (WHERE phases.phase_start IS NOT null AND phases.is_phase_start_confirmed = true) AS min_confirmed_phase_start,
+        min(phases.phase_end) FILTER (WHERE phases.phase_end IS NOT null AND phases.is_phase_end_confirmed = true) AS min_confirmed_phase_end,
+        min(phases.phase_start) FILTER (WHERE phases.phase_start IS NOT null AND phases.is_phase_start_confirmed = false) AS min_estimated_phase_start,
+        min(phases.phase_end) FILTER (WHERE phases.phase_end IS NOT null AND phases.is_phase_end_confirmed = false) AS min_estimated_phase_end
+    FROM moped_proj_phases phases
+    JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+    WHERE phases.is_deleted = false AND moped_phases.phase_name_simple = 'Complete'::text
+    GROUP BY phases.project_id
 ),
 
-min_estimated_phase_dates AS (
-    WITH min_dates AS (
-        SELECT
-            phases.project_id,
-            min(phases.phase_start) AS min_date
-        FROM moped_proj_phases phases
-        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-        WHERE true AND phases.phase_start IS NOT null AND phases.is_phase_start_confirmed = false AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
-        GROUP BY phases.project_id
-        UNION ALL
-        SELECT
-            phases.project_id,
-            min(phases.phase_end) AS min_date
-        FROM moped_proj_phases phases
-        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-        WHERE true AND phases.phase_end IS NOT null AND phases.is_phase_end_confirmed = false AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
-        GROUP BY phases.project_id
-    )
-
+phase_dates AS (
     SELECT
-        min_dates.project_id,
-        min(min_dates.min_date) AS min_phase_date
-    FROM min_dates
-    GROUP BY min_dates.project_id
+        pdi.project_id,
+        CASE
+            WHEN pdi.min_confirmed_phase_start IS null THEN pdi.min_confirmed_phase_end
+            WHEN pdi.min_confirmed_phase_end IS null THEN pdi.min_confirmed_phase_start
+            ELSE least(pdi.min_confirmed_phase_start, pdi.min_confirmed_phase_end)
+        END AS min_confirmed_phase_date,
+        CASE
+            WHEN pdi.min_estimated_phase_start IS null THEN pdi.min_estimated_phase_end
+            WHEN pdi.min_estimated_phase_end IS null THEN pdi.min_estimated_phase_start
+            ELSE least(pdi.min_estimated_phase_start, pdi.min_estimated_phase_end)
+        END AS min_estimated_phase_date
+    FROM phase_date_inputs pdi
 ),
 
 project_component_work_types AS (
@@ -164,8 +144,60 @@ project_component_work_types AS (
     FROM moped_proj_components mpc
     LEFT JOIN moped_proj_component_work_types mpcwt ON mpc.project_component_id = mpcwt.project_component_id
     LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
-    WHERE true AND mpc.is_deleted = false AND mpcwt.is_deleted = false
+    WHERE mpc.is_deleted = false AND mpcwt.is_deleted = false
     GROUP BY mpc.project_id
+),
+
+project_partners_lookup AS (
+    SELECT
+        mpp2.project_id,
+        string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partners
+    FROM moped_proj_partners mpp2
+    LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
+    WHERE mpp2.is_deleted = false
+    GROUP BY mpp2.project_id
+),
+
+project_feature_lookup AS (
+    SELECT
+        components.project_id,
+        json_agg(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type, 'id', feature_signals.id)) AS project_feature
+    FROM moped_proj_components components
+    LEFT JOIN feature_signals ON components.project_component_id = feature_signals.component_id
+    WHERE components.is_deleted = false AND feature_signals.signal_id IS NOT null AND feature_signals.is_deleted = false
+    GROUP BY components.project_id
+),
+
+construction_start_dates AS (
+    SELECT
+        phases.project_id,
+        min(phases.phase_start) AS construction_start_date
+    FROM moped_proj_phases phases
+    WHERE phases.phase_id = 9 AND phases.is_deleted = false
+    GROUP BY phases.project_id
+),
+
+project_roles_lookup AS (
+    SELECT
+        mpp.project_id,
+        string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) FILTER (WHERE mpr.project_role_name = 'Inspector'::text) AS project_inspector,
+        string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) FILTER (WHERE mpr.project_role_name = 'Designer'::text) AS project_designer
+    FROM moped_proj_personnel mpp
+    JOIN moped_users users ON mpp.user_id = users.user_id
+    JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
+    JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
+    WHERE mpp.is_deleted = false AND mppr.is_deleted = false AND (mpr.project_role_name = any(ARRAY['Inspector'::text, 'Designer'::text]))
+    GROUP BY mpp.project_id
+),
+
+project_tags_lookup AS (
+    SELECT
+        ptags.project_id,
+        string_agg(tags.name, ', '::text) AS project_tags
+    FROM moped_proj_tags ptags
+    JOIN moped_tags tags ON ptags.tag_id = tags.id
+    WHERE ptags.is_deleted = false
+    GROUP BY ptags.project_id
 )
 
 SELECT
@@ -199,57 +231,22 @@ SELECT
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
-    (
-        SELECT moped_project.project_name_full
-        FROM moped_project
-        WHERE moped_project.project_id = mp.parent_project_id
-    ) AS parent_project_name,
+    parent_project.project_name_full AS parent_project_name,
     cpl.children_project_ids,
-    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partners,
-    (
-        SELECT json_agg(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type, 'id', feature_signals.id)) AS json_agg
-        FROM moped_proj_components components
-        LEFT JOIN feature_signals ON components.project_component_id = feature_signals.component_id
-        WHERE true AND components.is_deleted = false AND components.project_id = mp.project_id AND feature_signals.signal_id IS NOT null AND feature_signals.is_deleted = false
-    ) AS project_feature,
+    project_partners_lookup.project_partners,
+    project_feature_lookup.project_feature,
     fsl.funding_source_name,
     fsl.funding_program_names,
     fsl.funding_source_and_program_names,
-    (
-        SELECT min(phases.phase_start) AS min
-        FROM moped_proj_phases phases
-        WHERE true AND phases.project_id = mp.project_id AND phases.phase_id = 9 AND phases.is_deleted = false
-    ) AS construction_start_date,
-    mcpd.min_phase_date AS substantial_completion_date,
+    construction_start_dates.construction_start_date,
+    phase_dates.min_confirmed_phase_date AS substantial_completion_date,
     CASE
-        WHEN mcpd.min_phase_date IS NOT null THEN null::timestamp with time zone
-        ELSE mepd.min_phase_date
+        WHEN phase_dates.min_confirmed_phase_date IS NOT null THEN null::timestamp with time zone
+        ELSE phase_dates.min_estimated_phase_date
     END AS substantial_completion_date_estimated,
-    (
-        SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-        FROM moped_proj_personnel mpp
-        JOIN moped_users users ON mpp.user_id = users.user_id
-        JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
-        JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
-        WHERE 1 = 1 AND mpr.project_role_name = 'Inspector'::text AND mpp.is_deleted = false AND mppr.is_deleted = false AND mpp.project_id = mp.project_id
-        GROUP BY mpp.project_id
-    ) AS project_inspector,
-    (
-        SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-        FROM moped_proj_personnel mpp
-        JOIN moped_users users ON mpp.user_id = users.user_id
-        JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
-        JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
-        WHERE 1 = 1 AND mpr.project_role_name = 'Designer'::text AND mpp.is_deleted = false AND mppr.is_deleted = false AND mpp.project_id = mp.project_id
-        GROUP BY mpp.project_id
-    ) AS project_designer,
-    (
-        SELECT string_agg(tags.name, ', '::text) AS string_agg
-        FROM moped_proj_tags ptags
-        JOIN moped_tags tags ON ptags.tag_id = tags.id
-        WHERE 1 = 1 AND ptags.is_deleted = false AND ptags.project_id = mp.project_id
-        GROUP BY ptags.project_id
-    ) AS project_tags,
+    project_roles_lookup.project_inspector,
+    project_roles_lookup.project_designer,
+    project_tags_lookup.project_tags,
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     mpcs.components,
     districts.project_council_districts,
@@ -260,8 +257,7 @@ LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
 LEFT JOIN funding_sources_lookup fsl ON mp.project_id = fsl.project_id
 LEFT JOIN moped_entity me ON mp.project_sponsor = me.entity_id
 LEFT JOIN moped_entity mel ON mp.project_lead_id = mel.entity_id
-LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
-LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
+LEFT JOIN project_partners_lookup ON mp.project_id = project_partners_lookup.project_id
 LEFT JOIN work_activities ON mp.project_id = work_activities.project_id
 LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
 LEFT JOIN current_phase_view current_phase ON mp.project_id = current_phase.project_id
@@ -269,9 +265,13 @@ LEFT JOIN moped_public_process_statuses mpps ON mp.public_process_status_id = mp
 LEFT JOIN child_project_lookup cpl ON mp.project_id = cpl.parent_id
 LEFT JOIN moped_proj_components_subtypes mpcs ON mp.project_id = mpcs.project_id
 LEFT JOIN project_district_association districts ON mp.project_id = districts.project_id
-LEFT JOIN min_confirmed_phase_dates mcpd ON mp.project_id = mcpd.project_id
-LEFT JOIN min_estimated_phase_dates mepd ON mp.project_id = mepd.project_id
+LEFT JOIN phase_dates ON mp.project_id = phase_dates.project_id
 LEFT JOIN project_component_work_types pcwt ON mp.project_id = pcwt.project_id
+LEFT JOIN project_feature_lookup ON mp.project_id = project_feature_lookup.project_id
+LEFT JOIN construction_start_dates ON mp.project_id = construction_start_dates.project_id
+LEFT JOIN project_roles_lookup ON mp.project_id = project_roles_lookup.project_id
+LEFT JOIN project_tags_lookup ON mp.project_id = project_tags_lookup.project_id
+LEFT JOIN moped_project parent_project ON mp.parent_project_id = parent_project.project_id
 LEFT JOIN LATERAL (SELECT
     combined_project_notes_view.project_note,
     combined_project_notes_view.created_at AS date_created,
@@ -280,5 +280,4 @@ FROM combined_project_notes_view
 WHERE (combined_project_notes_view.project_id = mp.project_id OR mp.should_sync_ecapris_statuses = true AND mp.ecapris_subproject_id IS NOT null AND combined_project_notes_view.ecapris_subproject_id = mp.ecapris_subproject_id) AND combined_project_notes_view.is_status_update = true
 ORDER BY combined_project_notes_view.created_at DESC
 LIMIT 1) proj_status_update ON true
-WHERE mp.is_deleted = false
-GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, proj_status_update.author, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;
+WHERE mp.is_deleted = false;
