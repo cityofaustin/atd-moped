@@ -23,7 +23,7 @@ import theme from "src/theme";
 const editButtonStyles = {
   color: theme.palette.text.primary,
   "&.Mui-disabled": {
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.disabled,
   },
 };
 
