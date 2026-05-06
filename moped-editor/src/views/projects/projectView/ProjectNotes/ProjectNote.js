@@ -49,7 +49,6 @@ const ProjectNotes = ({
 }) => {
   const phaseKey = note.phase_key;
   const phaseName = note.phase_name;
-
   return (
     <ListItem alignItems="flex-start">
       <ListItemText
