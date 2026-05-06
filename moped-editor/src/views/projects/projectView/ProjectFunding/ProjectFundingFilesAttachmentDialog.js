@@ -27,6 +27,7 @@ import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
 import { useFileUploadForm } from "src/components/FileUpload/FileUploadDialogSingle";
+import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -233,7 +234,7 @@ const ProjectFundingFilesAttachmentDialog = ({
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <FormControl variant="standard" sx={{ width: "100%", m: 2 }}>
+          {/* <FormControl variant="standard" sx={{ width: "100%", m: 2 }}>
             <Select
               variant="outlined"
               name="File name"
@@ -247,7 +248,8 @@ const ProjectFundingFilesAttachmentDialog = ({
               ))}
             </Select>
             <FormHelperText>Required</FormHelperText>
-          </FormControl>
+          </FormControl> */}
+          <AttachExistingFileTable projectId={projectId} />
         </CustomTabPanel>
       </Box>
       <Box>
