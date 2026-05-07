@@ -28,7 +28,7 @@ const getAlertBannerSeverity = (env) => {
 };
 
 const EnvAlertBanner = () => {
-  const env = process.env.REACT_APP_HASURA_ENV;
+  const env = import.meta.env.VITE_APP_ENV;
   if (env === "production") {
     return null;
   }

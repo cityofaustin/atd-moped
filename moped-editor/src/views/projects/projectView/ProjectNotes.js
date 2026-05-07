@@ -394,11 +394,6 @@ const ProjectNotes = ({
           size={12}
         >
           <Grid2>
-            <FormControlLabel
-              sx={{ margin: 2 }}
-              label="Show"
-              control={<span />}
-            />
             <NoteTypeButton
               filterNoteType={filterNoteType}
               setFilterNoteType={setFilterNoteType}
