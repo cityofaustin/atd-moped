@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 
-// Material
 import {
   Button,
   FormControlLabel,
@@ -10,7 +9,6 @@ import {
   Switch,
   Tooltip,
   IconButton,
-  Typography,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -42,16 +40,22 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import NotableCellPopover from "src/components/NotableCellPopover";
 import {
   getIsEditMode,
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
+import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 import {
   transformDatabaseToGrid,
   transformGridToDatabase,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
+import {
+  isAmountOutOfRange,
+  outOfRangeErrorMessage,
+} from "src/utils/numberFormatters";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -98,21 +102,16 @@ const useColumns = ({
       {
         headerName: "FDU",
         field: "fdu",
-        width: 200,
+        width: 225,
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
             <>
               <span>{value?.fdu}</span>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "primary.main",
-                  fontWeight: 500,
-                }}
-              >
-                SYNCED FROM ECAPRIS
-              </Typography>
+              <SecondaryInformationChip
+                chipLabel="eCAPRIS"
+                chipStyles={{ marginLeft: "8px" }}
+              />
             </>
           ) : (
             value?.fdu
@@ -205,6 +204,33 @@ const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
+        renderCell: ({ row, value }) => {
+          // Make sure not to give asterisk to empty cells
+          const hasValue = value !== null && value !== undefined;
+          const formattedValue = hasValue
+            ? currencyFormatter.format(value)
+            : "";
+          const showOverrideIndicator =
+            hasValue &&
+            !row.should_use_ecapris_amount &&
+            !row.is_manual &&
+            !row.is_synced_from_ecapris;
+
+          return (
+            <NotableCellPopover
+              value={formattedValue}
+              isEnabled={showOverrideIndicator}
+              popoverText="eCAPRIS override"
+            />
+          );
+        },
+        preProcessEditCellProps: (params) => {
+          return {
+            ...params.props,
+            error: isAmountOutOfRange(params.props.value),
+            errorMessage: outOfRangeErrorMessage,
+          };
+        },
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
