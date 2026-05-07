@@ -306,8 +306,7 @@ LEFT JOIN LATERAL (
 ) proj_status_update ON true
 WHERE mp.is_deleted = false;
 
-
--- Most recent migration: moped-database/migrations/default/1769119215514_combined_funding_toggle/up.sql
+-- Most recent migration: moped-database/migrations/default/1778009019613_council_dist_reporting/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -561,8 +560,6 @@ LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = 
 LEFT JOIN LATERAL (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
 
-
--- Most recent migration: moped-database/migrations/default/1769119215514_combined_funding_toggle/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
     component_arcgis_online_view.project_id,
