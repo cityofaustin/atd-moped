@@ -14,6 +14,7 @@ import ActivityMetrics from "./components/ActivityMetrics";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackComponent from "src/components/FallbackComponent";
 import ApolloErrorContext from "src/utils/errorHandling";
+import pckg from "../package.json";
 
 // Apollo GraphQL Client
 import {
@@ -27,10 +28,9 @@ import { onError } from "@apollo/client/link/error";
 
 import { LicenseInfo } from "@mui/x-license";
 
-const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
+const HASURA_ENDPOINT = import.meta.env.VITE_HASURA_ENDPOINT;
 
-var pckg = require("../package.json");
-console.info(`🛵 ${pckg.name} ${pckg.version}`);
+console.info(`🛵 ${pckg.name} ${pckg.version} on Vite`);
 
 const useApolloClient = () => {
   const [error, setError] = useState(null);
@@ -97,7 +97,7 @@ const useApolloClient = () => {
   return { apolloClient, error, setError };
 };
 
-LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
+LicenseInfo.setLicenseKey(import.meta.env.VITE_MUIX_LICENSE_KEY);
 
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
