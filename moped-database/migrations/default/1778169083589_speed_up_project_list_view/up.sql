@@ -306,7 +306,7 @@ LEFT JOIN LATERAL (
 ) proj_status_update ON true
 WHERE mp.is_deleted = false;
 
--- Most recent migration: moped-database/migrations/default/1778009019613_council_dist_reporting/up.sql
+
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
