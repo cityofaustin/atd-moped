@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1777661669380_speed_up_project_list_view/up.sql
+-- Most recent migration: moped-database/migrations/default/1778169083589_speed_up_project_list_view/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -252,7 +252,6 @@ SELECT
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     mpcs.components,
     districts.project_council_districts,
-    districts.project_council_districts_string,
     districts.project_and_child_project_council_districts,
     districts.project_council_districts_string,
     districts.project_and_child_project_council_districts_string,

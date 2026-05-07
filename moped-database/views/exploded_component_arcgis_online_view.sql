@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1777661669380_speed_up_project_list_view/up.sql
+-- Most recent migration: moped-database/migrations/default/1778169083589_speed_up_project_list_view/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
     component_arcgis_online_view.project_id,
