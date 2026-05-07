@@ -30,7 +30,7 @@ import { LicenseInfo } from "@mui/x-license";
 
 const HASURA_ENDPOINT = import.meta.env.VITE_HASURA_ENDPOINT;
 
-console.info(`🛵 ${pckg.name} ${pckg.version}`);
+console.info(`🛵 ${pckg.name} ${pckg.version} on Vite`);
 
 const useApolloClient = () => {
   const [error, setError] = useState(null);
