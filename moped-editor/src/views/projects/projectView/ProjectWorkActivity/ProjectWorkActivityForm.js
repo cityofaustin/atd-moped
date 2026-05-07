@@ -203,6 +203,7 @@ const ProjectWorkActivitiesForm = ({
               name="work_assignment_id"
               control={control}
               size="small"
+              error={!!formErrors?.work_assignment_id}
             />
             {formErrors?.work_assignment_id && (
               <FormHelperText>
@@ -212,7 +213,7 @@ const ProjectWorkActivitiesForm = ({
           </FormControl>
         </Grid2>
         <Grid2 size={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.contract_amount}>
             <ControlledTextInput
               fullWidth
               label="Amount"
@@ -220,7 +221,13 @@ const ProjectWorkActivitiesForm = ({
               control={control}
               onChangeHandler={amountOnChangeHandler}
               size="small"
+              error={!!formErrors?.contract_amount}
             />
+            {formErrors?.contract_amount && (
+              <FormHelperText>
+                {formErrors.contract_amount.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid2>
         <Grid2 size={12}>
@@ -250,6 +257,7 @@ const ProjectWorkActivitiesForm = ({
               name="description"
               control={control}
               size="small"
+              error={!!formErrors.description}
             />
             {formErrors?.description && (
               <FormHelperText>{formErrors.description.message}</FormHelperText>

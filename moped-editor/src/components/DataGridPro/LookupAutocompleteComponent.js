@@ -52,21 +52,21 @@ const LookupAutocompleteComponent = ({
     }
   }, [open, refetch]);
 
-  const handleChange = (event, newValue) => {
-    apiRef.current.setEditCellValue({
+  const handleChange = async (event, newValue) => {
+    await apiRef.current.setEditCellValue({
       id,
       field,
       value: newValue,
     });
 
     if (dependentFieldsArray && dependentFieldsArray.length > 0) {
-      dependentFieldsArray.forEach((field) => {
-        apiRef.current.setEditCellValue({
+      for (const field of dependentFieldsArray) {
+        await apiRef.current.setEditCellValue({
           id,
           field: field.fieldName,
           value: field.setFieldValue(newValue),
         });
-      });
+      }
     }
   };
 
