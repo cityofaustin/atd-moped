@@ -1,8 +1,7 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
 import ExternalLink from "../../components/ExternalLink";
-
-var pckg = require("../../../package.json");
+import pckg from "../../../package.json";
 
 const Footer = () => {
   return (

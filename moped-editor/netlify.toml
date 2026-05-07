@@ -1,15 +1,27 @@
+# Default used by production CloudFront-fronted .gov project (production branch)
 [build]
-    ignore = "/bin/false"
+  publish = "build"
+  ignore = "/bin/false"
+  command = "npm run build:production"
 
-# Build Context Configuration:
-#   From: https://docs.netlify.com/site-deploys/overview/#deploy-contexts
-#   Also: https://docs.netlify.com/configure-builds/environment-variables/
-[context.branch-deploy]
-    command = "echo 'Build Context Mode: Branch-Deploy' && npm run build:netlifybranch"
-    [context.branch-deploy.environment]
-      ATD_MOPED_BUILD_CONTEXT = "Netlify PR -- branch-deploy"
+# Redirect root to the app URL space, "/moped/"
+[[redirects]]
+  from = "/"
+  to = "/moped/"
+  status = 302
 
+# Redirect to the index page of the SPA
+[[redirects]]
+  from = "/moped/*"
+  to = "/moped/index.html"
+  status = 200
+
+# main branch uses staging environment
+[context.main]
+  command = "echo 'Build Context Mode: main / Staging' && npm run build:staging"
+
+# Deploy previews use staging environment and override app environment to 'preview' for environment banner
 [context.deploy-preview]
-    command = "echo 'Build Context Mode: Deploy-Preview' && npm run build:netlifypr"
-    [context.deploy-preview.environment]
-      ATD_MOPED_BUILD_CONTEXT = "Netlify PR -- deploy-preview"
+  command = "echo 'Build Context Mode: Deploy-Preview' && npm run build:staging"
+  [context.deploy-preview.environment]
+    VITE_APP_ENV = "preview"
