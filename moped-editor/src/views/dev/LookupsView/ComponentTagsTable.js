@@ -28,7 +28,7 @@ import {
 } from "./componentTagsHelpers";
 import { createRecordKeyHash } from "src/utils/urls";
 
-const requiredFields = ["name", "type", "slug"];
+const requiredFields = ["slug"];
 
 const useColumns = ({
   rowModesModel,
@@ -263,8 +263,8 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
       variables: {
         id: updatedRow.id,
         set: {
-          name: mutationData.name ?? null,
-          type: mutationData.type ?? null,
+          name: mutationData.name || null,
+          type: mutationData.type || null,
           slug: mutationData.slug,
         },
       },
