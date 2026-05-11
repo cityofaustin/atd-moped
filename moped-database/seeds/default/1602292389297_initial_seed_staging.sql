@@ -67,10 +67,10 @@ INSERT INTO public.moped_proj_work_activity (id, workgroup_contractor, contract_
 -- Insert ecapris_subproject_funding rows to use in seeded funding rows
 --
 
-INSERT INTO public.ecapris_subproject_funding (id, ecapris_subproject_id, fao_id, fdu, app, unit_long_name, subprogram, program, created_at, updated_at, created_by_user_id, updated_by_user_id, fdu_status, bond_year, funding_source_id, funding_program_id) VALUES
-(1, '12120.015', 105682, '8119 6207 L039', 189322, 'Real Ave - Fake Rd to Cool Rd Shared Use Path', 'Sidewalks', 'Sidewalks', '2025-12-04 20:21:58.594612+00', '2025-12-04 20:21:58.594612+00', 1, 1, 'Inactive', 2016, 2, 15);
-INSERT INTO public.ecapris_subproject_funding (id, ecapris_subproject_id, fao_id, fdu, app, unit_long_name, subprogram, program, created_at, updated_at, created_by_user_id, updated_by_user_id, fdu_status, bond_year, funding_source_id, funding_program_id) VALUES
-(2, '11887.003', 111450, '8119 2507 C128', 157880, 'A Nice Corridor', 'Corridor Program', 'Corridor Program', '2025-12-04 20:21:58.098206+00', '2025-12-04 20:21:58.098206+00', 1, 1, 'Active', 2016, 2, 4);
+INSERT INTO public.ecapris_subproject_funding (id, ecapris_subproject_id, fao_id, fdu, app, unit_long_name, subprogram, program, created_at, updated_at, created_by_user_id, updated_by_user_id, fdu_status, bond_year, funding_source_id, funding_program_id, subproject_name) VALUES
+(1, '12120.015', 105682, '8119 6207 L039', 189322, 'Real Ave - Fake Rd to Cool Rd Shared Use Path', 'Sidewalks', 'Sidewalks', '2025-12-04 20:21:58.594612+00', '2025-12-04 20:21:58.594612+00', 1, 1, 'Inactive', 2016, 2, 15, 'Real Ave - Fake Rd to Cool Rd Shared Use Path');
+INSERT INTO public.ecapris_subproject_funding (id, ecapris_subproject_id, fao_id, fdu, app, unit_long_name, subprogram, program, created_at, updated_at, created_by_user_id, updated_by_user_id, fdu_status, bond_year, funding_source_id, funding_program_id, subproject_name) VALUES
+(2, '11887.003', 111450, '8119 2507 C128', 157880, 'A Nice Corridor', 'Corridor Program', 'Corridor Program', '2025-12-04 20:21:58.098206+00', '2025-12-04 20:21:58.098206+00', 1, 1, 'Active', 2016, 2, 4, 'A Nice Corridor');
 
 --
 -- Data for Name: moped_proj_funding; Type: TABLE DATA; Schema: public; Owner: moped
