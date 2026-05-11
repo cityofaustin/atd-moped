@@ -13,7 +13,7 @@ import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectSubstantialCompletionDate from "src/views/projects/projectView/ProjectPhase/ProjectSubstantialCompletionDate";
 import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
-import ProjectPhaseDateConfirmationPopover from "./ProjectPhase/ProjectPhaseDateConfirmationPopover";
+import NotableCellPopover from "src/components/NotableCellPopover";
 import { DELETE_PROJECT_PHASE } from "src/queries/project";
 import {
   useCurrentProjectPhaseID,
@@ -48,23 +48,18 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
         valueGetter: (value) => (value ? new Date(value) : null),
         /**  the renderCell function controls the react node rendered for this cell */
         renderCell: ({ row }) => {
-          let strToRender = row.phase_start
+          const strToRender = row.phase_start
             ? new Date(row.phase_start).toLocaleDateString()
             : "";
 
           const showNotConfirmedIndicator =
             !row.is_phase_start_confirmed && strToRender;
-
-          strToRender = showNotConfirmedIndicator
-            ? `${strToRender}*`
-            : strToRender;
           return (
-            <ProjectPhaseDateConfirmationPopover
+            <NotableCellPopover
+              value={strToRender}
               isEnabled={showNotConfirmedIndicator}
-              dateType="start"
-            >
-              <span>{strToRender}</span>
-            </ProjectPhaseDateConfirmationPopover>
+              popoverText="Estimated start date"
+            />
           );
         },
         width: 150,
@@ -77,23 +72,18 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
         valueGetter: (value) => (value ? new Date(value) : null),
         /**  the renderCell function controls the react node rendered for this cell */
         renderCell: ({ row }) => {
-          let strToRender = row.phase_end
+          const strToRender = row.phase_end
             ? new Date(row.phase_end).toLocaleDateString()
             : "";
 
           const showNotConfirmedIndicator =
             !row.is_phase_end_confirmed && strToRender;
-
-          strToRender = showNotConfirmedIndicator
-            ? `${strToRender}*`
-            : strToRender;
           return (
-            <ProjectPhaseDateConfirmationPopover
+            <NotableCellPopover
+              value={strToRender}
               isEnabled={showNotConfirmedIndicator}
-              dateType="end"
-            >
-              <span>{strToRender}</span>
-            </ProjectPhaseDateConfirmationPopover>
+              popoverText="Estimated end date"
+            />
           );
         },
         width: 150,

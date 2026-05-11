@@ -4,12 +4,17 @@ import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutoco
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
+import NotableCellPopover from "src/components/NotableCellPopover";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { currencyFormatter } from "src/utils/numberFormatters";
+import {
+  currencyFormatter,
+  isAmountOutOfRange,
+  outOfRangeErrorMessage,
+} from "src/utils/numberFormatters";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
@@ -307,6 +312,33 @@ export const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
+        renderCell: ({ row, value }) => {
+          // Make sure not to give asterisk to empty cells
+          const hasValue = value !== null && value !== undefined;
+          const formattedValue = hasValue
+            ? currencyFormatter.format(value)
+            : "";
+          const showOverrideIndicator =
+            hasValue &&
+            !row.should_use_ecapris_amount &&
+            !row.is_manual &&
+            !row.is_synced_from_ecapris;
+
+          return (
+            <NotableCellPopover
+              value={formattedValue}
+              isEnabled={showOverrideIndicator}
+              popoverText="eCAPRIS override"
+            />
+          );
+        },
+        preProcessEditCellProps: (params) => {
+          return {
+            ...params.props,
+            error: isAmountOutOfRange(params.props.value),
+            errorMessage: outOfRangeErrorMessage,
+          };
+        },
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,

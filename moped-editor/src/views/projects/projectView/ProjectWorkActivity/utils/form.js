@@ -3,6 +3,8 @@ import * as yup from "yup";
 import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
+  INT_4_MAX,
+  outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
 
 export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
@@ -36,7 +38,10 @@ export const activityValidationSchema = yup.object().shape({
     .string()
     .max(500, "Must be less than 500 characters")
     .nullable(),
-  contract_amount: yup.number().nullable(),
+  contract_amount: yup
+    .number()
+    .max(INT_4_MAX, outOfRangeErrorMessage)
+    .nullable(),
   status_id: yup.number().required(),
   status_note: yup
     .string()

@@ -1,7 +1,7 @@
 # Architecture Independent Docker Stack Components for Moped Development Environment
 services:
     hasura:
-        image: hasura/graphql-engine:v2.48.15
+        image: hasura/graphql-engine:v2.48.16
         depends_on:
             - moped-pgsql
         expose:
@@ -15,7 +15,7 @@ services:
             - HASURA_GRAPHQL_CONSOLE_ASSETS_DIR=/srv/console-assets
             - MOPED_API_ACTIONS_URL=http://localhost:5000/actions
             - MOPED_API_EVENTS_URL=http://localhost:5000/events
-            - HASURA_ENDPOINT=http://localhost:8082/v1/graphql
+            - HASURA_ENDPOINT=http://localhost:8080/v1/graphql
             - MOPED_API_APIKEY=DuMmyApiKeyHFVOVto19otC1wX6sP2N0VSKrCD70L10B7Sm525ZR6L672i2F79M9!
             - 'HASURA_GRAPHQL_JWT_SECRET={"type":"RS256","jwk_url": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_U2dzkxfTv/.well-known/jwks.json","claims_format": "stringified_json"}'
             - HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword
