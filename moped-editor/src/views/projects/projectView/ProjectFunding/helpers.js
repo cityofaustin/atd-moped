@@ -320,9 +320,15 @@ export const useColumns = ({
         editable: false,
         sortable: false,
         renderCell: ({ row }) => {
+          const filesType = row.is_synced_from_ecapris
+            ? "ecapris_funding_files"
+            : "moped_funding_files";
+          if (!row?.[filesType]) {
+            return;
+          }
           return (
             <Stack direction="column" spacing={0.5}>
-              {row.ecapris_funding_files.map((file_record, index) => {
+              {row?.[filesType].map((file_record, index) => {
                 const file = file_record.moped_project_file;
 
                 if (!file) return null;
@@ -362,6 +368,7 @@ export const useColumns = ({
               handleDeleteOpen={handleDeleteOpen}
               handleSaveClick={handleSaveClick}
               handleEditClick={handleEditClick}
+              handleFileAttachmentClick={handleFileAttachmentClick}
               editDisabled={row.is_synced_from_ecapris}
               deleteDisabled={row.is_synced_from_ecapris}
             />

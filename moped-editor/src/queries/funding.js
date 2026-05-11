@@ -33,6 +33,14 @@ export const COMBINED_FUNDING_QUERY = gql`
           file_name
         }
       }
+      moped_funding_files {
+        moped_project_file {
+          project_file_id
+          file_url
+          file_key
+          file_name
+        }
+      }
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id

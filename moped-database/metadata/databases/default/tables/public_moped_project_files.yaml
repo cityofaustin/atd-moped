@@ -16,6 +16,13 @@ array_relationships:
         table:
           name: files_ecapris_funding
           schema: public
+  - name: files_project_fundings
+    using:
+      foreign_key_constraint_on:
+        column: file_id
+        table:
+          name: files_project_funding
+          schema: public
 insert_permissions:
   - role: moped-admin
     permission:
