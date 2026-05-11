@@ -40,7 +40,7 @@ const ProjectFundingFilesAttachmentDialog = ({
     () => rows.find((row) => row.id === fileAttachmentId),
     [rows, fileAttachmentId]
   );
-  const isSyncedFromECapris = fundingRecord.is_synced_from_ecapris;
+  const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
   const [addFundingFileAttachment] = useMutation(
     isSyncedFromECapris
       ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
