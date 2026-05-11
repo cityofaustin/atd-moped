@@ -26,12 +26,41 @@ import Can from "src/auth/Can";
 
 /**
  * Scroll to a page element based on its key
+ * @param {string} recordKey - The key representing the record type to scroll to
+ * @param {Object} refs - An object containing refs for each table element on the page
+ * @param {string} behavior - The scroll behavior
  */
-const scrollToTable = (recordKey, refs) => {
+const scrollToTable = (recordKey, refs, behavior = "smooth") => {
   const ref = refs?.[recordKey];
+
   if (ref?.current) {
-    ref.current.scrollIntoView({ behavior: "smooth" });
+    ref.current.scrollIntoView({ behavior });
   }
+};
+
+/**
+ * Custom hook to scroll to a table when the hash in the URL changes. Listens for changes to the hash and
+ * uses a ResizeObserver to ensure that the element is scrolled into view after any layout shifts.
+ * @param {Object} props
+ * @param {string} props.recordKeyHash - The hash from the URL representing the record key to scroll to
+ * @param {Object} props.refs - An object containing refs for each table element on the page
+ * */
+const useScrollToHash = ({ recordKeyHash, refs }) => {
+  useEffect(() => {
+    if (!recordKeyHash) return;
+
+    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
+    const resizeObserver = new ResizeObserver(() => {
+      scrollToTable(recordKey, refs, "instant");
+    });
+
+    // Observe resize of every table so we keep scrolling until layout is fully populated with async data
+    Object.values(refs).forEach((ref) => {
+      if (ref.current) resizeObserver.observe(ref.current);
+    });
+
+    return () => resizeObserver.disconnect();
+  }, [recordKeyHash, refs]);
 };
 
 const TAG_TABLE_KEYS = ["moped_component_tags", "moped_tags"];
@@ -73,18 +102,8 @@ const LookupsView = () => {
     []
   );
 
-  /**
-   * Use the record hash from the URL, if present. This only happens once after
-   * data fetch.
-   * */
   let { hash: recordKeyHash, pathname } = useLocation();
-  useEffect(() => {
-    if (!recordKeyHash || loading) {
-      return;
-    }
-    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
-    scrollToTable(recordKey, refs);
-  }, [recordKeyHash, loading, refs]);
+  useScrollToHash({ recordKeyHash, refs });
 
   return (
     <ApolloErrorHandler error={error}>

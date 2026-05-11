@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import { Box, Grid2, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { useUser } from "src/auth/user";
+import { filterOptions } from "src/utils/autocompleteHelpers";
 
 import {
   fieldBox,
@@ -21,6 +22,18 @@ import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
+
+// Find full option object by id
+export const findOptionById = (options, id) => {
+  return options?.find((option) => option?.ecapris_subproject_id === id);
+};
+
+// Get option label for autocomplete display
+export const getOptionLabel = (option) => {
+  return option
+    ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
+    : "";
+};
 
 /**
  * ProjectSummaryProjectECapris Component
@@ -47,13 +60,13 @@ const ProjectSummaryProjectECapris = ({
   const userEmail = user?.idToken?.payload?.email;
 
   const initialValue = eCaprisSubprojectId
-    ? {
+    ? (findOptionById(options, eCaprisSubprojectId) ?? {
         ecapris_subproject_id: eCaprisSubprojectId,
-      }
+      })
     : null;
 
   const [editMode, setEditMode] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(initialValue);
+  const [selectedValue, setSelectedValue] = useState(null);
   // Capture input value to include in service request if user encounters missing eCAPRIS subproject ID in options list
   const [inputValue, setInputValue] = useState("");
 
@@ -66,7 +79,7 @@ const ProjectSummaryProjectECapris = ({
   );
 
   const handleFieldClose = () => {
-    setSelectedValue(initialValue);
+    setSelectedValue(null);
     setInputValue("");
     setEditMode(false);
   };
@@ -91,7 +104,7 @@ const ProjectSummaryProjectECapris = ({
       })
       .catch((error) => {
         setEditMode(false);
-        setSelectedValue(initialValue);
+        setSelectedValue(null);
         handleSnackbar(
           true,
           "Error updating eCAPRIS subproject ID",
@@ -111,11 +124,15 @@ const ProjectSummaryProjectECapris = ({
               value={selectedValue}
               sx={fieldSelectItem}
               options={options}
-              getOptionLabel={(e) => e?.["ecapris_subproject_id"] ?? ""}
+              getOptionLabel={(e) =>
+                e?.["ecapris_subproject_id"] ? getOptionLabel(e) : ""
+              }
               isOptionEqualToValue={(option, value) =>
                 option?.["ecapris_subproject_id"] ===
                 value?.["ecapris_subproject_id"]
               }
+              // Use custom filterOptions function to limit number of options rendered for performance
+              filterOptions={filterOptions}
               onChange={(_, newValue) => {
                 setSelectedValue(newValue);
               }}
@@ -170,8 +187,9 @@ const ProjectSummaryProjectECapris = ({
             <ProjectSummaryLabel
               text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => {
-                if (disabled) return;
+                if (disabled || loading) return;
                 setEditMode(true);
+                setSelectedValue(initialValue);
               }}
               sxProp={disabled ? fieldLabelTextNoHover : fieldLabelText}
             />

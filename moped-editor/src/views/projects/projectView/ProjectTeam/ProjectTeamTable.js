@@ -147,7 +147,7 @@ const useColumns = ({
           <Box sx={{ fontWeight: 500 }}>
             Role{" "}
             <Link
-              href="data-dictionary#moped-project-roles"
+              href="/moped/data-dictionary#moped-project-roles"
               target="_blank"
               rel="noopener noreferrer"
             >
