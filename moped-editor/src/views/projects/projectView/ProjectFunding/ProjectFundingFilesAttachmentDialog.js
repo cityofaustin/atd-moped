@@ -188,10 +188,10 @@ const ProjectFundingFilesAttachmentDialog = ({
   };
 
   /* Tabs state and handlers */
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
 
   const handleChange = (_, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
   // TODO: replace with actual existing file attachments to choose from
@@ -200,22 +200,30 @@ const ProjectFundingFilesAttachmentDialog = ({
   const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
   const handleRowSelection = (newSelection) => {
     console.log("Selected row ID for existing file to attach:", newSelection);
+    setExistingFileIdToAttach(newSelection[0]);
   };
+
+  const handleAttach = () => {
+    console.log("Attaching existing file with ID:", existingFileIdToAttach);
+  };
+
+  const newFileLabel = formProps.externalFile ? "Save" : "Upload";
+  const isExistingFileTab = tabValue === 1;
 
   return (
     <FormDialog
       title="Attach files"
       dialogOpen={isFileAttachmentDialogOpen}
       handleClose={onClose}
-      handleSave={handleSave}
+      handleSave={isExistingFileTab ? handleAttach : handleSave}
       handleCancel={handleCancel}
-      saveDisabled={!fileReady}
-      saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
+      saveDisabled={isExistingFileTab ? !existingFileIdToAttach : !fileReady}
+      saveButtonLabel={isExistingFileTab ? "Attach" : newFileLabel}
     >
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
-            value={value}
+            value={tabValue}
             onChange={handleChange}
             aria-label="add new or existing file attachment tabs"
           >
@@ -223,7 +231,7 @@ const ProjectFundingFilesAttachmentDialog = ({
             <Tab label="Existing" {...a11yProps(1)} />
           </Tabs>
         </Box>
-        <CustomTabPanel value={value} index={0}>
+        <CustomTabPanel value={tabValue} index={0}>
           <FileUploadDialogSingle
             handleClickCloseUploadFile={onClose}
             handleClickSaveFile={handleClickSaveFile}
@@ -232,22 +240,7 @@ const ProjectFundingFilesAttachmentDialog = ({
             {...formProps}
           />
         </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
-          {/* <FormControl variant="standard" sx={{ width: "100%", m: 2 }}>
-            <Select
-              variant="outlined"
-              name="File name"
-              value={existingFileIdToAttach}
-              onChange={(e) => setExistingFileIdToAttach(e.target.value)}
-            >
-              {fileAttachments.map((type) => (
-                <MenuItem key={type.id} value={type.id}>
-                  {type.file_name}
-                </MenuItem>
-              ))}
-            </Select>
-            <FormHelperText>Required</FormHelperText>
-          </FormControl> */}
+        <CustomTabPanel value={tabValue} index={1}>
           <AttachExistingFileTable
             projectId={projectId}
             handleRowSelection={handleRowSelection}
@@ -255,70 +248,6 @@ const ProjectFundingFilesAttachmentDialog = ({
           />
         </CustomTabPanel>
       </Box>
-      {/* <Box>
-        <Divider sx={{ marginY: 4 }} />
-        <Stack direction="column">
-          <Typography variant="h4" sx={{ mb: 1 }}>
-            Attached files
-          </Typography>
-
-          {filesAttachedToId.length > 0 ? (
-            filesAttachedToId.map((file) => {
-              if (!file) return null;
-
-              return (
-                <React.Fragment key={file.project_file_id}>
-                  <DeleteConfirmationModal
-                    type="file attachment"
-                    actionButtonText="Detach"
-                    additionalConfirmationText="This will not delete the file, only detach it from this funding record."
-                    actionButtonIcon={<LinkOff />}
-                    submitDelete={() =>
-                      handleUnlinkFileAttachment(file.project_file_id)
-                    }
-                    isDeleteConfirmationOpen={
-                      detachConfirmationFileId === file.project_file_id
-                    }
-                    setIsDeleteConfirmationOpen={(open) =>
-                      setDetachConfirmationFileId(
-                        open ? file.project_file_id : null
-                      )
-                    }
-                  />
-                  <Stack
-                    direction="row"
-                    sx={{
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                    spacing={0.5}
-                  >
-                    <Box>
-                      <IconButton
-                        onClick={() =>
-                          setDetachConfirmationFileId(file.project_file_id)
-                        }
-                        size="small"
-                      >
-                        <LinkOff />
-                      </IconButton>
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                      <ProjectFileLink
-                        fileKey={file?.file_key}
-                        fileUrl={file?.file_url}
-                        fileName={file?.file_name}
-                      />
-                    </Box>
-                  </Stack>
-                </React.Fragment>
-              );
-            })
-          ) : (
-            <Typography variant="body2">No files attached</Typography>
-          )}
-        </Stack>
-      </Box> */}
     </FormDialog>
   );
 };
