@@ -5,6 +5,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
 import NotableCellPopover from "src/components/NotableCellPopover";
+import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
@@ -205,21 +206,16 @@ export const useColumns = ({
       {
         headerName: "FDU",
         field: "fdu",
-        width: 180,
+        width: 225,
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
             <>
               <span>{value?.fdu}</span>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "primary.main",
-                  fontWeight: 500,
-                }}
-              >
-                SYNCED FROM ECAPRIS
-              </Typography>
+              <SecondaryInformationChip
+                chipLabel="eCAPRIS"
+                chipStyles={{ marginLeft: "8px" }}
+              />
             </>
           ) : (
             value?.fdu
@@ -228,7 +224,7 @@ export const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"ecapris_funding"}
-            options={dataLookups?.ecapris_subproject_funding}
+            options={dataFduOptions?.ecapris_subproject_funding}
             fullWidthPopper={true}
             autocompleteProps={{
               ...fduAutocompleteProps,
