@@ -80,7 +80,7 @@ const ProjectSummary = ({
                   handleSnackbar={handleSnackbar}
                   listViewQuery={listViewQuery}
                 />
-                {/*Status Update Component*/}
+                {/* Status Update Component */}
                 <ProjectSummaryStatusUpdate
                   projectId={projectId}
                   data={data}

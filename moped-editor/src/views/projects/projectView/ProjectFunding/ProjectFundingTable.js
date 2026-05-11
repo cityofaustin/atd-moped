@@ -35,7 +35,6 @@ import {
   getIsEditMode,
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
-import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 import ProjectFundingFilesAttachmentDialog from "src/views/projects/projectView/ProjectFunding/ProjectFundingFilesAttachmentDialog";
 import {
@@ -45,10 +44,6 @@ import {
   useColumns,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
-import {
-  isAmountOutOfRange,
-  outOfRangeErrorMessage,
-} from "src/utils/numberFormatters";
 
 const ProjectFundingTable = ({
   projectId,

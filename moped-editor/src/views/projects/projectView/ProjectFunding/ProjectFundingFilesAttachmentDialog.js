@@ -40,7 +40,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
     </div>
   );
 }
@@ -198,10 +198,9 @@ const ProjectFundingFilesAttachmentDialog = ({
   // TODO: Get project files that are attached to this project or this project and eCAPRIS id
   // moped_project_files > files_project_fundings OR files_ecapris_fundings
   const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
-  const fileAttachments = [
-    { id: 1, file_name: "Test file" },
-    { id: 2, file_name: "Test file 2" },
-  ];
+  const handleRowSelection = (newSelection) => {
+    console.log("Selected row ID for existing file to attach:", newSelection);
+  };
 
   return (
     <FormDialog
@@ -249,10 +248,14 @@ const ProjectFundingFilesAttachmentDialog = ({
             </Select>
             <FormHelperText>Required</FormHelperText>
           </FormControl> */}
-          <AttachExistingFileTable projectId={projectId} />
+          <AttachExistingFileTable
+            projectId={projectId}
+            handleRowSelection={handleRowSelection}
+            attachedFiles={filesAttachedToId}
+          />
         </CustomTabPanel>
       </Box>
-      <Box>
+      {/* <Box>
         <Divider sx={{ marginY: 4 }} />
         <Stack direction="column">
           <Typography variant="h4" sx={{ mb: 1 }}>
@@ -315,7 +318,7 @@ const ProjectFundingFilesAttachmentDialog = ({
             <Typography variant="body2">No files attached</Typography>
           )}
         </Stack>
-      </Box>
+      </Box> */}
     </FormDialog>
   );
 };

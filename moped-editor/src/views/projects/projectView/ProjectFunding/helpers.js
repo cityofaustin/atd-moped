@@ -207,17 +207,14 @@ export const useColumns = ({
       {
         headerName: "FDU",
         field: "fdu",
-        width: 225,
+        width: 130,
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
-            <>
+            <Stack direction="column" alignItems="flex-start" spacing={0.5}>
               <span>{value?.fdu}</span>
-              <SecondaryInformationChip
-                chipLabel="eCAPRIS"
-                chipStyles={{ marginLeft: "8px" }}
-              />
-            </>
+              <SecondaryInformationChip chipLabel="eCAPRIS" />
+            </Stack>
           ) : (
             value?.fdu
           ),

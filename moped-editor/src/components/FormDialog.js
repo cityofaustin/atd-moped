@@ -41,8 +41,6 @@ const FormDialog = ({
     <Dialog
       open={dialogOpen}
       onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
       fullWidth
       scroll="body"
       {...dialogProps}
@@ -60,23 +58,25 @@ const FormDialog = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent dividers={true}>{children}</DialogContent>
-      {showDialogActions && (
-        <DialogActions>
-          <Button onClick={handleCancel} color="primary">
-            {cancelButtonLabel}
-          </Button>
-          <Button
-            onClick={handleSave}
-            color="primary"
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            disabled={saveDisabled}
-          >
-            {saveButtonLabel}
-          </Button>
-        </DialogActions>
-      )}
+      <DialogContent dividers>
+        {children}
+        {showDialogActions && (
+          <DialogActions sx={{ p: 0, pt: 2, pb: 1 }}>
+            <Button onClick={handleCancel} color="primary">
+              {cancelButtonLabel}
+            </Button>
+            <Button
+              onClick={handleSave}
+              color="primary"
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              disabled={saveDisabled}
+            >
+              {saveButtonLabel}
+            </Button>
+          </DialogActions>
+        )}
+      </DialogContent>
     </Dialog>
   );
 };
