@@ -19,6 +19,8 @@ import {
   DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
   DELETE_FILE_MOPED_FUNDING_ATTACHMENT,
+  ATTACH_EXISTING_FILE_TO_ECAPRIS,
+  ATTACH_EXISTING_FILE_TO_MOPED,
 } from "src/queries/project";
 
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
@@ -84,6 +86,12 @@ const ProjectFundingFilesAttachmentDialog = ({
       ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
       : CREATE_FILE_MOPED_FUNDING_ATTACHMENT
   );
+  const [attachExistingFile] = useMutation(
+    isSyncedFromECapris
+      ? ATTACH_EXISTING_FILE_TO_ECAPRIS
+      : ATTACH_EXISTING_FILE_TO_MOPED
+  );
+
   const [detachFundingFileAttachment] = useMutation(
     isSyncedFromECapris
       ? DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
@@ -194,9 +202,7 @@ const ProjectFundingFilesAttachmentDialog = ({
     setTabValue(newValue);
   };
 
-  // TODO: replace with actual existing file attachments to choose from
-  // TODO: Get project files that are attached to this project or this project and eCAPRIS id
-  // moped_project_files > files_project_fundings OR files_ecapris_fundings
+  /* Existing file attachment tab state and handlers */
   const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
   const handleRowSelection = (newSelection) => {
     console.log("Selected row ID for existing file to attach:", newSelection);
@@ -205,6 +211,27 @@ const ProjectFundingFilesAttachmentDialog = ({
 
   const handleAttach = () => {
     console.log("Attaching existing file with ID:", existingFileIdToAttach);
+    attachExistingFile({
+      variables: {
+        object: {
+          file_id: existingFileIdToAttach,
+          entity_id: fundingRecord?.proj_funding_id,
+          ...(isSyncedFromECapris && { project_id: projectId }),
+        },
+      },
+    })
+      .then(() => {
+        setExistingFileIdToAttach("");
+        onClose();
+        handleSnackbar(true, "File attached", "success");
+      })
+      .catch((error) => {
+        setExistingFileIdToAttach("");
+        handleSnackbar(true, "Error attaching file", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
   };
 
   const newFileLabel = formProps.externalFile ? "Save" : "Upload";
