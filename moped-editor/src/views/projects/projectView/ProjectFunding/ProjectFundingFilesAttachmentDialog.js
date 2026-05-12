@@ -205,12 +205,10 @@ const ProjectFundingFilesAttachmentDialog = ({
   /* Existing file attachment tab state and handlers */
   const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
   const handleRowSelection = (newSelection) => {
-    console.log("Selected row ID for existing file to attach:", newSelection);
     setExistingFileIdToAttach(newSelection[0]);
   };
 
   const handleAttach = () => {
-    console.log("Attaching existing file with ID:", existingFileIdToAttach);
     attachExistingFile({
       variables: {
         object: {
@@ -274,6 +272,70 @@ const ProjectFundingFilesAttachmentDialog = ({
             attachedFiles={filesAttachedToId}
           />
         </CustomTabPanel>
+        <Box>
+          <Divider sx={{ marginY: 4 }} />
+          <Stack direction="column">
+            <Typography variant="h4" sx={{ mb: 1 }}>
+              Attached files
+            </Typography>
+
+            {filesAttachedToId.length > 0 ? (
+              filesAttachedToId.map((file) => {
+                if (!file) return null;
+
+                return (
+                  <React.Fragment key={file.project_file_id}>
+                    <DeleteConfirmationModal
+                      type="file attachment"
+                      actionButtonText="Detach"
+                      additionalConfirmationText="This will not delete the file, only detach it from this funding record."
+                      actionButtonIcon={<LinkOff />}
+                      submitDelete={() =>
+                        handleUnlinkFileAttachment(file.project_file_id)
+                      }
+                      isDeleteConfirmationOpen={
+                        detachConfirmationFileId === file.project_file_id
+                      }
+                      setIsDeleteConfirmationOpen={(open) =>
+                        setDetachConfirmationFileId(
+                          open ? file.project_file_id : null
+                        )
+                      }
+                    />
+                    <Stack
+                      direction="row"
+                      sx={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                      spacing={0.5}
+                    >
+                      <Box>
+                        <IconButton
+                          onClick={() =>
+                            setDetachConfirmationFileId(file.project_file_id)
+                          }
+                          size="small"
+                        >
+                          <LinkOff />
+                        </IconButton>
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <ProjectFileLink
+                          fileKey={file?.file_key}
+                          fileUrl={file?.file_url}
+                          fileName={file?.file_name}
+                        />
+                      </Box>
+                    </Stack>
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <Typography variant="body2">No files attached</Typography>
+            )}
+          </Stack>
+        </Box>
       </Box>
     </FormDialog>
   );
