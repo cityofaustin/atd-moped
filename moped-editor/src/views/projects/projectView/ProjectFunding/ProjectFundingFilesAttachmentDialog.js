@@ -23,12 +23,12 @@ import {
   ATTACH_EXISTING_FILE_TO_MOPED,
 } from "src/queries/project";
 
-import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
+import FileUploadDialogSingle from "src/components/FileUpload/FileUploadSingle";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
-import { useFileUploadForm } from "src/components/FileUpload/FileUploadDialogSingle";
+import { useFileUploadForm } from "src/components/FileUpload/FileUploadSingle";
 import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
 
 function CustomTabPanel(props) {
@@ -111,6 +111,32 @@ const ProjectFundingFilesAttachmentDialog = ({
     return filesAttachedToId ? filesAttachedToId : [];
   }, [fileAttachmentId, rows, isSyncedFromECapris]);
 
+  const handleUnlinkFileAttachment = (id) => {
+    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
+    const entityId = fundingRecord?.proj_funding_id;
+
+    detachFundingFileAttachment({
+      variables: {
+        fileId: id,
+        entityId,
+        projectId,
+      },
+    })
+      .then(() => {
+        setDetachConfirmationFileId(null);
+        onClose();
+        handleSnackbar(true, "File attachment detached", "success");
+      })
+      .catch((error) => {
+        setDetachConfirmationFileId(null);
+        handleSnackbar(true, "Error detaching file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
+  };
+
+  /* Form state and handlers */
   const handleClickSaveFile = (fileDataBundle) => {
     const entityId = fundingRecord?.proj_funding_id;
     const fileConnectionData = isSyncedFromECapris
@@ -156,32 +182,6 @@ const ProjectFundingFilesAttachmentDialog = ({
       });
   };
 
-  const handleUnlinkFileAttachment = (id) => {
-    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
-    const entityId = fundingRecord?.proj_funding_id;
-
-    detachFundingFileAttachment({
-      variables: {
-        fileId: id,
-        entityId,
-        projectId,
-      },
-    })
-      .then(() => {
-        setDetachConfirmationFileId(null);
-        onClose();
-        handleSnackbar(true, "File attachment detached", "success");
-      })
-      .catch((error) => {
-        setDetachConfirmationFileId(null);
-        handleSnackbar(true, "Error detaching file attachment", "error", error);
-      })
-      .finally(() => {
-        refetch();
-      });
-  };
-
-  /* Form state and handlers */
   const { fileReady, buildFileBundle, clearState, ...formProps } =
     useFileUploadForm();
 

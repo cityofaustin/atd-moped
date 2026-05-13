@@ -156,12 +156,15 @@ export const useFileUploadForm = () => {
  * @param {number} projectId - integer representing the project id. This is used to generate the S3 presigned URL for file upload
  * @param {Object[]} fileTypesLookup - array of file types lookup options
  * @param {string} fileType- Contains an integer representing file type
- * @param {string} fileDescription - Contains a human-readable file description
- * @param {string} fileKey - The location of the file in S3
- * @param {Object} fileObject - Contains the file object, including metadata.
- * @param {bool} fileReady - True if we have everything we need to commit the file to the DB
  * @param {bool} externalFile - True if user toggled external file switch
- * @param {string} externalFileLink - external file location string
+ * @param {function} handleFileNameChange - onChange handler for file name text field
+ * @param {function} handleFileDescriptionChange - onChange handler for file description text field
+ * @param {function} handleFileTypeChange - onChange handler for file type select
+ * @param {function} handleExternalLinkChange - onChange handler for external file link text field
+ * @param {function} handleToggleChange - onChange handler for external file toggle switch
+ * @param {function} handleOnFileProcessed - callback for when a file has been processed
+ * @param {function} handleOnFileAdded - callback for when a file has been added
+ *
  * @returns {JSX.Element}
  */
 const FileUploadDialogSingle = ({
