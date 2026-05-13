@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { useMutation } from "@apollo/client";
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import FormDialog from "src/components/FormDialog";
 import SaveUserViewForm from "./SaveUserViewForm";
 import { useLocation } from "react-router-dom";
 import { ADD_USER_SAVED_VIEW } from "src/queries/userSavedViews";
@@ -67,28 +66,18 @@ const SaveUserViewModal = ({
   };
 
   return (
-    <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-        variant="h4"
-      >
-        Save view
-        <IconButton onClick={onClose} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent dividers={true}>
-        <SaveUserViewForm
-          onSave={onSaveViewClick}
-          description={defaultDescription}
-          loading={loading}
-        />
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      title="Save view"
+      dialogOpen={showDialog}
+      handleClose={onClose}
+      showDialogActions={false}
+    >
+      <SaveUserViewForm
+        onSave={onSaveViewClick}
+        description={defaultDescription}
+        loading={loading}
+      />
+    </FormDialog>
   );
 };
 

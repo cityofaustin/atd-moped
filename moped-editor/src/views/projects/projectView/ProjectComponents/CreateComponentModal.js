@@ -1,7 +1,6 @@
 import React from "react";
 import ComponentForm from "./ComponentForm";
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import FormDialog from "src/components/FormDialog";
 
 const CreateComponentModal = ({
   showDialog,
@@ -85,24 +84,14 @@ const CreateComponentModal = ({
   };
 
   return (
-    <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-        variant="h4"
-      >
-        New component
-        <IconButton onClick={onClose} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent dividers={true}>
-        <ComponentForm onSave={onSave} formButtonText="Continue" />
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      title="New component"
+      dialogOpen={showDialog}
+      handleClose={onClose}
+      showDialogActions={false}
+    >
+      <ComponentForm onSave={onSave} formButtonText="Continue" />
+    </FormDialog>
   );
 };
 
