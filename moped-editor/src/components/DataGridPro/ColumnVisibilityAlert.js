@@ -5,7 +5,7 @@ export const ColumnVisibilityAlert = ({ allColumnsHidden }) => {
     <div
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
-      <Alert>
+      <Alert severity="warning">
         <span
           sx={{
             justifyContent: "text-no-wrap",
@@ -13,7 +13,10 @@ export const ColumnVisibilityAlert = ({ allColumnsHidden }) => {
             alignItems: "center",
           }}
         >
-          <span>Use the settings menu to add columns</span>
+          <span>
+            All columns are hidden. Use the column visibility menu to show
+            columns.
+          </span>
         </span>
       </Alert>
     </div>

@@ -31,6 +31,7 @@ import ActivityMetrics from "src/components/ActivityMetrics";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
+import { ColumnVisibilityAlert } from "src/components/DataGridPro/ColumnVisibilityAlert";
 
 export const mapSearchParamName = "map";
 
@@ -193,6 +194,14 @@ const ProjectsListViewTable = () => {
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
     useFeedbackSnackbar();
 
+  console.log(hiddenColumns);
+
+  const allColumnsHidden =
+    Object.values(hiddenColumns).reduce(
+      (count, value) => count + (value === true ? 1 : 0),
+      0
+    ) === 0;
+
   /**
    * Store the most recent version of the query in app context so that it
    * can be refetched elswhere
@@ -240,40 +249,44 @@ const ProjectsListViewTable = () => {
             }}
           >
             {!showMapView && data && data.project_list_view && (
-              <MopedDataGrid
-                density="compact"
-                hideFooter={false}
-                columnVisibilityModel={hiddenColumns}
-                onColumnVisibilityModelChange={(newModel) => {
-                  // when someone toggles "show all columns", datagrid's model is an empty object
-                  if (Object.keys(newModel).length > 0) {
-                    setHiddenColumns(newModel);
-                  } else {
-                    setHiddenColumns(SHOW_ALL_COLS);
+              <>
+                {allColumnsHidden === true && <ColumnVisibilityAlert />}
+                <MopedDataGrid
+                  density="compact"
+                  hideFooter={false}
+                  columnVisibilityModel={hiddenColumns}
+                  onColumnVisibilityModelChange={(newModel) => {
+                    // when someone toggles "show all columns", datagrid's model is an empty object
+                    if (Object.keys(newModel).length > 0) {
+                      setHiddenColumns(newModel);
+                    } else {
+                      setHiddenColumns(SHOW_ALL_COLS);
+                    }
+                  }}
+                  slots={{
+                    toolbar: ProjectListToolbar,
+                    noColumnsOverlay: ColumnVisibilityAlert,
+                  }}
+                  columns={columns}
+                  getRowId={(row) => row.project_id}
+                  rows={data.project_list_view}
+                  onSortModelChange={handleSortClick}
+                  disableColumnFilter
+                  localeText={{ noRowsLabel: "No projects found." }}
+                  pagination
+                  paginationMode="server"
+                  paginationModel={{
+                    page: queryOffset / queryLimit,
+                    pageSize: queryLimit,
+                  }}
+                  onPaginationModelChange={handlePagination}
+                  rowCount={data.project_list_view_aggregate?.aggregate.count}
+                  pageSizeOptions={
+                    PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
                   }
-                }}
-                slots={{
-                  toolbar: ProjectListToolbar,
-                }}
-                columns={columns}
-                getRowId={(row) => row.project_id}
-                rows={data.project_list_view}
-                onSortModelChange={handleSortClick}
-                disableColumnFilter
-                localeText={{ noRowsLabel: "No projects found." }}
-                pagination
-                paginationMode="server"
-                paginationModel={{
-                  page: queryOffset / queryLimit,
-                  pageSize: queryLimit,
-                }}
-                onPaginationModelChange={handlePagination}
-                rowCount={data.project_list_view_aggregate?.aggregate.count}
-                pageSizeOptions={
-                  PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
-                }
-                sortingMode="server"
-              />
+                  sortingMode="server"
+                />
+              </>
             )}
             {showMapView && (
               <ActivityMetrics eventName="projects_map_load">

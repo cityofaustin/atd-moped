@@ -9,15 +9,9 @@ import { ColumnVisibilityAlert } from "./ColumnVisibilityAlert";
  * @returns {JSX.Element}
  */
 const MopedDataGrid = ({ sx, ...props }) => {
-  const allColumnsHidden =
-    Object.values(props.columnVisibilityModel).reduce(
-      (count, value) => count + (value === true ? 1 : 0),
-      0
-    ) === 0;
 
   return (
     <>
-      <ColumnVisibilityAlert allColumnsHidden={allColumnsHidden} />
       <DataGridPro
         sx={{ ...dataGridProStyleOverrides, ...sx }}
         density="comfortable"
