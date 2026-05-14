@@ -58,6 +58,8 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
     resolver: yupResolver(validationSchema),
   });
 
+  const areFormErrors = Object.keys(errors).length > 0;
+
   const [isSignalProject] = watch(["isSignalProject"]);
 
   return (
@@ -211,7 +213,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
           success={success}
           buttonOptions={{
             type: "submit",
-            disabled: !isDirty || loading,
+            disabled: !isDirty || loading || areFormErrors,
           }}
         />
       </Box>

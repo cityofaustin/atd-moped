@@ -97,6 +97,8 @@ const OverrideFundingForm = ({
     mode: "onChange",
   });
 
+  const areFormErrors = Object.keys(errors).length > 0;
+
   const [should_use_ecapris_amount] = watch(["should_use_ecapris_amount"]);
 
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
@@ -332,7 +334,7 @@ const OverrideFundingForm = ({
             color="primary"
             type="submit"
             // Disable save button if editing and no changes made or mutation is loading
-            disabled={(!isNewOverride && !isDirty) || mutationState.loading}
+            disabled={(!isNewOverride && !isDirty) || mutationState.loading || areFormErrors}
           >
             Save
           </Button>

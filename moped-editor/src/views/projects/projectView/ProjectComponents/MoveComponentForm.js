@@ -64,6 +64,7 @@ const MoveComponentForm = ({ onSave, component }) => {
             getOptionLabel={getOptionLabel}
             name="project"
             control={control}
+            error={!!errors?.project}
             autoFocus
             helperText="Required"
           />

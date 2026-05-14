@@ -60,6 +60,7 @@ const ProjectPhaseForm = ({
   } = useForm({
     defaultValues,
     resolver: yupResolver(phaseValidationSchema),
+    mode: "onChange",
   });
 
   const subphases = useSubphases(watch("phase_id"), phases);
@@ -111,6 +112,8 @@ const ProjectPhaseForm = ({
       handleSnackbar,
     });
   };
+
+  const areFormErrors = Object.keys(formErrors).length > 0;
 
   /**
    * Defaults is_phase_start_confirmed to true if date is today or before
@@ -358,7 +361,7 @@ const ProjectPhaseForm = ({
             variant="contained"
             color="primary"
             type="submit"
-            disabled={!isDirty || mutationState.loading}
+            disabled={!isDirty || mutationState.loading || areFormErrors }
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />

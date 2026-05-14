@@ -46,6 +46,8 @@ const ProjectSummaryProjectDescription = ({
     resolver: yupResolver(validationSchema),
   });
 
+  const areFormErrors = Object.keys(errors).length > 0;
+
   const [editMode, setEditMode] = useState(false);
 
   const [updateProjectDescription, { loading }] = useMutation(
@@ -132,7 +134,7 @@ const ProjectSummaryProjectDescription = ({
             />
             <ProjectSummaryIconButtons
               handleClose={handleCancel}
-              disabledCondition={!isDirty}
+              disabledCondition={!isDirty || areFormErrors}
               loading={loading}
             />
           </>

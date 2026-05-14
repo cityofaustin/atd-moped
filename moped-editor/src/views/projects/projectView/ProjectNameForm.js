@@ -55,6 +55,8 @@ const ProjectNameForm = ({
     resolver: yupResolver(validationSchema),
   });
 
+  const areFormErrors = Object.keys(errors).length > 0;
+
   const handleSave = ({ projectName, projectSecondaryName }) => {
     updateProjectNames({
       variables: {
@@ -158,7 +160,7 @@ const ProjectNameForm = ({
           >
             <ProjectSummaryIconButtons
               handleClose={handleCancelClick}
-              disabledCondition={!isDirty}
+              disabledCondition={!isDirty || areFormErrors}
               loading={loading}
             />
           </Grid2>
