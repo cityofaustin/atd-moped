@@ -4,11 +4,7 @@ import { useMutation } from "@apollo/client";
 import {
   Box,
   Divider,
-  FormControl,
-  FormHelperText,
   IconButton,
-  MenuItem,
-  Select,
   Stack,
   Tabs,
   Tab,
@@ -28,7 +24,7 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
-import { useFileUploadForm } from "src/components/FileUpload/FileUploadSingle";
+import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
 import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
 
 function CustomTabPanel(props) {
@@ -136,7 +132,7 @@ const ProjectFundingFilesAttachmentDialog = ({
       });
   };
 
-  /* Form state and handlers */
+  /* File upload form state and handlers */
   const handleClickSaveFile = (fileDataBundle) => {
     const entityId = fundingRecord?.proj_funding_id;
     const fileConnectionData = isSyncedFromECapris
@@ -186,7 +182,8 @@ const ProjectFundingFilesAttachmentDialog = ({
     useFileUploadForm();
 
   const handleSave = () => {
-    handleClickSaveFile(buildFileBundle());
+    const fileBundle = buildFileBundle();
+    handleClickSaveFile(fileBundle);
     clearState();
   };
 
@@ -259,8 +256,6 @@ const ProjectFundingFilesAttachmentDialog = ({
         </Box>
         <CustomTabPanel value={tabValue} index={0}>
           <FileUploadDialogSingle
-            handleClickCloseUploadFile={onClose}
-            handleClickSaveFile={handleClickSaveFile}
             projectId={projectId}
             fileTypesLookup={dataLookups?.moped_file_types ?? []}
             {...formProps}

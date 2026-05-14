@@ -33,7 +33,7 @@ import {
 } from "src/components/DataGridPro/utils/helpers.js";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
-import { useFileUploadForm } from "src/components/FileUpload/FileUploadSingle";
+import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
 
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
