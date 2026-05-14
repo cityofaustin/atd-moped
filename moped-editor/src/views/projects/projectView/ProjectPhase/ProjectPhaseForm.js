@@ -63,6 +63,8 @@ const ProjectPhaseForm = ({
     mode: "onChange",
   });
 
+  const areFormErrors = Object.keys(formErrors).length > 0;
+
   const subphases = useSubphases(watch("phase_id"), phases);
 
   useResetDependentFieldOnParentFieldChange({
@@ -112,8 +114,6 @@ const ProjectPhaseForm = ({
       handleSnackbar,
     });
   };
-
-  const areFormErrors = Object.keys(formErrors).length > 0;
 
   /**
    * Defaults is_phase_start_confirmed to true if date is today or before
