@@ -27,7 +27,7 @@ import FileUpload from "src/components/FileUpload/FileUpload";
  *
  * @returns {JSX.Element}
  */
-const FileUploadDialogSingle = ({
+const FileUploadSingle = ({
   projectId,
   fileTypesLookup,
   fileType,
@@ -142,4 +142,4 @@ const FileUploadDialogSingle = ({
   );
 };
 
-export default FileUploadDialogSingle;
+export default FileUploadSingle;

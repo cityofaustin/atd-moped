@@ -14,7 +14,7 @@ import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInl
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
-import FileUploadDialogSingle from "src/components/FileUpload/FileUploadSingle";
+import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
 import {
   PROJECT_FILE_ATTACHMENTS,
   PROJECT_FILE_ATTACHMENTS_DELETE,
@@ -470,9 +470,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
           saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
           showDialogActions={true}
         >
-          <FileUploadDialogSingle
-            handleClickCloseUploadFile={handleClickCloseUploadFile}
-            handleClickSaveFile={handleClickSaveFile}
+          <FileUploadSingle
             projectId={projectId}
             fileTypesLookup={fileTypesLookup ?? []}
             {...formProps}

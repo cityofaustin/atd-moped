@@ -19,7 +19,7 @@ import {
   ATTACH_EXISTING_FILE_TO_MOPED,
 } from "src/queries/project";
 
-import FileUploadDialogSingle from "src/components/FileUpload/FileUploadSingle";
+import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
@@ -255,7 +255,7 @@ const ProjectFundingFilesAttachmentDialog = ({
           </Tabs>
         </Box>
         <CustomTabPanel value={tabValue} index={0}>
-          <FileUploadDialogSingle
+          <FileUploadSingle
             projectId={projectId}
             fileTypesLookup={dataLookups?.moped_file_types ?? []}
             {...formProps}
