@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
 
 /**
  * Dialog wrapper component for displaying forms with optional save and cancel action buttons
@@ -70,7 +71,7 @@ const FormDialog = ({
             onClick={handleSave}
             color="primary"
             variant="contained"
-            startIcon={<Icon>save</Icon>}
+            startIcon={<SaveIcon />}
             disabled={saveDisabled}
           >
             {saveButtonLabel}
