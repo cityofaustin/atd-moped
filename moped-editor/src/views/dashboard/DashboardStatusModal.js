@@ -1,16 +1,8 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Box, Tooltip, Typography } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ProjectNotes from "../projects/projectView/ProjectNotes";
+import FormDialog from "src/components/FormDialog";
 import { fieldLabelText } from "src/styles/reusableStyles";
 import parse from "html-react-parser";
 
@@ -101,37 +93,22 @@ const DashboardStatusModal = ({
           </Box>
         )}
       </Typography>
-      <Dialog
-        open={isDialogOpen}
-        onClose={handleDialogClose}
-        fullWidth
-        maxWidth="md"
+      <FormDialog
+        title={`Status update - ${projectName}`}
+        dialogOpen={isDialogOpen}
+        handleClose={handleDialogClose}
+        showDialogActions={false}
       >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-          variant="h4"
-        >
-          {`Status update - ${projectName}`}
-          <IconButton onClick={() => handleDialogClose()} size="large">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <ProjectNotes
-            modal
-            projectId={projectId}
-            eCaprisSubprojectId={eCaprisSubprojectId}
-            currentPhaseId={currentPhaseId}
-            closeModalDialog={handleDialogClose}
-            handleSnackbar={handleSnackbar}
-            data={data}
-          />
-        </DialogContent>
-      </Dialog>
+        <ProjectNotes
+          modal
+          projectId={projectId}
+          eCaprisSubprojectId={eCaprisSubprojectId}
+          currentPhaseId={currentPhaseId}
+          closeModalDialog={handleDialogClose}
+          handleSnackbar={handleSnackbar}
+          data={data}
+        />
+      </FormDialog>
     </>
   );
 };

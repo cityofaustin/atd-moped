@@ -3,18 +3,14 @@ import {
   Button,
   Box,
   Checkbox,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
   List,
   ListItemText,
   ListItemIcon,
   TextField,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
+import FormDialog from "src/components/FormDialog";
 import { returnArterialManagementPhaseTemplate } from "../../../../utils/timelineTemplates";
 
 import { ADD_PROJECT_PHASE } from "../../../../queries/project";
@@ -128,95 +124,80 @@ const PhaseTemplateModal = ({
   };
 
   return (
-    <Dialog
-      open={isDialogOpen}
-      onClose={handleDialogClose}
-      fullWidth
-      maxWidth={"md"}
+    <FormDialog
+      title="Select phase template"
+      dialogOpen={isDialogOpen}
+      onClose={closeDialog}
+      showDialogActions={false}
     >
-      <DialogTitle
+      <Box
         sx={{
+          my: 3,
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
         }}
-        variant="h4"
       >
-        Select phase template
-        <IconButton onClick={closeDialog} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <Box
-          sx={{
-            my: 3,
-            display: "flex",
-            justifyContent: "space-between",
+        <Autocomplete
+          style={{ width: "250px" }}
+          defaultValue={null}
+          id="specify-phase-template-autocomplete"
+          options={templateChoices}
+          onChange={(event, newValue) => {
+            setTemplate(newValue);
           }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              label={"Timeline template"}
+            />
+          )}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          size="medium"
+          startIcon={<AddCircle />}
+          onClick={handleAddPhases}
+          disabled={phasesToAdd.length === 0}
         >
-          <Autocomplete
-            style={{ width: "250px" }}
-            defaultValue={null}
-            id="specify-phase-template-autocomplete"
-            options={templateChoices}
-            onChange={(event, newValue) => {
-              setTemplate(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                label={"Timeline template"}
-              />
-            )}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            startIcon={<AddCircle />}
-            onClick={handleAddPhases}
-            disabled={phasesToAdd.length === 0}
-          >
-            Add phases
-          </Button>
-        </Box>
-        <List dense>
-          {filteredPhasesList.map((phase) => {
-            let secondaryText = subphaseNameLookup[phase.subphase_id] ?? "";
-            if (phase.phase_description) {
-              if (secondaryText) {
-                secondaryText = secondaryText + " - " + phase.phase_description;
-              } else {
-                secondaryText = phase.phase_description;
-              }
+          Add phases
+        </Button>
+      </Box>
+      <List dense>
+        {filteredPhasesList.map((phase) => {
+          let secondaryText = subphaseNameLookup[phase.subphase_id] ?? "";
+          if (phase.phase_description) {
+            if (secondaryText) {
+              secondaryText = secondaryText + " - " + phase.phase_description;
+            } else {
+              secondaryText = phase.phase_description;
             }
-            return (
-              <ListItemButton
-                key={`${phase.phase_id}${phase.subphase_id}${phase.phase_description}`}
-                dense
-                onClick={() => handleToggle(phase)}
-              >
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    checked={phasesToAdd.indexOf(phase) > -1}
-                    tabIndex={-1}
-                    disableRipple
-                    color={"primary"}
-                  />
-                </ListItemIcon>
-                <ListItemText
-                  primary={phaseNameLookup[phase.phase_id]}
-                  secondary={secondaryText}
+          }
+          return (
+            <ListItemButton
+              key={`${phase.phase_id}${phase.subphase_id}${phase.phase_description}`}
+              dense
+              onClick={() => handleToggle(phase)}
+            >
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={phasesToAdd.indexOf(phase) > -1}
+                  tabIndex={-1}
+                  disableRipple
+                  color={"primary"}
                 />
-              </ListItemButton>
-            );
-          })}
-        </List>
-      </DialogContent>
-    </Dialog>
+              </ListItemIcon>
+              <ListItemText
+                primary={phaseNameLookup[phase.phase_id]}
+                secondary={secondaryText}
+              />
+            </ListItemButton>
+          );
+        })}
+      </List>
+    </FormDialog>
   );
 };
 

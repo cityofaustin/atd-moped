@@ -1,18 +1,10 @@
 import React, { useState } from "react";
-import {
-  Box,
-  CardContent,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Grid2,
-  IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Box, CardContent, Grid2 } from "@mui/material";
 import { TIMELINE_QUERY } from "src/queries/project";
 import { useQuery } from "@apollo/client";
 import ProjectMilestones from "src/views/projects/projectView/ProjectMilestones";
 import ProjectPhases from "src/views/projects/projectView/ProjectPhases";
+import FormDialog from "src/components/FormDialog";
 
 const DashboardTimelineModal = ({
   table,
@@ -51,59 +43,44 @@ const DashboardTimelineModal = ({
       >
         {children}
       </Box>
-      <Dialog
-        open={isDialogOpen}
-        onClose={handleDialogClose}
-        fullWidth
-        maxWidth={"xl"}
+      <FormDialog
+        title={`Update ${table} - ${projectName}`}
+        dialogOpen={isDialogOpen}
+        handleClose={handleDialogClose}
+        showDialogActions={false}
       >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-          variant="h4"
-        >
-          {`Update ${table} - ${projectName}`}
-          <IconButton onClick={() => handleDialogClose()} size="large">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <CardContent>
-            <Grid2 container spacing={2}>
-              <Grid2 size={12}>
-                <Box
-                  style={{ maxWidth: "100%" }}
-                  sx={{
-                    mb: 2,
-                  }}
-                >
-                  {table === "phases" && (
-                    <ProjectPhases
-                      projectId={projectId}
-                      loading={loading}
-                      data={data}
-                      refetch={refetch}
-                      handleSnackbar={handleSnackbar}
-                    />
-                  )}
-                  {table === "milestones" && (
-                    <ProjectMilestones
-                      projectId={projectId}
-                      loading={loading}
-                      data={data}
-                      refetch={refetch}
-                      handleSnackbar={handleSnackbar}
-                    />
-                  )}
-                </Box>
-              </Grid2>
+        <CardContent>
+          <Grid2 container spacing={2}>
+            <Grid2 size={12}>
+              <Box
+                style={{ maxWidth: "100%" }}
+                sx={{
+                  mb: 2,
+                }}
+              >
+                {table === "phases" && (
+                  <ProjectPhases
+                    projectId={projectId}
+                    loading={loading}
+                    data={data}
+                    refetch={refetch}
+                    handleSnackbar={handleSnackbar}
+                  />
+                )}
+                {table === "milestones" && (
+                  <ProjectMilestones
+                    projectId={projectId}
+                    loading={loading}
+                    data={data}
+                    refetch={refetch}
+                    handleSnackbar={handleSnackbar}
+                  />
+                )}
+              </Box>
             </Grid2>
-          </CardContent>
-        </DialogContent>
-      </Dialog>
+          </Grid2>
+        </CardContent>
+      </FormDialog>
     </>
   );
 };

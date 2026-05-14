@@ -41,7 +41,7 @@ const FormDialog = ({
     <Dialog
       open={dialogOpen}
       onClose={handleClose}
-      fullWidth
+      maxWidth="xl"
       scroll="body"
       {...dialogProps}
     >

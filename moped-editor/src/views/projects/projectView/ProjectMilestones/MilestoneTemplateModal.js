@@ -3,18 +3,14 @@ import {
   Button,
   Box,
   Checkbox,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
   List,
   ListItemText,
   ListItemIcon,
   TextField,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
+import FormDialog from "src/components/FormDialog";
 import {
   returnAMDSignalInfrastructureMilestoneTemplate,
   returnAMDInspectionOnlyMilestoneTemplate,
@@ -136,86 +132,70 @@ const MilestoneTemplateModal = ({
   };
 
   return (
-    <Dialog
+    <FormDialog
+      title="Select milestone template"
       open={isDialogOpen}
-      onClose={handleDialogClose}
-      fullWidth
-      maxWidth="md"
+      onClose={closeDialog}
     >
-      <DialogTitle
+      <Box
         sx={{
+          my: 3,
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
         }}
-        variant="h4"
       >
-        Select milestone template
-        <IconButton onClick={closeDialog} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <Box
-          sx={{
-            my: 3,
-            display: "flex",
-            justifyContent: "space-between",
+        <Autocomplete
+          style={{ width: "250px" }}
+          defaultValue={null}
+          id="specify-milestone-template-autocomplete"
+          options={templateChoices}
+          onChange={(event, newValue) => {
+            setTemplate(newValue);
           }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              label={"Timeline template"}
+            />
+          )}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          size="medium"
+          startIcon={<AddCircle />}
+          onClick={handleAddMilestones}
+          disabled={milestonesToAdd.length === 0}
         >
-          <Autocomplete
-            style={{ width: "250px" }}
-            defaultValue={null}
-            id="specify-milestone-template-autocomplete"
-            options={templateChoices}
-            onChange={(event, newValue) => {
-              setTemplate(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                label={"Timeline template"}
-              />
-            )}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            startIcon={<AddCircle />}
-            onClick={handleAddMilestones}
-            disabled={milestonesToAdd.length === 0}
-          >
-            Add milestones
-          </Button>
-        </Box>
-        <List dense>
-          {filteredMilestonesList.map((milestone) => {
-            return (
-              <ListItemButton
-                key={milestone.milestone_id}
-                dense
-                onClick={() => handleToggle(milestone)}
-              >
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    checked={milestonesToAdd.indexOf(milestone) > -1}
-                    tabIndex={-1}
-                    disableRipple
-                    color={"primary"}
-                  />
-                </ListItemIcon>
-                <ListItemText
-                  primary={milestoneNameLookup[milestone.milestone_id]}
+          Add milestones
+        </Button>
+      </Box>
+      <List dense>
+        {filteredMilestonesList.map((milestone) => {
+          return (
+            <ListItemButton
+              key={milestone.milestone_id}
+              dense
+              onClick={() => handleToggle(milestone)}
+            >
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={milestonesToAdd.indexOf(milestone) > -1}
+                  tabIndex={-1}
+                  disableRipple
+                  color={"primary"}
                 />
-              </ListItemButton>
-            );
-          })}
-        </List>
-      </DialogContent>
-    </Dialog>
+              </ListItemIcon>
+              <ListItemText
+                primary={milestoneNameLookup[milestone.milestone_id]}
+              />
+            </ListItemButton>
+          );
+        })}
+      </List>
+    </FormDialog>
   );
 };
 
