@@ -175,7 +175,7 @@ const ProjectPhaseForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.phase_id}>
             <ControlledAutocomplete

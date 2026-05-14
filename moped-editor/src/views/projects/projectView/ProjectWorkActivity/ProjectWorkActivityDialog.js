@@ -9,12 +9,7 @@ const ProjectWorkActivitiesDialog = ({
 }) => {
   const titleText = activity.id ? "Edit work activity" : "Add work activity";
   return (
-    <FormDialog
-      title={titleText}
-      handleClose={onClose}
-      dialogOpen={true}
-      showDialogActions={false}
-    >
+    <FormDialog title={titleText} handleClose={onClose} open={true}>
       <ProjectWorkActivitiesForm
         activity={activity}
         onSubmitCallback={onSubmitCallback}

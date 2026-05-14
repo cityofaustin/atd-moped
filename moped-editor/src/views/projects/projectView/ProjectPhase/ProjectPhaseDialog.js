@@ -23,12 +23,7 @@ const ProjectPhaseDialog = ({
 }) => {
   const titleText = dialogTitle(phase);
   return (
-    <FormDialog
-      title={titleText}
-      handleClose={onClose}
-      dialogOpen={true}
-      showDialogActions={false}
-    >
+    <FormDialog title={titleText} handleClose={onClose} open={true}>
       <ProjectPhaseForm
         phase={phase}
         onSubmitCallback={onSubmitCallback}

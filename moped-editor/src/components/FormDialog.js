@@ -10,7 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
 /**
- * Dialog wrapper component for displaying forms
+ * Dialog wrapper component for displaying forms with optional save and cancel action buttons
+ * This supports our RHF forms with their own buttons and forms that manage their own state.
  * @param {string} title - title of the dialog
  * @param {string} saveButtonLabel - label for the save button
  * @param {string} cancelButtonLabel - label for the cancel button
@@ -18,7 +19,7 @@ import CloseIcon from "@mui/icons-material/Close";
  * @param {function} handleClose - handles closing the dialog
  * @param {function} handleSave - handles saving the form
  * @param {function} handleCancel - handles canceling the form
- * @param {boolean} dialogOpen - boolean that controls whether the dialog is open or not
+ * @param {boolean} open - MUI Dialog boolean that controls whether the dialog is open or not
  * @param {Object} children - React children elements
  * @param {boolean} showDialogActions - boolean that controls whether the dialog action buttons are shown or not
  * @param {Object} dialogProps - additional props to pass to the MUI Dialog component
@@ -32,17 +33,18 @@ const FormDialog = ({
   handleClose,
   handleSave,
   handleCancel,
-  dialogOpen,
+  open,
   children,
-  showDialogActions = true,
+  showDialogActions = false,
   dialogProps = {},
 }) => {
   return (
     <Dialog
-      open={dialogOpen}
+      open={open}
       onClose={handleClose}
-      maxWidth="xl"
       scroll="body"
+      fullWidth
+      maxWidth="sm"
       {...dialogProps}
     >
       <DialogTitle
@@ -58,9 +60,9 @@ const FormDialog = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent dividers>{children}</DialogContent>
+      <DialogContent>{children}</DialogContent>
       {showDialogActions && (
-        <DialogActions>
+        <DialogActions sx={{ pr: 3, pb: 2 }}>
           <Button onClick={handleCancel} color="primary">
             {cancelButtonLabel}
           </Button>

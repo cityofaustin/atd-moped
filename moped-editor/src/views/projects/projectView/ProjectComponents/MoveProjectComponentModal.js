@@ -54,9 +54,8 @@ const MoveProjectComponentModal = ({
   return (
     <FormDialog
       title="Move component to another project"
-      dialogOpen={showDialog}
+      open={showDialog}
       handleClose={onClose}
-      showDialogActions={false}
     >
       {!updatedComponentFormData && component ? (
         <MoveComponentForm component={component} onSave={onSave} />

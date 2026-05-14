@@ -95,9 +95,9 @@ const DashboardStatusModal = ({
       </Typography>
       <FormDialog
         title={`Status update - ${projectName}`}
-        dialogOpen={isDialogOpen}
+        open={isDialogOpen}
         handleClose={handleDialogClose}
-        showDialogActions={false}
+        dialogProps={{ maxWidth: "md" }}
       >
         <ProjectNotes
           modal

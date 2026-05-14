@@ -84,12 +84,7 @@ const CreateComponentModal = ({
   };
 
   return (
-    <FormDialog
-      title="New component"
-      dialogOpen={showDialog}
-      handleClose={onClose}
-      showDialogActions={false}
-    >
+    <FormDialog title="New component" open={showDialog} handleClose={onClose}>
       <ComponentForm onSave={onSave} formButtonText="Continue" />
     </FormDialog>
   );

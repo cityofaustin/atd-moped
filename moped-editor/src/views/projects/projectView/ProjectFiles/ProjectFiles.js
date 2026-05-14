@@ -462,12 +462,13 @@ const ProjectFiles = ({ handleSnackbar }) => {
       {fileTypesLookup && (
         <FormDialog
           title="Add file"
-          dialogOpen={dialogOpen}
+          open={dialogOpen}
           handleClose={handleClickCloseUploadFile}
           handleSave={handleSave}
           handleCancel={handleCancel}
           saveDisabled={!fileReady}
           saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
+          showDialogActions={true}
         >
           <FileUploadDialogSingle
             handleClickCloseUploadFile={handleClickCloseUploadFile}

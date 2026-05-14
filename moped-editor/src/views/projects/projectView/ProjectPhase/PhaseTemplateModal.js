@@ -126,9 +126,8 @@ const PhaseTemplateModal = ({
   return (
     <FormDialog
       title="Select phase template"
-      dialogOpen={isDialogOpen}
-      onClose={closeDialog}
-      showDialogActions={false}
+      open={isDialogOpen}
+      handleClose={closeDialog}
     >
       <Box
         sx={{

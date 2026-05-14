@@ -45,9 +45,9 @@ const DashboardTimelineModal = ({
       </Box>
       <FormDialog
         title={`Update ${table} - ${projectName}`}
-        dialogOpen={isDialogOpen}
+        open={isDialogOpen}
         handleClose={handleDialogClose}
-        showDialogActions={false}
+        dialogProps={{ maxWidth: "xl" }}
       >
         <CardContent>
           <Grid2 container spacing={2}>

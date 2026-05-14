@@ -66,12 +66,7 @@ const SaveUserViewModal = ({
   };
 
   return (
-    <FormDialog
-      title="Save view"
-      dialogOpen={showDialog}
-      handleClose={onClose}
-      showDialogActions={false}
-    >
+    <FormDialog title="Save view" open={showDialog} handleClose={onClose}>
       <SaveUserViewForm
         onSave={onSaveViewClick}
         description={defaultDescription}

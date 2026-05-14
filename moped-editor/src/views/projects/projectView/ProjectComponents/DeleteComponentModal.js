@@ -24,9 +24,8 @@ const DeleteComponentModal = ({
   return (
     <FormDialog
       title="Are you sure you want to delete this component?"
-      dialogOpen={showDialog}
+      open={showDialog}
       handleClose={onClose}
-      showDialogActions={false}
     >
       <Grid2 container spacing={1}>
         <List>

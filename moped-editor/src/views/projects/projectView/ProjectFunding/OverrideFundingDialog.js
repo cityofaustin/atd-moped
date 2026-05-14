@@ -13,9 +13,8 @@ const OverrideFundingDialog = ({
   return (
     <FormDialog
       title={`Edit eCAPRIS FDU ${fundingRecord.fdu.fdu}`}
-      dialogOpen={true}
+      open={true}
       handleClose={handleClose}
-      showDialogActions={false}
     >
       <OverrideFundingForm
         fundingRecord={fundingRecord}

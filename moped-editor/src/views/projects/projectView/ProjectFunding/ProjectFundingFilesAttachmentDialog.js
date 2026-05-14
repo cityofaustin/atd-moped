@@ -238,12 +238,13 @@ const ProjectFundingFilesAttachmentDialog = ({
   return (
     <FormDialog
       title="Attach files"
-      dialogOpen={isFileAttachmentDialogOpen}
+      open={isFileAttachmentDialogOpen}
       handleClose={onClose}
       handleSave={isExistingFileTab ? handleAttach : handleSave}
       handleCancel={handleCancel}
       saveDisabled={isExistingFileTab ? !existingFileIdToAttach : !fileReady}
       saveButtonLabel={isExistingFileTab ? "Attach" : newFileLabel}
+      showDialogActions={true}
     >
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

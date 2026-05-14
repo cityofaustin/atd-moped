@@ -168,12 +168,7 @@ const EditAttributesModal = ({
     : null;
 
   return (
-    <FormDialog
-      title="Edit component"
-      dialogOpen={showDialog}
-      handleClose={onClose}
-      showDialogActions={false}
-    >
+    <FormDialog title="Edit component" open={showDialog} handleClose={onClose}>
       <ComponentForm
         onSave={onSave}
         formButtonText="Save"

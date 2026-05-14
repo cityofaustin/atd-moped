@@ -147,7 +147,8 @@ const SubprojectFundingModal = ({
     <FormDialog
       title={`Import from eCAPRIS subproject ID ${eCaprisID}`}
       open={isDialogOpen}
-      onClose={handleDialogClose}
+      handleClose={handleDialogClose}
+      dialogProps={{ maxWidth: "md" }}
     >
       <MopedDataGrid
         autoHeight

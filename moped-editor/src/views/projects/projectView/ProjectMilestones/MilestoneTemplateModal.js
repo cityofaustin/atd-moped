@@ -135,7 +135,7 @@ const MilestoneTemplateModal = ({
     <FormDialog
       title="Select milestone template"
       open={isDialogOpen}
-      onClose={closeDialog}
+      handleClose={closeDialog}
     >
       <Box
         sx={{

@@ -124,7 +124,7 @@ const ProjectWorkActivitiesForm = ({
       )}
       autoComplete="off"
     >
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         {!isNewActivity && (
           <Grid2 size={12}>
             <FormControl fullWidth>
