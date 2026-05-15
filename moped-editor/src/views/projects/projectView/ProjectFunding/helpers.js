@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Divider, Typography, Stack, IconButton } from "@mui/material";
+import { Divider, Stack, IconButton } from "@mui/material";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -207,7 +207,7 @@ export const useColumns = ({
       {
         headerName: "FDU",
         field: "fdu",
-        width: 130,
+        width: 140,
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
@@ -222,7 +222,7 @@ export const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"ecapris_funding"}
-            options={dataFduOptions?.ecapris_subproject_funding}
+            options={dataLookups?.ecapris_subproject_funding}
             fullWidthPopper={true}
             autocompleteProps={{
               ...fduAutocompleteProps,

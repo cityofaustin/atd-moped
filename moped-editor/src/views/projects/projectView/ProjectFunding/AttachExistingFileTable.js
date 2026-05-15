@@ -38,19 +38,22 @@ const useColumns = () =>
         headerName: "Name",
         field: "file_name",
         display: "flex",
-        flex: 1,
+        width: 300,
       },
       {
         headerName: "File",
-        field: "unit_long_name",
+        field: "file",
+        width: 500,
         display: "flex",
-        flex: 1,
         renderCell: ({ row }) => (
-          <ProjectFileLink
-            fileKey={row?.file_key}
-            fileUrl={row?.file_url}
-            fileName={row?.file_url} // Pass url as fileName to match edit cell value
-          />
+          // Box wrapper workaround for ProjectFileLink styles not applying properly within flex cell needed to center align
+          <Box sx={{ minWidth: 0, overflow: "hidden", width: "100%" }}>
+            <ProjectFileLink
+              fileKey={row?.file_key}
+              fileUrl={row?.file_url}
+              fileName={row?.file_url} // Pass url as fileName to match edit cell value
+            />
+          </Box>
         ),
       },
     ];

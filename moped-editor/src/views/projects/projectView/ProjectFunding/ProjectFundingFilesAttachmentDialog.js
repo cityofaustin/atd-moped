@@ -242,6 +242,7 @@ const ProjectFundingFilesAttachmentDialog = ({
       saveDisabled={isExistingFileTab ? !existingFileIdToAttach : !fileReady}
       saveButtonLabel={isExistingFileTab ? "Attach" : newFileLabel}
       showDialogActions={true}
+      dialogProps={{ maxWidth: "md" }}
     >
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

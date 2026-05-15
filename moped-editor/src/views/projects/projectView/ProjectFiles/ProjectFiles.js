@@ -469,6 +469,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
           saveDisabled={!fileReady}
           saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
           showDialogActions={true}
+          dialogProps={{ maxWidth: "md" }}
         >
           <FileUploadSingle
             projectId={projectId}
