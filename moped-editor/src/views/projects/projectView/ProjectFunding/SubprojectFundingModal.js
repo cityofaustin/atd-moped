@@ -175,7 +175,7 @@ const SubprojectFundingModal = ({
       />
       <Box
         sx={{
-          my: 3,
+          mt: 2,
           display: "flex",
           flexDirection: "row-reverse",
         }}

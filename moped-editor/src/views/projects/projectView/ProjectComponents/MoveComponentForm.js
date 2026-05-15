@@ -54,7 +54,7 @@ const MoveComponentForm = ({ onSave, component }) => {
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         <Grid2 size={12}>
           <ControlledAutocomplete
             id="project"

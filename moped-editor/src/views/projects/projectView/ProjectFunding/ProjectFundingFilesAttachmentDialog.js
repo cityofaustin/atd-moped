@@ -229,7 +229,9 @@ const ProjectFundingFilesAttachmentDialog = ({
       });
   };
 
-  const newFileLabel = formProps.externalFile ? "Save" : "Upload";
+  const newFileLabel = formProps.externalFile
+    ? "Save and attach"
+    : "Upload and attach";
   const isExistingFileTab = tabValue === 1;
 
   return (
