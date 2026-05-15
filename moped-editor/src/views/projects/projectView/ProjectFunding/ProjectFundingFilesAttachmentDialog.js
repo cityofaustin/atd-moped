@@ -4,9 +4,9 @@ import { useMutation } from "@apollo/client";
 import { Box, Divider, IconButton, Typography, Stack } from "@mui/material";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
-  DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
-  DELETE_FILE_MOPED_FUNDING_ATTACHMENT,
+  DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
 import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
@@ -48,8 +48,8 @@ const ProjectFundingFilesAttachmentDialog = ({
   );
   const [detachFundingFileAttachment] = useMutation(
     isSyncedFromECapris
-      ? DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
-      : DELETE_FILE_MOPED_FUNDING_ATTACHMENT
+      ? DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
+      : DETACH_FILE_MOPED_FUNDING_ATTACHMENT
   );
   const [detachConfirmationFileId, setDetachConfirmationFileId] =
     useState(null);

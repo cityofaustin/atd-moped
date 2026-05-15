@@ -694,7 +694,16 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
     ) {
       affected_rows
     }
-    delete_files_ecapris_funding(where: { file_id: { _eq: $fileId } }) {
+    update_files_ecapris_funding(
+      where: { file_id: { _eq: $fileId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_files_project_funding(
+      where: { file_id: { _eq: $fileId } }
+      _set: { is_deleted: true }
+    ) {
       affected_rows
     }
   }
@@ -721,8 +730,8 @@ export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
   }
 `;
 
-export const DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
-  mutation DeleteFileEcaprisFunding(
+export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+  mutation DetachFileEcaprisFunding(
     $fileId: Int!
     $entityId: Int!
     $projectId: Int!
@@ -752,22 +761,15 @@ export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
   }
 `;
 
-export const DELETE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
-  mutation DeleteFileProjectFunding(
-    $fileId: Int!
-    $entityId: Int!
-  ) {
+export const DETACH_FILE_MOPED_FUNDING_ATTACHMENT = gql`
+  mutation DetachFileMopedFunding($fileId: Int!, $entityId: Int!) {
     delete_files_project_funding(
-      where: {
-        file_id: { _eq: $fileId }
-        entity_id: { _eq: $entityId }
-      }
+      where: { file_id: { _eq: $fileId }, entity_id: { _eq: $entityId } }
     ) {
       affected_rows
     }
   }
 `;
-
 
 export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
