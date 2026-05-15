@@ -731,19 +731,12 @@ export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
 `;
 
 export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
-  mutation DetachFileEcaprisFunding(
-    $fileId: Int!
-    $entityId: Int!
-    $projectId: Int!
-  ) {
-    delete_files_ecapris_funding(
-      where: {
-        file_id: { _eq: $fileId }
-        entity_id: { _eq: $entityId }
-        project_id: { _eq: $projectId }
-      }
+  mutation DetachFileEcaprisFunding($id: Int!) {
+    update_files_ecapris_funding_by_pk(
+      pk_columns: { id: $id }
+      _set: { is_deleted: true }
     ) {
-      affected_rows
+      id
     }
   }
 `;
@@ -762,11 +755,12 @@ export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
 `;
 
 export const DETACH_FILE_MOPED_FUNDING_ATTACHMENT = gql`
-  mutation DetachFileMopedFunding($fileId: Int!, $entityId: Int!) {
-    delete_files_project_funding(
-      where: { file_id: { _eq: $fileId }, entity_id: { _eq: $entityId } }
+  mutation DetachFileMopedFunding($id: Int!) {
+    update_files_project_funding_by_pk(
+      pk_columns: { id: $id }
+      _set: { is_deleted: true }
     ) {
-      affected_rows
+      id
     }
   }
 `;

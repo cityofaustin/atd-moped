@@ -58,9 +58,9 @@ const ProjectFundingFilesAttachmentDialog = ({
     const filesType = isSyncedFromECapris
       ? "ecapris_funding_files"
       : "moped_funding_files";
-    const filesAttachedToId = rows
-      .find((row) => row.id === fileAttachmentId)
-      ?.[filesType].map((file_record) => file_record.moped_project_file);
+    const filesAttachedToId = rows.find((row) => row.id === fileAttachmentId)?.[
+      filesType
+    ];
 
     return filesAttachedToId ? filesAttachedToId : [];
   }, [fileAttachmentId, rows, isSyncedFromECapris]);
@@ -111,14 +111,9 @@ const ProjectFundingFilesAttachmentDialog = ({
   };
 
   const handleUnlinkFileAttachment = (id) => {
-    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
-    const entityId = fundingRecord?.proj_funding_id;
-
     detachFundingFileAttachment({
       variables: {
-        fileId: id,
-        entityId,
-        projectId,
+        id,
       },
     })
       .then(() => {
@@ -154,24 +149,21 @@ const ProjectFundingFilesAttachmentDialog = ({
           {filesAttachedToId.length > 0 ? (
             filesAttachedToId.map((file) => {
               if (!file) return null;
+              const fileDetails = file.moped_project_file;
 
               return (
-                <React.Fragment key={file.project_file_id}>
+                <React.Fragment key={file.id}>
                   <DeleteConfirmationModal
                     type="file attachment"
                     actionButtonText="Detach"
                     additionalConfirmationText="This will not delete the file, only detach it from this funding record."
                     actionButtonIcon={<LinkOff />}
-                    submitDelete={() =>
-                      handleUnlinkFileAttachment(file.project_file_id)
-                    }
+                    submitDelete={() => handleUnlinkFileAttachment(file.id)}
                     isDeleteConfirmationOpen={
-                      detachConfirmationFileId === file.project_file_id
+                      detachConfirmationFileId === file.id
                     }
                     setIsDeleteConfirmationOpen={(open) =>
-                      setDetachConfirmationFileId(
-                        open ? file.project_file_id : null
-                      )
+                      setDetachConfirmationFileId(open ? file.id : null)
                     }
                   />
                   <Stack
@@ -184,9 +176,7 @@ const ProjectFundingFilesAttachmentDialog = ({
                   >
                     <Box>
                       <IconButton
-                        onClick={() =>
-                          setDetachConfirmationFileId(file.project_file_id)
-                        }
+                        onClick={() => setDetachConfirmationFileId(file.id)}
                         size="small"
                       >
                         <LinkOff />
@@ -194,9 +184,9 @@ const ProjectFundingFilesAttachmentDialog = ({
                     </Box>
                     <Box sx={{ flex: 1 }}>
                       <ProjectFileLink
-                        fileKey={file?.file_key}
-                        fileUrl={file?.file_url}
-                        fileName={file?.file_name}
+                        fileKey={fileDetails?.file_key}
+                        fileUrl={fileDetails?.file_url}
+                        fileName={fileDetails?.file_name}
                       />
                     </Box>
                   </Stack>
