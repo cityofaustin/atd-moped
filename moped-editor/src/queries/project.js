@@ -762,8 +762,8 @@ export const DELETE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
   }
 `;
 
-export const ATTACH_EXISTING_FILE_TO_ECAPRIS = gql`
-  mutation AttachExistingFileToEcapris(
+export const ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING = gql`
+  mutation AttachExistingFileToEcaprisFunding(
     $object: files_ecapris_funding_insert_input!
   ) {
     insert_files_ecapris_funding_one(object: $object) {
@@ -772,8 +772,8 @@ export const ATTACH_EXISTING_FILE_TO_ECAPRIS = gql`
   }
 `;
 
-export const ATTACH_EXISTING_FILE_TO_MOPED = gql`
-  mutation AttachExistingFileToMoped(
+export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
+  mutation AttachExistingFileToMopedFunding(
     $object: files_project_funding_insert_input!
   ) {
     insert_files_project_funding_one(object: $object) {

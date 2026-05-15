@@ -15,8 +15,8 @@ import {
   DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
   DELETE_FILE_MOPED_FUNDING_ATTACHMENT,
-  ATTACH_EXISTING_FILE_TO_ECAPRIS,
-  ATTACH_EXISTING_FILE_TO_MOPED,
+  ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING,
+  ATTACH_EXISTING_FILE_TO_MOPED_FUNDING,
 } from "src/queries/project";
 
 import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
@@ -27,26 +27,26 @@ import FormDialog from "src/components/FormDialog";
 import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
 import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
 
-function CustomTabPanel(props) {
+function AttachmentTabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`attachment-tabpanel-${index}`}
+      aria-labelledby={`attachment-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
+      {<Box sx={{ p: 0 }}>{children}</Box>}
     </div>
   );
 }
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    id: `attachment-tab-${index}`,
+    "aria-controls": `attachment-tabpanel-${index}`,
   };
 }
 
@@ -84,8 +84,8 @@ const ProjectFundingFilesAttachmentDialog = ({
   );
   const [attachExistingFile] = useMutation(
     isSyncedFromECapris
-      ? ATTACH_EXISTING_FILE_TO_ECAPRIS
-      : ATTACH_EXISTING_FILE_TO_MOPED
+      ? ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING
+      : ATTACH_EXISTING_FILE_TO_MOPED_FUNDING
   );
 
   const [detachFundingFileAttachment] = useMutation(
@@ -246,7 +246,7 @@ const ProjectFundingFilesAttachmentDialog = ({
       showDialogActions={true}
       dialogProps={{ maxWidth: "md" }}
     >
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%", minHeight: "40vh" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={tabValue}
@@ -257,20 +257,20 @@ const ProjectFundingFilesAttachmentDialog = ({
             <Tab label="Existing" {...a11yProps(1)} />
           </Tabs>
         </Box>
-        <CustomTabPanel value={tabValue} index={0}>
+        <AttachmentTabPanel value={tabValue} index={0}>
           <FileUploadSingle
             projectId={projectId}
             fileTypesLookup={dataLookups?.moped_file_types ?? []}
             {...formProps}
           />
-        </CustomTabPanel>
-        <CustomTabPanel value={tabValue} index={1}>
+        </AttachmentTabPanel>
+        <AttachmentTabPanel value={tabValue} index={1}>
           <AttachExistingFileTable
             projectId={projectId}
             handleRowSelection={handleRowSelection}
             attachedFiles={filesAttachedToId}
           />
-        </CustomTabPanel>
+        </AttachmentTabPanel>
         <Box>
           <Divider sx={{ marginY: 4 }} />
           <Stack direction="column">
