@@ -53,13 +53,6 @@ const ProjectNotes = ({
   return (
     <ListItem alignItems="flex-start">
       <ListItemText
-        sx={
-          isNoteEditable
-            ? {
-                marginRight: "30px",
-              }
-            : {}
-        }
         secondaryTypographyProps={{
           sx: editButtonStyles,
         }}
@@ -119,7 +112,11 @@ const ProjectNotes = ({
           <Grid2>
             <Tooltip
               title={
-                isNoteEditable ? null : "Only the author can edit this note"
+                note.note_type_name === "eCAPRIS"
+                  ? "Status updates from eCAPRIS can't be edited in Moped"
+                  : isNoteEditable
+                    ? null
+                    : "Only the author can edit this note"
               }
             >
               <span>
@@ -141,7 +138,11 @@ const ProjectNotes = ({
             {!isEditingNote && (
               <Tooltip
                 title={
-                  isNoteEditable ? null : "Only the author can delete this note"
+                  note.note_type_name === "eCAPRIS"
+                    ? "Status updates from eCAPRIS can't be deleted in Moped"
+                    : isNoteEditable
+                      ? null
+                      : "Only the author can delete this note"
                 }
               >
                 <span>
