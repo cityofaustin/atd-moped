@@ -101,8 +101,8 @@ parent_child_project_map AS (
         projects.project_id,
         jsonb_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
         jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts,
-        array_to_string(array_agg(DISTINCT project_districts.council_district_id ORDER BY project_districts.council_district_id), ', '::text) AS project_council_districts_string,
-        array_to_string(array_agg(DISTINCT project_and_children_districts.council_district_id ORDER BY project_and_children_districts.council_district_id), ', '::text) AS project_and_child_project_council_districts_string
+        nullif(array_to_string(array_agg(DISTINCT project_districts.council_district_id ORDER BY project_districts.council_district_id), ', '::text), ''::text) AS project_council_districts_string,
+        nullif(array_to_string(array_agg(DISTINCT project_and_children_districts.council_district_id ORDER BY project_and_children_districts.council_district_id), ', '::text), ''::text) AS project_and_child_project_council_districts_string
     FROM moped_project projects
     LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
     LEFT JOIN parent_child_project_map project_family ON projects.project_id = project_family.project_id
