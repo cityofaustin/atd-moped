@@ -141,7 +141,7 @@ const ProjectNotes = ({
             {!isEditingNote && (
               <Tooltip
                 title={
-                  isNoteEditable ? null : "Only the author can edit this note"
+                  isNoteEditable ? null : "Only the author can delete this note"
                 }
               >
                 <span>
