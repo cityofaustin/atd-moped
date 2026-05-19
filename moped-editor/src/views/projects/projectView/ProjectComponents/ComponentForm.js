@@ -278,6 +278,7 @@ const ComponentForm = ({
             control={control}
             autoFocus
             helperText="Required"
+            error={!!errors?.component}
             required={true}
           />
         </Grid2>

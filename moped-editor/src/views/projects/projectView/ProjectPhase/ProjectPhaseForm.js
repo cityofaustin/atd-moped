@@ -237,7 +237,7 @@ const ProjectPhaseForm = ({
               control={control}
               error={!!formErrors?.phase_start}
             />
-            {!isCurrentPhase && (
+            {!isCurrentPhase && !formErrors?.phase_start &&(
               <FormHelperText>
                 Defaults to today (confirmed) if blank when marked as current
               </FormHelperText>
