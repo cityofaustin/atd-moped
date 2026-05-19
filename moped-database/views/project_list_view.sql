@@ -153,12 +153,12 @@ project_component_work_types AS (
 
 project_partners_lookup AS (
     SELECT
-        mpp2.project_id,
-        string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partners
-    FROM moped_proj_partners mpp2
-    LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
-    WHERE mpp2.is_deleted = false
-    GROUP BY mpp2.project_id
+        mpp.project_id,
+        string_agg(DISTINCT me_1.entity_name, ', '::text) AS project_partners
+    FROM moped_proj_partners mpp
+    LEFT JOIN moped_entity me_1 ON mpp.entity_id = me_1.entity_id
+    WHERE mpp.is_deleted = false
+    GROUP BY mpp.project_id
 ),
 
 project_feature_lookup AS (
