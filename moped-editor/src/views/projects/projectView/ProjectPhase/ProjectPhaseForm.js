@@ -195,11 +195,9 @@ const ProjectPhaseForm = ({
                 option?.phase_id === selectedOption?.phase_id
               }
               getOptionLabel={(option) => option?.phase_name || ""}
-              error={!!formErrors?.phase_id}
+              error={!!formErrors?.phase_id?.message}
+              helperText={formErrors?.phase_id?.message || "Required"}
             />
-            {formErrors?.phase_id && (
-              <FormHelperText>{formErrors.phase_id.message}</FormHelperText>
-            )}
           </FormControl>
         </Grid2>
         <Grid2 size={12}>
@@ -237,7 +235,7 @@ const ProjectPhaseForm = ({
               control={control}
               error={!!formErrors?.phase_start}
             />
-            {!isCurrentPhase && !formErrors?.phase_start &&(
+            {!isCurrentPhase && !formErrors?.phase_start && (
               <FormHelperText>
                 Defaults to today (confirmed) if blank when marked as current
               </FormHelperText>
@@ -342,7 +340,8 @@ const ProjectPhaseForm = ({
                 disabled={
                   isCurrentPhase ||
                   mutationState.loading ||
-                  (isNewPhase && !isDirty)
+                  (isNewPhase && !isDirty) ||
+                  !isValid
                 }
               >
                 {mutationState.loading ? (
@@ -359,7 +358,7 @@ const ProjectPhaseForm = ({
             variant="contained"
             color="primary"
             type="submit"
-            disabled={!isDirty || mutationState.loading || !isValid }
+            disabled={!isDirty || mutationState.loading || !isValid}
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />
