@@ -188,7 +188,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                 size="small"
                 control={control}
                 error={!!errors?.description}
-                helperText={errors?.description?.message}
+                helperText={errors?.description?.message || "Required"}
                 InputProps={{
                   disabled: loading,
                 }}
