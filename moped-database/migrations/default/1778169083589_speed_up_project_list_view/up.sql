@@ -262,8 +262,8 @@ SELECT
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     mpcs.components,
     districts.project_council_districts,
-    districts.project_and_child_project_council_districts,
     districts.project_council_districts_string,
+    districts.project_and_child_project_council_districts,
     districts.project_and_child_project_council_districts_string,
     pcwt.component_work_type_names
 FROM moped_project mp
