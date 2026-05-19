@@ -62,7 +62,7 @@ const ProjectWorkActivitiesForm = ({
   const {
     handleSubmit,
     control,
-    formState: { isDirty, errors: formErrors },
+    formState: { isDirty, isValid, errors: formErrors },
   } = useForm({
     defaultValues: {
       ...defaultValues,
@@ -70,8 +70,6 @@ const ProjectWorkActivitiesForm = ({
     resolver: yupResolver(activityValidationSchema),
     mode: "onChange",
   });
-
-  const areFormErrors = Object.keys(formErrors).length > 0;
 
   /** Formats array of task order objects into value prop of multiselect component */
   const taskOrderValueHandler = useCallback(
@@ -314,7 +312,7 @@ const ProjectWorkActivitiesForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !isNewActivity) || mutationState.loading || areFormErrors}
+            disabled={(!isDirty && !isNewActivity) || mutationState.loading || !isValid}
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />

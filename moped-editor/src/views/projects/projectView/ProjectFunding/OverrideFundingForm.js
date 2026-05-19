@@ -81,7 +81,7 @@ const OverrideFundingForm = ({
   const {
     handleSubmit,
     control,
-    formState: { isDirty, errors },
+    formState: { isDirty, isValid, errors },
     watch,
     setValue,
   } = useForm({
@@ -96,8 +96,6 @@ const OverrideFundingForm = ({
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",
   });
-
-  const areFormErrors = Object.keys(errors).length > 0;
 
   const [should_use_ecapris_amount] = watch(["should_use_ecapris_amount"]);
 
@@ -334,7 +332,7 @@ const OverrideFundingForm = ({
             color="primary"
             type="submit"
             // Disable save button if editing and no changes made or mutation is loading
-            disabled={(!isNewOverride && !isDirty) || mutationState.loading || areFormErrors}
+            disabled={(!isNewOverride && !isDirty) || mutationState.loading || !isValid}
           >
             Save
           </Button>

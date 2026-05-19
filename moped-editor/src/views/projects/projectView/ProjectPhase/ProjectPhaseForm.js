@@ -56,14 +56,12 @@ const ProjectPhaseForm = ({
     control,
     watch,
     setValue,
-    formState: { isDirty, errors: formErrors },
+    formState: { isDirty, isValid, errors: formErrors },
   } = useForm({
     defaultValues,
     resolver: yupResolver(phaseValidationSchema),
     mode: "onChange",
   });
-
-  const areFormErrors = Object.keys(formErrors).length > 0;
 
   const subphases = useSubphases(watch("phase_id"), phases);
 
@@ -361,7 +359,7 @@ const ProjectPhaseForm = ({
             variant="contained"
             color="primary"
             type="submit"
-            disabled={!isDirty || mutationState.loading || areFormErrors }
+            disabled={!isDirty || mutationState.loading || !isValid }
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />

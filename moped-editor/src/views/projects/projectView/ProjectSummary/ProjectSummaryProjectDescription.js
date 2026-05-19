@@ -39,14 +39,12 @@ const ProjectSummaryProjectDescription = ({
     handleSubmit,
     control,
     setValue,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues: { description: originalDescription },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
-
-  const areFormErrors = Object.keys(errors).length > 0;
 
   const [editMode, setEditMode] = useState(false);
 
@@ -134,7 +132,7 @@ const ProjectSummaryProjectDescription = ({
             />
             <ProjectSummaryIconButtons
               handleClose={handleCancel}
-              disabledCondition={!isDirty || areFormErrors}
+              disabledCondition={!isDirty || !isValid}
               loading={loading}
             />
           </>

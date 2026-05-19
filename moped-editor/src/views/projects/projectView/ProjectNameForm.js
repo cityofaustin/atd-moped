@@ -45,7 +45,7 @@ const ProjectNameForm = ({
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues: {
       projectName: originalName,
@@ -54,8 +54,6 @@ const ProjectNameForm = ({
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
-
-  const areFormErrors = Object.keys(errors).length > 0;
 
   const handleSave = ({ projectName, projectSecondaryName }) => {
     updateProjectNames({
@@ -160,7 +158,7 @@ const ProjectNameForm = ({
           >
             <ProjectSummaryIconButtons
               handleClose={handleCancelClick}
-              disabledCondition={!isDirty || areFormErrors}
+              disabledCondition={!isDirty || !isValid}
               loading={loading}
             />
           </Grid2>
