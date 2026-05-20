@@ -85,7 +85,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   name="projectName"
                   control={control}
                   error={!!errors?.projectName}
-                  helperText={errors?.projectName?.message}
+                  helperText={errors?.projectName?.message || "Required"}
                   InputProps={{
                     disabled: loading,
                   }}
@@ -108,7 +108,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                       textInputOptions={{
                         variant: "standard",
                         error: !!errors?.signal,
-                        helperText: errors?.signal?.message,
+                        helperText: errors?.signal?.message || "Required",
                         disabled: loading,
                       }}
                     />

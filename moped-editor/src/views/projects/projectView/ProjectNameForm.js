@@ -102,7 +102,7 @@ const ProjectNameForm = ({
               placeholder="Enter project name"
               control={control}
               error={!!errors?.projectName}
-              helperText={errors?.projectName?.message}
+              helperText={errors?.projectName?.message || "Required"}
               InputLabelProps={{
                 shrink: true,
               }}
