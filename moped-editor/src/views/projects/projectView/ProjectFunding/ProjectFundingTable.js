@@ -271,7 +271,7 @@ const useColumns = ({
               <Tooltip
                 title={
                   row.is_synced_from_ecapris
-                    ? "Funding sources synced from eCAPRIS can't be deleted in Moped"
+                    ? "Switch off eCAPRIS sync to remove synced rows"
                     : null
                 }
               >
