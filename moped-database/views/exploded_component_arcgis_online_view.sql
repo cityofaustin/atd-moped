@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1778169083589_speed_up_project_list_view/up.sql
+-- Most recent migration: moped-database/migrations/default/1779394583779_fix-timezone-labels/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
     component_arcgis_online_view.project_id,
