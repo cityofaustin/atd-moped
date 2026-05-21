@@ -110,6 +110,7 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
+    trigger,
     formState: { isDirty, isValid, errors },
   } = useForm({
     defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
@@ -410,6 +411,7 @@ const ComponentForm = ({
                 onChange={() => {
                   setUseComponentPhase(!useComponentPhase);
                   setHasToggledPhaseSwitch(true);
+                  trigger();
                 }}
                 name="useComponentPhase"
                 color="primary"
