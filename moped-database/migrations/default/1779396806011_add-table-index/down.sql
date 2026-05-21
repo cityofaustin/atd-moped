@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS idx_ecapris_subproject_statuses_subproject_id;
