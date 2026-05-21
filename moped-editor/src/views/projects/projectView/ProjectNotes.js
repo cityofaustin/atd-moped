@@ -129,7 +129,7 @@ const ProjectNotes = ({
   /** Get projectId from URL params if not passed down from ProjectSummaryStatusUpdate component
    * If component is being used in edit modal from dashboard get project id from props instead of url params.
    */
-  let { projectId: projectIdFromParam } = useParams();
+  const { projectId: projectIdFromParam } = useParams();
   const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
 
   /* Use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,

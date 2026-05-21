@@ -5,6 +5,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
+  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/EditOutlined";
@@ -52,13 +53,6 @@ const ProjectNotes = ({
   return (
     <ListItem alignItems="flex-start">
       <ListItemText
-        sx={
-          isNoteEditable
-            ? {
-                marginRight: "30px",
-              }
-            : {}
-        }
         secondaryTypographyProps={{
           sx: editButtonStyles,
         }}
@@ -116,29 +110,54 @@ const ProjectNotes = ({
             <SecondaryInformationChip chipLabel={note.note_type_name} />
           </Grid2>
           <Grid2>
-            <IconButton
-              edge="end"
-              aria-label="edit"
-              onClick={() => handleEditClick(noteIndex, note)}
-              size="small"
-              disabled={!isNoteEditable}
-              sx={editButtonStyles}
+            <Tooltip
+              title={
+                note.note_type_name === "eCAPRIS"
+                  ? "Status updates from eCAPRIS can't be edited in Moped"
+                  : isNoteEditable
+                    ? null
+                    : "Only the author can edit this note"
+              }
             >
-              <EditIcon />
-            </IconButton>
+              <span>
+                {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
+                <IconButton
+                  edge="end"
+                  aria-label="edit"
+                  onClick={() => handleEditClick(noteIndex, note)}
+                  size="small"
+                  disabled={!isNoteEditable}
+                  sx={editButtonStyles}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </Grid2>
           <Grid2>
             {!isEditingNote && (
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                onClick={() => handleDeleteOpen(note.original_id)}
-                size="small"
-                disabled={!isNoteEditable}
-                sx={editButtonStyles}
+              <Tooltip
+                title={
+                  note.note_type_name === "eCAPRIS"
+                    ? "Status updates from eCAPRIS can't be deleted in Moped"
+                    : isNoteEditable
+                      ? null
+                      : "Only the author can delete this note"
+                }
               >
-                <DeleteIcon />
-              </IconButton>
+                <span>
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleDeleteOpen(note.original_id)}
+                    size="small"
+                    disabled={!isNoteEditable}
+                    sx={editButtonStyles}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
             )}
           </Grid2>
         </Grid2>
