@@ -110,14 +110,12 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
-    formState: { isDirty, errors },
+    formState: { isDirty, isValid, errors },
   } = useForm({
     defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
-
-  const areFormErrors = Object.keys(errors).length > 0;
 
   // Get and format component and subcomponent options
   const { data: optionsData, error } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
@@ -280,6 +278,7 @@ const ComponentForm = ({
             control={control}
             autoFocus
             helperText="Required"
+            error={!!errors?.component}
             required={true}
           />
         </Grid2>
@@ -496,7 +495,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !hasToggledPhaseSwitch) || areFormErrors}
+            disabled={(!isDirty && !hasToggledPhaseSwitch) || !isValid}
           >
             {hasGeometry ? "Save" : formButtonText}
           </Button>

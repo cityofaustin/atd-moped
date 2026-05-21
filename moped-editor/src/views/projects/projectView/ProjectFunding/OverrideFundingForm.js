@@ -81,7 +81,7 @@ const OverrideFundingForm = ({
   const {
     handleSubmit,
     control,
-    formState: { isDirty, errors },
+    formState: { isDirty, isValid, errors },
     watch,
     setValue,
   } = useForm({
@@ -332,7 +332,7 @@ const OverrideFundingForm = ({
             color="primary"
             type="submit"
             // Disable save button if editing and no changes made or mutation is loading
-            disabled={(!isNewOverride && !isDirty) || mutationState.loading}
+            disabled={(!isNewOverride && !isDirty) || mutationState.loading || !isValid}
           >
             Save
           </Button>
