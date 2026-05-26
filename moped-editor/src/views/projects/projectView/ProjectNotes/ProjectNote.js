@@ -5,7 +5,6 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
-  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/EditOutlined";
@@ -13,6 +12,7 @@ import EditIcon from "@mui/icons-material/EditOutlined";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import TooltipButtonWrapper from "src/components/TooltipButtonWrapper";
+import ButtonWithTooltip from "src/components/ButtonWithTooltip";
 
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
@@ -111,7 +111,21 @@ const ProjectNotes = ({
             <SecondaryInformationChip chipLabel={note.note_type_name} />
           </Grid2>
           <Grid2>
-            <TooltipButtonWrapper
+            <ButtonWithTooltip
+              title={
+                note.note_type_name === "eCAPRIS"
+                  ? "Status updates from eCAPRIS can't be edited in Moped"
+                  : isNoteEditable
+                    ? null
+                    : "Only the author can edit this note"
+              }
+              onClick={() => handleEditClick(noteIndex, note)}
+              disabled={!isNoteEditable}
+              iconButtonSx={editButtonStyles}
+            >
+              <EditIcon />
+            </ButtonWithTooltip>
+            {/* <TooltipButtonWrapper
               title={
                 note.note_type_name === "eCAPRIS"
                   ? "Status updates from eCAPRIS can't be edited in Moped"
@@ -130,7 +144,7 @@ const ProjectNotes = ({
               >
                 <EditIcon />
               </IconButton>
-            </TooltipButtonWrapper>
+            </TooltipButtonWrapper> */}
           </Grid2>
           <Grid2>
             {!isEditingNote && (
