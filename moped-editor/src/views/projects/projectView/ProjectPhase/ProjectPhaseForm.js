@@ -29,6 +29,7 @@ import {
 } from "src/queries/project";
 import theme from "src/theme";
 import { useNoteTypeObject } from "../ProjectNotes";
+import TooltipButtonWrapper from "src/components/TooltipButtonWrapper";
 
 const ProjectPhaseForm = ({
   phase,
@@ -327,31 +328,28 @@ const ProjectPhaseForm = ({
         }}
       >
         <Grid2 sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
-          <Tooltip title="Mark this phase as the current phase of the project">
-            <span>
-              {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
-              <Button
-                variant="outlined"
-                color="primary"
-                startIcon={<CheckCircle />}
-                type="submit"
-                onClick={() => setAsCurrentPhase(true)}
-                // disabled if a current phase
-                disabled={
-                  isCurrentPhase ||
-                  mutationState.loading ||
-                  (isNewPhase && !isDirty) ||
-                  !isValid
-                }
-              >
-                {mutationState.loading ? (
-                  <CircularProgress color="primary" size={20} />
-                ) : (
-                  "Save and mark as current"
-                )}
-              </Button>
-            </span>
-          </Tooltip>
+          <TooltipButtonWrapper title="Mark this phase as the current phase of the project">
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<CheckCircle />}
+              type="submit"
+              onClick={() => setAsCurrentPhase(true)}
+              // disabled if a current phase
+              disabled={
+                isCurrentPhase ||
+                mutationState.loading ||
+                (isNewPhase && !isDirty) ||
+                !isValid
+              }
+            >
+              {mutationState.loading ? (
+                <CircularProgress color="primary" size={20} />
+              ) : (
+                "Save and mark as current"
+              )}
+            </Button>
+          </TooltipButtonWrapper>
         </Grid2>
         <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button

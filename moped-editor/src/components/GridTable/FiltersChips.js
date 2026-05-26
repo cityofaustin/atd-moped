@@ -8,6 +8,7 @@ import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
 import SaveUserViewModal from "src/views/projects/projectsListView/components/SaveUserViewModal";
 import { BookmarkBorder } from "@mui/icons-material";
+import TooltipButtonWrapper from "../TooltipButtonWrapper";
 
 const filtersListStyle = (theme) => ({
   paddingTop: theme.spacing(1),
@@ -127,8 +128,8 @@ const FiltersChips = ({
         }}
       >
         <Grid2>
-          <Tooltip
-            placement="bottom-start"
+          <TooltipButtonWrapper
+            tooltipProps={{ placement: "bottom-start" }}
             title="Save these filters to the dashboard"
           >
             <Button
@@ -141,7 +142,7 @@ const FiltersChips = ({
             >
               SAVE VIEW
             </Button>
-          </Tooltip>
+          </TooltipButtonWrapper>
         </Grid2>
         {filtersCount > 1 && (
           <Grid2>
