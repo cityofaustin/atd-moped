@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/EditOutlined";
 
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
+import TooltipButtonWrapper from "src/components/TooltipButtonWrapper";
 
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
@@ -110,7 +111,7 @@ const ProjectNotes = ({
             <SecondaryInformationChip chipLabel={note.note_type_name} />
           </Grid2>
           <Grid2>
-            <Tooltip
+            <TooltipButtonWrapper
               title={
                 note.note_type_name === "eCAPRIS"
                   ? "Status updates from eCAPRIS can't be edited in Moped"
@@ -119,24 +120,21 @@ const ProjectNotes = ({
                     : "Only the author can edit this note"
               }
             >
-              <span>
-                {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
-                <IconButton
-                  edge="end"
-                  aria-label="edit"
-                  onClick={() => handleEditClick(noteIndex, note)}
-                  size="small"
-                  disabled={!isNoteEditable}
-                  sx={editButtonStyles}
-                >
-                  <EditIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
+              <IconButton
+                edge="end"
+                aria-label="edit"
+                onClick={() => handleEditClick(noteIndex, note)}
+                size="small"
+                disabled={!isNoteEditable}
+                sx={editButtonStyles}
+              >
+                <EditIcon />
+              </IconButton>
+            </TooltipButtonWrapper>
           </Grid2>
           <Grid2>
             {!isEditingNote && (
-              <Tooltip
+              <TooltipButtonWrapper
                 title={
                   note.note_type_name === "eCAPRIS"
                     ? "Status updates from eCAPRIS can't be deleted in Moped"
@@ -145,19 +143,17 @@ const ProjectNotes = ({
                       : "Only the author can delete this note"
                 }
               >
-                <span>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleDeleteOpen(note.original_id)}
-                    size="small"
-                    disabled={!isNoteEditable}
-                    sx={editButtonStyles}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => handleDeleteOpen(note.original_id)}
+                  size="small"
+                  disabled={!isNoteEditable}
+                  sx={editButtonStyles}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </TooltipButtonWrapper>
             )}
           </Grid2>
         </Grid2>

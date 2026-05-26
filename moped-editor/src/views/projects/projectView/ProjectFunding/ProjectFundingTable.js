@@ -56,6 +56,7 @@ import {
   isAmountOutOfRange,
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
+import TooltipButtonWrapper from "src/components/TooltipButtonWrapper";
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
@@ -268,25 +269,22 @@ const useColumns = ({
               >
                 <EditOutlinedIcon />
               </IconButton>
-              <Tooltip
+              <TooltipButtonWrapper
                 title={
                   row.is_synced_from_ecapris
                     ? "Switch off eCAPRIS sync to remove synced rows"
                     : null
                 }
               >
-                <span>
-                  {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
-                  <IconButton
-                    aria-label="delete"
-                    sx={{ color: "inherit", padding: "5px" }}
-                    disabled={!!row.is_synced_from_ecapris}
-                    onClick={handleDeleteOpen(id)}
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
+                <IconButton
+                  aria-label="delete"
+                  sx={{ color: "inherit", padding: "5px" }}
+                  disabled={!!row.is_synced_from_ecapris}
+                  onClick={handleDeleteOpen(id)}
+                >
+                  <DeleteOutlineIcon />
+                </IconButton>
+              </TooltipButtonWrapper>
             </>
           ),
       },
