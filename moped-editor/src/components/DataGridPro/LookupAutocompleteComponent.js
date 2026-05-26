@@ -92,6 +92,7 @@ const LookupAutocompleteComponent = ({
       renderInput={(params) => (
         <TextField
           variant="standard"
+          autoComplete="off"
           {...params}
           inputRef={ref}
           {...textFieldProps}
