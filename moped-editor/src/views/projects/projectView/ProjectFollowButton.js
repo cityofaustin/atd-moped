@@ -1,10 +1,9 @@
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { useMutation } from "@apollo/client";
 import { useSessionDatabaseData } from "src/auth/user";
 import { PROJECT_FOLLOW, PROJECT_UNFOLLOW } from "src/queries/project";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 /**
  * Icon button to follow/unfollow a project
@@ -61,17 +60,19 @@ const ProjectFollowButton = ({
   };
 
   return (
-    <Tooltip title={isFollowing ? "Unfollow" : "Follow"}>
-      <IconButton onClick={() => handleFollowProject()}>
-        {isFollowing ? (
-          <BookmarkIcon sx={{ color: "primary.main", fontSize: "2rem" }} />
-        ) : (
-          <BookmarkBorderIcon
-            sx={{ color: "text.secondary", fontSize: "2rem" }}
-          />
-        )}
-      </IconButton>
-    </Tooltip>
+    <IconButtonWithTooltip
+      title={isFollowing ? "Unfollow" : "Follow"}
+      onClick={() => handleFollowProject()}
+      ariaLabel={"todo"} //todo
+    >
+      {isFollowing ? (
+        <BookmarkIcon sx={{ color: "primary.main", fontSize: "2rem" }} />
+      ) : (
+        <BookmarkBorderIcon
+          sx={{ color: "text.secondary", fontSize: "2rem" }}
+        />
+      )}
+    </IconButtonWithTooltip>
   );
 };
 

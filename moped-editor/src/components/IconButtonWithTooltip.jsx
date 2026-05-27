@@ -8,11 +8,11 @@ const IconButtonWithTooltip = ({
   title,
   tooltipProps,
   onClick,
-  disabled,
+  disabled = false,
   iconButtonSx,
   children,
   ariaLabel,
-  size="small"
+  size = "small",
 }) => {
   return (
     <Tooltip title={title} {...tooltipProps}>
