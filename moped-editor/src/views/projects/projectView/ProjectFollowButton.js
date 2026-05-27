@@ -63,7 +63,7 @@ const ProjectFollowButton = ({
     <IconButtonWithTooltip
       title={isFollowing ? "Unfollow" : "Follow"}
       onClick={() => handleFollowProject()}
-      ariaLabel={"todo"} //todo
+      ariaLabel={isFollowing ? "unfollow" : "follow"}
     >
       {isFollowing ? (
         <BookmarkIcon sx={{ color: "primary.main", fontSize: "2rem" }} />

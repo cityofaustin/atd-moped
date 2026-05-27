@@ -318,7 +318,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
                     title="Return to top of page"
                     onClick={onScrollToTop}
                     size="large"
-                    ariaLabel="temp" //chia update
+                    ariaLabel="return to top"
                   >
                     <ArrowUpwardIcon fontSize="small" />
                   </IconButtonWithTooltip>
