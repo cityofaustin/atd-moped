@@ -12,7 +12,7 @@ import EditIcon from "@mui/icons-material/EditOutlined";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import TooltipButtonWrapper from "src/components/TooltipButtonWrapper";
-import ButtonWithTooltip from "src/components/ButtonWithTooltip";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
@@ -111,7 +111,7 @@ const ProjectNotes = ({
             <SecondaryInformationChip chipLabel={note.note_type_name} />
           </Grid2>
           <Grid2>
-            <ButtonWithTooltip
+            <IconButtonWithTooltip
               title={
                 note.note_type_name === "eCAPRIS"
                   ? "Status updates from eCAPRIS can't be edited in Moped"
@@ -122,29 +122,10 @@ const ProjectNotes = ({
               onClick={() => handleEditClick(noteIndex, note)}
               disabled={!isNoteEditable}
               iconButtonSx={editButtonStyles}
+              ariaLabel="edit"
             >
               <EditIcon />
-            </ButtonWithTooltip>
-            {/* <TooltipButtonWrapper
-              title={
-                note.note_type_name === "eCAPRIS"
-                  ? "Status updates from eCAPRIS can't be edited in Moped"
-                  : isNoteEditable
-                    ? null
-                    : "Only the author can edit this note"
-              }
-            >
-              <IconButton
-                edge="end"
-                aria-label="edit"
-                onClick={() => handleEditClick(noteIndex, note)}
-                size="small"
-                disabled={!isNoteEditable}
-                sx={editButtonStyles}
-              >
-                <EditIcon />
-              </IconButton>
-            </TooltipButtonWrapper> */}
+            </IconButtonWithTooltip>
           </Grid2>
           <Grid2>
             {!isEditingNote && (

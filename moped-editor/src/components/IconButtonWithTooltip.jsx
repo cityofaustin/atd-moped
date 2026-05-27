@@ -4,13 +4,14 @@ import { Tooltip, IconButton } from "@mui/material";
 /**
  * IconButton with Tooltip wrapper
  */
-const ButtonWithTooltip = ({
+const IconButtonWithTooltip = ({
   title,
   tooltipProps,
   onClick,
   disabled,
   iconButtonSx,
   children,
+  ariaLabel,
 }) => {
   return (
     <Tooltip title={title} {...tooltipProps}>
@@ -18,7 +19,7 @@ const ButtonWithTooltip = ({
         {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
         <IconButton
           edge="end"
-          aria-label="delete"
+          aria-label={ariaLabel}
           onClick={onClick}
           size="small"
           disabled={disabled}
@@ -31,4 +32,4 @@ const ButtonWithTooltip = ({
   );
 };
 
-export default ButtonWithTooltip;
+export default IconButtonWithTooltip;
