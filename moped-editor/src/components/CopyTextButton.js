@@ -52,7 +52,6 @@ const CopyTextButton = ({
   }, [copied, timeoutDuration]);
 
   if (iconOnly) {
-    console.log("icon only")
     return (
       <IconButtonWithTooltip
         title={copied ? copiedButtonText : copyButtonText}

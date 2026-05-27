@@ -12,6 +12,7 @@ const IconButtonWithTooltip = ({
   iconButtonSx,
   children,
   ariaLabel,
+  size="small"
 }) => {
   return (
     <Tooltip title={title} {...tooltipProps}>
@@ -21,7 +22,7 @@ const IconButtonWithTooltip = ({
           edge="end"
           aria-label={ariaLabel}
           onClick={onClick}
-          size="small"
+          size={size}
           disabled={disabled}
           sx={iconButtonSx}
         >

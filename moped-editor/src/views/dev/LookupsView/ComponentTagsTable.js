@@ -27,6 +27,7 @@ import {
   transformGridToDatabase,
 } from "./componentTagsHelpers";
 import { createRecordKeyHash } from "src/utils/urls";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 const requiredFields = ["slug"];
 
@@ -313,11 +314,14 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
               <>
                 Component tags
                 {onScrollToTop && (
-                  <Tooltip title="Return to top of page">
-                    <IconButton onClick={onScrollToTop} size="large">
-                      <ArrowUpwardIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButtonWithTooltip
+                    title="Return to top of page"
+                    onClick={onScrollToTop}
+                    size="large"
+                    ariaLabel="temp" //chia update
+                  >
+                    <ArrowUpwardIcon fontSize="small" />
+                  </IconButtonWithTooltip>
                 )}
               </>
             ),
