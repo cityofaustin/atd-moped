@@ -7,9 +7,9 @@ import { Tooltip, IconButton } from "@mui/material";
 const IconButtonWithTooltip = ({
   title,
   tooltipProps,
+  buttonProps,
   onClick,
   disabled = false,
-  iconButtonSx,
   children,
   ariaLabel,
   size = "small",
@@ -24,7 +24,7 @@ const IconButtonWithTooltip = ({
           onClick={onClick}
           size={size}
           disabled={disabled}
-          sx={iconButtonSx}
+          {...buttonProps}
         >
           {children}
         </IconButton>
