@@ -319,9 +319,8 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
                     onClick={onScrollToTop}
                     size="large"
                     ariaLabel="return to top"
-                  >
-                    <ArrowUpwardIcon fontSize="small" />
-                  </IconButtonWithTooltip>
+                    icon={<ArrowUpwardIcon fontSize="small" />}
+                  />
                 )}
               </>
             ),
