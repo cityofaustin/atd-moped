@@ -1,5 +1,4 @@
 import {
-  IconButton,
   Grid2,
   ListItem,
   ListItemSecondaryAction,
@@ -11,7 +10,6 @@ import EditIcon from "@mui/icons-material/EditOutlined";
 
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
-import TooltipButtonWrapper from "src/components/TooltipButtonWrapper";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
@@ -129,7 +127,7 @@ const ProjectNotes = ({
           </Grid2>
           <Grid2>
             {!isEditingNote && (
-              <TooltipButtonWrapper
+              <IconButtonWithTooltip
                 title={
                   note.note_type_name === "eCAPRIS"
                     ? "Status updates from eCAPRIS can't be deleted in Moped"
@@ -137,18 +135,13 @@ const ProjectNotes = ({
                       ? null
                       : "Only the author can delete this note"
                 }
+                ariaLabel="delete"
+                onClick={() => handleDeleteOpen(note.original_id)}
+                disabled={!isNoteEditable}
+                iconButtonSx={editButtonStyles}
               >
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => handleDeleteOpen(note.original_id)}
-                  size="small"
-                  disabled={!isNoteEditable}
-                  sx={editButtonStyles}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </TooltipButtonWrapper>
+                <DeleteIcon />
+              </IconButtonWithTooltip>
             )}
           </Grid2>
         </Grid2>
