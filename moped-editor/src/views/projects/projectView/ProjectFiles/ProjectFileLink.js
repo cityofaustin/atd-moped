@@ -34,15 +34,14 @@ const ProjectFileLink = ({
       <Link
         onClick={() => downloadFileAttachment(fileKey, getCognitoSession)}
         noWrap={condensed}
-        sx={
-          condensed
-            ? {
-                minWidth: 0,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }
-            : null
-        }
+        sx={{
+          cursor: "pointer",
+          ...(condensed && {
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }),
+        }}
         title={displayName}
       >
         {displayName}

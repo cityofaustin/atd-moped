@@ -533,7 +533,7 @@ const ProjectFundingTable = ({
           projectId={projectId}
           refetchFundingQuery={refetch}
           setOverrideFundingRecord={setOverrideFundingRecord}
-          onClose={() => setOverrideFundingRecord(null)}
+          handleClose={() => setOverrideFundingRecord(null)}
           handleSnackbar={handleSnackbar}
           dataProjectFunding={dataProjectFunding}
         />

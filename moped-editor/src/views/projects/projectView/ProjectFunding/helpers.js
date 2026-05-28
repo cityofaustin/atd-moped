@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Divider, Typography, Stack, IconButton } from "@mui/material";
+import { Divider, Stack, IconButton } from "@mui/material";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -127,6 +127,7 @@ export const transformGridToDatabase = (gridRecord) => {
     isNew,
     is_manual,
     ecapris_funding_files,
+    moped_funding_files,
     ...databaseFields
   } = gridRecord;
 
@@ -206,17 +207,14 @@ export const useColumns = ({
       {
         headerName: "FDU",
         field: "fdu",
-        width: 225,
+        width: 140,
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
-            <>
+            <Stack direction="column" alignItems="flex-start" spacing={0.5}>
               <span>{value?.fdu}</span>
-              <SecondaryInformationChip
-                chipLabel="eCAPRIS"
-                chipStyles={{ marginLeft: "8px" }}
-              />
-            </>
+              <SecondaryInformationChip chipLabel="eCAPRIS" />
+            </Stack>
           ) : (
             value?.fdu
           ),

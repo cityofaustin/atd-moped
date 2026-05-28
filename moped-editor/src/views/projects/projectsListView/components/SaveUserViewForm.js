@@ -29,7 +29,7 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
   return (
     <ActivityMetrics eventName={"projects_saved_view"}>
       <form onSubmit={handleSubmit(onSave)}>
-        <Grid2 container spacing={2}>
+        <Grid2 container spacing={2} sx={{ pt: 1 }}>
           <Grid2 size={12}>
             <FormControl fullWidth>
               <ControlledTextInput

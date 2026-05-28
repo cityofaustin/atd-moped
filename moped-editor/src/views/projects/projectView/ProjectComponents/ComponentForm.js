@@ -256,7 +256,7 @@ const ComponentForm = ({
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         <Grid2 size={12}>
           <ControlledAutocomplete
             id="component"
@@ -490,7 +490,7 @@ const ComponentForm = ({
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
+        <Grid2 sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"
