@@ -33,9 +33,17 @@ function AttachmentTabPanel(props) {
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
+      aria-hidden={value !== index}
       id={`attachment-tabpanel-${index}`}
       aria-labelledby={`attachment-tab-${index}`}
+      // Keep inactive tab content mounted but hidden with CSS rather than the
+      // `hidden` attribute to avoid UI shift on tab selection and prevent
+      // 0px measurement warning by the DataGridPro table inside.
+      style={{
+        position: value === index ? "static" : "absolute",
+        visibility: value === index ? "visible" : "hidden",
+        width: "100%",
+      }}
       {...other}
     >
       {<Box sx={{ p: 0 }}>{children}</Box>}
