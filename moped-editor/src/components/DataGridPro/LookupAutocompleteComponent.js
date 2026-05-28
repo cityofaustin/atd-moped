@@ -92,10 +92,12 @@ const LookupAutocompleteComponent = ({
       renderInput={(params) => (
         <TextField
           variant="standard"
-          autoComplete="off"
           {...params}
           inputRef={ref}
           {...textFieldProps}
+          slotProps={{
+            htmlInput: { "data-1p-ignore": true, ...params.inputProps },
+          }}
         />
       )}
       {...autocompleteProps}
