@@ -161,11 +161,21 @@ export const DELETE_PROJECT_FUNDING = gql`
 `;
 
 export const ADD_PROJECT_FUNDING = gql`
-  mutation AddProjectFunding($objects: [moped_proj_funding_insert_input!]!) {
+  mutation AddProjectFunding(
+    $objects: [moped_proj_funding_insert_input!]!
+    $entityId: Int!
+    $projectId: Int!
+  ) {
     insert_moped_proj_funding(objects: $objects) {
       returning {
         proj_funding_id
       }
+    }
+    update_files_ecapris_funding(
+      where: { entity_id: { _eq: $entityId }, project_id: { _eq: $projectId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
     }
   }
 `;
