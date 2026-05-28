@@ -175,7 +175,7 @@ const ProjectPhaseForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.phase_id}>
             <ControlledAutocomplete
@@ -327,7 +327,7 @@ const ProjectPhaseForm = ({
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}>
+        <Grid2 sx={{ marginTop: 2, marginRight: 2 }}>
           <Tooltip title="Mark this phase as the current phase of the project">
             <span>
               {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
@@ -353,7 +353,7 @@ const ProjectPhaseForm = ({
             </span>
           </Tooltip>
         </Grid2>
-        <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
+        <Grid2 sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"

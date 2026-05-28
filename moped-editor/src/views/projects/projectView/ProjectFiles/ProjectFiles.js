@@ -14,7 +14,7 @@ import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInl
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
-import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
+import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
 import {
   PROJECT_FILE_ATTACHMENTS,
   PROJECT_FILE_ATTACHMENTS_DELETE,
@@ -32,6 +32,8 @@ import {
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
+import FormDialog from "src/components/FormDialog";
+import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
 
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
@@ -409,6 +411,20 @@ const ProjectFiles = ({ handleSnackbar }) => {
     fileTypesObject,
   });
 
+  /* File upload state and handlers */
+  const { fileReady, buildFileBundle, clearState, ...formProps } =
+    useFileUploadForm();
+
+  const handleSave = () => {
+    handleClickSaveFile(buildFileBundle());
+    clearState();
+  };
+
+  const handleCancel = () => {
+    clearState();
+    handleClickCloseUploadFile();
+  };
+
   return (
     <>
       <MopedDataGridInlineEdit
@@ -444,14 +460,23 @@ const ProjectFiles = ({ handleSnackbar }) => {
         }}
       />
       {fileTypesLookup && (
-        <FileUploadDialogSingle
-          title={"Add file"}
-          dialogOpen={dialogOpen}
-          handleClickCloseUploadFile={handleClickCloseUploadFile}
-          handleClickSaveFile={handleClickSaveFile}
-          projectId={projectId}
-          fileTypesLookup={fileTypesLookup}
-        />
+        <FormDialog
+          title="Add file"
+          open={dialogOpen}
+          handleClose={handleClickCloseUploadFile}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+          saveDisabled={!fileReady}
+          saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
+          showDialogActions={true}
+          dialogProps={{ maxWidth: "md" }}
+        >
+          <FileUploadSingle
+            projectId={projectId}
+            fileTypesLookup={fileTypesLookup ?? []}
+            {...formProps}
+          />
+        </FormDialog>
       )}
       <DeleteConfirmationModal
         type={"file"}

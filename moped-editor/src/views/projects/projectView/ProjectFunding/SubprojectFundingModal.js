@@ -1,16 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  Button,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
+import { Button, Box, Tooltip } from "@mui/material";
 import { GridRow } from "@mui/x-data-grid-pro";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
-import CloseIcon from "@mui/icons-material/Close";
+import FormDialog from "src/components/FormDialog";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { useQuery } from "@apollo/client";
 import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
@@ -152,71 +144,54 @@ const SubprojectFundingModal = ({
   );
 
   return (
-    <Dialog
+    <FormDialog
+      title={`Import from eCAPRIS subproject ID ${eCaprisID}`}
       open={isDialogOpen}
-      onClose={handleDialogClose}
-      fullWidth
-      maxWidth={"md"}
+      handleClose={handleDialogClose}
+      dialogProps={{ maxWidth: "md" }}
     >
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+      <MopedDataGrid
+        autoHeight
+        columns={dataGridColumns}
+        disableColumnMenu
+        rows={rows}
+        getRowId={(row) => row.fdu}
+        hideFooter={false}
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: PAGE_SIZE, page: 0 },
+          },
         }}
-        variant="h4"
+        pagination
+        pageSizeOptions={[PAGE_SIZE]}
+        disableRowSelectionOnClick={false}
+        localeText={{ noRowsLabel: "No FDUs available" }}
+        checkboxSelection
+        onRowSelectionModelChange={handleRowSelection}
+        isRowSelectable={(row) => !fdusArray.some((fdu) => fdu?.fdu === row.id)}
+        slots={{ row: CustomRow }}
+        slotProps={{ row: { fdusArray } }}
+        loading={loading}
+      />
+      <Box
+        sx={{
+          mt: 2,
+          display: "flex",
+          flexDirection: "row-reverse",
+        }}
       >
-        {` Import from eCAPRIS subproject ID ${eCaprisID}`}
-        <IconButton onClick={() => handleDialogClose()} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <MopedDataGrid
-          autoHeight
-          columns={dataGridColumns}
-          disableColumnMenu
-          rows={rows}
-          getRowId={(row) => row.fdu}
-          hideFooter={false}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: PAGE_SIZE, page: 0 },
-            },
-          }}
-          pagination
-          pageSizeOptions={[PAGE_SIZE]}
-          disableRowSelectionOnClick={false}
-          localeText={{ noRowsLabel: "No FDUs available" }}
-          checkboxSelection
-          onRowSelectionModelChange={handleRowSelection}
-          isRowSelectable={(row) =>
-            !fdusArray.some((fdu) => fdu?.fdu === row.id)
-          }
-          slots={{ row: CustomRow }}
-          slotProps={{ row: { fdusArray } }}
-          loading={loading}
-        />
-        <Box
-          sx={{
-            my: 3,
-            display: "flex",
-            flexDirection: "row-reverse",
-          }}
+        <Button
+          variant="contained"
+          color="primary"
+          size="medium"
+          startIcon={<AddCircle />}
+          onClick={handleAddFunding}
+          disabled={!selectedFdus.length}
         >
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            startIcon={<AddCircle />}
-            onClick={handleAddFunding}
-            disabled={!selectedFdus.length}
-          >
-            Add Funding Source
-          </Button>
-        </Box>
-      </DialogContent>
-    </Dialog>
+          Add Funding Source
+        </Button>
+      </Box>
+    </FormDialog>
   );
 };
 export default SubprojectFundingModal;

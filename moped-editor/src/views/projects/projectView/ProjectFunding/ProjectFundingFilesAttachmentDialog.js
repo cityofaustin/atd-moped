@@ -1,18 +1,62 @@
 import React, { useState, useMemo } from "react";
 import { useMutation } from "@apollo/client";
 
-import { Box, Divider, IconButton, Typography, Stack } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  Stack,
+  Tabs,
+  Tab,
+  Typography,
+} from "@mui/material";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
   DELETE_FILE_MOPED_FUNDING_ATTACHMENT,
+  ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING,
+  ATTACH_EXISTING_FILE_TO_MOPED_FUNDING,
 } from "src/queries/project";
 
-import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
+import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
+import FormDialog from "src/components/FormDialog";
+import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
+import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
+
+function AttachmentTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      aria-hidden={value !== index}
+      id={`attachment-tabpanel-${index}`}
+      aria-labelledby={`attachment-tab-${index}`}
+      // Keep inactive tab content mounted but hidden with CSS rather than the
+      // `hidden` attribute to avoid UI shift on tab selection and prevent
+      // 0px measurement warning by the DataGridPro table inside.
+      style={{
+        position: value === index ? "static" : "absolute",
+        visibility: value === index ? "visible" : "hidden",
+        width: "100%",
+      }}
+      {...other}
+    >
+      {<Box sx={{ p: 0 }}>{children}</Box>}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `attachment-tab-${index}`,
+    "aria-controls": `attachment-tabpanel-${index}`,
+  };
+}
 
 /**
  * Dialog for attaching files to project funding record and detaching existing attachments
@@ -46,6 +90,12 @@ const ProjectFundingFilesAttachmentDialog = ({
       ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
       : CREATE_FILE_MOPED_FUNDING_ATTACHMENT
   );
+  const [attachExistingFile] = useMutation(
+    isSyncedFromECapris
+      ? ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING
+      : ATTACH_EXISTING_FILE_TO_MOPED_FUNDING
+  );
+
   const [detachFundingFileAttachment] = useMutation(
     isSyncedFromECapris
       ? DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
@@ -65,6 +115,32 @@ const ProjectFundingFilesAttachmentDialog = ({
     return filesAttachedToId ? filesAttachedToId : [];
   }, [fileAttachmentId, rows, isSyncedFromECapris]);
 
+  const handleUnlinkFileAttachment = (id) => {
+    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
+    const entityId = fundingRecord?.proj_funding_id;
+
+    detachFundingFileAttachment({
+      variables: {
+        fileId: id,
+        entityId,
+        projectId,
+      },
+    })
+      .then(() => {
+        setDetachConfirmationFileId(null);
+        onClose();
+        handleSnackbar(true, "File attachment detached", "success");
+      })
+      .catch((error) => {
+        setDetachConfirmationFileId(null);
+        handleSnackbar(true, "Error detaching file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
+  };
+
+  /* File upload form state and handlers */
   const handleClickSaveFile = (fileDataBundle) => {
     const entityId = fundingRecord?.proj_funding_id;
     const fileConnectionData = isSyncedFromECapris
@@ -110,105 +186,165 @@ const ProjectFundingFilesAttachmentDialog = ({
       });
   };
 
-  const handleUnlinkFileAttachment = (id) => {
-    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
-    const entityId = fundingRecord?.proj_funding_id;
+  const { fileReady, buildFileBundle, clearState, ...formProps } =
+    useFileUploadForm();
 
-    detachFundingFileAttachment({
+  const handleSave = () => {
+    const fileBundle = buildFileBundle();
+    handleClickSaveFile(fileBundle);
+    clearState();
+  };
+
+  const handleCancel = () => {
+    clearState();
+    onClose();
+  };
+
+  /* Tabs state and handlers */
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleChange = (_, newValue) => {
+    setTabValue(newValue);
+  };
+
+  /* Existing file attachment tab state and handlers */
+  const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
+  const handleRowSelection = (newSelection) => {
+    setExistingFileIdToAttach(newSelection[0]);
+  };
+
+  const handleAttach = () => {
+    attachExistingFile({
       variables: {
-        fileId: id,
-        entityId,
-        projectId,
+        object: {
+          file_id: existingFileIdToAttach,
+          entity_id: fundingRecord?.proj_funding_id,
+          ...(isSyncedFromECapris && { project_id: projectId }),
+        },
       },
     })
       .then(() => {
-        setDetachConfirmationFileId(null);
+        setExistingFileIdToAttach("");
         onClose();
-        handleSnackbar(true, "File attachment detached", "success");
+        handleSnackbar(true, "File attached", "success");
       })
       .catch((error) => {
-        setDetachConfirmationFileId(null);
-        handleSnackbar(true, "Error detaching file attachment", "error", error);
+        setExistingFileIdToAttach("");
+        handleSnackbar(true, "Error attaching file", "error", error);
       })
       .finally(() => {
         refetch();
       });
   };
 
+  const newFileLabel = formProps.externalFile
+    ? "Save and attach"
+    : "Upload and attach";
+  const isExistingFileTab = tabValue === 1;
+
   return (
-    <FileUploadDialogSingle
-      title={"Attach file"}
-      dialogOpen={isFileAttachmentDialogOpen}
-      handleClickCloseUploadFile={onClose}
-      handleClickSaveFile={handleClickSaveFile}
-      projectId={projectId}
-      fileTypesLookup={dataLookups?.moped_file_types ?? []}
+    <FormDialog
+      title="Attach files"
+      open={isFileAttachmentDialogOpen}
+      handleClose={onClose}
+      handleSave={isExistingFileTab ? handleAttach : handleSave}
+      handleCancel={handleCancel}
+      saveDisabled={isExistingFileTab ? !existingFileIdToAttach : !fileReady}
+      saveButtonLabel={isExistingFileTab ? "Attach" : newFileLabel}
+      showDialogActions={true}
+      dialogProps={{ maxWidth: "md" }}
     >
-      <Box>
-        <Divider sx={{ marginY: 4 }} />
-        <Stack direction="column">
-          <Typography variant="h4" sx={{ mb: 1 }}>
-            Attached files
-          </Typography>
+      <Box sx={{ width: "100%", minHeight: "40vh" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={tabValue}
+            onChange={handleChange}
+            aria-label="add new or existing file attachment tabs"
+          >
+            <Tab label="New" {...a11yProps(0)} />
+            <Tab label="Existing" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <AttachmentTabPanel value={tabValue} index={0}>
+          <FileUploadSingle
+            projectId={projectId}
+            fileTypesLookup={dataLookups?.moped_file_types ?? []}
+            {...formProps}
+          />
+        </AttachmentTabPanel>
+        <AttachmentTabPanel value={tabValue} index={1}>
+          <AttachExistingFileTable
+            projectId={projectId}
+            handleRowSelection={handleRowSelection}
+            attachedFiles={filesAttachedToId}
+          />
+        </AttachmentTabPanel>
+        <Box>
+          <Divider sx={{ marginY: 4 }} />
+          <Stack direction="column">
+            <Typography variant="h4" sx={{ mb: 1 }}>
+              Attached files
+            </Typography>
 
-          {filesAttachedToId.length > 0 ? (
-            filesAttachedToId.map((file) => {
-              if (!file) return null;
+            {filesAttachedToId.length > 0 ? (
+              filesAttachedToId.map((file) => {
+                if (!file) return null;
 
-              return (
-                <React.Fragment key={file.project_file_id}>
-                  <DeleteConfirmationModal
-                    type="file attachment"
-                    actionButtonText="Detach"
-                    additionalConfirmationText="This will not delete the file, only detach it from this funding record."
-                    actionButtonIcon={<LinkOff />}
-                    submitDelete={() =>
-                      handleUnlinkFileAttachment(file.project_file_id)
-                    }
-                    isDeleteConfirmationOpen={
-                      detachConfirmationFileId === file.project_file_id
-                    }
-                    setIsDeleteConfirmationOpen={(open) =>
-                      setDetachConfirmationFileId(
-                        open ? file.project_file_id : null
-                      )
-                    }
-                  />
-                  <Stack
-                    direction="row"
-                    sx={{
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                    spacing={0.5}
-                  >
-                    <Box>
-                      <IconButton
-                        onClick={() =>
-                          setDetachConfirmationFileId(file.project_file_id)
-                        }
-                        size="small"
-                      >
-                        <LinkOff />
-                      </IconButton>
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                      <ProjectFileLink
-                        fileKey={file?.file_key}
-                        fileUrl={file?.file_url}
-                        fileName={file?.file_name}
-                      />
-                    </Box>
-                  </Stack>
-                </React.Fragment>
-              );
-            })
-          ) : (
-            <Typography variant="body2">No files attached</Typography>
-          )}
-        </Stack>
+                return (
+                  <React.Fragment key={file.project_file_id}>
+                    <DeleteConfirmationModal
+                      type="file attachment"
+                      actionButtonText="Detach"
+                      additionalConfirmationText="This will not delete the file, only detach it from this funding record."
+                      actionButtonIcon={<LinkOff />}
+                      submitDelete={() =>
+                        handleUnlinkFileAttachment(file.project_file_id)
+                      }
+                      isDeleteConfirmationOpen={
+                        detachConfirmationFileId === file.project_file_id
+                      }
+                      setIsDeleteConfirmationOpen={(open) =>
+                        setDetachConfirmationFileId(
+                          open ? file.project_file_id : null
+                        )
+                      }
+                    />
+                    <Stack
+                      direction="row"
+                      sx={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                      spacing={0.5}
+                    >
+                      <Box>
+                        <IconButton
+                          onClick={() =>
+                            setDetachConfirmationFileId(file.project_file_id)
+                          }
+                          size="small"
+                        >
+                          <LinkOff />
+                        </IconButton>
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <ProjectFileLink
+                          fileKey={file?.file_key}
+                          fileUrl={file?.file_url}
+                          fileName={file?.file_name}
+                        />
+                      </Box>
+                    </Stack>
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <Typography variant="body2">No files attached</Typography>
+            )}
+          </Stack>
+        </Box>
       </Box>
-    </FileUploadDialogSingle>
+    </FormDialog>
   );
 };
 

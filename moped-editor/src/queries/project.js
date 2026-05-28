@@ -753,21 +753,34 @@ export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
 `;
 
 export const DELETE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
-  mutation DeleteFileProjectFunding(
-    $fileId: Int!
-    $entityId: Int!
-  ) {
+  mutation DeleteFileProjectFunding($fileId: Int!, $entityId: Int!) {
     delete_files_project_funding(
-      where: {
-        file_id: { _eq: $fileId }
-        entity_id: { _eq: $entityId }
-      }
+      where: { file_id: { _eq: $fileId }, entity_id: { _eq: $entityId } }
     ) {
       affected_rows
     }
   }
 `;
 
+export const ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING = gql`
+  mutation AttachExistingFileToEcaprisFunding(
+    $object: files_ecapris_funding_insert_input!
+  ) {
+    insert_files_ecapris_funding_one(object: $object) {
+      id
+    }
+  }
+`;
+
+export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
+  mutation AttachExistingFileToMopedFunding(
+    $object: files_project_funding_insert_input!
+  ) {
+    insert_files_project_funding_one(object: $object) {
+      id
+    }
+  }
+`;
 
 export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
