@@ -117,7 +117,13 @@ const OverrideFundingForm = ({
 
   const onSubmit = (data) => {
     const transformedRecord = transformGridToDatabase(fundingRecord);
-    const entityIdToDetachFrom = fundingRecord.proj_funding_id;
+    const attachmentEntityId = fundingRecord.proj_funding_id;
+    const fileIds = fundingRecord.ecapris_funding_files.map(
+      (file) => file.moped_project_file.project_file_id
+    );
+    const fileAttachmentObjects = fileIds.map((id) => ({
+      file_id: id,
+    }));
 
     // override record with data from form
     transformedRecord.funding_description = data.description;
@@ -130,12 +136,13 @@ const OverrideFundingForm = ({
 
     const payload = isNewOverride
       ? {
-          objects: {
+          fundingObjects: {
             ...transformedRecord,
             ecapris_subproject_id: fundingRecord.ecapris_subproject_id,
             project_id: Number(projectId),
+            files_project_fundings: { data: fileAttachmentObjects },
           },
-          entityId: entityIdToDetachFrom,
+          entityId: attachmentEntityId,
           projectId,
         }
       : {

@@ -162,11 +162,11 @@ export const DELETE_PROJECT_FUNDING = gql`
 
 export const ADD_PROJECT_FUNDING = gql`
   mutation AddProjectFunding(
-    $objects: [moped_proj_funding_insert_input!]!
+    $fundingObjects: [moped_proj_funding_insert_input!]!
     $entityId: Int!
     $projectId: Int!
   ) {
-    insert_moped_proj_funding(objects: $objects) {
+    insert_moped_proj_funding(objects: $fundingObjects) {
       returning {
         proj_funding_id
       }
