@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Divider, Stack, IconButton } from "@mui/material";
+import { Box, Divider, Stack, IconButton } from "@mui/material";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -16,6 +16,7 @@ import {
   isAmountOutOfRange,
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
@@ -353,7 +354,11 @@ export const useColumns = ({
             return;
           }
           return (
-            <Stack direction="column" spacing={0.5}>
+            <Stack
+              direction="column"
+              spacing={0.5}
+              divider={<Divider sx={{ my: 0.5 }} />}
+            >
               {row?.[filesType].map((file_record, index) => {
                 const file = file_record.moped_project_file;
 
@@ -361,14 +366,24 @@ export const useColumns = ({
 
                 return (
                   <React.Fragment key={file.project_file_id}>
-                    {index > 0 && <Divider sx={{ my: 0.5 }} />}
-                    <ProjectFileLink
-                      fileKey={file.file_key}
-                      fileUrl={file.file_url}
-                      fileName={file.file_name}
-                      condensed
-                      showNetworkPathStyles={false}
-                    />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <ProjectFileLink
+                        fileKey={file.file_key}
+                        fileUrl={file.file_url}
+                        fileName={file.file_name}
+                        condensed
+                        showNetworkPathStyles={false}
+                      />
+                      <IconButton onClick={() => console.log("open")}>
+                        <MoreHorizIcon />
+                      </IconButton>
+                    </Box>
                   </React.Fragment>
                 );
               })}
