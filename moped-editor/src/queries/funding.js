@@ -43,6 +43,9 @@ export const COMBINED_FUNDING_QUERY = gql`
           file_name
         }
       }
+      ecapris_funding {
+        id
+      }
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id
@@ -160,6 +163,8 @@ export const DELETE_PROJECT_FUNDING = gql`
   }
 `;
 
+/* Add funding records and optionally soft-delete eCAPRIS file attachments and then
+insert Moped file attachments on override funding record. */
 export const ADD_PROJECT_FUNDING = gql`
   mutation AddProjectFunding(
     $fundingObjects: [moped_proj_funding_insert_input!]!
