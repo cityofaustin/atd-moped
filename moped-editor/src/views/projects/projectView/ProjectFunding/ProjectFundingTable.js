@@ -246,9 +246,30 @@ const ProjectFundingTable = ({
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
       const deletedRow = rows.find((row) => row.id === id);
-      const { proj_funding_id } = deletedRow;
+      const {
+        proj_funding_id,
+        is_manual,
+        should_use_ecapris_amount,
+        is_synced_from_ecapris,
+      } = deletedRow;
 
       // if the deleted row is in the db, delete from db
+
+      // TODO: Update funding row delete so that, if the funding row being deleted has:
+      // - !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris
+      // - the delete mutation should also insert any associations that are in files_project_funding
+      //   into files_ecapris_funding (using the project_id ✅, entity_id ❓, file_id ✅)
+      const isDeletingOverride =
+        !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
+      const fileIds = deletedRow.moped_funding_files.map(
+        (file) => moped_project_file.project_file_id
+      );
+      // TODO: Need to request ecapris_subproject_funding id column value to insert as entity_id
+      const entity_id = null;
+
+      debugger;
+
+      return;
       if (!deletedRow.isNew) {
         deleteProjectFunding({
           variables: {

@@ -20,14 +20,6 @@ import { transformGridToDatabase } from "src/views/projects/projectView/ProjectF
 import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
 import * as yup from "yup";
 
-// TODO: Update override form so that if overriding:
-// - it creates same file associations in files_project_funding
-// - clears file associations in files_ecapris_funding
-// TODO: Update funding row delete so that, if the funding row being deleted has:
-// - !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris
-// - the delete mutation should also insert any associations that are in files_project_funding
-//   into files_ecapris_funding (using the )
-
 const validationSchema = ({ appropriatedFunding }) =>
   yup.object().shape({
     funding_amount: yup
