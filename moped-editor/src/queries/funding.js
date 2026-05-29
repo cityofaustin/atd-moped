@@ -153,10 +153,28 @@ export const UPDATE_PROJECT_FUNDING = gql`
 `;
 
 export const DELETE_PROJECT_FUNDING = gql`
-  mutation DeleteProjectFunding($proj_funding_id: Int!) {
+  mutation DeleteProjectFunding(
+    $proj_funding_id: Int!
+    $attachmentObjects: [files_ecapris_funding_insert_input!]!
+  ) {
     update_moped_proj_funding(
       _set: { is_deleted: true }
       where: { proj_funding_id: { _eq: $proj_funding_id } }
+    ) {
+      affected_rows
+    }
+    update_files_project_funding(
+      where: { entity_id: { _eq: $proj_funding_id } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    insert_files_ecapris_funding(
+      objects: $attachmentObjects
+      on_conflict: {
+        constraint: files_ecapris_funding_project_id_entity_id_file_id_key
+        update_columns: [is_deleted]
+      }
     ) {
       affected_rows
     }

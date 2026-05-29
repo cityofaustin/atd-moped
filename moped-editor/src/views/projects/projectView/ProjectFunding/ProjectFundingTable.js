@@ -253,24 +253,26 @@ const ProjectFundingTable = ({
         is_synced_from_ecapris,
       } = deletedRow;
 
-      // if the deleted row is in the db, delete from db
-
-      // TODO: Update mutation logic to reattach if deleting override
+      // TODO: Update mutation logic to reattach only if deleting override
       const isDeletingOverride =
         !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
       const fileIds = deletedRow.moped_funding_files?.map(
         (file) => file.moped_project_file.project_file_id
       );
-      // TODO: Need to request ecapris_subproject_funding id column value to insert as entity_id
+
       const entity_id = deletedRow.ecapris_funding?.id;
+      const attachmentObjects = fileIds.map((fileId) => ({
+        file_id: fileId,
+        project_id: projectId,
+        entity_id,
+      }));
 
-      debugger;
-
-      return;
+      // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
         deleteProjectFunding({
           variables: {
             proj_funding_id,
+            attachmentObjects,
           },
         })
           .then(() => refetch())
@@ -288,7 +290,7 @@ const ProjectFundingTable = ({
           });
       }
     },
-    [rows, deleteProjectFunding, refetch, handleSnackbar]
+    [rows, deleteProjectFunding, refetch, handleSnackbar, projectId]
   );
 
   // when a user cancels editing by clicking the X in the actions
