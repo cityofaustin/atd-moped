@@ -153,6 +153,23 @@ export const UPDATE_PROJECT_FUNDING = gql`
 `;
 
 export const DELETE_PROJECT_FUNDING = gql`
+  mutation DeleteProjectFunding($proj_funding_id: Int!) {
+    update_moped_proj_funding(
+      _set: { is_deleted: true }
+      where: { proj_funding_id: { _eq: $proj_funding_id } }
+    ) {
+      affected_rows
+    }
+    update_files_project_funding(
+      where: { entity_id: { _eq: $proj_funding_id } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
   mutation DeleteProjectFunding(
     $proj_funding_id: Int!
     $attachmentObjects: [files_ecapris_funding_insert_input!]!
@@ -184,6 +201,20 @@ export const DELETE_PROJECT_FUNDING = gql`
 /* Add funding records and optionally soft-delete eCAPRIS file attachments and then
 insert Moped file attachments on override funding record. */
 export const ADD_PROJECT_FUNDING = gql`
+  mutation AddProjectFunding(
+    $fundingObjects: [moped_proj_funding_insert_input!]!
+  ) {
+    insert_moped_proj_funding(objects: $fundingObjects) {
+      returning {
+        proj_funding_id
+      }
+    }
+  }
+`;
+
+/* Add funding records and optionally soft-delete eCAPRIS file attachments and then
+insert Moped file attachments on override funding record. */
+export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
   mutation AddProjectFunding(
     $fundingObjects: [moped_proj_funding_insert_input!]!
     $entityId: Int!

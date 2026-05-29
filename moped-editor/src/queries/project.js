@@ -788,7 +788,7 @@ export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
     insert_files_project_funding_one(
       object: $object
       on_conflict: {
-        constraint: files_ecapris_funding_project_id_entity_id_file_id_key
+        constraint: files_project_funding_entity_id_file_id_key
         update_columns: [is_deleted]
       }
     ) {

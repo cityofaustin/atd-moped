@@ -24,6 +24,7 @@ import {
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
   GET_FUNDING_LOOKUPS,
+  DELETE_PROJECT_FUNDING_AND_REATTACH,
 } from "src/queries/funding";
 import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
 
@@ -108,6 +109,9 @@ const ProjectFundingTable = ({
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+  const [deleteProjectFundingAndReattach] = useMutation(
+    DELETE_PROJECT_FUNDING_AND_REATTACH
+  );
   const [updateShouldSyncECapris] = useMutation(
     PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
   );
@@ -253,27 +257,27 @@ const ProjectFundingTable = ({
         is_synced_from_ecapris,
       } = deletedRow;
 
-      // TODO: Update mutation logic to reattach only if deleting override
-      // TODO: Split mutations into two cases:
-      // - delete only (not an override)
-      // - delete and reattach (override going back to eCAPRIS synced)
-      const isDeletingOverride =
-        !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
-      const fileIds = deletedRow.moped_funding_files?.map(
-        (file) => file.moped_project_file.project_file_id
-      );
-
-      const entity_id = deletedRow.ecapris_funding?.id;
-      const attachmentObjects = fileIds.map((fileId) => ({
-        file_id: fileId,
-        project_id: projectId,
-        entity_id,
-        is_deleted: false,
-      }));
-
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
-        deleteProjectFunding({
+        const isDeletingOverride =
+          !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
+        const fileIds = deletedRow.moped_funding_files?.map(
+          (file) => file.moped_project_file.project_file_id
+        );
+
+        const entity_id = deletedRow.ecapris_funding?.id;
+        const attachmentObjects = fileIds.map((fileId) => ({
+          file_id: fileId,
+          project_id: projectId,
+          entity_id,
+          is_deleted: false,
+        }));
+
+        const deleteMutation = isDeletingOverride
+          ? deleteProjectFundingAndReattach
+          : deleteProjectFunding;
+
+        deleteMutation({
           variables: {
             proj_funding_id,
             attachmentObjects,
@@ -294,7 +298,14 @@ const ProjectFundingTable = ({
           });
       }
     },
-    [rows, deleteProjectFunding, refetch, handleSnackbar, projectId]
+    [
+      rows,
+      deleteProjectFunding,
+      refetch,
+      handleSnackbar,
+      projectId,
+      deleteProjectFundingAndReattach,
+    ]
   );
 
   // when a user cancels editing by clicking the X in the actions

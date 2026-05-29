@@ -12,7 +12,7 @@ import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete"
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import {
-  ADD_PROJECT_FUNDING,
+  ADD_PROJECT_FUNDING_AND_REATTACH,
   ECAPRIS_SUBPROJECT_FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
 } from "src/queries/funding";
@@ -104,7 +104,7 @@ const OverrideFundingForm = ({
     fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
 
   const [mutate, mutationState] = useMutation(
-    isNewOverride ? ADD_PROJECT_FUNDING : UPDATE_PROJECT_FUNDING
+    isNewOverride ? ADD_PROJECT_FUNDING_AND_REATTACH : UPDATE_PROJECT_FUNDING
   );
 
   const onSubmit = (data) => {
