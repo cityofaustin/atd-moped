@@ -1,9 +1,29 @@
-import React from "react";
-import { Box, IconButton } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Fade, // do i need this actually
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 
 const FundingFile = ({ file }) => {
+  const [anchorElement, setAnchorElement] = useState(null);
+  const menuOpen = Boolean(anchorElement);
+
+  const handleMenuOpen = (event) => {
+    setAnchorElement(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorElement(null);
+  };
+
   return (
     <Box
       sx={{
@@ -19,9 +39,43 @@ const FundingFile = ({ file }) => {
         condensed
         showNetworkPathStyles={false}
       />
-      <IconButton onClick={() => console.log("open")}>
+      <IconButton onClick={handleMenuOpen}>
         <MoreHorizIcon />
       </IconButton>
+      <Menu
+        id="fade-menu"
+        anchorEl={anchorElement}
+        keepMounted
+        open={menuOpen}
+        onClose={handleMenuClose}
+        autoFocus={false}
+        TransitionComponent={Fade}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <MenuItem
+          onClick={() => console.log("unlink this file")}
+          sx={(theme) => ({
+            minWidth: theme.spacing(14),
+          })}
+          selected={false}
+        >
+          <ListItemIcon
+            sx={(theme) => ({
+              minWidth: theme.spacing(2),
+            })}
+          >
+            <LinkOff />
+          </ListItemIcon>
+          <ListItemText primary="Detach" />
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };

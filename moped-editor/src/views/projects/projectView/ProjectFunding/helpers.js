@@ -363,29 +363,7 @@ export const useColumns = ({
 
                 if (!file) return null;
 
-                return (
-                  <FundingFile key={file.project_file_id} file={file} />
-                  // <React.Fragment key={file.project_file_id}>
-                  //   <Box
-                  //     sx={{
-                  //       display: "flex",
-                  //       flexDirection: "row",
-                  //       justifyContent: "space-between",
-                  //     }}
-                  //   >
-                  //     <ProjectFileLink
-                  //       fileKey={file.file_key}
-                  //       fileUrl={file.file_url}
-                  //       fileName={file.file_name}
-                  //       condensed
-                  //       showNetworkPathStyles={false}
-                  //     />
-                  //     <IconButton onClick={() => console.log("open")}>
-                  //       <MoreHorizIcon />
-                  //     </IconButton>
-                  //   </Box>
-                  // </React.Fragment>
-                );
+                return <FundingFile key={file.project_file_id} file={file} />;
               })}
             </Stack>
           );
