@@ -16,6 +16,7 @@ insert_permissions:
         - created_at
         - entity_id
         - file_id
+        - is_deleted
         - project_id
         - updated_at
     comment: ""
@@ -29,6 +30,7 @@ insert_permissions:
         - created_at
         - entity_id
         - file_id
+        - is_deleted
         - project_id
         - updated_at
     comment: ""

@@ -254,6 +254,9 @@ const ProjectFundingTable = ({
       } = deletedRow;
 
       // TODO: Update mutation logic to reattach only if deleting override
+      // TODO: Split mutations into two cases:
+      // - delete only (not an override)
+      // - delete and reattach (override going back to eCAPRIS synced)
       const isDeletingOverride =
         !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
       const fileIds = deletedRow.moped_funding_files?.map(
@@ -265,6 +268,7 @@ const ProjectFundingTable = ({
         file_id: fileId,
         project_id: projectId,
         entity_id,
+        is_deleted: false,
       }));
 
       // if the deleted row is in the db, delete from db
