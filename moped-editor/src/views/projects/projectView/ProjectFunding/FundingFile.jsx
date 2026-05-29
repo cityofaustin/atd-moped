@@ -17,7 +17,7 @@ import {
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
-const FundingFile = ({ file }) => {
+const FundingFile = ({ file, isSyncedFromECapris }) => {
   const [anchorElement, setAnchorElement] = useState(null);
   const [detachConfirmationFileId, setDetachConfirmationFileId] =
     useState(null);

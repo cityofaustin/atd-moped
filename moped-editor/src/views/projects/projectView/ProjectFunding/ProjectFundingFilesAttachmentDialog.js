@@ -4,9 +4,7 @@ import { useMutation } from "@apollo/client";
 import { Box, Tabs, Tab } from "@mui/material";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
-  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
-  DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
   ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING,
   ATTACH_EXISTING_FILE_TO_MOPED_FUNDING,
 } from "src/queries/project";
@@ -85,11 +83,6 @@ const ProjectFundingFilesAttachmentDialog = ({
       : ATTACH_EXISTING_FILE_TO_MOPED_FUNDING
   );
 
-  const [detachFundingFileAttachment] = useMutation(
-    isSyncedFromECapris
-      ? DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
-      : DETACH_FILE_MOPED_FUNDING_ATTACHMENT
-  );
   const isLoading = addFileLoading || attachFileLoading;
 
   const filesAttachedToId = useMemo(() => {

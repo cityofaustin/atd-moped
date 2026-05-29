@@ -361,7 +361,13 @@ export const useColumns = ({
               {row?.[filesType].map((file_record) => {
                 const file = file_record.moped_project_file;
                 if (!file) return null;
-                return <FundingFile key={file.project_file_id} file={file} />;
+                return (
+                  <FundingFile
+                    key={file.project_file_id}
+                    file={file}
+                    isSyncedFromECapris={row.is_synced_from_ecapris}
+                  />
+                );
               })}
             </Stack>
           );
