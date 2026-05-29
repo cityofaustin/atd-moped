@@ -11,9 +11,16 @@ import {
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LinkOff } from "@mui/icons-material";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import {
+  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
+} from "src/queries/project";
 
 const FundingFile = ({ file }) => {
   const [anchorElement, setAnchorElement] = useState(null);
+  const [detachConfirmationFileId, setDetachConfirmationFileId] =
+    useState(null);
   const menuOpen = Boolean(anchorElement);
 
   const handleMenuOpen = (event) => {
@@ -22,6 +29,32 @@ const FundingFile = ({ file }) => {
 
   const handleMenuClose = () => {
     setAnchorElement(null);
+  };
+
+  const [detachFundingFileAttachment] = useMutation(
+    isSyncedFromECapris
+      ? DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
+      : DETACH_FILE_MOPED_FUNDING_ATTACHMENT
+  );
+
+  const handleUnlinkFileAttachment = (id) => {
+    detachFundingFileAttachment({
+      variables: {
+        id,
+      },
+    })
+      .then(() => {
+        setDetachConfirmationFileId(null);
+        onClose();
+        handleSnackbar(true, "File attachment detached", "success");
+      })
+      .catch((error) => {
+        setDetachConfirmationFileId(null);
+        handleSnackbar(true, "Error detaching file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
   };
 
   return (
@@ -69,6 +102,19 @@ const FundingFile = ({ file }) => {
           <ListItemText primary="Detach" />
         </MenuItem>
       </Menu>
+      {detachConfirmationFileId && (
+        <DeleteConfirmationModal
+          type="file attachment"
+          actionButtonText="Detach"
+          additionalConfirmationText="This will not delete the file, only detach it from this funding record."
+          actionButtonIcon={<LinkOff />}
+          submitDelete={() => handleUnlinkFileAttachment(file.id)}
+          isDeleteConfirmationOpen={detachConfirmationFileId === file.id}
+          setIsDeleteConfirmationOpen={(open) =>
+            setDetachConfirmationFileId(open ? file.id : null)
+          }
+        />
+      )}
     </Box>
   );
 };
