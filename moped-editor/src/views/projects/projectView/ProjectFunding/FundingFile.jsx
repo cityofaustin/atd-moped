@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   Box,
-  Fade, // do i need this actually
+  Fade,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -43,7 +43,7 @@ const FundingFile = ({ file }) => {
         <MoreHorizIcon />
       </IconButton>
       <Menu
-        id="fade-menu"
+        id="funding-file-action-menu"
         anchorEl={anchorElement}
         keepMounted
         open={menuOpen}
@@ -61,16 +61,9 @@ const FundingFile = ({ file }) => {
       >
         <MenuItem
           onClick={() => console.log("unlink this file")}
-          sx={(theme) => ({
-            minWidth: theme.spacing(14),
-          })}
           selected={false}
         >
-          <ListItemIcon
-            sx={(theme) => ({
-              minWidth: theme.spacing(2),
-            })}
-          >
+          <ListItemIcon>
             <LinkOff />
           </ListItemIcon>
           <ListItemText primary="Detach" />

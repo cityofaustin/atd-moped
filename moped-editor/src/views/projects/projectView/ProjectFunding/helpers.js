@@ -358,11 +358,9 @@ export const useColumns = ({
               spacing={0.5}
               divider={<Divider sx={{ my: 0.5 }} />}
             >
-              {row?.[filesType].map((file_record, index) => {
+              {row?.[filesType].map((file_record) => {
                 const file = file_record.moped_project_file;
-
                 if (!file) return null;
-
                 return <FundingFile key={file.project_file_id} file={file} />;
               })}
             </Stack>
