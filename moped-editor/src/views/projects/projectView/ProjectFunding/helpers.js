@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Box, Divider, Stack, IconButton } from "@mui/material";
+import { Divider, Stack, IconButton } from "@mui/material";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -9,14 +9,13 @@ import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
-import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import {
   currencyFormatter,
   isAmountOutOfRange,
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import FundingFile from "src/views/projects/projectView/ProjectFunding/FundingFile";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
@@ -365,26 +364,27 @@ export const useColumns = ({
                 if (!file) return null;
 
                 return (
-                  <React.Fragment key={file.project_file_id}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <ProjectFileLink
-                        fileKey={file.file_key}
-                        fileUrl={file.file_url}
-                        fileName={file.file_name}
-                        condensed
-                        showNetworkPathStyles={false}
-                      />
-                      <IconButton onClick={() => console.log("open")}>
-                        <MoreHorizIcon />
-                      </IconButton>
-                    </Box>
-                  </React.Fragment>
+                  <FundingFile key={file.project_file_id} file={file} />
+                  // <React.Fragment key={file.project_file_id}>
+                  //   <Box
+                  //     sx={{
+                  //       display: "flex",
+                  //       flexDirection: "row",
+                  //       justifyContent: "space-between",
+                  //     }}
+                  //   >
+                  //     <ProjectFileLink
+                  //       fileKey={file.file_key}
+                  //       fileUrl={file.file_url}
+                  //       fileName={file.file_name}
+                  //       condensed
+                  //       showNetworkPathStyles={false}
+                  //     />
+                  //     <IconButton onClick={() => console.log("open")}>
+                  //       <MoreHorizIcon />
+                  //     </IconButton>
+                  //   </Box>
+                  // </React.Fragment>
                 );
               })}
             </Stack>
