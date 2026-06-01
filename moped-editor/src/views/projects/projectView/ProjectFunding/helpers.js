@@ -201,6 +201,7 @@ export const useColumns = ({
   setOverrideFundingRecord,
   usingShiftKey,
   logUserEvent,
+  handleSnackbar,
   refetch,
 }) =>
   useMemo(() => {
@@ -369,6 +370,7 @@ export const useColumns = ({
                     file={file}
                     isSyncedFromECapris={row.is_synced_from_ecapris}
                     refetch={refetch}
+                    handleSnackbar={handleSnackbar}
                   />
                 );
               })}
@@ -442,4 +444,5 @@ export const useColumns = ({
     usingShiftKey,
     logUserEvent,
     refetch,
+    handleSnackbar
   ]);

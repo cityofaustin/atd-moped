@@ -18,12 +18,17 @@ import {
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
-const FundingFile = ({ file, isSyncedFromECapris, refetch, fileRecordId }) => {
+const FundingFile = ({
+  file,
+  isSyncedFromECapris,
+  refetch,
+  fileRecordId,
+  handleSnackbar,
+}) => {
   const [anchorElement, setAnchorElement] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const menuOpen = Boolean(anchorElement);
-
 
   const handleMenuOpen = (event) => {
     setAnchorElement(event.currentTarget);
@@ -47,12 +52,11 @@ const FundingFile = ({ file, isSyncedFromECapris, refetch, fileRecordId }) => {
     })
       .then(() => {
         setIsDeleteConfirmationOpen(null);
-        // handleSnackbar(true, "File attachment detached", "success");
+        handleSnackbar(true, "File attachment detached", "success");
       })
       .catch((error) => {
         setIsDeleteConfirmationOpen(null);
-        console.error(error);
-        // handleSnackbar(true, "Error detaching file attachment", "error", error);
+        handleSnackbar(true, "Error detaching file attachment", "error", error);
       })
       .finally(() => {
         refetch();

@@ -371,6 +371,7 @@ const ProjectFundingTable = ({
     usingShiftKey,
     logUserEvent,
     refetch,
+    handleSnackbar
   });
 
   const handleECaprisSwitch = () => {
