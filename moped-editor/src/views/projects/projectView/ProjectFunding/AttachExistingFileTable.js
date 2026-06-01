@@ -15,7 +15,7 @@ const PAGE_SIZE = 10;
 const CustomRow = (props) => {
   const { attachedFiles, ...rowProps } = props;
   const isDisabled = attachedFiles?.some(
-    (file) => file?.project_file_id === rowProps.rowId
+    (file) => file?.moped_project_file?.project_file_id === rowProps.rowId
   );
 
   if (isDisabled) {
@@ -98,7 +98,9 @@ const AttachExistingFileTable = ({
         disableMultipleRowSelection
         onRowSelectionModelChange={handleRowSelection}
         isRowSelectable={(row) =>
-          !attachedFiles.some((file) => file?.project_file_id === row.id)
+          !attachedFiles.some(
+            (file) => file?.moped_project_file?.project_file_id === row.id
+          )
         }
         slots={{ row: CustomRow }}
         slotProps={{ row: { attachedFiles } }}
