@@ -217,7 +217,6 @@ const ProjectFundingFilesAttachmentDialog = ({
           entity_id: fundingRecord?.proj_funding_id,
           is_deleted: false,
           ...(isSyncedFromECapris && { project_id: projectId }),
-          is_deleted: false,
         },
       },
     })

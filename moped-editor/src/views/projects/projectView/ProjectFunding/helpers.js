@@ -56,7 +56,6 @@ export const transformDatabaseToGrid = (fundingRecords, lookupData) => {
           unit_long_name: record.unit_long_name,
         }
       : null;
-    console.log(record);
 
     // Remove fields unneeded in the data grid row
     const {

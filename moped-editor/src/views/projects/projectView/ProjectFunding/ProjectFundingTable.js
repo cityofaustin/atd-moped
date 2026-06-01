@@ -78,7 +78,7 @@ const ProjectFundingTable = ({
     data: dataProjectFunding,
     refetch,
   } = useQuery(COMBINED_FUNDING_QUERY, {
-    variables: { ...queryVariables },
+    variables: queryVariables,
     fetchPolicy: "no-cache",
   });
 
@@ -261,9 +261,10 @@ const ProjectFundingTable = ({
       if (!deletedRow.isNew) {
         const isDeletingOverride =
           !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
-        const fileIds = deletedRow.moped_funding_files?.map(
-          (file) => file.moped_project_file.project_file_id
-        );
+        const fileIds =
+          deletedRow.moped_funding_files?.map(
+            (file) => file.moped_project_file.project_file_id
+          ) ?? [];
 
         const entity_id = deletedRow.ecapris_funding?.id;
         const attachmentObjects = fileIds.map((fileId) => ({
@@ -277,11 +278,15 @@ const ProjectFundingTable = ({
           ? deleteProjectFundingAndReattach
           : deleteProjectFunding;
 
+        const variables = isDeletingOverride
+          ? {
+              proj_funding_id,
+              attachmentObjects,
+            }
+          : { proj_funding_id };
+
         deleteMutation({
-          variables: {
-            proj_funding_id,
-            attachmentObjects,
-          },
+          variables,
         })
           .then(() => refetch())
           .then(() => {

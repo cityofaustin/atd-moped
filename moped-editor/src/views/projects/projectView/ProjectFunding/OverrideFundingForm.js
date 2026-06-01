@@ -102,6 +102,7 @@ const OverrideFundingForm = ({
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
     fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
+  const fundingSources = dataProjectFunding["moped_fund_sources"];
 
   const [mutate, mutationState] = useMutation(
     isNewOverride ? ADD_PROJECT_FUNDING_AND_REATTACH : UPDATE_PROJECT_FUNDING
@@ -172,7 +173,7 @@ const OverrideFundingForm = ({
               control={control}
               name="funding_source_id"
               label="Source"
-              options={dataProjectFunding["moped_fund_sources"]}
+              options={fundingSources}
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_source_name || ""}
               onChangeHandler={(fund_source, field) => {
@@ -183,19 +184,13 @@ const OverrideFundingForm = ({
               }
               valueHandler={(value) =>
                 value
-                  ? dataProjectFunding["moped_fund_sources"].find(
-                      (s) => s.funding_source_id === value
-                    )
+                  ? fundingSources.find((s) => s.funding_source_id === value)
                   : null
               }
             />
             <FormHelperText>
               eCAPRIS source:{" "}
-              {renderECaprisLabel(
-                dataProjectFunding["moped_fund_sources"],
-                ecaprisSourceId,
-                "source"
-              )}
+              {renderECaprisLabel(fundingSources, ecaprisSourceId, "source")}
             </FormHelperText>
           </FormControl>
         </Grid2>

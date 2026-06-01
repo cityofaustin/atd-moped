@@ -169,8 +169,10 @@ export const DELETE_PROJECT_FUNDING = gql`
   }
 `;
 
+/* Delete funding record and also transfer file attachments back to
+synced eCAPRIS record that is restored. Executes in one transaction. */
 export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
-  mutation DeleteProjectFunding(
+  mutation DeleteProjectFundingAndReattach(
     $proj_funding_id: Int!
     $attachmentObjects: [files_ecapris_funding_insert_input!]!
   ) {
@@ -198,8 +200,6 @@ export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
   }
 `;
 
-/* Add funding records and optionally soft-delete eCAPRIS file attachments and then
-insert Moped file attachments on override funding record. */
 export const ADD_PROJECT_FUNDING = gql`
   mutation AddProjectFunding(
     $fundingObjects: [moped_proj_funding_insert_input!]!
@@ -212,10 +212,11 @@ export const ADD_PROJECT_FUNDING = gql`
   }
 `;
 
-/* Add funding records and optionally soft-delete eCAPRIS file attachments and then
-insert Moped file attachments on override funding record. */
+/* Add funding record and also transfer synced eCAPRIS row attachments to
+the new Moped funding record inserted as an override of eCAPRIS. Executes in 
+one transaction. */
 export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
-  mutation AddProjectFunding(
+  mutation AddProjectFundingAndReattach(
     $fundingObjects: [moped_proj_funding_insert_input!]!
     $entityId: Int!
     $projectId: Int!
