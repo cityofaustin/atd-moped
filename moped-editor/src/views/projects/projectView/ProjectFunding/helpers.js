@@ -201,6 +201,7 @@ export const useColumns = ({
   setOverrideFundingRecord,
   usingShiftKey,
   logUserEvent,
+  refetch,
 }) =>
   useMemo(() => {
     return [
@@ -364,8 +365,10 @@ export const useColumns = ({
                 return (
                   <FundingFile
                     key={file.project_file_id}
+                    fileRecordId={file_record.id}
                     file={file}
                     isSyncedFromECapris={row.is_synced_from_ecapris}
+                    refetch={refetch}
                   />
                 );
               })}
@@ -438,4 +441,5 @@ export const useColumns = ({
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
+    refetch,
   ]);

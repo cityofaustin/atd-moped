@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { LinkOff } from "@mui/icons-material";
+import { useMutation } from "@apollo/client";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import {
@@ -17,11 +18,12 @@ import {
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
-const FundingFile = ({ file, isSyncedFromECapris }) => {
+const FundingFile = ({ file, isSyncedFromECapris, refetch, fileRecordId }) => {
   const [anchorElement, setAnchorElement] = useState(null);
-  const [detachConfirmationFileId, setDetachConfirmationFileId] =
-    useState(null);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
   const menuOpen = Boolean(anchorElement);
+
 
   const handleMenuOpen = (event) => {
     setAnchorElement(event.currentTarget);
@@ -44,13 +46,13 @@ const FundingFile = ({ file, isSyncedFromECapris }) => {
       },
     })
       .then(() => {
-        setDetachConfirmationFileId(null);
-        onClose();
-        handleSnackbar(true, "File attachment detached", "success");
+        setIsDeleteConfirmationOpen(null);
+        // handleSnackbar(true, "File attachment detached", "success");
       })
       .catch((error) => {
-        setDetachConfirmationFileId(null);
-        handleSnackbar(true, "Error detaching file attachment", "error", error);
+        setIsDeleteConfirmationOpen(null);
+        console.error(error);
+        // handleSnackbar(true, "Error detaching file attachment", "error", error);
       })
       .finally(() => {
         refetch();
@@ -93,7 +95,7 @@ const FundingFile = ({ file, isSyncedFromECapris }) => {
         }}
       >
         <MenuItem
-          onClick={() => console.log("unlink this file")}
+          onClick={() => setIsDeleteConfirmationOpen(true)}
           selected={false}
         >
           <ListItemIcon>
@@ -102,17 +104,15 @@ const FundingFile = ({ file, isSyncedFromECapris }) => {
           <ListItemText primary="Detach" />
         </MenuItem>
       </Menu>
-      {detachConfirmationFileId && (
+      {isDeleteConfirmationOpen && (
         <DeleteConfirmationModal
           type="file attachment"
           actionButtonText="Detach"
           additionalConfirmationText="This will not delete the file, only detach it from this funding record."
           actionButtonIcon={<LinkOff />}
-          submitDelete={() => handleUnlinkFileAttachment(file.id)}
-          isDeleteConfirmationOpen={detachConfirmationFileId === file.id}
-          setIsDeleteConfirmationOpen={(open) =>
-            setDetachConfirmationFileId(open ? file.id : null)
-          }
+          submitDelete={() => handleUnlinkFileAttachment(fileRecordId)}
+          isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+          setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         />
       )}
     </Box>
