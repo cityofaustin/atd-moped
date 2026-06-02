@@ -29,6 +29,7 @@ function AttachmentTabPanel(props) {
       style={{
         position: value === index ? "static" : "absolute",
         visibility: value === index ? "visible" : "hidden",
+        display: value === index ? "block" : "none",
         width: "100%",
       }}
       {...other}
