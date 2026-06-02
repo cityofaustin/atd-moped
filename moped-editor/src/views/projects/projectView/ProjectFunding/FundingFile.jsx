@@ -18,6 +18,15 @@ import {
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
+/**
+ *
+ * @param {Object} file - File information object to pass into ProjectFileLink
+ * @param {Boolean} isSyncedFromECapris - if parent funding record is synced from eCAPRIS
+ * @param {Function} refetch - Provides a manual callback to update the Apollo cache
+ * @param {number} fileRecordId - files_project_funding id /  ecapris_subproject_funding id for record
+ * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
+ * @returns {JSX.Element}
+ */
 const FundingFile = ({
   file,
   isSyncedFromECapris,
