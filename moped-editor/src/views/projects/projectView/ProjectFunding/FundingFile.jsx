@@ -60,11 +60,11 @@ const FundingFile = ({
       },
     })
       .then(() => {
-        setIsDeleteConfirmationOpen(null);
+        setIsDeleteConfirmationOpen(false);
         handleSnackbar(true, "File attachment detached", "success");
       })
       .catch((error) => {
-        setIsDeleteConfirmationOpen(null);
+        setIsDeleteConfirmationOpen(false);
         handleSnackbar(true, "Error detaching file attachment", "error", error);
       })
       .finally(() => {
@@ -91,7 +91,7 @@ const FundingFile = ({
         <MoreHorizIcon />
       </IconButton>
       <Menu
-        id="funding-file-action-menu"
+        id={`funding-file-action-menu-${fileRecordId}`}
         anchorEl={anchorElement}
         keepMounted
         open={menuOpen}
