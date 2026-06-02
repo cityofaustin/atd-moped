@@ -45,7 +45,7 @@ const ProjectNameForm = ({
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues: {
       projectName: originalName,
@@ -102,7 +102,7 @@ const ProjectNameForm = ({
               placeholder="Enter project name"
               control={control}
               error={!!errors?.projectName}
-              helperText={errors?.projectName?.message}
+              helperText={errors?.projectName?.message || "Required"}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -158,7 +158,7 @@ const ProjectNameForm = ({
           >
             <ProjectSummaryIconButtons
               handleClose={handleCancelClick}
-              disabledCondition={!isDirty}
+              disabledCondition={!isDirty || !isValid}
               loading={loading}
             />
           </Grid2>

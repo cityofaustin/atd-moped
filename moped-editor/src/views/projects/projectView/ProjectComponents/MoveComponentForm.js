@@ -35,14 +35,13 @@ const MoveComponentForm = ({ onSave, component }) => {
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: { project: null },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
   const currentProjectId = component?.project_id;
-  const areFormErrors = Object.keys(errors).length > 0;
 
   // Get projects for autocomplete
   const { data, error } = useQuery(PROJECT_OPTIONS, {
@@ -64,6 +63,7 @@ const MoveComponentForm = ({ onSave, component }) => {
             getOptionLabel={getOptionLabel}
             name="project"
             control={control}
+            error={!!errors?.project}
             autoFocus
             helperText="Required"
           />
@@ -83,7 +83,7 @@ const MoveComponentForm = ({ onSave, component }) => {
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={areFormErrors}
+            disabled={!isValid}
           >
             Move component
           </Button>

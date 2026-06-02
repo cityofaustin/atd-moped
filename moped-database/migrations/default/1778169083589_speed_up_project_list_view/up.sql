@@ -1,0 +1,575 @@
+DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
+DROP VIEW IF EXISTS project_list_view;
+
+CREATE OR REPLACE VIEW project_list_view AS
+WITH project_person_list_lookup AS (
+    SELECT
+        mpp.project_id,
+        string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members
+    FROM moped_proj_personnel mpp
+    JOIN moped_users mu ON mpp.user_id = mu.user_id
+    JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
+    JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
+    WHERE mpp.is_deleted = false AND mppr.is_deleted = false
+    GROUP BY mpp.project_id
+),
+funding_sources_lookup AS (
+    SELECT
+        cfv.project_id,
+        string_agg(DISTINCT cfv.source_name, ', '::text ORDER BY cfv.source_name) AS funding_source_name,
+        string_agg(DISTINCT cfv.program_name, ', '::text ORDER BY cfv.program_name) AS funding_program_names,
+        string_agg(
+            DISTINCT
+            CASE
+                WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
+                WHEN cfv.source_name IS NOT null THEN cfv.source_name
+                WHEN cfv.program_name IS NOT null THEN cfv.program_name
+                ELSE null::text
+            END, ', '::text ORDER BY (
+                CASE
+                    WHEN cfv.source_name IS NOT null AND cfv.program_name IS NOT null THEN concat(cfv.source_name, ' - ', cfv.program_name)
+                    WHEN cfv.source_name IS NOT null THEN cfv.source_name
+                    WHEN cfv.program_name IS NOT null THEN cfv.program_name
+                    ELSE null::text
+                END
+            )
+        ) AS funding_source_and_program_names
+    FROM combined_project_funding_view cfv
+    JOIN moped_project ON cfv.project_id = moped_project.project_id
+    WHERE (
+        cfv.is_synced_from_ecapris = false
+        OR (
+            moped_project.should_sync_ecapris_funding = true
+            AND moped_project.ecapris_subproject_id IS NOT null
+            AND cfv.is_synced_from_ecapris = true
+        )
+    )
+    GROUP BY cfv.project_id
+),
+child_project_lookup AS (
+    SELECT
+        jsonb_agg(children.project_id) AS children_project_ids,
+        children.parent_project_id AS parent_id
+    FROM moped_project children
+    WHERE children.is_deleted = false AND children.parent_project_id IS NOT NULL
+    GROUP BY children.parent_project_id
+),
+work_activities AS (
+    SELECT
+        mpwa.project_id,
+        string_agg(task_order_objects.task_order_object ->> 'display_name'::text, ', '::text) AS task_order_names,
+        string_agg(task_order_objects.task_order_object ->> 'task_order'::text, ', '::text) AS task_order_names_short,
+        jsonb_agg(DISTINCT task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT null) AS task_orders,
+        string_agg(DISTINCT mpwa.workgroup_contractor, ', '::text) AS workgroup_contractors,
+        string_agg(mpwa.contract_number, ', '::text) AS contract_numbers
+    FROM moped_proj_work_activity mpwa
+    LEFT JOIN LATERAL jsonb_array_elements(mpwa.task_orders) task_order_objects (task_order_object) ON true
+    WHERE mpwa.is_deleted = false
+    GROUP BY mpwa.project_id
+),
+moped_proj_components_subtypes AS (
+    SELECT
+        mpc.project_id,
+        string_agg(DISTINCT mc.component_name_full, ', '::text) AS components
+    FROM moped_proj_components mpc
+    LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+    WHERE mpc.is_deleted = false
+    GROUP BY mpc.project_id
+),
+project_district_association AS (
+    WITH project_council_district_map AS (
+        SELECT DISTINCT
+            mpc.project_id,
+            fcd.council_district_id
+        FROM moped_proj_components mpc
+        JOIN features f ON mpc.project_component_id = f.component_id
+        JOIN features_council_districts fcd ON f.id = fcd.feature_id
+        WHERE f.is_deleted = false AND mpc.is_deleted = false
+    ),
+    parent_child_project_map AS (
+        SELECT
+            parent_projects.project_id,
+            parent_projects.project_id AS self_and_children_project_id
+        FROM moped_project parent_projects
+        UNION ALL
+        SELECT
+            parent_projects.project_id,
+            child_projects.project_id AS self_and_children_project_id
+        FROM moped_project parent_projects
+        JOIN moped_project child_projects ON parent_projects.project_id = child_projects.parent_project_id
+        WHERE child_projects.is_deleted = false
+    )
+    SELECT
+        projects.project_id,
+        jsonb_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
+        jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts,
+        nullif(array_to_string(array_agg(DISTINCT project_districts.council_district_id::integer ORDER BY project_districts.council_district_id::integer ASC), ', '::text), ''::text) AS project_council_districts_string,
+        nullif(array_to_string(array_agg(DISTINCT project_and_children_districts.council_district_id::integer ORDER BY project_and_children_districts.council_district_id::integer ASC), ', '::text), ''::text) AS project_and_child_project_council_districts_string
+    FROM moped_project projects
+    LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
+    LEFT JOIN parent_child_project_map project_family ON projects.project_id = project_family.project_id
+    LEFT JOIN project_council_district_map project_and_children_districts ON project_family.self_and_children_project_id = project_and_children_districts.project_id
+    GROUP BY projects.project_id
+    ORDER BY projects.project_id ASC
+),
+phase_date_inputs AS (
+    SELECT
+        phases.project_id,
+        min(phases.phase_start) FILTER (
+            WHERE phases.phase_start IS NOT NULL AND phases.is_phase_start_confirmed = true
+        ) AS min_confirmed_phase_start,
+        min(phases.phase_end) FILTER (
+            WHERE phases.phase_end IS NOT NULL AND phases.is_phase_end_confirmed = true
+        ) AS min_confirmed_phase_end,
+        min(phases.phase_start) FILTER (
+            WHERE phases.phase_start IS NOT NULL AND phases.is_phase_start_confirmed = false
+        ) AS min_estimated_phase_start,
+        min(phases.phase_end) FILTER (
+            WHERE phases.phase_end IS NOT NULL AND phases.is_phase_end_confirmed = false
+        ) AS min_estimated_phase_end
+    FROM moped_proj_phases phases
+    JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+    WHERE phases.is_deleted = false AND moped_phases.phase_name_simple = 'Complete'::text
+    GROUP BY phases.project_id
+),
+phase_dates AS (
+    SELECT
+        pdi.project_id,
+        CASE
+            WHEN pdi.min_confirmed_phase_start IS NULL THEN pdi.min_confirmed_phase_end
+            WHEN pdi.min_confirmed_phase_end IS NULL THEN pdi.min_confirmed_phase_start
+            ELSE least(pdi.min_confirmed_phase_start, pdi.min_confirmed_phase_end)
+        END AS min_confirmed_phase_date,
+        CASE
+            WHEN pdi.min_estimated_phase_start IS NULL THEN pdi.min_estimated_phase_end
+            WHEN pdi.min_estimated_phase_end IS NULL THEN pdi.min_estimated_phase_start
+            ELSE least(pdi.min_estimated_phase_start, pdi.min_estimated_phase_end)
+        END AS min_estimated_phase_date
+    FROM phase_date_inputs pdi
+),
+project_component_work_types AS (
+    SELECT
+        mpc.project_id,
+        string_agg(DISTINCT mwt.name, ', '::text ORDER BY mwt.name) AS component_work_type_names
+    FROM moped_proj_components mpc
+    LEFT JOIN moped_proj_component_work_types mpcwt ON mpc.project_component_id = mpcwt.project_component_id
+    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    WHERE mpc.is_deleted = false AND mpcwt.is_deleted = false
+    GROUP BY mpc.project_id
+),
+project_partners_lookup AS (
+    SELECT
+        mpp.project_id,
+        string_agg(DISTINCT me.entity_name, ', '::text) AS project_partners
+    FROM moped_proj_partners mpp
+    LEFT JOIN moped_entity me ON mpp.entity_id = me.entity_id
+    WHERE mpp.is_deleted = false
+    GROUP BY mpp.project_id
+),
+project_feature_lookup AS (
+    SELECT
+        components.project_id,
+        json_agg(
+            json_build_object(
+                'signal_id', feature_signals.signal_id,
+                'knack_id', feature_signals.knack_id,
+                'location_name', feature_signals.location_name,
+                'signal_type', feature_signals.signal_type,
+                'id', feature_signals.id
+            )
+        ) AS project_feature
+    FROM moped_proj_components components
+    LEFT JOIN feature_signals ON components.project_component_id = feature_signals.component_id
+    WHERE components.is_deleted = false AND feature_signals.signal_id IS NOT NULL AND feature_signals.is_deleted = false
+    GROUP BY components.project_id
+),
+construction_start_dates AS (
+    SELECT
+        phases.project_id,
+        min(phases.phase_start) AS construction_start_date
+    FROM moped_proj_phases phases
+    WHERE phases.phase_id = 9 AND phases.is_deleted = false
+    GROUP BY phases.project_id
+),
+project_roles_lookup AS (
+    SELECT
+        mpp.project_id,
+        string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) FILTER (WHERE mpr.project_role_name = 'Inspector'::text) AS project_inspector,
+        string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) FILTER (WHERE mpr.project_role_name = 'Designer'::text) AS project_designer
+    FROM moped_proj_personnel mpp
+    JOIN moped_users users ON mpp.user_id = users.user_id
+    JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
+    JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
+    WHERE mpp.is_deleted = false AND mppr.is_deleted = false AND mpr.project_role_name IN ('Inspector'::text, 'Designer'::text)
+    GROUP BY mpp.project_id
+),
+project_tags_lookup AS (
+    SELECT
+        ptags.project_id,
+        string_agg(tags.name, ', '::text) AS project_tags
+    FROM moped_proj_tags ptags
+    JOIN moped_tags tags ON ptags.tag_id = tags.id
+    WHERE ptags.is_deleted = false
+    GROUP BY ptags.project_id
+)
+SELECT
+    mp.project_id,
+    mp.project_name_full,
+    mp.project_name,
+    mp.project_name_secondary,
+    mp.project_description,
+    mp.ecapris_subproject_id,
+    mp.project_website,
+    mp.date_added,
+    mp.is_deleted,
+    mp.updated_at,
+    current_phase.phase_name AS current_phase,
+    current_phase.phase_key AS current_phase_key,
+    current_phase.phase_name_simple AS current_phase_simple,
+    ppll.project_team_members,
+    me.entity_name AS project_sponsor,
+    mel.entity_name AS project_lead,
+    mpps.name AS public_process_status,
+    mp.interim_project_id,
+    mp.parent_project_id,
+    mp.knack_project_id,
+    'https://mobility.austin.gov/moped/projects/'::text || mp.project_id::text AS project_url,
+    'https://mobility.austin.gov/moped/projects/'::text || mp.parent_project_id::text AS parent_project_url,
+    proj_status_update.project_note AS project_status_update,
+    proj_status_update.date_created AS project_status_update_date_created,
+    proj_status_update.author AS project_status_update_author,
+    work_activities.workgroup_contractors,
+    work_activities.contract_numbers,
+    work_activities.task_order_names,
+    work_activities.task_order_names_short,
+    work_activities.task_orders,
+    parent_project.project_name_full AS parent_project_name,
+    cpl.children_project_ids,
+    project_partners_lookup.project_partners,
+    project_feature_lookup.project_feature AS project_feature,
+    fsl.funding_source_name,
+    fsl.funding_program_names,
+    fsl.funding_source_and_program_names,
+    construction_start_dates.construction_start_date,
+    phase_dates.min_confirmed_phase_date AS substantial_completion_date,
+    CASE
+        WHEN phase_dates.min_confirmed_phase_date IS NOT null THEN null::timestamp with time zone
+        ELSE phase_dates.min_estimated_phase_date
+    END AS substantial_completion_date_estimated,
+    project_roles_lookup.project_inspector,
+    project_roles_lookup.project_designer,
+    project_tags_lookup.project_tags,
+    concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
+    mpcs.components,
+    districts.project_council_districts,
+    districts.project_council_districts_string,
+    districts.project_and_child_project_council_districts,
+    districts.project_and_child_project_council_districts_string,
+    pcwt.component_work_type_names
+FROM moped_project mp
+LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
+LEFT JOIN funding_sources_lookup fsl ON mp.project_id = fsl.project_id
+LEFT JOIN moped_entity me ON mp.project_sponsor = me.entity_id
+LEFT JOIN moped_entity mel ON mp.project_lead_id = mel.entity_id
+LEFT JOIN project_partners_lookup ON mp.project_id = project_partners_lookup.project_id
+LEFT JOIN work_activities ON mp.project_id = work_activities.project_id
+LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
+LEFT JOIN current_phase_view current_phase ON mp.project_id = current_phase.project_id
+LEFT JOIN moped_public_process_statuses mpps ON mp.public_process_status_id = mpps.id
+LEFT JOIN child_project_lookup cpl ON mp.project_id = cpl.parent_id
+LEFT JOIN moped_proj_components_subtypes mpcs ON mp.project_id = mpcs.project_id
+LEFT JOIN project_district_association districts ON mp.project_id = districts.project_id
+LEFT JOIN phase_dates ON mp.project_id = phase_dates.project_id
+LEFT JOIN project_component_work_types pcwt ON mp.project_id = pcwt.project_id
+LEFT JOIN project_feature_lookup ON mp.project_id = project_feature_lookup.project_id
+LEFT JOIN construction_start_dates ON mp.project_id = construction_start_dates.project_id
+LEFT JOIN project_roles_lookup ON mp.project_id = project_roles_lookup.project_id
+LEFT JOIN project_tags_lookup ON mp.project_id = project_tags_lookup.project_id
+LEFT JOIN moped_project parent_project ON mp.parent_project_id = parent_project.project_id
+LEFT JOIN LATERAL (
+    SELECT
+        combined_project_notes_view.project_note,
+        combined_project_notes_view.created_at AS date_created,
+        combined_project_notes_view.author
+    FROM combined_project_notes_view
+    WHERE (
+        combined_project_notes_view.project_id = mp.project_id
+        OR (
+            mp.should_sync_ecapris_statuses = true
+            AND mp.ecapris_subproject_id IS NOT null
+            AND combined_project_notes_view.ecapris_subproject_id = mp.ecapris_subproject_id
+        )
+    )
+    AND combined_project_notes_view.is_status_update = true
+    ORDER BY combined_project_notes_view.created_at DESC
+    LIMIT 1
+) proj_status_update ON true
+WHERE mp.is_deleted = false;
+
+
+
+CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
+    SELECT
+        mpcwt.project_component_id,
+        string_agg(mwt.name, ', '::text) AS work_types
+    FROM moped_proj_component_work_types mpcwt
+    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    WHERE mpcwt.is_deleted = false
+    GROUP BY mpcwt.project_component_id
+),
+
+council_districts AS (
+    SELECT
+        features.component_id AS project_component_id,
+        string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts,
+        string_agg(DISTINCT lpad(features_council_districts.council_district_id::text, 2, '0'::text), ', '::text) AS council_districts_searchable
+    FROM features_council_districts
+    LEFT JOIN features ON features_council_districts.feature_id = features.id
+    WHERE features.is_deleted = false
+    GROUP BY features.component_id
+),
+
+comp_geography AS (
+    SELECT
+        feature_union.component_id AS project_component_id,
+        string_agg(DISTINCT feature_union.id::text, ', '::text) AS feature_ids,
+        st_asgeojson(st_multi(st_union(array_agg(feature_union.geography))))::json AS geometry,
+        st_asgeojson(st_multi(st_union(array_agg(feature_union.line_geography))))::json AS line_geometry,
+        string_agg(DISTINCT feature_union.signal_id::text, ', '::text) AS signal_ids,
+        sum(feature_union.length_feet) AS length_feet_total
+    FROM (
+        SELECT
+            feature_signals.id,
+            feature_signals.component_id,
+            feature_signals.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_signals.geography, 7::double precision)::geometry) AS line_geography,
+            feature_signals.signal_id,
+            null::integer AS length_feet
+        FROM feature_signals
+        WHERE feature_signals.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_street_segments.id,
+            feature_street_segments.component_id,
+            feature_street_segments.geography::geometry AS geography,
+            feature_street_segments.geography::geometry AS line_geography,
+            null::integer AS signal_id,
+            feature_street_segments.length_feet
+        FROM feature_street_segments
+        WHERE feature_street_segments.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_intersections.id,
+            feature_intersections.component_id,
+            feature_intersections.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_intersections.geography, 7::double precision)::geometry) AS line_geography,
+            null::integer AS signal_id,
+            null::integer AS length_feet
+        FROM feature_intersections
+        WHERE feature_intersections.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_drawn_points.id,
+            feature_drawn_points.component_id,
+            feature_drawn_points.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_drawn_points.geography, 7::double precision)::geometry) AS line_geography,
+            null::integer AS signal_id,
+            null::integer AS length_feet
+        FROM feature_drawn_points
+        WHERE feature_drawn_points.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_drawn_lines.id,
+            feature_drawn_lines.component_id,
+            feature_drawn_lines.geography::geometry AS geography,
+            feature_drawn_lines.geography::geometry AS line_geography,
+            null::integer AS signal_id,
+            feature_drawn_lines.length_feet
+        FROM feature_drawn_lines
+        WHERE feature_drawn_lines.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_school_beacons.id,
+            feature_school_beacons.component_id,
+            feature_school_beacons.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_school_beacons.geography, 7::double precision)::geometry) AS line_geography,
+            null::integer AS signal_id,
+            null::integer AS length_feet
+        FROM feature_school_beacons
+        WHERE feature_school_beacons.is_deleted = false
+    ) feature_union
+    GROUP BY feature_union.component_id
+),
+
+subcomponents AS (
+    SELECT
+        mpcs.project_component_id,
+        string_agg(ms.subcomponent_name, ', '::text) AS subcomponents
+    FROM moped_proj_components_subcomponents mpcs
+    LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+    WHERE mpcs.is_deleted = false
+    GROUP BY mpcs.project_component_id
+),
+
+component_tags AS (
+    SELECT
+        mpct.project_component_id,
+        string_agg(mct.full_name, ', '::text) AS component_tags
+    FROM moped_proj_component_tags mpct
+    LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+    WHERE mpct.is_deleted = false
+    GROUP BY mpct.project_component_id
+),
+
+related_projects AS (
+    SELECT
+        pmp.project_id,
+        concat_ws(', '::text, pmp.project_id, string_agg(cmp.project_id::text, ', '::text)) AS related_project_ids_with_self,
+        concat_ws(', '::text, lpad(pmp.project_id::text, 5, '0'::text), string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text)) AS related_project_ids_searchable_with_self
+    FROM moped_project pmp
+    LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
+    WHERE cmp.is_deleted = false
+    GROUP BY pmp.project_id
+),
+
+latest_public_meeting_date AS (
+    SELECT
+        mpm.project_id,
+        coalesce(max(mpm.date_actual), max(mpm.date_estimate)) AS latest
+    FROM moped_proj_milestones mpm
+    WHERE mpm.milestone_id = 65 AND mpm.is_deleted = false
+    GROUP BY mpm.project_id
+),
+
+earliest_active_or_construction_phase_date AS (
+    SELECT
+        mpp.project_id,
+        min(mpp.phase_start) AS earliest
+    FROM moped_proj_phases mpp
+    LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
+    WHERE (mp.phase_name_simple = any(ARRAY['Active'::text, 'Construction'::text])) AND mpp.is_deleted = false
+    GROUP BY mpp.project_id
+)
+
+SELECT
+    mpc.project_id,
+    mpc.project_component_id,
+    comp_geography.feature_ids,
+    mpc.component_id,
+    comp_geography.geometry,
+    comp_geography.line_geometry,
+    comp_geography.signal_ids,
+    council_districts.council_districts,
+    council_districts.council_districts_searchable,
+    NOT coalesce(council_districts.council_districts IS null OR council_districts.council_districts = ''::text, false) AS is_within_city_limits,
+    comp_geography.length_feet_total,
+    round(comp_geography.length_feet_total::numeric / 5280::numeric, 2) AS length_miles_total,
+    mc.component_name,
+    mc.component_subtype,
+    mc.component_name_full,
+    CASE
+        WHEN mc.line_representation = true THEN 'Line'::text
+        ELSE 'Point'::text
+    END AS geometry_type,
+    CASE
+        WHEN comp_geography.geometry IS null THEN false
+        ELSE true
+    END AS is_mapped,
+    subcomponents.subcomponents AS component_subcomponents,
+    work_types.work_types AS component_work_types,
+    component_tags.component_tags,
+    mpc.description AS component_description,
+    mpc.interim_project_component_id,
+    CASE
+        WHEN mpc.phase_id IS null THEN plv.substantial_completion_date
+        WHEN mpc.phase_id IS NOT null AND mpc.completion_date IS null THEN null::timestamp with time zone
+        ELSE mpc.completion_date
+    END AS substantial_completion_date,
+    plv.substantial_completion_date_estimated,
+    mpc.srts_id,
+    mpc.location_description AS component_location_description,
+    plv.project_name,
+    plv.project_name_secondary,
+    plv.project_name_full,
+    plv.project_description,
+    plv.ecapris_subproject_id,
+    plv.project_website,
+    plv.updated_at AS project_updated_at,
+    plv.date_added AS project_created_at,
+    mpc.phase_id AS component_phase_id,
+    mph.phase_name AS component_phase_name,
+    mph.phase_name_simple AS component_phase_name_simple,
+    current_phase.phase_id AS project_phase_id,
+    current_phase.phase_name AS project_phase_name,
+    current_phase.phase_name_simple AS project_phase_name_simple,
+    coalesce(mph.phase_name, current_phase.phase_name) AS current_phase_name,
+    coalesce(mph.phase_name_simple, current_phase.phase_name_simple) AS current_phase_name_simple,
+    plv.project_team_members,
+    plv.project_sponsor,
+    plv.project_lead,
+    plv.public_process_status,
+    plv.interim_project_id,
+    plv.project_partners,
+    plv.task_order_names,
+    plv.funding_source_and_program_names AS funding_sources,
+    plv.project_status_update,
+    plv.project_status_update_date_created,
+    to_char(timezone('US/Central'::text, plv.construction_start_date), 'YYYY-MM-DD'::text) AS construction_start_date,
+    plv.project_inspector,
+    plv.project_designer,
+    plv.project_tags,
+    plv.workgroup_contractors,
+    plv.contract_numbers,
+    plv.parent_project_id,
+    plv.parent_project_name,
+    plv.parent_project_url,
+    plv.parent_project_name AS parent_project_name_full,
+    rp.related_project_ids_with_self AS related_project_ids,
+    rp.related_project_ids_searchable_with_self AS related_project_ids_searchable,
+    plv.knack_project_id AS knack_data_tracker_project_record_id,
+    plv.project_url,
+    (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
+    get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS project_development_status,
+    project_development_status_date.result AS project_development_status_date,
+    to_char(project_development_status_date.result, 'YYYY'::text)::integer AS project_development_status_date_calendar_year,
+    to_char(project_development_status_date.result, 'FMMonth YYYY'::text) AS project_development_status_date_calendar_year_month,
+    to_char(project_development_status_date.result, 'YYYY-MM'::text) AS project_development_status_date_calendar_year_month_numeric,
+    date_part('quarter'::text, project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter,
+    CASE
+        WHEN date_part('quarter'::text, project_development_status_date.result) = 4::double precision THEN (to_char(project_development_status_date.result, 'YYYY'::text)::integer + 1)::text
+        ELSE to_char(project_development_status_date.result, 'YYYY'::text)
+    END AS project_development_status_date_fiscal_year,
+    CASE
+        WHEN date_part('quarter'::text, project_development_status_date.result) = 4::double precision THEN 1::double precision
+        ELSE date_part('quarter'::text, project_development_status_date.result) + 1::double precision
+    END::text AS project_development_status_date_fiscal_year_quarter,
+    plv.added_by AS project_added_by
+FROM moped_proj_components mpc
+LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
+LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
+LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
+LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
+LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
+LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
+LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
+LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
+LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
+LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
+LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
+LEFT JOIN LATERAL (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
+WHERE mpc.is_deleted = false AND plv.is_deleted = false;
+
+
+CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
+    component_arcgis_online_view.project_id,
+    component_arcgis_online_view.project_component_id,
+    st_geometrytype(dump.geom) AS geometry_type,
+    dump.path[1] AS point_index,
+    component_arcgis_online_view.geometry AS original_geometry,
+    st_asgeojson(dump.geom) AS exploded_geometry,
+    component_arcgis_online_view.project_updated_at
+FROM component_arcgis_online_view,
+    LATERAL st_dump(st_geomfromgeojson(component_arcgis_online_view.geometry)) dump (path, geom)
+WHERE st_geometrytype(st_geomfromgeojson(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;
