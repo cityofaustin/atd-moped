@@ -96,7 +96,6 @@ const FundingFile = ({
         keepMounted
         open={menuOpen}
         onClose={handleMenuClose}
-        autoFocus={false}
         TransitionComponent={Fade}
         anchorOrigin={{
           vertical: "bottom",
