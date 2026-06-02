@@ -214,7 +214,7 @@ const ProjectFundingFilesAttachmentDialog = ({
       showDialogActions={true}
       dialogProps={{ maxWidth: "md" }}
     >
-      <Box sx={{ width: "100%", minHeight: "40vh" }}>
+      <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={tabValue}
