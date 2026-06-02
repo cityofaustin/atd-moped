@@ -74,12 +74,3 @@ update_permissions:
       filter: {}
       check: null
     comment: ""
-delete_permissions:
-  - role: moped-admin
-    permission:
-      filter: {}
-    comment: ""
-  - role: moped-editor
-    permission:
-      filter: {}
-    comment: ""
