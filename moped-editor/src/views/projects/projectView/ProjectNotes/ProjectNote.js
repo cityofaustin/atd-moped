@@ -123,8 +123,9 @@ const ProjectNotes = ({
               buttonProps={{
                 sx: editButtonStyles,
               }}
-              icon={<EditIcon />}
-            />
+            >
+              <EditIcon />
+            </IconButtonWithTooltip>
           </Grid2>
           <Grid2>
             {!isEditingNote && (
@@ -142,8 +143,9 @@ const ProjectNotes = ({
                 buttonProps={{
                   sx: editButtonStyles,
                 }}
-                icon={<DeleteIcon />}
-              />
+              >
+                <DeleteIcon />
+              </IconButtonWithTooltip>
             )}
           </Grid2>
         </Grid2>
