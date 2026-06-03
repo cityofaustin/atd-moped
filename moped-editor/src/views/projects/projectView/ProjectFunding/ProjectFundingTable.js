@@ -279,8 +279,9 @@ const useColumns = ({
                 buttonProps={{ sx: { color: "inherit", padding: "5px" } }}
                 disabled={!!row.is_synced_from_ecapris}
                 onClick={handleDeleteOpen(id)}
-                icon={<DeleteOutlineIcon />}
-              />
+              >
+                <DeleteOutlineIcon />
+              </IconButtonWithTooltip>
             </>
           ),
       },

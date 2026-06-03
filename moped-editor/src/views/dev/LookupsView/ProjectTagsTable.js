@@ -314,8 +314,9 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
                     onClick={onScrollToTop}
                     size="large"
                     ariaLabel="return to top"
-                    icon={<ArrowUpwardIcon fontSize="small" />}
-                  />
+                  >
+                    <ArrowUpwardIcon fontSize="small" />
+                  </IconButtonWithTooltip>
                 )}
               </>
             ),
