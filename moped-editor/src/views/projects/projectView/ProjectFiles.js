@@ -124,7 +124,7 @@ const useColumns = ({
             />
           ) : (
             // if the user provided file_url is not a valid url, just render the text
-            <Typography
+            (<Typography
               sx={{
                 backgroundColor: "#eee",
                 fontFamily: "monospace",
@@ -136,7 +136,7 @@ const useColumns = ({
               }}
             >
               {row?.file_url}
-            </Typography>
+            </Typography>)
           );
         },
         renderEditCell: (props) =>
