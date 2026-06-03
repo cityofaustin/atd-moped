@@ -24,6 +24,7 @@ import {
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
   GET_FUNDING_LOOKUPS,
+  DELETE_PROJECT_FUNDING_AND_REATTACH,
 } from "src/queries/funding";
 import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
 
@@ -77,7 +78,7 @@ const ProjectFundingTable = ({
     data: dataProjectFunding,
     refetch,
   } = useQuery(COMBINED_FUNDING_QUERY, {
-    variables: { ...queryVariables },
+    variables: queryVariables,
     fetchPolicy: "no-cache",
   });
 
@@ -108,6 +109,9 @@ const ProjectFundingTable = ({
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+  const [deleteProjectFundingAndReattach] = useMutation(
+    DELETE_PROJECT_FUNDING_AND_REATTACH
+  );
   const [updateShouldSyncECapris] = useMutation(
     PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
   );
@@ -246,14 +250,43 @@ const ProjectFundingTable = ({
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
       const deletedRow = rows.find((row) => row.id === id);
-      const { proj_funding_id } = deletedRow;
+      const {
+        proj_funding_id,
+        is_manual,
+        should_use_ecapris_amount,
+        is_synced_from_ecapris,
+      } = deletedRow;
 
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
-        deleteProjectFunding({
-          variables: {
-            proj_funding_id,
-          },
+        const isDeletingOverride =
+          !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
+        const fileIds =
+          deletedRow.moped_funding_files?.map(
+            (file) => file.moped_project_file.project_file_id
+          ) ?? [];
+
+        const entity_id = deletedRow.ecapris_funding?.id;
+        const attachmentObjects = fileIds.map((fileId) => ({
+          file_id: fileId,
+          project_id: projectId,
+          entity_id,
+          is_deleted: false,
+        }));
+
+        const deleteMutation = isDeletingOverride
+          ? deleteProjectFundingAndReattach
+          : deleteProjectFunding;
+
+        const variables = isDeletingOverride
+          ? {
+              proj_funding_id,
+              attachmentObjects,
+            }
+          : { proj_funding_id };
+
+        deleteMutation({
+          variables,
         })
           .then(() => refetch())
           .then(() => {
@@ -270,7 +303,14 @@ const ProjectFundingTable = ({
           });
       }
     },
-    [rows, deleteProjectFunding, refetch, handleSnackbar]
+    [
+      rows,
+      deleteProjectFunding,
+      refetch,
+      handleSnackbar,
+      projectId,
+      deleteProjectFundingAndReattach,
+    ]
   );
 
   // when a user cancels editing by clicking the X in the actions
@@ -293,7 +333,7 @@ const ProjectFundingTable = ({
       return (
         addProjectFunding({
           variables: {
-            objects: {
+            fundingObjects: {
               ...mutationData,
               project_id: Number(projectId),
             },
