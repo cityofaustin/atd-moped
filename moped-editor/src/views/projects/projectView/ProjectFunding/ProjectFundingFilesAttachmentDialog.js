@@ -1,28 +1,15 @@
 import React, { useState, useMemo } from "react";
 import { useMutation } from "@apollo/client";
 
-import {
-  Box,
-  Divider,
-  IconButton,
-  Stack,
-  Tabs,
-  Tab,
-  Typography,
-} from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import {
   CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
-  DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
-  DELETE_FILE_MOPED_FUNDING_ATTACHMENT,
   ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING,
   ATTACH_EXISTING_FILE_TO_MOPED_FUNDING,
 } from "src/queries/project";
 
 import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
-import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import { LinkOff } from "@mui/icons-material";
-import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
 import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
 import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
@@ -42,6 +29,7 @@ function AttachmentTabPanel(props) {
       style={{
         position: value === index ? "static" : "absolute",
         visibility: value === index ? "visible" : "hidden",
+        display: value === index ? "block" : "none",
         width: "100%",
       }}
       {...other}
@@ -85,60 +73,29 @@ const ProjectFundingFilesAttachmentDialog = ({
     [rows, fileAttachmentId]
   );
   const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
-  const [addFundingFileAttachment] = useMutation(
+  const [addFundingFileAttachment, { loading: addFileLoading }] = useMutation(
     isSyncedFromECapris
       ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
       : CREATE_FILE_MOPED_FUNDING_ATTACHMENT
   );
-  const [attachExistingFile] = useMutation(
+  const [attachExistingFile, { loading: attachFileLoading }] = useMutation(
     isSyncedFromECapris
       ? ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING
       : ATTACH_EXISTING_FILE_TO_MOPED_FUNDING
   );
 
-  const [detachFundingFileAttachment] = useMutation(
-    isSyncedFromECapris
-      ? DELETE_FILE_ECAPRIS_FUNDING_ATTACHMENT
-      : DELETE_FILE_MOPED_FUNDING_ATTACHMENT
-  );
-  const [detachConfirmationFileId, setDetachConfirmationFileId] =
-    useState(null);
+  const isLoading = addFileLoading || attachFileLoading;
 
   const filesAttachedToId = useMemo(() => {
     const filesType = isSyncedFromECapris
       ? "ecapris_funding_files"
       : "moped_funding_files";
-    const filesAttachedToId = rows
-      .find((row) => row.id === fileAttachmentId)
-      ?.[filesType].map((file_record) => file_record.moped_project_file);
+    const filesAttachedToId = rows.find((row) => row.id === fileAttachmentId)?.[
+      filesType
+    ];
 
     return filesAttachedToId ? filesAttachedToId : [];
   }, [fileAttachmentId, rows, isSyncedFromECapris]);
-
-  const handleUnlinkFileAttachment = (id) => {
-    const fundingRecord = rows.find((row) => row.id === fileAttachmentId);
-    const entityId = fundingRecord?.proj_funding_id;
-
-    detachFundingFileAttachment({
-      variables: {
-        fileId: id,
-        entityId,
-        projectId,
-      },
-    })
-      .then(() => {
-        setDetachConfirmationFileId(null);
-        onClose();
-        handleSnackbar(true, "File attachment detached", "success");
-      })
-      .catch((error) => {
-        setDetachConfirmationFileId(null);
-        handleSnackbar(true, "Error detaching file attachment", "error", error);
-      })
-      .finally(() => {
-        refetch();
-      });
-  };
 
   /* File upload form state and handlers */
   const handleClickSaveFile = (fileDataBundle) => {
@@ -219,6 +176,7 @@ const ProjectFundingFilesAttachmentDialog = ({
         object: {
           file_id: existingFileIdToAttach,
           entity_id: fundingRecord?.proj_funding_id,
+          is_deleted: false,
           ...(isSyncedFromECapris && { project_id: projectId }),
         },
       },
@@ -249,12 +207,14 @@ const ProjectFundingFilesAttachmentDialog = ({
       handleClose={onClose}
       handleSave={isExistingFileTab ? handleAttach : handleSave}
       handleCancel={handleCancel}
-      saveDisabled={isExistingFileTab ? !existingFileIdToAttach : !fileReady}
+      saveDisabled={
+        isLoading || (isExistingFileTab ? !existingFileIdToAttach : !fileReady)
+      }
       saveButtonLabel={isExistingFileTab ? "Attach" : newFileLabel}
       showDialogActions={true}
       dialogProps={{ maxWidth: "md" }}
     >
-      <Box sx={{ width: "100%", minHeight: "40vh" }}>
+      <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={tabValue}
@@ -279,70 +239,6 @@ const ProjectFundingFilesAttachmentDialog = ({
             attachedFiles={filesAttachedToId}
           />
         </AttachmentTabPanel>
-        <Box>
-          <Divider sx={{ marginY: 4 }} />
-          <Stack direction="column">
-            <Typography variant="h4" sx={{ mb: 1 }}>
-              Attached files
-            </Typography>
-
-            {filesAttachedToId.length > 0 ? (
-              filesAttachedToId.map((file) => {
-                if (!file) return null;
-
-                return (
-                  <React.Fragment key={file.project_file_id}>
-                    <DeleteConfirmationModal
-                      type="file attachment"
-                      actionButtonText="Detach"
-                      additionalConfirmationText="This will not delete the file, only detach it from this funding record."
-                      actionButtonIcon={<LinkOff />}
-                      submitDelete={() =>
-                        handleUnlinkFileAttachment(file.project_file_id)
-                      }
-                      isDeleteConfirmationOpen={
-                        detachConfirmationFileId === file.project_file_id
-                      }
-                      setIsDeleteConfirmationOpen={(open) =>
-                        setDetachConfirmationFileId(
-                          open ? file.project_file_id : null
-                        )
-                      }
-                    />
-                    <Stack
-                      direction="row"
-                      sx={{
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                      spacing={0.5}
-                    >
-                      <Box>
-                        <IconButton
-                          onClick={() =>
-                            setDetachConfirmationFileId(file.project_file_id)
-                          }
-                          size="small"
-                        >
-                          <LinkOff />
-                        </IconButton>
-                      </Box>
-                      <Box sx={{ flex: 1 }}>
-                        <ProjectFileLink
-                          fileKey={file?.file_key}
-                          fileUrl={file?.file_url}
-                          fileName={file?.file_name}
-                        />
-                      </Box>
-                    </Stack>
-                  </React.Fragment>
-                );
-              })
-            ) : (
-              <Typography variant="body2">No files attached</Typography>
-            )}
-          </Stack>
-        </Box>
       </Box>
     </FormDialog>
   );

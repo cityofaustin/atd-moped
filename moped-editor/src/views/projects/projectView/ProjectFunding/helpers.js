@@ -9,13 +9,13 @@ import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
-import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import {
   currencyFormatter,
   isAmountOutOfRange,
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
+import FundingFile from "src/views/projects/projectView/ProjectFunding/FundingFile";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
@@ -128,6 +128,7 @@ export const transformGridToDatabase = (gridRecord) => {
     is_manual,
     ecapris_funding_files,
     moped_funding_files,
+    ecapris_funding,
     ...databaseFields
   } = gridRecord;
 
@@ -201,6 +202,8 @@ export const useColumns = ({
   setOverrideFundingRecord,
   usingShiftKey,
   logUserEvent,
+  handleSnackbar,
+  refetch,
 }) =>
   useMemo(() => {
     return [
@@ -353,23 +356,23 @@ export const useColumns = ({
             return;
           }
           return (
-            <Stack direction="column" spacing={0.5}>
-              {row?.[filesType].map((file_record, index) => {
+            <Stack
+              direction="column"
+              spacing={0.5}
+              divider={<Divider sx={{ my: 0.5 }} />}
+            >
+              {row?.[filesType].map((file_record) => {
                 const file = file_record.moped_project_file;
-
                 if (!file) return null;
-
                 return (
-                  <React.Fragment key={file.project_file_id}>
-                    {index > 0 && <Divider sx={{ my: 0.5 }} />}
-                    <ProjectFileLink
-                      fileKey={file.file_key}
-                      fileUrl={file.file_url}
-                      fileName={file.file_name}
-                      condensed
-                      showNetworkPathStyles={false}
-                    />
-                  </React.Fragment>
+                  <FundingFile
+                    key={file.project_file_id}
+                    fileRecordId={file_record.id}
+                    file={file}
+                    isSyncedFromECapris={row.is_synced_from_ecapris}
+                    refetch={refetch}
+                    handleSnackbar={handleSnackbar}
+                  />
                 );
               })}
             </Stack>
@@ -441,4 +444,6 @@ export const useColumns = ({
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
+    refetch,
+    handleSnackbar
   ]);

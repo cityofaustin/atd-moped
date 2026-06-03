@@ -1,6 +1,16 @@
 table:
   name: combined_project_funding_view
   schema: public
+object_relationships:
+  - name: ecapris_funding
+    using:
+      manual_configuration:
+        column_mapping:
+          fao_id: fao_id
+        insertion_order: null
+        remote_table:
+          name: ecapris_subproject_funding
+          schema: public
 array_relationships:
   - name: ecapris_funding_files
     using:

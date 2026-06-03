@@ -16,6 +16,7 @@ insert_permissions:
         - created_at
         - entity_id
         - file_id
+        - is_deleted
         - updated_at
     comment: ""
   - role: moped-editor
@@ -28,6 +29,7 @@ insert_permissions:
         - created_at
         - entity_id
         - file_id
+        - is_deleted
         - updated_at
     comment: ""
 select_permissions:
@@ -38,6 +40,7 @@ select_permissions:
         - entity_id
         - file_id
         - id
+        - is_deleted
         - updated_at
       filter: {}
     comment: ""
@@ -48,15 +51,22 @@ select_permissions:
         - entity_id
         - file_id
         - id
+        - is_deleted
         - updated_at
       filter: {}
     comment: ""
-delete_permissions:
+update_permissions:
   - role: moped-admin
     permission:
+      columns:
+        - is_deleted
       filter: {}
+      check: null
     comment: ""
   - role: moped-editor
     permission:
+      columns:
+        - is_deleted
       filter: {}
+      check: null
     comment: ""
