@@ -5,7 +5,7 @@ const iconButtonStyles = {
   width: 40,
   height: 40,
   flexShrink: 0,
-  alignSelf: "flex-start",
+  alignSelf: "center",
 };
 
 /**
