@@ -125,7 +125,7 @@ const ProjectWorkActivitiesForm = ({
       )}
       autoComplete="off"
     >
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         {!isNewActivity && (
           <Grid2 size={12}>
             <FormControl fullWidth>
@@ -306,7 +306,7 @@ const ProjectWorkActivitiesForm = ({
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
+        <Grid2 sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"

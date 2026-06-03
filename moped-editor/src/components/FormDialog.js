@@ -1,0 +1,84 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
+
+/**
+ * Dialog wrapper component for displaying forms with optional save and cancel action buttons
+ * This supports our RHF forms with their own buttons and forms that manage their own state.
+ * @param {string} title - title of the dialog
+ * @param {string} saveButtonLabel - label for the save button
+ * @param {string} cancelButtonLabel - label for the cancel button
+ * @param {boolean} saveDisabled - boolean that controls whether the save button is disabled or not
+ * @param {function} handleClose - handles closing the dialog
+ * @param {function} handleSave - handles saving the form
+ * @param {function} handleCancel - handles canceling the form
+ * @param {boolean} open - MUI Dialog boolean that controls whether the dialog is open or not
+ * @param {Object} children - React children elements
+ * @param {boolean} showDialogActions - boolean that controls whether the dialog action buttons are shown or not
+ * @param {Object} dialogProps - additional props to pass to the MUI Dialog component
+ * @returns {JSX.Element}
+ */
+const FormDialog = ({
+  title,
+  saveButtonLabel = "Save",
+  cancelButtonLabel = "Cancel",
+  saveDisabled,
+  handleClose,
+  handleSave,
+  handleCancel,
+  open,
+  children,
+  showDialogActions = false,
+  dialogProps = {},
+}) => {
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      scroll="body"
+      fullWidth
+      maxWidth="sm"
+      {...dialogProps}
+    >
+      <DialogTitle
+        variant="h4"
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        {title}
+        <IconButton onClick={handleClose} size="large">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>{children}</DialogContent>
+      {showDialogActions && (
+        <DialogActions sx={{ pr: 3, pb: 2 }}>
+          <Button onClick={handleCancel} color="primary">
+            {cancelButtonLabel}
+          </Button>
+          <Button
+            onClick={handleSave}
+            color="primary"
+            variant="contained"
+            startIcon={<SaveIcon />}
+            disabled={saveDisabled}
+          >
+            {saveButtonLabel}
+          </Button>
+        </DialogActions>
+      )}
+    </Dialog>
+  );
+};
+
+export default FormDialog;

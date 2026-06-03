@@ -76,13 +76,8 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
             <ExternalLink
               url={row.work_order_url}
               linkColor="primary"
-              linkProps={{
-                sx: {
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "block",
-                },
-              }}
+              useFriendlyUrl
+              showExternalLinkIcon={false}
             />
           ) : null,
       },
