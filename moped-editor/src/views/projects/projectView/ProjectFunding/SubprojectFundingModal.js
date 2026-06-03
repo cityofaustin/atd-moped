@@ -110,7 +110,7 @@ const SubprojectFundingModal = ({
     // include records in mutation
     addProjectFunding({
       variables: {
-        objects: newFunds,
+        fundingObjects: newFunds,
       },
     })
       .then(() => {

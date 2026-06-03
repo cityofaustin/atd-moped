@@ -16,6 +16,7 @@ import {
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
 import FundingFile from "src/views/projects/projectView/ProjectFunding/FundingFile";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
@@ -420,14 +421,19 @@ export const useColumns = ({
               >
                 <AttachFileOutlinedIcon />
               </IconButton>
-              <IconButton
+              <IconButtonWithTooltip
+                title={
+                  row.is_synced_from_ecapris
+                    ? "Switch off eCAPRIS sync to remove synced rows"
+                    : null
+                }
                 aria-label="delete"
-                sx={{ color: "inherit", padding: "5px" }}
+                buttonProps={{ sx: { color: "inherit", padding: "5px" } }}
                 disabled={!!row.is_synced_from_ecapris}
                 onClick={handleDeleteOpen(id)}
               >
                 <DeleteOutlineIcon />
-              </IconButton>
+              </IconButtonWithTooltip>
             </>
           ),
       },
@@ -445,5 +451,5 @@ export const useColumns = ({
     usingShiftKey,
     logUserEvent,
     refetch,
-    handleSnackbar
+    handleSnackbar,
   ]);

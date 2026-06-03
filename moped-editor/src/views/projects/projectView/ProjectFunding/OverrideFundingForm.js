@@ -166,7 +166,7 @@ const OverrideFundingForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         <Grid2 size={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
@@ -338,7 +338,9 @@ const OverrideFundingForm = ({
             color="primary"
             type="submit"
             // Disable save button if editing and no changes made or mutation is loading
-            disabled={(!isNewOverride && !isDirty) || mutationState.loading || !isValid}
+            disabled={
+              (!isNewOverride && !isDirty) || mutationState.loading || !isValid
+            }
           >
             Save
           </Button>
