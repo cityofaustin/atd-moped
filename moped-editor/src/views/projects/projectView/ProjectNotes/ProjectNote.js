@@ -1,17 +1,16 @@
 import {
-  IconButton,
   Grid2,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
   Typography,
-  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/EditOutlined";
 
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
@@ -110,7 +109,7 @@ const ProjectNotes = ({
             <SecondaryInformationChip chipLabel={note.note_type_name} />
           </Grid2>
           <Grid2>
-            <Tooltip
+            <IconButtonWithTooltip
               title={
                 note.note_type_name === "eCAPRIS"
                   ? "Status updates from eCAPRIS can't be edited in Moped"
@@ -118,25 +117,19 @@ const ProjectNotes = ({
                     ? null
                     : "Only the author can edit this note"
               }
+              onClick={() => handleEditClick(noteIndex, note)}
+              disabled={!isNoteEditable}
+              ariaLabel="edit"
+              buttonProps={{
+                sx: editButtonStyles,
+              }}
             >
-              <span>
-                {/* Tooltip needs to listen to child element events, span is needed if button is disabled */}
-                <IconButton
-                  edge="end"
-                  aria-label="edit"
-                  onClick={() => handleEditClick(noteIndex, note)}
-                  size="small"
-                  disabled={!isNoteEditable}
-                  sx={editButtonStyles}
-                >
-                  <EditIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
+              <EditIcon />
+            </IconButtonWithTooltip>
           </Grid2>
           <Grid2>
             {!isEditingNote && (
-              <Tooltip
+              <IconButtonWithTooltip
                 title={
                   note.note_type_name === "eCAPRIS"
                     ? "Status updates from eCAPRIS can't be deleted in Moped"
@@ -144,20 +137,15 @@ const ProjectNotes = ({
                       ? null
                       : "Only the author can delete this note"
                 }
+                ariaLabel="delete"
+                onClick={() => handleDeleteOpen(note.original_id)}
+                disabled={!isNoteEditable}
+                buttonProps={{
+                  sx: editButtonStyles,
+                }}
               >
-                <span>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleDeleteOpen(note.original_id)}
-                    size="small"
-                    disabled={!isNoteEditable}
-                    sx={editButtonStyles}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
+                <DeleteIcon />
+              </IconButtonWithTooltip>
             )}
           </Grid2>
         </Grid2>
