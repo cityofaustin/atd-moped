@@ -59,7 +59,7 @@ const CopyTextButton = ({
         ariaLabel={buttonText}
         buttonProps={buttonProps}
       >
-        <StartIcon />
+        {startIcon}
       </IconButtonWithTooltip>
     );
   }
