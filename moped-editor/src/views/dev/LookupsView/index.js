@@ -232,8 +232,9 @@ const LookupsView = () => {
                               }}
                               size="large"
                               ariaLabel="return to top"
-                              icon={<ArrowUpwardIcon fontSize="small" />}
-                            />
+                            >
+                              <ArrowUpwardIcon fontSize="small" />
+                            </IconButtonWithTooltip>
                           </Grid2>
                         </Grid2>
                       </Grid2>

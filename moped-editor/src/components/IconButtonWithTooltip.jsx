@@ -6,22 +6,22 @@ import { Tooltip, IconButton } from "@mui/material";
  * @param {string} title - text shown on the tooltip
  * @param {Function} onClick - onClick function passed to IconButton
  * @param {string} ariaLabel - aria-label for IconButton component
- * @param {React.ReactNode} icon - the icon to display in the IconButton
+ * @param {React.ReactNode} children - children, expecting the icon to display in the IconButton
  * @param {Boolean} disabled - if IconButton should be disabled, default is false
  * @param {string} size - IconButton size prop, defaults to small
  * @param {Object} tooltipProps - additional props to be passed to Tooltip component (optional)
- * @param {Object} buttonProps - additional props to be passed to IconButton component (optional)
+ * @param {Object} iconButtonProps - additional props to be passed to IconButton component (optional)
  * @return {JSX.Element}
  */
 const IconButtonWithTooltip = ({
   title,
   onClick,
   ariaLabel,
-  icon,
+  children,
   disabled = false,
   size = "small",
   tooltipProps,
-  buttonProps,
+  iconButtonProps,
 }) => {
   return (
     <Tooltip title={title} {...tooltipProps}>
@@ -33,9 +33,9 @@ const IconButtonWithTooltip = ({
           onClick={onClick}
           size={size}
           disabled={disabled}
-          {...buttonProps}
+          {...iconButtonProps}
         >
-          {icon}
+          {children}
         </IconButton>
       </span>
     </Tooltip>
