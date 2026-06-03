@@ -60,7 +60,10 @@ const ProjectTeamRoleMultiselect = ({
   };
 
   return (
-    <FormControl variant="standard" sx={{ margin: theme.spacing(1) }}>
+    <FormControl
+      variant="standard"
+      sx={{ margin: theme.spacing(1), width: "100%" }}
+    >
       <Select
         variant="standard"
         sx={{ minWidth: theme.spacing(10) }}

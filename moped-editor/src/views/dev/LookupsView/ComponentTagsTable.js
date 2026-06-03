@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
-import { Button, Tooltip, IconButton } from "@mui/material";
+import { Button } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
@@ -27,6 +27,7 @@ import {
   transformGridToDatabase,
 } from "./componentTagsHelpers";
 import { createRecordKeyHash } from "src/utils/urls";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 const requiredFields = ["slug"];
 
@@ -313,11 +314,14 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
               <>
                 Component tags
                 {onScrollToTop && (
-                  <Tooltip title="Return to top of page">
-                    <IconButton onClick={onScrollToTop} size="large">
-                      <ArrowUpwardIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButtonWithTooltip
+                    title="Return to top of page"
+                    onClick={onScrollToTop}
+                    size="large"
+                    ariaLabel="return to top"
+                  >
+                    <ArrowUpwardIcon fontSize="small" />
+                  </IconButtonWithTooltip>
                 )}
               </>
             ),
