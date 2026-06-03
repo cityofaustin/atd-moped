@@ -370,6 +370,8 @@ const ProjectFundingTable = ({
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
+    refetch,
+    handleSnackbar
   });
 
   const handleECaprisSwitch = () => {
