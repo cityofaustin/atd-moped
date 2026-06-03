@@ -57,7 +57,7 @@ const CopyTextButton = ({
         title={copied ? copiedButtonText : copyButtonText}
         onClick={handleCopyClick}
         ariaLabel={buttonText}
-        buttonProps={buttonProps}
+        iconButtonProps={buttonProps}
       >
         {startIcon}
       </IconButtonWithTooltip>
