@@ -120,7 +120,7 @@ const ProjectNotes = ({
               onClick={() => handleEditClick(noteIndex, note)}
               disabled={!isNoteEditable}
               ariaLabel="edit"
-              buttonProps={{
+              iconButtonProps={{
                 sx: editButtonStyles,
               }}
             >
@@ -140,7 +140,7 @@ const ProjectNotes = ({
                 ariaLabel="delete"
                 onClick={() => handleDeleteOpen(note.original_id)}
                 disabled={!isNoteEditable}
-                buttonProps={{
+                iconButtonProps={{
                   sx: editButtonStyles,
                 }}
               >
