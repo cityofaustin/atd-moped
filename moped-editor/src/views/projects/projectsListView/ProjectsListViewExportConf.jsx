@@ -3,8 +3,8 @@ import {
   filterProjectSignals,
   filterTaskOrderName,
   resolveHasSubprojects,
-} from "./helpers.js";
-import { formatTimeStampTZType } from "src/utils/dateAndTime.js";
+} from "./helpers";
+import { formatTimeStampTZType } from "src/utils/dateAndTime";
 
 /**
  * The ProjectsListView export settings

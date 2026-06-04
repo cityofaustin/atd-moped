@@ -10,7 +10,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { useLazyQuery } from "@apollo/client";
 import { NAVIGATION_SEARCH_QUERY_CONFIG } from "./NavigationSearchQueryConf";
-import NavigationSearchResults from "./NavigationSearchResults.js";
+import NavigationSearchResults from "./NavigationSearchResults";
 import { useNavigationSearch } from "./useNavigationSearchQuery";
 
 // Reusable style fragments
