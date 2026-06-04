@@ -95,6 +95,9 @@ const LookupAutocompleteComponent = ({
           {...params}
           inputRef={ref}
           {...textFieldProps}
+          slotProps={{
+            htmlInput: { "data-1p-ignore": true, ...params.inputProps },
+          }}
         />
       )}
       {...autocompleteProps}

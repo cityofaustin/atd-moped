@@ -149,7 +149,7 @@ const ProjectSummaryProjectECapris = ({
               )}
               openOnFocus={true}
               noOptionsText={
-                <Typography>
+                <Typography variant="body2">
                   eCAPRIS subproject ID not found.{" "}
                   {
                     <ExternalLink

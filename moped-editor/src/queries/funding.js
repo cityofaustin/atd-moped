@@ -25,6 +25,27 @@ export const COMBINED_FUNDING_QUERY = gql`
       unit_long_name
       ecapris_subproject_id
       should_use_ecapris_amount
+      ecapris_funding_files(where: { is_deleted: { _eq: false } }) {
+        id
+        moped_project_file {
+          project_file_id
+          file_url
+          file_key
+          file_name
+        }
+      }
+      moped_funding_files(where: { is_deleted: { _eq: false } }) {
+        id
+        moped_project_file {
+          project_file_id
+          file_url
+          file_key
+          file_name
+        }
+      }
+      ecapris_funding {
+        id
+      }
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id
@@ -45,8 +66,8 @@ export const COMBINED_FUNDING_QUERY = gql`
   }
 `;
 
-export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
-  query EcaprisFdu {
+export const GET_FUNDING_LOOKUPS = gql`
+  query GetFundingLookups {
     ecapris_subproject_funding {
       ecapris_funding_id: fao_id
       ecapris_subproject_id
@@ -63,6 +84,10 @@ export const ECAPRIS_FDU_OPTIONS_QUERY = gql`
         funding_program_id
         funding_program_name
       }
+    }
+    moped_file_types {
+      id
+      name
     }
   }
 `;
@@ -135,15 +160,77 @@ export const DELETE_PROJECT_FUNDING = gql`
     ) {
       affected_rows
     }
+    update_files_project_funding(
+      where: { entity_id: { _eq: $proj_funding_id } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+/* Delete funding record and also transfer file attachments back to
+synced eCAPRIS record that is restored. Executes in one transaction. */
+export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
+  mutation DeleteProjectFundingAndReattach(
+    $proj_funding_id: Int!
+    $attachmentObjects: [files_ecapris_funding_insert_input!]!
+  ) {
+    update_moped_proj_funding(
+      _set: { is_deleted: true }
+      where: { proj_funding_id: { _eq: $proj_funding_id } }
+    ) {
+      affected_rows
+    }
+    update_files_project_funding(
+      where: { entity_id: { _eq: $proj_funding_id } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    insert_files_ecapris_funding(
+      objects: $attachmentObjects
+      on_conflict: {
+        constraint: files_ecapris_funding_project_id_entity_id_file_id_key
+        update_columns: [is_deleted]
+      }
+    ) {
+      affected_rows
+    }
   }
 `;
 
 export const ADD_PROJECT_FUNDING = gql`
-  mutation AddProjectFunding($objects: [moped_proj_funding_insert_input!]!) {
-    insert_moped_proj_funding(objects: $objects) {
+  mutation AddProjectFunding(
+    $fundingObjects: [moped_proj_funding_insert_input!]!
+  ) {
+    insert_moped_proj_funding(objects: $fundingObjects) {
       returning {
         proj_funding_id
       }
+    }
+  }
+`;
+
+/* Add funding record and also transfer synced eCAPRIS row attachments to
+the new Moped funding record inserted as an override of eCAPRIS. Executes in 
+one transaction. */
+export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
+  mutation AddProjectFundingAndReattach(
+    $fundingObjects: [moped_proj_funding_insert_input!]!
+    $entityId: Int!
+    $projectId: Int!
+  ) {
+    insert_moped_proj_funding(objects: $fundingObjects) {
+      returning {
+        proj_funding_id
+      }
+    }
+    update_files_ecapris_funding(
+      where: { entity_id: { _eq: $entityId }, project_id: { _eq: $projectId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
     }
   }
 `;

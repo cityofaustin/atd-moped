@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 /**
  * Button component which copies text to clipboard
@@ -17,7 +16,7 @@ import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
  */
 const CopyTextButton = ({
   textToCopy,
-  copyButtonText = "Copy to Clipboard",
+  copyButtonText = "Copy to clipboard",
   copiedButtonText = "Copied!",
   buttonProps,
   iconProps,
@@ -27,7 +26,7 @@ const CopyTextButton = ({
   const [copied, setCopied] = useState(false);
   const buttonText = copied ? copiedButtonText : copyButtonText;
   const startIcon = copied ? (
-    <CheckCircleOutline {...iconProps} />
+    <CheckCircleOutline color="success" {...iconProps} />
   ) : (
     <ContentCopyOutlined {...iconProps} />
   );
@@ -54,16 +53,14 @@ const CopyTextButton = ({
 
   if (iconOnly) {
     return (
-      <Tooltip title={copied ? copiedButtonText : copyButtonText}>
-        <IconButton
-          size="small"
-          onClick={handleCopyClick}
-          aria-label={buttonText}
-          {...buttonProps}
-        >
-          {startIcon}
-        </IconButton>
-      </Tooltip>
+      <IconButtonWithTooltip
+        title={copied ? copiedButtonText : copyButtonText}
+        onClick={handleCopyClick}
+        ariaLabel={buttonText}
+        iconButtonProps={buttonProps}
+      >
+        {startIcon}
+      </IconButtonWithTooltip>
     );
   }
 

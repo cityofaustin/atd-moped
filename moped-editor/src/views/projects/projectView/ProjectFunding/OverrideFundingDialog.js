@@ -1,12 +1,8 @@
-import IconButton from "@mui/material/IconButton";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import CloseIcon from "@mui/icons-material/Close";
 import OverrideFundingForm from "src/views/projects/projectView/ProjectFunding/OverrideFundingForm";
+import FormDialog from "src/components/FormDialog";
 
 const OverrideFundingDialog = ({
-  onClose,
+  handleClose,
   fundingRecord,
   refetchFundingQuery,
   setOverrideFundingRecord,
@@ -15,32 +11,21 @@ const OverrideFundingDialog = ({
   dataProjectFunding,
 }) => {
   return (
-    <Dialog open onClose={onClose} fullWidth scroll="body">
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-        variant="h4"
-      >
-        <span>{`Edit eCAPRIS FDU ${fundingRecord.fdu.fdu}`}</span>
-        <IconButton onClick={onClose} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent dividers={true}>
-        <OverrideFundingForm
-          fundingRecord={fundingRecord}
-          handleSnackbar={handleSnackbar}
-          refetchFundingQuery={refetchFundingQuery}
-          setOverrideFundingRecord={setOverrideFundingRecord}
-          projectId={projectId}
-          onClose={onClose}
-          dataProjectFunding={dataProjectFunding}
-        />
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      title={`Edit eCAPRIS FDU ${fundingRecord.fdu.fdu}`}
+      open={true}
+      handleClose={handleClose}
+    >
+      <OverrideFundingForm
+        fundingRecord={fundingRecord}
+        handleSnackbar={handleSnackbar}
+        refetchFundingQuery={refetchFundingQuery}
+        setOverrideFundingRecord={setOverrideFundingRecord}
+        projectId={projectId}
+        handleClose={handleClose}
+        dataProjectFunding={dataProjectFunding}
+      />
+    </FormDialog>
   );
 };
 

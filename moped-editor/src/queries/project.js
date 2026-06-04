@@ -694,6 +694,18 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
     ) {
       affected_rows
     }
+    update_files_ecapris_funding(
+      where: { file_id: { _eq: $fileId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_files_project_funding(
+      where: { file_id: { _eq: $fileId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
   }
 `;
 
@@ -701,6 +713,86 @@ export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
   mutation insert_single_article($object: moped_project_files_insert_input!) {
     insert_moped_project_files(objects: [$object]) {
       affected_rows
+    }
+  }
+`;
+
+export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+  mutation InsertFileWithEcaprisConnection(
+    $object: moped_project_files_insert_input!
+  ) {
+    insert_moped_project_files_one(object: $object) {
+      project_file_id
+      files_ecapris_fundings {
+        id
+      }
+    }
+  }
+`;
+
+export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+  mutation DetachFileEcaprisFunding($id: Int!) {
+    update_files_ecapris_funding_by_pk(
+      pk_columns: { id: $id }
+      _set: { is_deleted: true }
+    ) {
+      id
+    }
+  }
+`;
+
+export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
+  mutation InsertFileWithMopedFundingConnection(
+    $object: moped_project_files_insert_input!
+  ) {
+    insert_moped_project_files_one(object: $object) {
+      project_file_id
+      files_project_fundings {
+        id
+      }
+    }
+  }
+`;
+
+export const DETACH_FILE_MOPED_FUNDING_ATTACHMENT = gql`
+  mutation DetachFileMopedFunding($id: Int!) {
+    update_files_project_funding_by_pk(
+      pk_columns: { id: $id }
+      _set: { is_deleted: true }
+    ) {
+      id
+    }
+  }
+`;
+
+export const ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING = gql`
+  mutation AttachExistingFileToEcaprisFunding(
+    $object: files_ecapris_funding_insert_input!
+  ) {
+    insert_files_ecapris_funding_one(
+      object: $object
+      on_conflict: {
+        constraint: files_ecapris_funding_project_id_entity_id_file_id_key
+        update_columns: [is_deleted]
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
+  mutation AttachExistingFileToMopedFunding(
+    $object: files_project_funding_insert_input!
+  ) {
+    insert_files_project_funding_one(
+      object: $object
+      on_conflict: {
+        constraint: files_project_funding_entity_id_file_id_key
+        update_columns: [is_deleted]
+      }
+    ) {
+      id
     }
   }
 `;
