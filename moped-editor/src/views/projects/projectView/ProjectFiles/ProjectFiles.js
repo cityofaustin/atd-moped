@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash.isequal";
 
-import { Button, Link, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import {
@@ -14,27 +14,26 @@ import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInl
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "src/utils/humanReadableFileSize";
-import ExternalLink from "src/components/ExternalLink";
-import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
+import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
 import {
   PROJECT_FILE_ATTACHMENTS,
   PROJECT_FILE_ATTACHMENTS_DELETE,
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "src/queries/project";
-import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
-import { isValidUrl } from "src/utils/urls";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
-import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesTypeSelect";
+import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFiles/ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import {
   getIsEditMode,
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
-import { useUser } from "src/auth/user";
+import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
+import FormDialog from "src/components/FormDialog";
+import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
 
 // reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
@@ -52,20 +51,11 @@ export const useFileTypeObject = (fileTypes) =>
 
 // remove the FilePond and s3 added path for display, ex:
 // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
-const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
+export const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
 const requiredFields = ["file_name", "file_type"];
 
-// Reusable styles for clickable text elements with ellipsis
-const clickableTextStyles = {
-  cursor: "pointer",
-  overflow: "hidden",
-  display: "block",
-  textOverflow: "ellipsis",
-};
-
 const useColumns = ({
-  getCognitoSession,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -83,7 +73,7 @@ const useColumns = ({
         width: 200,
         editable: true,
         renderCell: ({ row }) => (
-          <Typography sx={clickableTextStyles}>{row?.file_name}</Typography>
+          <Typography variant="body2">{row?.file_name}</Typography>
         ),
         // validate input
         preProcessEditCellProps: (params) => {
@@ -101,48 +91,19 @@ const useColumns = ({
         width: 200,
         editable: true,
         preProcessEditCellProps: validateFileInput,
-        renderCell: ({ row }) => {
-          if (row.file_key) {
-            return (
-              <Link
-                onClick={() =>
-                  downloadFileAttachment(row?.file_key, getCognitoSession)
-                }
-                sx={clickableTextStyles}
-              >
-                {cleanUpFileKey(row?.file_key)}
-              </Link>
-            );
-          }
-          return isValidUrl(row?.file_url) ? (
-            <ExternalLink
-              linkProps={{
-                sx: clickableTextStyles,
-              }}
-              url={row?.file_url}
-              text={row?.file_url}
-            />
-          ) : (
-            // if the user provided file_url is not a valid url, just render the text
-            (<Typography
-              sx={{
-                backgroundColor: "#eee",
-                fontFamily: "monospace",
-                display: "block",
-                wordWrap: "break-word",
-                paddingLeft: "4px",
-                paddingRight: "4px",
-                fontSize: "14px",
-              }}
-            >
-              {row?.file_url}
-            </Typography>)
-          );
-        },
+        renderCell: ({ row }) => (
+          <ProjectFileLink
+            fileKey={row?.file_key}
+            fileUrl={row?.file_url}
+            fileName={row?.file_url} // Pass url as fileName to match edit cell value
+          />
+        ),
         renderEditCell: (props) =>
           // users cannot edit the file_key, since its provided by the FilePond upload interface
           props.row.file_key ? (
-            <Typography>{cleanUpFileKey(props.row.file_key)}</Typography>
+            <Typography variant="body2">
+              {cleanUpFileKey(props.row.file_key)}
+            </Typography>
           ) : (
             <DataGridTextField
               helperText="Required"
@@ -237,7 +198,6 @@ const useColumns = ({
       },
     ];
   }, [
-    getCognitoSession,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -257,7 +217,6 @@ const useColumns = ({
 const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const { projectId } = useParams();
-  const { getCognitoSession } = useUser();
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -442,7 +401,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
   };
 
   const dataGridColumns = useColumns({
-    getCognitoSession,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -452,6 +410,20 @@ const ProjectFiles = ({ handleSnackbar }) => {
     fileTypesLookup,
     fileTypesObject,
   });
+
+  /* File upload state and handlers */
+  const { fileReady, buildFileBundle, clearState, ...formProps } =
+    useFileUploadForm();
+
+  const handleSave = () => {
+    handleClickSaveFile(buildFileBundle());
+    clearState();
+  };
+
+  const handleCancel = () => {
+    clearState();
+    handleClickCloseUploadFile();
+  };
 
   return (
     <>
@@ -488,14 +460,23 @@ const ProjectFiles = ({ handleSnackbar }) => {
         }}
       />
       {fileTypesLookup && (
-        <FileUploadDialogSingle
-          title={"Add file"}
-          dialogOpen={dialogOpen}
-          handleClickCloseUploadFile={handleClickCloseUploadFile}
-          handleClickSaveFile={handleClickSaveFile}
-          projectId={projectId}
-          fileTypesLookup={fileTypesLookup}
-        />
+        <FormDialog
+          title="Add file"
+          open={dialogOpen}
+          handleClose={handleClickCloseUploadFile}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+          saveDisabled={!fileReady}
+          saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
+          showDialogActions={true}
+          dialogProps={{ maxWidth: "md" }}
+        >
+          <FileUploadSingle
+            projectId={projectId}
+            fileTypesLookup={fileTypesLookup ?? []}
+            {...formProps}
+          />
+        </FormDialog>
       )}
       <DeleteConfirmationModal
         type={"file"}
