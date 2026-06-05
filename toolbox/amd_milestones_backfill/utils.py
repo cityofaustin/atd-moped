@@ -27,7 +27,7 @@ def make_hasura_request(*, query, variables, endpoint, admin_secret):
         raise ValueError(data)
 
 
-# copied from atd-moped/moped-editor/src/utils/timelineTemplates.js
+# copied from atd-moped/editor/src/utils/timelineTemplates.js
 TEMPLATE_MILESTONES = [
     {
         "milestone_id": 34,
