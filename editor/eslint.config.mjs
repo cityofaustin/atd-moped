@@ -39,6 +39,7 @@ export default tseslint.config(
         "error",
         {
           ignoreRestSiblings: true,
+          argsIgnorePattern: "^_",
         },
       ],
     },

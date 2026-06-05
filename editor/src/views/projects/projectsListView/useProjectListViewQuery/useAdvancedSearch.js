@@ -19,7 +19,8 @@ export const advancedSearchIsOrParamName = "isOr";
 const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
-      let { field, value, operator } = filters[filter];
+      const { field, operator } = filters[filter];
+      let { value } = filters[filter];
 
       // Use field name to get the filter config and GraphQL operator config for that field
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG[field];
@@ -41,11 +42,8 @@ const makeAdvancedSearchWhereFilters = (filters) =>
         );
       }
 
-      let {
-        envelope,
-        specialNullValue,
-        operator: gqlOperator,
-      } = operatorConfig;
+      const { envelope, specialNullValue } = operatorConfig;
+      let { operator: gqlOperator } = operatorConfig;
 
       // If we have no operator, then there is nothing we can do.
       if (field === null || gqlOperator === null) {
