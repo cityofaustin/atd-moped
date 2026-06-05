@@ -22,9 +22,7 @@ import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 import DashboardTimelineModal from "src/views/dashboard/DashboardTimelineModal";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "src/views/dashboard/MilestoneProgressMeter";
-import FeedbackSnackbar, {
-  useFeedbackSnackbar,
-} from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import UserSavedViewsTable from "src/views/dashboard/UserSavedViewsTable";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
@@ -33,6 +31,7 @@ import { formatRelativeDate } from "src/utils/dateAndTime";
 import { DASHBOARD_QUERY } from "src/queries/dashboard";
 
 import { useSessionDatabaseData } from "src/auth/user";
+import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 function a11yProps(index) {
   return {

@@ -199,8 +199,10 @@ export const onSubmitPhase = ({
   })
     .then(() => onSubmitCallback(isNewPhase))
     .catch((error) => {
-      isNewPhase
-        ? handleSnackbar(true, "Error adding project phase", "error", error)
-        : handleSnackbar(true, "Error updating project phase", "error", error);
+      if (isNewPhase) {
+        handleSnackbar(true, "Error adding project phase", "error", error);
+      } else {
+        handleSnackbar(true, "Error updating project phase", "error", error);
+      }
     });
 };

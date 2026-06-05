@@ -107,9 +107,11 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
   const handleListUpdate = useCallback(
     (command, listType) => {
       const isListApplied = selectionMap[listType];
-      isListApplied
-        ? editor.dispatchCommand(REMOVE_LIST_COMMAND)
-        : editor.dispatchCommand(command);
+      if (isListApplied) {
+        editor.dispatchCommand(REMOVE_LIST_COMMAND);
+      } else {
+        editor.dispatchCommand(command);
+      }
     },
     [editor, selectionMap]
   );
@@ -120,9 +122,11 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
       const selection = $getSelection();
       const textContent = selection.getTextContent();
 
-      isLinkApplied
-        ? editor.dispatchCommand(TOGGLE_LINK_COMMAND, null) // Remove link if already applied
-        : editor.dispatchCommand(TOGGLE_LINK_COMMAND, textContent); // Make selected text into a link
+      if (isLinkApplied) {
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, null); // Remove link if already applied
+      } else {
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, textContent); // Make selected text into a link
+      }
     });
   }, [editor, selectionMap]);
 
@@ -163,12 +167,14 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
           handleLinkUpdate();
           break;
         case "clear":
-          const formatTypes = Object.keys(selectionMap);
-          formatTypes.forEach((formatType) => {
-            if (selectionMap[formatType]) {
-              onAction(formatType);
-            }
-          });
+          {
+            const formatTypes = Object.keys(selectionMap);
+            formatTypes.forEach((formatType) => {
+              if (selectionMap[formatType]) {
+                onAction(formatType);
+              }
+            });
+          }
           break;
         default:
           break;
@@ -190,7 +196,7 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
-        (payLoad) => {
+        () => {
           updateToolbar();
           return false;
         },

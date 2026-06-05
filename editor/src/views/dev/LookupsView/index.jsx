@@ -17,11 +17,10 @@ import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
 import { createRecordKeyHash } from "src/utils/urls";
 import CopyTextButton from "src/components/CopyTextButton";
-import FeedbackSnackbar, {
-  useFeedbackSnackbar,
-} from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 import Can from "src/auth/Can";
+import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 /**
  * Scroll to a page element based on its key

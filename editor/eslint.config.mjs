@@ -12,7 +12,16 @@ import prettier from "eslint-config-prettier";
  */
 
 export default tseslint.config(
-  { ignores: ["build", "dist", "coverage", "node_modules"] },
+  {
+    ignores: [
+      "build",
+      "dist",
+      "coverage",
+      "node_modules",
+      "**/*.test.{js,jsx,ts,tsx}",
+      "**/test/**",
+    ],
+  },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     extends: [
@@ -42,6 +51,9 @@ export default tseslint.config(
           argsIgnorePattern: "^_",
         },
       ],
+      "no-duplicate-imports": "error",
+      /* Needed to surface undefined (like missing imports) that would be caught in TS code by tsconfig */
+      "no-undef": "error",
     },
   }
 );

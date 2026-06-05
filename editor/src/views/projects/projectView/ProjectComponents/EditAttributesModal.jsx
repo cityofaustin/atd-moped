@@ -106,14 +106,14 @@ const EditAttributesModal = ({
       .then(() => {
         onSaveSuccess();
         // Zoom to the new signal location if it was updated
-        signalsToCreate.length > 0 &&
+        if (signalsToCreate.length > 0)
           zoomMapToFeatureCollection(
             mapRef,
             { type: "FeatureCollection", features: [signalFromForm] },
             fitBoundsOptions.zoomToClickedComponent
           );
         // Or zoom to new beacon location
-        schoolBeaconsToCreate.length > 0 &&
+        if (schoolBeaconsToCreate.length > 0)
           zoomMapToFeatureCollection(
             mapRef,
             { type: "FeatureCollection", features: [schoolBeaconFromForm] },

@@ -54,7 +54,7 @@ const KnackComponentAutocomplete = React.forwardRef(
     useEffect(() => {
       if (features === null) return;
 
-      onOptionsLoaded && onOptionsLoaded();
+      if (onOptionsLoaded) onOptionsLoaded();
     }, [features, onOptionsLoaded]);
 
     if (loading) {

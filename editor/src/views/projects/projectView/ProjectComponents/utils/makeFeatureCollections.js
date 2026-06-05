@@ -26,7 +26,7 @@ export const getAllComponentFeatures = (component) => {
   const allComponentFeatures = [];
 
   Object.keys(featureTableFieldMap).forEach((featureTableName) => {
-    if (component.hasOwnProperty(featureTableName)) {
+    if (component.hasOwn(featureTableName)) {
       const feature = cloneDeep(component[featureTableName]);
       allComponentFeatures.push(feature);
     }

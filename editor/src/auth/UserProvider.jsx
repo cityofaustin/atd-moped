@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Auth, Amplify } from "aws-amplify";
+import {
+  initializeUserDBObject,
+  setSessionDatabaseData,
+  deleteSessionDatabaseData,
+  UserContext,
+} from "src/auth/user";
 
 // Create a "controller" component that will calculate all the data that we need to give to our
 // components below via the `UserContext.Provider` component. This is where the Amplify will be

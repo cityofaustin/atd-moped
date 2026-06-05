@@ -28,9 +28,8 @@ import ProjectListToolbar from "src/views/projects/projectsListView/ProjectListT
 import { useCurrentData } from "src/views/projects/projectsListView/useProjectListViewQuery/useCurrentData";
 import ProjectsListViewMap from "src/views/projects/projectsListView/ProjectsListViewMap";
 import ActivityMetrics from "src/components/ActivityMetrics";
-import FeedbackSnackbar, {
-  useFeedbackSnackbar,
-} from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
+import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 export const mapSearchParamName = "map";
 

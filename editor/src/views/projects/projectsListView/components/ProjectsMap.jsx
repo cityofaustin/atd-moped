@@ -11,7 +11,7 @@ import {
 import { MAP_STYLES } from "./mapStyleSettings";
 import "mapbox-gl/dist/mapbox-gl.css";
 import theme from "src/theme";
-import { styleMapping } from "../../projectView/ProjectStatusBadge";
+import { styleMapping } from "src/utils/phases";
 
 export default React.forwardRef(function ProjectsMap(
   {

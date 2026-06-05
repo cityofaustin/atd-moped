@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
-import ExternalLink, { createBugReportLink } from "src/components/ExternalLink";
+import ExternalLink from "src/components/ExternalLink";
+import { createBugReportLink } from "src/utils/urls";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { Box, Grid2, Stack, Typography } from "@mui/material";
@@ -24,12 +25,12 @@ import {
 } from "src/queries/project";
 
 // Find full option object by id
-export const findOptionById = (options, id) => {
+const findOptionById = (options, id) => {
   return options?.find((option) => option?.ecapris_subproject_id === id);
 };
 
 // Get option label for autocomplete display
-export const getOptionLabel = (option) => {
+const getOptionLabel = (option) => {
   return option
     ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
     : "";
