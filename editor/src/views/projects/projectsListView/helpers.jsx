@@ -125,7 +125,7 @@ export const useColumns = ({ hiddenColumns }) => {
         .map((key) => key);
 
       // We must include project_id in every query since it is set as a keyField in the Apollo cache.
-      // See https://github.com/cityofaustin/atd-moped/blob/1ecf8745ef13277f784f3d8ba75efa13908acc73/moped-editor/src/App.js#L55
+      // See https://github.com/cityofaustin/atd-moped/blob/1ecf8745ef13277f784f3d8ba75efa13908acc73/editor/src/App.js#L55
       // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
       // Also, some columns are dependencies of other columns to render, so we need to include them.
       // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
