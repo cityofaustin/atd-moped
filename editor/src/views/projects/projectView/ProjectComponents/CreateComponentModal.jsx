@@ -13,14 +13,13 @@ const CreateComponentModal = ({
       formData.signal || formData.schoolBeacon
     );
 
-    let {
+    const {
       component: {
         data: {
           component_id,
           component_name,
           component_subtype,
           line_representation,
-          feature_layer: { internal_table },
         },
       },
       subcomponents,
@@ -32,6 +31,13 @@ const CreateComponentModal = ({
       work_types,
       srtsId,
       locationDescription,
+    } = formData;
+    let {
+      component: {
+        data: {
+          feature_layer: { internal_table },
+        },
+      },
     } = formData;
 
     if (isSavingKnackFeature) {

@@ -87,11 +87,16 @@ export const findFeatureInAgolGeojsonFeatures = (
   }
 };
 
+/* Retrieve current value of Mapbox instance and call getZoom method */
+export function getZoomFromRef(mapRef) {
+  return mapRef?.current?.getZoom();
+}
+
 /**
  * Fetch CTN lines and points and a helper to find a feature record that matches a clicked layer feature by ID
  * @param {String} linkMode - tracks if we are editing "lines" or "points"
  * @param {Function} setIsFetchingFeatures - toggle loading state of the header spinner
- * @param {Number} currentZoom - current level of zoom in the map
+ * @param {Object} mapRef - ref containing the Mapbox instance in current value
  * @param {Array} bounds - the current map bounds
  * @returns {AgolFeaturesObject}
  */
@@ -103,14 +108,15 @@ export const findFeatureInAgolGeojsonFeatures = (
 export const useAgolFeatures = (
   linkMode,
   setIsFetchingFeatures,
-  currentZoom,
+  mapRef,
   bounds
 ) => {
   const ctnLinesGeojson = useFeatureService({
     layerId: SOURCES["ATD_ADMIN.CTN"].featureService.layerId,
     name: SOURCES["ATD_ADMIN.CTN"].featureService.name,
     bounds,
-    isVisible: linkMode === "lines" && currentZoom >= MIN_SELECT_FEATURE_ZOOM,
+    isVisible:
+      linkMode === "lines" && getZoomFromRef(mapRef) >= MIN_SELECT_FEATURE_ZOOM,
     featureIdProp: SOURCES["ATD_ADMIN.CTN"]._featureIdProp,
     setIsFetchingFeatures,
   });
@@ -119,7 +125,9 @@ export const useAgolFeatures = (
     layerId: SOURCES["ATD_ADMIN.CTN_Intersections"].featureService.layerId,
     name: SOURCES["ATD_ADMIN.CTN_Intersections"].featureService.name,
     bounds,
-    isVisible: linkMode === "points" && currentZoom >= MIN_SELECT_FEATURE_ZOOM,
+    isVisible:
+      linkMode === "points" &&
+      getZoomFromRef(mapRef) >= MIN_SELECT_FEATURE_ZOOM,
     featureIdProp: SOURCES["ATD_ADMIN.CTN_Intersections"]._featureIdProp,
     setIsFetchingFeatures,
   });
