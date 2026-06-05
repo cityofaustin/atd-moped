@@ -1,14 +1,9 @@
 import { useMemo, useEffect, useState } from "react";
-import { Box, Icon } from "@mui/material";
 import {
   featureSchoolBeaconRecordToKnackSchoolBeaconRecord,
   featureSignalsRecordToKnackSignalRecord,
 } from "src/utils/signalComponentHelpers";
 import { isSignalComponent } from "./componentList";
-import {
-  RoomOutlined as RoomOutlinedIcon,
-  Timeline as TimelineIcon,
-} from "@mui/icons-material";
 import get from "lodash.get";
 
 /**
@@ -305,72 +300,6 @@ export const makeTagFormFieldValues = (tags) => {
     value: tag.component_tag_id,
     label: tag.moped_component_tag.full_name,
   }));
-};
-
-export const ComponentIconByLineRepresentation = ({
-  lineRepresentation,
-  color,
-}) => {
-  if (lineRepresentation === true)
-    return (
-      <TimelineIcon
-        sx={{
-          color: color,
-        }}
-      />
-    );
-  if (lineRepresentation === false)
-    return (
-      <RoomOutlinedIcon
-        sx={{
-          color: color,
-        }}
-      />
-    );
-  /* Fall back to a blank icon to keep labels lined up */
-  if (lineRepresentation === null)
-    return (
-      <Icon
-        sx={{
-          color: color,
-        }}
-      />
-    );
-};
-
-/**
- * Renders an option with icon based on the type of geometry (if it exists) and component type label
- * @param {Object} option - Autocomplete option object with label, value, and data about component type
- * @return {JSX.Element}
- */
-export const ComponentOptionWithIcon = ({ option, state, props }) => {
-  const { data: { line_representation = null } = {} } = option;
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "start",
-        alignItems: "center",
-      }}
-      {...props}
-    >
-      <Box
-        sx={(theme) => ({
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginRight: theme.spacing(1),
-        })}
-      >
-        <ComponentIconByLineRepresentation
-          lineRepresentation={line_representation}
-          color={(theme) => theme.palette.primary.main}
-        />
-      </Box>
-      {option.label}
-    </Box>
-  );
 };
 
 /**
