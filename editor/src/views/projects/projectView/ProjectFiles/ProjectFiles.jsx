@@ -21,7 +21,7 @@ import {
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "src/queries/project";
-import { FormattedDateString } from "src/utils/dateAndTime";
+import FormattedDateString from "src/utils/FormattedDateString";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFiles/ProjectFilesTypeSelect";
@@ -34,24 +34,7 @@ import {
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
 import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
-
-// reshape the array of file types into an object with key id, value name
-export const useFileTypeObject = (fileTypes) =>
-  useMemo(
-    () =>
-      fileTypes.reduce(
-        (obj, item) =>
-          Object.assign(obj, {
-            [item.id]: item.name,
-          }),
-        {}
-      ),
-    [fileTypes]
-  );
-
-// remove the FilePond and s3 added path for display, ex:
-// 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
-export const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
+import { useFileTypeObject, cleanUpFileKey } from "src/views/projects/projectView/ProjectFiles/helpers";
 
 const requiredFields = ["file_name", "file_type"];
 

@@ -6,7 +6,7 @@ import ExternalLink from "src/components/ExternalLink";
 import CopyTextButton from "src/components/CopyTextButton";
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { isValidUrl } from "src/utils/urls";
-import { cleanUpFileKey } from "./ProjectFiles";
+import { cleanUpFileKey } from "src/views/projects/projectView/ProjectFiles/helpers";
 import { useUser } from "src/auth/user";
 
 /**

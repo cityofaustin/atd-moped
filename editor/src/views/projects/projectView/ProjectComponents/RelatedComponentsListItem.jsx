@@ -1,6 +1,6 @@
 import ComponentListItem from "./ComponentListItem";
 import Link from "@mui/material/Link";
-import { ComponentIconByLineRepresentation } from "src/views/projects/projectView/ProjectComponents/ComponentIconByLineRepresentation";
+import ComponentIconByLineRepresentation from "src/views/projects/projectView/ProjectComponents/ComponentIconByLineRepresentation";
 import theme from "src/theme/index";
 
 const RelatedComponentsListItem = ({

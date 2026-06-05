@@ -16,7 +16,7 @@ import { useSessionDatabaseData } from "src/auth/user";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
-import { FormattedDateString } from "src/utils/dateAndTime";
+import FormattedDateString from "src/utils/FormattedDateString";
 import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 
 const requiredFields = ["description"];

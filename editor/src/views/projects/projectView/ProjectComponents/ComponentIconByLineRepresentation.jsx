@@ -4,7 +4,7 @@ import {
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
 
-export const ComponentIconByLineRepresentation = ({
+const ComponentIconByLineRepresentation = ({
   lineRepresentation,
   color,
 }) => {
@@ -34,3 +34,5 @@ export const ComponentIconByLineRepresentation = ({
       />
     );
 };
+
+export default ComponentIconByLineRepresentation;

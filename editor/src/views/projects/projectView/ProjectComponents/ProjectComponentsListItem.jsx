@@ -9,7 +9,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
-import { ComponentIconByLineRepresentation } from "src/views/projects/projectView/ProjectComponents/ComponentIconByLineRepresentation";
+import ComponentIconByLineRepresentation from "src/views/projects/projectView/ProjectComponents/ComponentIconByLineRepresentation";
 import { getIsComponentMapped } from "./utils/componentList";
 import theme from "src/theme/index";
 

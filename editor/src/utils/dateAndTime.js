@@ -1,4 +1,3 @@
-import theme from "src/theme";
 import { format } from "date-fns";
 
 /**
@@ -130,7 +129,7 @@ export const formatRelativeDate = (timeStampTZString) => {
  *   - 'fullTime': Returns the full time including seconds (e.g., "2:30:45 PM")
  * @returns {string} The formatted date string
  */
-const formatDate = (date, format) => {
+export const formatDate = (date, format) => {
   switch (format) {
     case "relative":
       return formatRelativeDate(date);
@@ -147,27 +146,6 @@ const formatDate = (date, format) => {
     default:
       return new Date(date).toLocaleString();
   }
-};
-
-/**
- * A component that renders a formatted date string with primary display and optional secondary display
- * @param {Object} props - The component props
- * @param {string} props.date - The date to format, in a format parseable by new Date()
- * @param {('relative'|'absolute'|'expanded'|'short'|'time'|'fullTime')} props.primary - The format to use for the primary display
- * @param {('relative'|'absolute'|'expanded'|'short'|'time'|'fullTime')} [props.secondary] - The format to use for the secondary display, if any
- * @returns {JSX.Element} A span element containing the formatted date string(s)
- */
-export const FormattedDateString = ({ date, primary, secondary }) => {
-  return (
-    <span>
-      <div>{formatDate(date, primary)}</div>
-      {secondary && (
-        <div style={{ fontSize: "0.8em", color: theme.palette.text.secondary }}>
-          {formatDate(date, secondary)}
-        </div>
-      )}
-    </span>
-  );
 };
 
 /**

@@ -16,7 +16,7 @@ import {
 
 import { PROJECT_ACTIVITY_LOG } from "src/queries/project";
 import { Alert } from "@mui/material";
-import { FormattedDateString } from "src/utils/dateAndTime";
+import FormattedDateString from "src/utils/FormattedDateString";
 import { getUserFullName } from "src/utils/userNames";
 import ProjectActivityEntry from "src/views/projects/projectView/ProjectActivityEntry";
 
