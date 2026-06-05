@@ -105,7 +105,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
 export const useAdvancedSearch = () => {
   /* Get advanced filters settings from search params if they exist */
-  let [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const initialFilterState = useMakeFilterState({
     searchParams,
     advancedSearchFilterParamName,

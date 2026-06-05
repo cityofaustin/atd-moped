@@ -103,7 +103,7 @@ const useActiveTabIndex = (tabName) =>
  */
 const ProjectView = () => {
   const { projectId } = useParams();
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
 

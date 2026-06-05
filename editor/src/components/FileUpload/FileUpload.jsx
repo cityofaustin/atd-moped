@@ -105,7 +105,7 @@ const FileUpload = (props) => {
                 }
               })
               .catch((err) => {
-                // eslint-disable-next-line
+                 
                 throw "Error: " + JSON.stringify(err);
               });
 
@@ -179,7 +179,7 @@ const FileUpload = (props) => {
 
     // If the signature is invalid, might as well stop it!
     if (fileSignature == null) {
-      // eslint-disable-next-line
+       
       throw "The file signature for file could not be located.";
     }
 
@@ -190,7 +190,7 @@ const FileUpload = (props) => {
       // Copy the name of each of those keys
       fields = Object.keys(fileSignature.fields);
     } catch (error) {
-      // eslint-disable-next-line
+       
       throw "Error processing file: " + JSON.stringify(error);
     }
 

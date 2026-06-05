@@ -21,7 +21,7 @@ const ProjectTimeline = ({ handleSnackbar }) => {
   /** Params Hook
    * @type {integer} projectId
    * */
-  let { projectId } = useParams();
+  const { projectId } = useParams();
 
   /**
    * Queries Hook

@@ -43,7 +43,7 @@ export const formatProjectActivity = (change, lookupList) => {
 
   const newRecord = changeData.new;
   const oldRecord = changeData.old;
-  let changes = [];
+  const changes = [];
   const fieldsToSkip = [
     "updated_at",
     "updated_by_user_id",

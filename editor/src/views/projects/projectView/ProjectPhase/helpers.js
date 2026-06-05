@@ -53,7 +53,7 @@ const DEFAULT_FORM_VALUES = {
 export const useDefaultValues = (phase) =>
   useMemo(() => {
     // initialize form with default values plus the project id
-    let defaultValues = {
+    const defaultValues = {
       ...DEFAULT_FORM_VALUES,
       project_id: phase.project_id,
     };

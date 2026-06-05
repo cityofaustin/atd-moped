@@ -44,14 +44,14 @@ export const formatMilestonesActivity = (change, milestoneList) => {
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
 
-  let changes = [];
+  const changes = [];
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
     if (newRecord?.[field] !== oldRecord?.[field]) {
       // filter out fields that are not listed in the activity log table maps to prevent
       // automated field updates (created at, updated at, etc.) from entering the array
-      if (!!entryMap.fields[field]) {
+      if (entryMap.fields[field]) {
         changes.push(entryMap.fields[field]?.label);
       }
     }

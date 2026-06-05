@@ -1,7 +1,7 @@
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 
 export const formatPersonnelActivity = (change, userList) => {
-  let changeIcon = <PeopleOutlineIcon />;
+  const changeIcon = <PeopleOutlineIcon />;
 
   const changeData = change.record_data.event.data;
   const newIsDeleted = changeData.new.is_deleted;

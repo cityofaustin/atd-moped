@@ -101,7 +101,7 @@ const LookupsView = () => {
     []
   );
 
-  let { hash: recordKeyHash, pathname } = useLocation();
+  const { hash: recordKeyHash, pathname } = useLocation();
   useScrollToHash({ recordKeyHash, refs });
 
   return (

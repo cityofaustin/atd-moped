@@ -141,7 +141,7 @@ const NewProjectView = () => {
   }, []);
 
   useEffect(() => {
-    if (!!newProjectId) {
+    if (newProjectId) {
       window.setTimeout(() => {
         setSuccess(true);
       }, 1500);

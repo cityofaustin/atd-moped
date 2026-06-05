@@ -94,7 +94,7 @@ export const areAllFiltersComplete = (filterParameters) => {
  * @return {[]|null}
  */
 export const handleApplyValidation = (filterParameters, filtersConfig) => {
-  let feedback = [];
+  const feedback = [];
 
   if (filterParameters) {
     filterParameters.forEach((filter) => {

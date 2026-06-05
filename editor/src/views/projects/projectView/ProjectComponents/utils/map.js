@@ -54,12 +54,12 @@ is not guaranteed. a reliable solution would be query the AGOL streets
 layer on-the-fly to grab street names - not sure if this is worth it TBH 
 */
 export const getIntersectionLabel = (point, lines) => {
-  var radius = 10;
-  var options = {
+  const radius = 10;
+  const options = {
     steps: 10,
     units: "meters",
   };
-  var circ = circle(point.geometry.coordinates, radius, options);
+  const circ = circle(point.geometry.coordinates, radius, options);
   const streets = lines.features
     .filter((lineFeature) =>
       booleanIntersects(lineFeature.geometry, circ.geometry)

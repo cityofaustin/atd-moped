@@ -58,7 +58,7 @@ const validationSchema = yup.object().shape({
 });
 
 const NewStaffView = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
   const [addNonMopedUser] = useMutation(ADD_NON_MOPED_USER);

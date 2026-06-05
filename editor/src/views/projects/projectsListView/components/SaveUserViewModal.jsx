@@ -16,7 +16,7 @@ const SaveUserViewModal = ({
 }) => {
   const [saveView, { loading }] = useMutation(ADD_USER_SAVED_VIEW);
 
-  let { pathname, search } = useLocation();
+  const { pathname, search } = useLocation();
 
   const defaultDescription = useMemo(() => {
     const filtersDescription = filtersLabels

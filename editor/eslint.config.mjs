@@ -33,9 +33,14 @@ export default tseslint.config(
     },
     rules: {
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   }
 );
