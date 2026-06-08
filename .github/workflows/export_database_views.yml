@@ -34,7 +34,7 @@ jobs:
           echo "PGUSER=moped" >> $GITHUB_ENV
           echo "PGPASSWORD=moped" >> $GITHUB_ENV
 
-     - name: Install Hasura CLI
+      - name: Install Hasura CLI
         run: |
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
@@ -69,6 +69,3 @@ jobs:
         run: |
           git config --local user.email "moped@view.bot"
           git config --local user.name "Moped View Bot"
-
-
-
