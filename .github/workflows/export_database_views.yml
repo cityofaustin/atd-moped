@@ -14,7 +14,7 @@ on:
 jobs:
   publish-views:
     runs-on: ubuntu-latest
-    permissions:  
+    permissions:
       contents: write  
 
     steps:
