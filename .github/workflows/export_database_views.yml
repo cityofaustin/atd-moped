@@ -49,7 +49,7 @@ jobs:
           sleep 10;
           docker compose -f moped-database/docker-compose.yml up -d hasura;
           sleep 10;
-          cd database;
+          cd moped-database;
           hasura --skip-update-check --database-name default migrate apply;
           hasura metadata apply --skip-update-check;
 
