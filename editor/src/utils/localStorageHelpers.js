@@ -31,7 +31,7 @@ const getPreviousHiddenColumns = (defaultColumnSettings, storageKey) => {
     // By iterating the defaults, we also remove outdated columns no longer in config.
     currentHiddenColumnSettings = Object.keys(defaultColumnSettings).reduce(
       (acc, columnName) => {
-        if (previousHiddenColumnSettings.hasOwnProperty(columnName)) {
+        if (Object.hasOwn(previousHiddenColumnSettings, columnName)) {
           return {
             ...acc,
             [columnName]: previousHiddenColumnSettings[columnName],

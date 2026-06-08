@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Icon, Typography } from "@mui/material";
-import { SpeedDial, SpeedDialAction } from "@mui/material";
+import { Icon, Typography, SpeedDial, SpeedDialAction } from "@mui/material";
 import {
   MAPBOX_PADDING_PIXELS,
   MAPBOX_CONTROL_BUTTON_WIDTH,

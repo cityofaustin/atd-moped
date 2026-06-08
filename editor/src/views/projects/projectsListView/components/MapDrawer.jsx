@@ -142,7 +142,9 @@ export default React.forwardRef(function MapDrawer(
       setShowDrawerContent(true);
     } else {
       // Repaint canvas on drawer close to avoid blank space in map
-      ref.current && ref.current.resize();
+      if (ref.current) {
+        ref.current.resize();
+      }
       setShowDrawerContent(false);
     }
   };

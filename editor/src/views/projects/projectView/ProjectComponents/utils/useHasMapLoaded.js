@@ -12,7 +12,9 @@ export const useHasMapLoaded = (onLoadCallback = null) => {
 
   const onMapLoad = () => {
     setHasMapLoaded(true);
-    onLoadCallback && onLoadCallback();
+    if (onLoadCallback) {
+      onLoadCallback();
+    }
   };
 
   return { hasMapLoaded, onMapLoad };

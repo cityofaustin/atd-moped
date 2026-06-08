@@ -6,6 +6,7 @@ import { CheckCircle } from "@mui/icons-material";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import { getOptionLabel, isOptionEqualToValue } from "./utils/form";
 import { PROJECT_OPTIONS } from "src/queries/project";
+import { useProjectOptions } from "src/views/projects/projectView/ProjectComponents/utils/useProjectOptions";
 
 import * as yup from "yup";
 

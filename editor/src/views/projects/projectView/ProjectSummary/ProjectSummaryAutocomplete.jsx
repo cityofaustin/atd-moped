@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Grid2, Box, Typography, TextField } from "@mui/material";
+import { Autocomplete, Grid2, Box, Typography, TextField } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
-import { Autocomplete } from "@mui/material";
 import {
   fieldBox,
   fieldGridItem,

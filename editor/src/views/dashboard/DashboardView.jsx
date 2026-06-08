@@ -25,8 +25,11 @@ import MilestoneProgressMeter from "src/views/dashboard/MilestoneProgressMeter";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import UserSavedViewsTable from "src/views/dashboard/UserSavedViewsTable";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
-import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
-import { formatRelativeDate } from "src/utils/dateAndTime";
+import {
+  formatRelativeDate,
+  getTimeOfDay,
+  getCalendarDate,
+} from "src/utils/dateAndTime";
 
 import { DASHBOARD_QUERY } from "src/queries/dashboard";
 

@@ -2,7 +2,7 @@ import { useReducer } from "react";
 
 const errorMessageReducer = (state, action) => {
   switch (action.type) {
-    case "show_error":
+    case "show_error": {
       const { message, severity, onClose, messageType } = action.payload;
       return {
         ...state,
@@ -12,6 +12,7 @@ const errorMessageReducer = (state, action) => {
         onClose,
         messageType,
       };
+    }
     case "hide_component_error":
       if (state.messageType !== "componentLinkError") {
         return { ...state };

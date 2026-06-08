@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
+  Autocomplete,
   Button,
   Box,
   Checkbox,
@@ -8,7 +9,6 @@ import {
   ListItemIcon,
   TextField,
 } from "@mui/material";
-import { Autocomplete } from "@mui/material";
 import AddCircle from "@mui/icons-material/AddCircle";
 import FormDialog from "src/components/FormDialog";
 import { returnArterialManagementPhaseTemplate } from "../../../../utils/timelineTemplates";

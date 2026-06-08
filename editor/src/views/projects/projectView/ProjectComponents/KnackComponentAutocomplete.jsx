@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo } from "react";
-import { CircularProgress, TextField } from "@mui/material";
-import { Autocomplete, Alert } from "@mui/material";
+import {
+  Autocomplete,
+  Alert,
+  CircularProgress,
+  TextField,
+} from "@mui/material";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 

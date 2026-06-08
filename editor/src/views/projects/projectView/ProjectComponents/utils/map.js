@@ -157,7 +157,9 @@ export const useZoomToExistingComponents = (
       fitBoundsOptions.zoomToExtent
     );
 
-    !refreshOnComponentsUpdate && setHasMapZoomedInitially(true);
+    if (!refreshOnComponentsUpdate) {
+      setHasMapZoomedInitially(true);
+    }
   }, [
     featureCollection,
     hasMapZoomedInitially,

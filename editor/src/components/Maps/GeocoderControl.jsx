@@ -17,7 +17,6 @@ const austinFullPurposeJurisdictionFeatureCollection = {
   features: [],
 };
 
- 
 // See https://github.com/visgl/react-map-gl/tree/7.0-release/examples/geocoder
 export default function GeocoderControl(props) {
   const [marker, setMarker] = useState(null);
@@ -60,7 +59,7 @@ export default function GeocoderControl(props) {
     }
   );
 
-  // @ts-ignore (TS2339) private member
+  // @ts-expect-error (TS2339) private member
   if (geocoder._map) {
     if (
       geocoder.getProximity() !== props.proximity &&

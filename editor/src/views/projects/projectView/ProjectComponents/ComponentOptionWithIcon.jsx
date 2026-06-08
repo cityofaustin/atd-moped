@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import ComponentIconByLineRepresentation from "src/views/projects/projectView/ProjectComponents/ComponentIconByLineRepresentation";
 
 /**
  * Renders an option with icon based on the type of geometry (if it exists) and component type label

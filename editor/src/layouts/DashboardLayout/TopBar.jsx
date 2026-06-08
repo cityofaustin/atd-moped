@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, NavLink } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -14,7 +14,7 @@ import { CanAddProjectButton } from "src/views/projects/projectsListView/Project
 import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdownMenu";
 import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
-import { NavLink } from "react-router-dom";
+import { navigationItems } from "src/layouts/DashboardLayout/helpers";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local
@@ -39,21 +39,6 @@ const EnvAlertBanner = () => {
     </Alert>
   );
 };
-
-export const navigationItems = [
-  {
-    href: "/moped/dashboard",
-    title: "Dashboard",
-  },
-  {
-    href: "/moped/projects",
-    title: "Projects",
-  },
-  {
-    href: "/moped/staff",
-    title: "Staff",
-  },
-];
 
 const TopBar = ({ className, ...rest }) => {
   const theme = useTheme();

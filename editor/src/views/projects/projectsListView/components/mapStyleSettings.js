@@ -1,8 +1,8 @@
 import {
+  COLORS,
   pointsCircleRadiusStops,
   lineWidthStops as lineOutlineWidthStops,
 } from "../../projectView/ProjectComponents/mapStyleSettings";
-import { COLORS } from "../../projectView/ProjectComponents/mapStyleSettings";
 
 export const lineWidthStops = {
   stops: [
