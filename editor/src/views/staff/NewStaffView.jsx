@@ -20,7 +20,7 @@ import {
 import Page from "src/components/Page";
 import { ADD_NON_MOPED_USER } from "src/queries/staff";
 
-export const initialFormValues = {
+const initialFormValues = {
   first_name: "",
   last_name: "",
   title: "",

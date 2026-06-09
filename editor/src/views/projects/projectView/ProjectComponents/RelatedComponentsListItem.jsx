@@ -31,6 +31,7 @@ const RelatedComponentsListItem = ({
     <ComponentListItem
       key={component.project_component_id}
       component={component}
+      componentRef={component._ref}
       isExpanded={isExpanded}
       onZoomClick={onZoomClick}
       onListItemClick={onRelatedListItemClick}
