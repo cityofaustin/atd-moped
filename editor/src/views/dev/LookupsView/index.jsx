@@ -142,7 +142,8 @@ const LookupsView = () => {
               ))}
             </Grid2>
           </Paper>
-
+          {/* Ignoring because refs is a stable map of { current } objects created in useMemo above */}
+          {/* eslint-disable-next-line react-hooks/refs */}
           {SETTINGS.map((recordType) => (
             <Paper sx={{ px: 3, pb: 3 }} key={recordType.key}>
               <Grid2
