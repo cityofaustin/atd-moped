@@ -114,6 +114,7 @@ const FiltersChips = ({
    * Reenables the save view button when a new search term is applied
    */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resets saved view indicator when search term changes
     setIsViewSaved(false);
   }, [searchTerm]);
 

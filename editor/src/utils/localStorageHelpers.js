@@ -51,18 +51,12 @@ export const useHiddenColumnsSettings = ({
   defaultHiddenColumnSettings,
   storageKey,
 }) => {
-  const [hiddenColumns, setHiddenColumns] = useState({});
-
   /*
-   * Initialize hidden columns from previous local storage
+   * Initialize state with hidden columns from previous local storage
    */
-  useEffect(() => {
-    const initialHiddenColumnSettings = getPreviousHiddenColumns(
-      defaultHiddenColumnSettings,
-      storageKey
-    );
-    setHiddenColumns(initialHiddenColumnSettings);
-  }, [defaultHiddenColumnSettings, storageKey]);
+  const [hiddenColumns, setHiddenColumns] = useState(() =>
+    getPreviousHiddenColumns(defaultHiddenColumnSettings, storageKey)
+  );
 
   /*
    * Sync hidden columns state with local storage

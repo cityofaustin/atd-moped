@@ -110,6 +110,7 @@ const UserProvider = ({ children }) => {
    */
   useEffect(() => {
     if (user === null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- setIsLoginLoading here is intentional: it starts loading spinner before an async Cognito session check
       setIsLoginLoading(true);
 
       getCognitoSession()
