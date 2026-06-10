@@ -4,7 +4,7 @@ import {
 } from "@mui/x-data-grid-pro";
 
 const ProjectListToolbar = () => (
-  <GridToolbarContainer sx={{ justifyContent: "flex-start" }}>
+  <GridToolbarContainer sx={{ paddingLeft: "4px" }}>
     <GridToolbarColumnsButton />
   </GridToolbarContainer>
 );
