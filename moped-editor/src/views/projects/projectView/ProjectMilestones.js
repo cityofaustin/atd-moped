@@ -475,7 +475,6 @@ const ProjectMilestones = ({
             ),
           },
         }}
-        showToolbar={true}
       />
       {isDialogOpen && (
         <MilestoneTemplateModal
