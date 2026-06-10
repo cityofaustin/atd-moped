@@ -8,23 +8,23 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
  * @returns {JSX.Element}
  */
 const MopedDataGrid = ({ sx, slotProps = {}, ...props }) => {
-  // const mergedRootSx = {
-  //   ...dataGridProStyleOverrides,
-  //   ...sx,
-  //   ...(slotProps.root?.sx || {}),
-  // };
+  const mergedRootSx = {
+    ...dataGridProStyleOverrides,
+    ...sx,
+    ...(slotProps.root?.sx || {}),
+  };
 
-  // const mergedSlotProps = {
-  //   ...slotProps,
-  //   root: {
-  //     ...(slotProps.root || {}),
-  //     sx: mergedRootSx,
-  //   },
-  // };
+  const mergedSlotProps = {
+    ...slotProps,
+    root: {
+      ...(slotProps.root || {}),
+      sx: mergedRootSx,
+    },
+  };
 
   return (
     <DataGridPro
-      slotProps={{ ...dataGridProStyleOverrides, ...sx }}
+      slotProps={mergedSlotProps}
       density="comfortable"
       getRowHeight={() => "auto"}
       hideFooter
