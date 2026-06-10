@@ -136,6 +136,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
     setRows(tableRows);
   }, [tableRows]);
 

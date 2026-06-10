@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { NavLink as RouterLink } from "react-router-dom";
 
@@ -242,19 +242,16 @@ const DashboardView = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   // rows and rowModesModel used in DataGrid
-  const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
-
-  // sets the data grid row data when query data is fetched
-  useEffect(() => {
-    if (data) {
-      if (TABS[activeTab].label === "My projects") {
-        setRows(data.moped_proj_personnel.map((row) => row.project));
-      }
-      if (TABS[activeTab].label === "Following") {
-        setRows(data.moped_user_followed_projects.map((row) => row.project));
-      }
+  const rows = useMemo(() => {
+    if (!data) return [];
+    if (TABS[activeTab].label === "My projects") {
+      return data.moped_proj_personnel.map((row) => row.project);
     }
+    if (TABS[activeTab].label === "Following") {
+      return data.moped_user_followed_projects.map((row) => row.project);
+    }
+    return [];
   }, [data, activeTab]);
 
   const handleChange = (event, newValue) => {
@@ -339,7 +336,7 @@ const DashboardView = () => {
                       <MopedDataGrid
                         density="standard"
                         columns={dataGridColumns}
-                        rows={rows || []}
+                        rows={rows}
                         loading={loading || !data}
                         getRowId={(row) => row.project_id}
                         rowModesModel={rowModesModel}

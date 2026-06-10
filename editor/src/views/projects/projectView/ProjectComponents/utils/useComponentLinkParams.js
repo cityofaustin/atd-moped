@@ -92,7 +92,9 @@ export const useComponentLinkParams = ({
 
         // Bring clicked component into view
         const ref = componentFromParams?._ref;
-        ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
+        if (ref?.current) {
+          ref.current.scrollIntoView({ behavior: "smooth" });
+        }
 
         // Track that initial component has been set from initial params
         setHasComponentSetFromUrl(true);

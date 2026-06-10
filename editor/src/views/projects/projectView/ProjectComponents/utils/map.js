@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useRef, useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
@@ -144,10 +144,13 @@ export const useZoomToExistingComponents = (
   featureCollection,
   refreshOnComponentsUpdate = false
 ) => {
-  const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
+  const hasMapZoomedInitially = useRef(false);
 
   useEffect(() => {
-    if (!(featureCollection.features.length > 0) || hasMapZoomedInitially)
+    if (
+      !(featureCollection.features.length > 0) ||
+      hasMapZoomedInitially.current
+    )
       return;
     if (!mapRef?.current) return;
 
@@ -158,14 +161,9 @@ export const useZoomToExistingComponents = (
     );
 
     if (!refreshOnComponentsUpdate) {
-      setHasMapZoomedInitially(true);
+      hasMapZoomedInitially.current = true;
     }
-  }, [
-    featureCollection,
-    hasMapZoomedInitially,
-    mapRef,
-    refreshOnComponentsUpdate,
-  ]);
+  }, [featureCollection, mapRef, refreshOnComponentsUpdate]);
 };
 
 /**
