@@ -7,16 +7,34 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
  * @param {object} props - other props to be passed to DataGridPro component
  * @returns {JSX.Element}
  */
-const MopedDataGrid = ({ sx, ...props }) => (
-  <DataGridPro
-    sx={{ ...dataGridProStyleOverrides, ...sx }}
-    density="comfortable"
-    getRowHeight={() => "auto"}
-    hideFooter
-    disableRowSelectionOnClick
-    onProcessRowUpdateError={(error) => console.error(error)}
-    {...props}
-  />
-);
+const MopedDataGrid = ({ sx, slotProps = {}, ...props }) => {
+  const mergedRootSx = {
+    ...dataGridProStyleOverrides,
+    ...sx,
+    ...(slotProps.root?.sx || {}),
+  };
+
+  const mergedSlotProps = {
+    ...slotProps,
+    root: {
+      ...(slotProps.root || {}),
+      sx: mergedRootSx,
+    },
+  };
+
+  return (
+    <DataGridPro
+      slotProps={mergedSlotProps}
+      density="comfortable"
+      getRowHeight={() => "auto"}
+      hideFooter
+      disableRowSelectionOnClick
+      // Show toolbar if a toolbar slot is provided
+      showToolbar={!!props.slots?.toolbar}
+      onProcessRowUpdateError={(error) => console.error(error)}
+      {...props}
+    />
+  );
+};
 
 export default MopedDataGrid;
