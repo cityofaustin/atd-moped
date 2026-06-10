@@ -21,7 +21,8 @@ const dataGridProStyleOverrides = {
   "& .MuiDataGrid-toolbarContainer": {
     justifyContent: "flex-start",
     borderBottom: "none",
-  }, // mui datagrid defaults to using palette.background.default from the theme as the color for the container backgrounds
+  },
+  // mui datagrid defaults to using palette.background.default from the theme as the color for the container backgrounds
   "&.MuiDataGrid-root": {
     "--DataGrid-containerBackground": "#fff",
     "--DataGrid-pinnedBackground": "#fff",
