@@ -34,7 +34,10 @@ import {
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import FormDialog from "src/components/FormDialog";
 import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
-import { useFileTypeObject, cleanUpFileKey } from "src/views/projects/projectView/ProjectFiles/helpers";
+import {
+  useFileTypeObject,
+  cleanUpFileKey,
+} from "src/views/projects/projectView/ProjectFiles/helpers";
 
 const requiredFields = ["file_name", "file_type"];
 
@@ -275,6 +278,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
 
   useEffect(() => {
     if (data && data.moped_project_files.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
       setRows(data.moped_project_files);
     }
   }, [data]);

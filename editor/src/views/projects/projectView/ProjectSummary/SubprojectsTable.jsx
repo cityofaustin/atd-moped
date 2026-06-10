@@ -198,6 +198,7 @@ const SubprojectsTable = ({
         data?.parentProject?.[0]?.moped_project
       ) {
         const parentProject = data.parentProject[0].moped_project;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
         setRows([{ ...parentProject, id: parentProject.project_id }]);
       } else {
         setRows([]);

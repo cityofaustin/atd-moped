@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Provide a constant stream of data from a useQuery hook to mask the loading state
@@ -8,14 +8,12 @@ import { useState, useMemo } from "react";
 export const useCurrentData = (data) => {
   const [previousData, setPreviousData] = useState(null);
 
-  const currentData = useMemo(() => {
+  useEffect(() => {
     if (data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- caches previous query data
       setPreviousData(data);
-      return data;
-    } else {
-      return previousData;
     }
-  }, [data, setPreviousData, previousData]);
+  }, [data]);
 
-  return currentData;
+  return data ?? previousData;
 };

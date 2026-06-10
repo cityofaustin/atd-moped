@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { getAllComponentFeatures } from "./makeFeatureCollections";
 import { fitBoundsOptions } from "../mapSettings";
 import { zoomMapToFeatureCollection } from "./map";
@@ -44,11 +44,10 @@ export const useComponentLinkParams = ({
   errorMessageDispatch,
   mapRef,
 }) => {
-  const [hasComponentSetFromUrl, setHasComponentSetFromUrl] = useState(false);
-
+  const hasComponentSetFromUrl = useRef(false);
   // Set clicked component from initial params once data loads
   useEffect(() => {
-    if (hasComponentSetFromUrl) return;
+    if (hasComponentSetFromUrl.current) return;
 
     // Get component id from url if there is one
     const currentSearchParams = new URLSearchParams(window.location.search);
@@ -58,7 +57,7 @@ export const useComponentLinkParams = ({
 
     // If there wasn't an initial search parameter, we don't need to set clickedComponent from it
     if (!componentParamId) {
-      setHasComponentSetFromUrl(true);
+      hasComponentSetFromUrl.current = true;
       return;
     }
 
@@ -97,7 +96,7 @@ export const useComponentLinkParams = ({
         }
 
         // Track that initial component has been set from initial params
-        setHasComponentSetFromUrl(true);
+        hasComponentSetFromUrl.current = true;
       } else {
         errorMessageDispatch({
           type: "show_error",
@@ -116,12 +115,10 @@ export const useComponentLinkParams = ({
       }
     }
   }, [
-    hasComponentSetFromUrl,
     projectComponents,
     setClickedComponent,
     setIsClickedComponentRelated,
     allRelatedComponents,
-    setHasComponentSetFromUrl,
     errorMessageDispatch,
     mapRef,
   ]);

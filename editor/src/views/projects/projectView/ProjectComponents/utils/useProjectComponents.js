@@ -38,21 +38,27 @@ export const useProjectComponents = (data) => {
     });
   }, [data]);
 
-  const parentComponents = useMemo(() => {
-    if (!data?.parentProjectComponents) return [];
+  const allRelatedComponents = useMemo(() => {
+    if (!data) return [];
 
-    return data.parentProjectComponents;
-  }, [data]);
-
-  const siblingComponents = useMemo(() => {
-    if (!data?.siblingProjects) return [];
-
-    const allSiblingComponents = data.siblingProjects.reduce(
-      (acc, sibling) => [...acc, ...sibling.moped_proj_components],
-      []
+    const parentComponents = data.parentProjectComponents ?? [];
+    const siblingComponents = (data.siblingProjects ?? []).flatMap(
+      (sibling) => sibling.moped_proj_components
+    );
+    const childComponents = (data.childProjects ?? []).flatMap(
+      (child) => child.moped_proj_components
     );
 
-    return allSiblingComponents;
+    return [...parentComponents, ...siblingComponents, ...childComponents].map(
+      (component) => {
+        const newComponent = cloneDeep(component);
+        /* these refs will feed component list items so that we can scroll to them */
+        newComponent._ref = createRef();
+        setComponentCouncilDistrict(newComponent, data.project_geography);
+        setLengthFeet(newComponent, data.project_geography);
+        return newComponent;
+      }
+    );
   }, [data]);
 
   const childComponents = useMemo(() => {
@@ -65,24 +71,6 @@ export const useProjectComponents = (data) => {
 
     return allChildComponents;
   }, [data]);
-
-  const allRelatedComponents = useMemo(() => {
-    return [...parentComponents, ...siblingComponents, ...childComponents].map(
-      (component) => {
-        const newComponent = cloneDeep(component);
-        /* these refs will feed component list items so that we can scroll to them */
-        newComponent._ref = createRef();
-        setComponentCouncilDistrict(newComponent, data.project_geography);
-        setLengthFeet(newComponent, data.project_geography);
-        return newComponent;
-      }
-    );
-  }, [
-    parentComponents,
-    siblingComponents,
-    childComponents,
-    data?.project_geography,
-  ]);
 
   return {
     projectComponents,

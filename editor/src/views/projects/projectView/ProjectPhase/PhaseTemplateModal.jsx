@@ -77,6 +77,7 @@ const PhaseTemplateModal = ({
   const filteredPhasesList = usePhaseSelections(phasesList, selectedPhases);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initializes phasesToAdd from filtered template phases which is also mutated in handleToggle
     setPhasesToAdd([...filteredPhasesList]);
   }, [filteredPhasesList]);
 

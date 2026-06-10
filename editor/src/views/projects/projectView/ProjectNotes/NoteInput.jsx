@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -163,20 +163,10 @@ const NoteInput = ({
   noteTypes,
   validator = null,
 }) => {
-  const [validationErrors, setValidationErrors] = useState(null);
-
   // Validate content when the note text or note type changes
-  useEffect(() => {
-    const errors = validator
-      ? validator({ projectStatusUpdate: noteText })
-      : null;
-
-    if (errors) {
-      setValidationErrors(errors);
-    } else {
-      setValidationErrors(null);
-    }
-  }, [noteText, newNoteType, editingNoteType, validator]);
+  const validationErrors = useMemo(() => {
+    return validator ? validator({ projectStatusUpdate: noteText }) : null;
+  }, [noteText, validator]);
 
   const onChange = (htmlContent) => {
     setNoteText(htmlContent);

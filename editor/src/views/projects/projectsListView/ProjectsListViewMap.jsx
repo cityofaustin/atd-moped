@@ -38,12 +38,14 @@ const ProjectsListViewMap = ({
   /* Toggle drawer based on whether components are captured in map click or not */
   useEffect(() => {
     if (selectedProjectIds.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- opens drawer when projects are selected on map; setOpen also closes the drawer
       setOpen(true);
     }
   }, [selectedProjectIds, setOpen]);
 
   /* Clear selected project IDs when search filters are changed or reset */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resets map selection when search filters change
     setSelectedProjectIds([]);
   }, [searchWhereString, advancedSearchWhereString]);
 

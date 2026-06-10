@@ -224,6 +224,7 @@ const ProjectMilestones = ({
 
   useEffect(() => {
     if (data && data.moped_proj_milestones.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
       setRows(data.moped_proj_milestones);
     }
   }, [data]);
