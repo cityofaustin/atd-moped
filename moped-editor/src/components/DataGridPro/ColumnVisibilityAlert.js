@@ -1,6 +1,6 @@
 import { Alert } from "@mui/material";
 
-export const ColumnVisibilityAlert = ({ allColumnsHidden }) => {
+export const ColumnVisibilityAlert = () => {
   return (
     <div
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}

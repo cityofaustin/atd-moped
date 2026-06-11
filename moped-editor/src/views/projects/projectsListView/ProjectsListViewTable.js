@@ -194,14 +194,6 @@ const ProjectsListViewTable = () => {
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
     useFeedbackSnackbar();
 
-  console.log(hiddenColumns);
-
-  const allColumnsHidden =
-    Object.values(hiddenColumns).reduce(
-      (count, value) => count + (value === true ? 1 : 0),
-      0
-    ) === 0;
-
   /**
    * Store the most recent version of the query in app context so that it
    * can be refetched elswhere
