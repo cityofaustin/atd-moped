@@ -306,7 +306,8 @@ export const makeTagFormFieldValues = (tags) => {
  * Watch parent field and reset dependent field to default value when parent field changes
  * @param {Object} parentValue - Option object with value and label
  * @param {string} dependentFieldName - Name of the dependent field
- * @param {*} valueToSet - Any value to set the dependent field to
+ * @param {string} comparisonVariable - Optional value in the parent field option object to compare to prevent unnecessary resets
+ * @param {Object | string} valueToSet - Any value to set the dependent field to
  * @param {Function} setValue - React Hook Form setValue function
  * @param {Boolean} disable - Disable the reset
  * @returns {Object} the field value
@@ -339,6 +340,7 @@ export const useResetDependentFieldOnParentFieldChange = ({
     }
 
     setValue(dependentFieldName, valueToSet, { shouldValidate: true });
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- setPreviousParentValue is an intentional side effects; refactor tracked in issue #XXXX
     setPreviousParentValue(parentValue);
   }, [
     parentValue,

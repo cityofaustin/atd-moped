@@ -145,7 +145,7 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
     }
   }, []);
 
-  const onAction = useCallback(
+  const dispatchAction = useCallback(
     (id) => {
       switch (id) {
         case "bold":
@@ -166,21 +166,30 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
         case "link":
           handleLinkUpdate();
           break;
-        case "clear":
-          {
-            const formatTypes = Object.keys(selectionMap);
-            formatTypes.forEach((formatType) => {
-              if (selectionMap[formatType]) {
-                onAction(formatType);
-              }
-            });
-          }
-          break;
         default:
           break;
       }
     },
-    [editor, handleLinkUpdate, handleListUpdate, selectionMap]
+    [editor, handleLinkUpdate, handleListUpdate]
+  );
+
+  const clearFormatting = useCallback(() => {
+    Object.keys(selectionMap).forEach((formatType) => {
+      if (selectionMap[formatType]) {
+        dispatchAction(formatType);
+      }
+    });
+  }, [selectionMap, dispatchAction]);
+
+  const onAction = useCallback(
+    (id) => {
+      if (id === "clear") {
+        clearFormatting();
+      } else {
+        dispatchAction(id);
+      }
+    },
+    [clearFormatting, dispatchAction]
   );
 
   useEffect(() => {
