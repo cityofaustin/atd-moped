@@ -8,6 +8,14 @@ object_relationships:
   - name: moped_fund_source
     using:
       foreign_key_constraint_on: funding_source_id
+array_relationships:
+  - name: files_project_fundings
+    using:
+      foreign_key_constraint_on:
+        column: entity_id
+        table:
+          name: files_project_funding
+          schema: public
 insert_permissions:
   - role: moped-admin
     permission:

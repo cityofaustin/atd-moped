@@ -17,19 +17,17 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: { description: description },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
 
-  const areFormErrors = Object.keys(errors).length > 0;
-
   return (
     <ActivityMetrics eventName={"projects_saved_view"}>
       <form onSubmit={handleSubmit(onSave)}>
-        <Grid2 container spacing={2}>
+        <Grid2 container spacing={2} sx={{ pt: 1 }}>
           <Grid2 size={12}>
             <FormControl fullWidth>
               <ControlledTextInput
@@ -61,7 +59,7 @@ const SaveUserViewForm = ({ onSave, description, loading }) => {
               color="primary"
               startIcon={<CheckCircle />}
               type="submit"
-              disabled={loading || areFormErrors}
+              disabled={loading || !isValid}
             >
               Save view
             </Button>

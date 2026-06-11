@@ -1,5 +1,4 @@
 import {
-  IconButton,
   Grid2,
   ListItem,
   ListItemSecondaryAction,
@@ -11,6 +10,7 @@ import EditIcon from "@mui/icons-material/EditOutlined";
 
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
@@ -52,13 +52,6 @@ const ProjectNotes = ({
   return (
     <ListItem alignItems="flex-start">
       <ListItemText
-        sx={
-          isNoteEditable
-            ? {
-                marginRight: "30px",
-              }
-            : {}
-        }
         secondaryTypographyProps={{
           sx: editButtonStyles,
         }}
@@ -116,29 +109,43 @@ const ProjectNotes = ({
             <SecondaryInformationChip chipLabel={note.note_type_name} />
           </Grid2>
           <Grid2>
-            <IconButton
-              edge="end"
-              aria-label="edit"
+            <IconButtonWithTooltip
+              title={
+                note.note_type_name === "eCAPRIS"
+                  ? "Status updates from eCAPRIS can't be edited in Moped"
+                  : isNoteEditable
+                    ? null
+                    : "Only the author can edit this note"
+              }
               onClick={() => handleEditClick(noteIndex, note)}
-              size="small"
               disabled={!isNoteEditable}
-              sx={editButtonStyles}
+              ariaLabel="edit"
+              iconButtonProps={{
+                sx: editButtonStyles,
+              }}
             >
               <EditIcon />
-            </IconButton>
+            </IconButtonWithTooltip>
           </Grid2>
           <Grid2>
             {!isEditingNote && (
-              <IconButton
-                edge="end"
-                aria-label="delete"
+              <IconButtonWithTooltip
+                title={
+                  note.note_type_name === "eCAPRIS"
+                    ? "Status updates from eCAPRIS can't be deleted in Moped"
+                    : isNoteEditable
+                      ? null
+                      : "Only the author can delete this note"
+                }
+                ariaLabel="delete"
                 onClick={() => handleDeleteOpen(note.original_id)}
-                size="small"
                 disabled={!isNoteEditable}
-                sx={editButtonStyles}
+                iconButtonProps={{
+                  sx: editButtonStyles,
+                }}
               >
                 <DeleteIcon />
-              </IconButton>
+              </IconButtonWithTooltip>
             )}
           </Grid2>
         </Grid2>

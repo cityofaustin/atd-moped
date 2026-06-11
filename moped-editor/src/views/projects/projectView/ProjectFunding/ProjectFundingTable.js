@@ -8,11 +8,8 @@ import {
   Grid2,
   Switch,
   Tooltip,
-  IconButton,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   GridRowModes,
   useGridApiRef,
@@ -20,278 +17,34 @@ import {
 } from "@mui/x-data-grid-pro";
 import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { v4 as uuidv4 } from "uuid";
-import { currencyFormatter } from "src/utils/numberFormatters";
 
 import {
   COMBINED_FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
-  ECAPRIS_FDU_OPTIONS_QUERY,
+  GET_FUNDING_LOOKUPS,
+  DELETE_PROJECT_FUNDING_AND_REATTACH,
 } from "src/queries/funding";
 import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
 
-import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
-import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
-import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
-import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
-import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import NotableCellPopover from "src/components/NotableCellPopover";
 import {
   getIsEditMode,
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
-import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
+import ProjectFundingFilesAttachmentDialog from "src/views/projects/projectView/ProjectFunding/ProjectFundingFilesAttachmentDialog";
 import {
   transformDatabaseToGrid,
   transformGridToDatabase,
+  isCellEditable,
+  useColumns,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
-import {
-  isAmountOutOfRange,
-  outOfRangeErrorMessage,
-} from "src/utils/numberFormatters";
-
-// object to pass to the Fund column's LookupAutocomplete component
-const fduAutocompleteProps = {
-  getOptionLabel: (option) =>
-    option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value, option) =>
-    value?.ecapris_funding_id === option?.ecapris_funding_id,
-};
-
-const fduAutocompleteDependentFields = [
-  {
-    fieldName: "unit_long_name",
-    setFieldValue: (newValue) => newValue?.unit_long_name,
-  },
-  {
-    fieldName: "fund_source",
-    setFieldValue: (newValue) => newValue?.moped_fund_source,
-  },
-  {
-    fieldName: "fund_program",
-    setFieldValue: (newValue) => newValue?.moped_fund_program,
-  },
-  {
-    fieldName: "funding_amount",
-    setFieldValue: (newValue) => newValue?.amount,
-  },
-];
-
-/** Hook that provides memoized column settings */
-const useColumns = ({
-  dataProjectFunding,
-  dataFduOptions,
-  rowModesModel,
-  handleDeleteOpen,
-  handleSaveClick,
-  handleCancelClick,
-  handleEditClick,
-  setOverrideFundingRecord,
-  usingShiftKey,
-  logUserEvent,
-}) =>
-  useMemo(() => {
-    return [
-      {
-        headerName: "FDU",
-        field: "fdu",
-        width: 225,
-        editable: true,
-        renderCell: ({ row, value }) =>
-          row.is_synced_from_ecapris ? (
-            <>
-              <span>{value?.fdu}</span>
-              <SecondaryInformationChip
-                chipLabel="eCAPRIS"
-                chipStyles={{ marginLeft: "8px" }}
-              />
-            </>
-          ) : (
-            value?.fdu
-          ),
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"ecapris_funding"}
-            options={dataFduOptions?.ecapris_subproject_funding}
-            fullWidthPopper={true}
-            autocompleteProps={{
-              ...fduAutocompleteProps,
-              value: props?.row?.fdu,
-            }}
-            dependentFieldsArray={fduAutocompleteDependentFields}
-          />
-        ),
-      },
-      {
-        headerName: "Unit Name",
-        field: "unit_long_name",
-        editable: true, // this is to be able to use the renderEditCell option to update the related phase
-        // during editing -- the input field is always disabled
-        width: 175,
-        renderEditCell: (props) => (
-          <ViewOnlyTextField
-            {...props}
-            value={props.row.unit_long_name}
-            usingShiftKey={usingShiftKey}
-            previousColumnField="fdu"
-            nextColumnField="amount"
-          />
-        ),
-      },
-      {
-        headerName: "Source",
-        field: "fund_source",
-        width: 200,
-        editable: true,
-        valueFormatter: (value) => value?.funding_source_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_source"}
-            options={dataProjectFunding?.moped_fund_sources ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Program",
-        field: "fund_program",
-        width: 200,
-        editable: true,
-        valueFormatter: (value) => value?.funding_program_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_program"}
-            options={dataProjectFunding?.moped_fund_programs ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Description",
-        field: "funding_description",
-        width: 200,
-        editable: true,
-        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
-      },
-      {
-        headerName: "Status",
-        field: "fund_status",
-        editable: true,
-        width: 200,
-        valueFormatter: (value) => value?.funding_status_name,
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_status"}
-            defaultValue={1}
-            options={dataProjectFunding?.moped_fund_status ?? []}
-            fullWidthPopper={true}
-          />
-        ),
-      },
-      {
-        headerName: "Amount",
-        field: "funding_amount",
-        width: 100,
-        editable: true,
-        renderCell: ({ row, value }) => {
-          // Make sure not to give asterisk to empty cells
-          const hasValue = value !== null && value !== undefined;
-          const formattedValue = hasValue
-            ? currencyFormatter.format(value)
-            : "";
-          const showOverrideIndicator =
-            hasValue &&
-            !row.should_use_ecapris_amount &&
-            !row.is_manual &&
-            !row.is_synced_from_ecapris;
-
-          return (
-            <NotableCellPopover
-              value={formattedValue}
-              isEnabled={showOverrideIndicator}
-              popoverText="eCAPRIS override"
-            />
-          );
-        },
-        preProcessEditCellProps: (params) => {
-          return {
-            ...params.props,
-            error: isAmountOutOfRange(params.props.value),
-            errorMessage: outOfRangeErrorMessage,
-          };
-        },
-        valueFormatter: (value) =>
-          value === null ? null : currencyFormatter.format(value),
-        renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
-        type: "currency",
-      },
-      {
-        headerName: "",
-        field: "edit",
-        hideable: false,
-        filterable: false,
-        sortable: false,
-        editable: false,
-        type: "actions",
-        renderCell: ({ id, row }) =>
-          row.is_manual ? (
-            <DataGridActions
-              id={id}
-              rowModesModel={rowModesModel}
-              handleCancelClick={handleCancelClick}
-              handleDeleteOpen={handleDeleteOpen}
-              handleSaveClick={handleSaveClick}
-              handleEditClick={handleEditClick}
-              editDisabled={row.is_synced_from_ecapris}
-              deleteDisabled={row.is_synced_from_ecapris}
-            />
-          ) : (
-            <>
-              <IconButton
-                aria-label="edit"
-                sx={{ color: "inherit", padding: "5px" }}
-                onClick={() => {
-                  logUserEvent("funding_ecapris_override_form_load");
-                  setOverrideFundingRecord(row);
-                }}
-              >
-                <EditOutlinedIcon />
-              </IconButton>
-              <IconButton
-                aria-label="delete"
-                sx={{ color: "inherit", padding: "5px" }}
-                disabled={!!row.is_synced_from_ecapris}
-                onClick={handleDeleteOpen(id)}
-              >
-                <DeleteOutlineIcon />
-              </IconButton>
-            </>
-          ),
-      },
-    ];
-  }, [
-    dataProjectFunding,
-    dataFduOptions,
-    rowModesModel,
-    handleDeleteOpen,
-    handleSaveClick,
-    handleCancelClick,
-    handleEditClick,
-    setOverrideFundingRecord,
-    usingShiftKey,
-    logUserEvent,
-  ]);
 
 const ProjectFundingTable = ({
   projectId,
@@ -303,8 +56,8 @@ const ProjectFundingTable = ({
   const apiRef = useGridApiRef();
 
   /* Query Moped and eCAPRIS funding with matching filters */
-  const queryVariables =
-    eCaprisSubprojectId && shouldSyncEcaprisFunding
+  const queryVariables = useMemo(() => {
+    return eCaprisSubprojectId && shouldSyncEcaprisFunding
       ? {
           projectFundingConditions: {
             project_id: { _eq: Number(projectId) },
@@ -318,13 +71,14 @@ const ProjectFundingTable = ({
             ],
           },
         };
+  }, [projectId, eCaprisSubprojectId, shouldSyncEcaprisFunding]);
 
   const {
     loading: loadingProjectFunding,
     data: dataProjectFunding,
     refetch,
   } = useQuery(COMBINED_FUNDING_QUERY, {
-    variables: { ...queryVariables },
+    variables: queryVariables,
     fetchPolicy: "no-cache",
   });
 
@@ -344,16 +98,20 @@ const ProjectFundingTable = ({
     return tableFundingRows.map((row) => row.fdu) || [];
   }, [tableFundingRows]);
 
-  const { loading: loadingFduOptions, data: dataFduOptions } = useQuery(
-    ECAPRIS_FDU_OPTIONS_QUERY,
+  const { loading: loadingLookups, data: dataLookups } = useQuery(
+    GET_FUNDING_LOOKUPS,
     {
       fetchPolicy: "no-cache",
     }
   );
 
+  /* Mutations for adding, editing, deleting funding records, and updating eCAPRIS sync status */
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+  const [deleteProjectFundingAndReattach] = useMutation(
+    DELETE_PROJECT_FUNDING_AND_REATTACH
+  );
   const [updateShouldSyncECapris] = useMutation(
     PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
   );
@@ -369,6 +127,19 @@ const ProjectFundingTable = ({
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
   const isEditMode = getIsEditMode(rowModesModel);
+
+  /* File attachment state and handlers */
+  const [fileAttachmentId, setFileAttachmentId] = useState(null);
+  const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
+    useState(false);
+
+  const handleFileAttachmentClick = useCallback(
+    (id) => () => {
+      setFileAttachmentId(id);
+      setIsFileAttachmentDialogOpen(true);
+    },
+    []
+  );
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -479,14 +250,43 @@ const ProjectFundingTable = ({
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
       const deletedRow = rows.find((row) => row.id === id);
-      const { proj_funding_id } = deletedRow;
+      const {
+        proj_funding_id,
+        is_manual,
+        should_use_ecapris_amount,
+        is_synced_from_ecapris,
+      } = deletedRow;
 
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
-        deleteProjectFunding({
-          variables: {
-            proj_funding_id,
-          },
+        const isDeletingOverride =
+          !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
+        const fileIds =
+          deletedRow.moped_funding_files?.map(
+            (file) => file.moped_project_file.project_file_id
+          ) ?? [];
+
+        const entity_id = deletedRow.ecapris_funding?.id;
+        const attachmentObjects = fileIds.map((fileId) => ({
+          file_id: fileId,
+          project_id: projectId,
+          entity_id,
+          is_deleted: false,
+        }));
+
+        const deleteMutation = isDeletingOverride
+          ? deleteProjectFundingAndReattach
+          : deleteProjectFunding;
+
+        const variables = isDeletingOverride
+          ? {
+              proj_funding_id,
+              attachmentObjects,
+            }
+          : { proj_funding_id };
+
+        deleteMutation({
+          variables,
         })
           .then(() => refetch())
           .then(() => {
@@ -503,7 +303,14 @@ const ProjectFundingTable = ({
           });
       }
     },
-    [rows, deleteProjectFunding, refetch, handleSnackbar]
+    [
+      rows,
+      deleteProjectFunding,
+      refetch,
+      handleSnackbar,
+      projectId,
+      deleteProjectFundingAndReattach,
+    ]
   );
 
   // when a user cancels editing by clicking the X in the actions
@@ -526,7 +333,7 @@ const ProjectFundingTable = ({
       return (
         addProjectFunding({
           variables: {
-            objects: {
+            fundingObjects: {
               ...mutationData,
               project_id: Number(projectId),
             },
@@ -593,15 +400,18 @@ const ProjectFundingTable = ({
 
   const dataGridColumns = useColumns({
     dataProjectFunding,
-    dataFduOptions,
+    dataLookups,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    handleFileAttachmentClick,
     setOverrideFundingRecord,
     usingShiftKey,
     logUserEvent,
+    refetch,
+    handleSnackbar,
   });
 
   const handleECaprisSwitch = () => {
@@ -628,26 +438,10 @@ const ProjectFundingTable = ({
       );
   };
 
-  const isCellEditable = (params) => {
-    if (params.row.is_synced_from_ecapris) {
-      return false;
-    } else {
-      // if record is not synced from ecapris, but is also not manual, it means its been overriden
-      // dont edit using data grid
-      if (!params.row.is_manual) {
-        return false;
-      }
-      // records that are not synced from ecapris and are manual are editable
-      return true;
-    }
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <MopedDataGridInlineEdit
-        loading={
-          loadingProjectFunding || loadingFduOptions || !dataProjectFunding
-        }
+        loading={loadingProjectFunding || loadingLookups || !dataProjectFunding}
         apiRef={apiRef}
         columns={dataGridColumns}
         rows={rows}
@@ -715,7 +509,7 @@ const ProjectFundingTable = ({
                     options={
                       dataProjectFunding?.ecapris_subproject_funding ?? []
                     }
-                    refetch={refetchProjectSummary}
+                    refetch={refetchFundingData}
                     handleSnackbar={handleSnackbar}
                     disabled={isEditMode}
                   />
@@ -764,6 +558,7 @@ const ProjectFundingTable = ({
       />
       {eCaprisSubprojectId && (
         <SubprojectFundingModal
+          loading={loadingLookups}
           isDialogOpen={isDialogOpen}
           handleDialogClose={handleSubprojectDialogClose}
           eCaprisID={eCaprisSubprojectId}
@@ -780,9 +575,24 @@ const ProjectFundingTable = ({
           projectId={projectId}
           refetchFundingQuery={refetch}
           setOverrideFundingRecord={setOverrideFundingRecord}
-          onClose={() => setOverrideFundingRecord(null)}
+          handleClose={() => setOverrideFundingRecord(null)}
           handleSnackbar={handleSnackbar}
           dataProjectFunding={dataProjectFunding}
+        />
+      )}
+      {isFileAttachmentDialogOpen && (
+        <ProjectFundingFilesAttachmentDialog
+          projectId={projectId}
+          fileAttachmentId={fileAttachmentId}
+          isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
+          handleSnackbar={handleSnackbar}
+          onClose={() => {
+            setIsFileAttachmentDialogOpen(false);
+            setFileAttachmentId(null);
+          }}
+          refetch={refetch}
+          dataLookups={dataLookups}
+          rows={rows}
         />
       )}
     </div>

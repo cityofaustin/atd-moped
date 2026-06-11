@@ -110,14 +110,13 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
-    formState: { isDirty, errors },
+    trigger,
+    formState: { isDirty, isValid, errors },
   } = useForm({
     defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
-
-  const areFormErrors = Object.keys(errors).length > 0;
 
   // Get and format component and subcomponent options
   const { data: optionsData, error } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
@@ -256,7 +255,7 @@ const ComponentForm = ({
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         <Grid2 size={12}>
           <ControlledAutocomplete
             id="component"
@@ -280,6 +279,7 @@ const ComponentForm = ({
             control={control}
             autoFocus
             helperText="Required"
+            error={!!errors?.component}
             required={true}
           />
         </Grid2>
@@ -411,6 +411,7 @@ const ComponentForm = ({
                 onChange={() => {
                   setUseComponentPhase(!useComponentPhase);
                   setHasToggledPhaseSwitch(true);
+                  trigger();
                 }}
                 name="useComponentPhase"
                 color="primary"
@@ -490,13 +491,13 @@ const ComponentForm = ({
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
+        <Grid2 sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !hasToggledPhaseSwitch) || areFormErrors}
+            disabled={(!isDirty && !hasToggledPhaseSwitch) || !isValid}
           >
             {hasGeometry ? "Save" : formButtonText}
           </Button>

@@ -45,7 +45,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
     handleSubmit,
     control,
     watch,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues: {
       projectName: null,
@@ -85,7 +85,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   name="projectName"
                   control={control}
                   error={!!errors?.projectName}
-                  helperText={errors?.projectName?.message}
+                  helperText={errors?.projectName?.message || "Required"}
                   InputProps={{
                     disabled: loading,
                   }}
@@ -108,7 +108,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                       textInputOptions={{
                         variant: "standard",
                         error: !!errors?.signal,
-                        helperText: errors?.signal?.message,
+                        helperText: errors?.signal?.message || "Required",
                         disabled: loading,
                       }}
                     />
@@ -188,7 +188,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                 size="small"
                 control={control}
                 error={!!errors?.description}
-                helperText={errors?.description?.message}
+                helperText={errors?.description?.message || "Required"}
                 InputProps={{
                   disabled: loading,
                 }}
@@ -211,7 +211,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
           success={success}
           buttonOptions={{
             type: "submit",
-            disabled: !isDirty || loading,
+            disabled: !isDirty || !isValid || loading,
           }}
         />
       </Box>

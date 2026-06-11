@@ -45,7 +45,7 @@ const ProjectNameForm = ({
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues: {
       projectName: originalName,
@@ -87,10 +87,7 @@ const ProjectNameForm = ({
       >
         <Grid2 container spacing={2}>
           <Grid2
-            size={{
-              xs: 12,
-              lg: 6,
-            }}
+            size='grow'
           >
             <ControlledTextInput
               autoFocus
@@ -102,7 +99,7 @@ const ProjectNameForm = ({
               placeholder="Enter project name"
               control={control}
               error={!!errors?.projectName}
-              helperText={errors?.projectName?.message}
+              helperText={errors?.projectName?.message || "Required"}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -113,10 +110,7 @@ const ProjectNameForm = ({
             />
           </Grid2>
           <Grid2
-            size={{
-              xs: 12,
-              lg: 5,
-            }}
+            size='grow'
           >
             <ControlledTextInput
               variant="standard"
@@ -138,27 +132,16 @@ const ProjectNameForm = ({
               }}
             />
           </Grid2>
-          {/* Minimum width prevents icons from wrapping. */}
           <Grid2
-            container
-            direction="row"
-            sx={[
-              {
-                alignItems: "center",
-                alignContent: "center",
-              },
-              (theme) => ({
-                minWidth: theme.spacing(12),
-              }),
-            ]}
-            size={{
-              xs: 12,
-              lg: 1,
+            sx={{
+              display: "flex",
+              alignItems: "center",
             }}
+            size={{ xs: 12, lg: "auto" }}
           >
             <ProjectSummaryIconButtons
               handleClose={handleCancelClick}
-              disabledCondition={!isDirty}
+              disabledCondition={!isDirty || !isValid}
               loading={loading}
             />
           </Grid2>

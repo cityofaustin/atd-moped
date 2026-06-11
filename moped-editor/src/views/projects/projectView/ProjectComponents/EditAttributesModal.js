@@ -1,8 +1,7 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import FormDialog from "src/components/FormDialog";
 import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
 import { getFeatureChangesFromComponentForm } from "./utils/makeComponentData";
 import { zoomMapToFeatureCollection } from "./utils/map";
@@ -169,28 +168,13 @@ const EditAttributesModal = ({
     : null;
 
   return (
-    <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-        variant="h4"
-      >
-        Edit component
-        <IconButton onClick={onClose} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent dividers={true}>
-        <ComponentForm
-          onSave={onSave}
-          formButtonText="Save"
-          initialFormValues={initialFormValues}
-        />
-      </DialogContent>
-    </Dialog>
+    <FormDialog title="Edit component" open={showDialog} handleClose={onClose}>
+      <ComponentForm
+        onSave={onSave}
+        formButtonText="Save"
+        initialFormValues={initialFormValues}
+      />
+    </FormDialog>
   );
 };
 

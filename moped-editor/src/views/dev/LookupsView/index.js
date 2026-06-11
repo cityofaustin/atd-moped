@@ -6,9 +6,7 @@ import { createBrowserHistory } from "history";
 import Container from "@mui/material/Container";
 import Grid2 from "@mui/material/Grid2";
 import Paper from "@mui/material/Paper";
-import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import Page from "src/components/Page";
@@ -22,6 +20,7 @@ import CopyTextButton from "src/components/CopyTextButton";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 import Can from "src/auth/Can";
 
 /**
@@ -224,20 +223,18 @@ const LookupsView = () => {
                             </Typography>
                           </Grid2>
                           <Grid2>
-                            <Tooltip title="Return to top of page">
-                              <IconButton
-                                component={Link}
-                                to={"#"}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  scrollToTable("_scroll_to_top", refs);
-                                  history.replace("");
-                                }}
-                                size="large"
-                              >
-                                <ArrowUpwardIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
+                            <IconButtonWithTooltip
+                              title="Return to top of page"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                scrollToTable("_scroll_to_top", refs);
+                                history.replace("");
+                              }}
+                              size="large"
+                              ariaLabel="return to top"
+                            >
+                              <ArrowUpwardIcon fontSize="small" />
+                            </IconButtonWithTooltip>
                           </Grid2>
                         </Grid2>
                       </Grid2>

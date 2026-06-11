@@ -94,7 +94,7 @@ const DataGridToolbar = ({
         {!!hasSecondRow && <Box>{children}</Box>}
       </Box>
       {showColumnsButton || showFiltersButton ? (
-        <GridToolbarContainer sx={{ px: 2 }}>
+        <GridToolbarContainer sx={{ padding: "4px 16px 0px" }}>
           {showColumnsButton ? <GridToolbarColumnsButton /> : null}
           {showFiltersButton ? <GridToolbarFilterButton /> : null}
         </GridToolbarContainer>

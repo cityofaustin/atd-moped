@@ -12,7 +12,7 @@ import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete"
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import {
-  ADD_PROJECT_FUNDING,
+  ADD_PROJECT_FUNDING_AND_REATTACH,
   ECAPRIS_SUBPROJECT_FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
 } from "src/queries/funding";
@@ -59,7 +59,7 @@ const OverrideFundingForm = ({
   refetchFundingQuery,
   setOverrideFundingRecord,
   handleSnackbar,
-  onClose,
+  handleClose,
   dataProjectFunding,
 }) => {
   const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
@@ -81,7 +81,7 @@ const OverrideFundingForm = ({
   const {
     handleSubmit,
     control,
-    formState: { isDirty, errors },
+    formState: { isDirty, isValid, errors },
     watch,
     setValue,
   } = useForm({
@@ -102,13 +102,22 @@ const OverrideFundingForm = ({
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
     fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
+  const fundingSources = dataProjectFunding["moped_fund_sources"];
 
   const [mutate, mutationState] = useMutation(
-    isNewOverride ? ADD_PROJECT_FUNDING : UPDATE_PROJECT_FUNDING
+    isNewOverride ? ADD_PROJECT_FUNDING_AND_REATTACH : UPDATE_PROJECT_FUNDING
   );
 
   const onSubmit = (data) => {
     const transformedRecord = transformGridToDatabase(fundingRecord);
+    const attachmentEntityId = fundingRecord.proj_funding_id;
+    const fileIds = fundingRecord.ecapris_funding_files.map(
+      (file) => file.moped_project_file.project_file_id
+    );
+    const fileAttachmentObjects = fileIds.map((id) => ({
+      file_id: id,
+    }));
+
     // override record with data from form
     transformedRecord.funding_description = data.description;
     transformedRecord.funding_amount = data.funding_amount;
@@ -120,11 +129,14 @@ const OverrideFundingForm = ({
 
     const payload = isNewOverride
       ? {
-          objects: {
+          fundingObjects: {
             ...transformedRecord,
             ecapris_subproject_id: fundingRecord.ecapris_subproject_id,
             project_id: Number(projectId),
+            files_project_fundings: { data: fileAttachmentObjects },
           },
+          entityId: attachmentEntityId,
+          projectId,
         }
       : {
           ...transformedRecord,
@@ -140,7 +152,7 @@ const OverrideFundingForm = ({
         handleSnackbar(true, `Funding source ${snackbarVerb}ed`, "success");
         refetchFundingQuery();
         setOverrideFundingRecord(null);
-        onClose();
+        handleClose();
       })
       .catch((error) => {
         handleSnackbar(
@@ -154,14 +166,14 @@ const OverrideFundingForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} sx={{ pt: 1 }}>
         <Grid2 size={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
               control={control}
               name="funding_source_id"
               label="Source"
-              options={dataProjectFunding["moped_fund_sources"]}
+              options={fundingSources}
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_source_name || ""}
               onChangeHandler={(fund_source, field) => {
@@ -172,19 +184,13 @@ const OverrideFundingForm = ({
               }
               valueHandler={(value) =>
                 value
-                  ? dataProjectFunding["moped_fund_sources"].find(
-                      (s) => s.funding_source_id === value
-                    )
+                  ? fundingSources.find((s) => s.funding_source_id === value)
                   : null
               }
             />
             <FormHelperText>
               eCAPRIS source:{" "}
-              {renderECaprisLabel(
-                dataProjectFunding["moped_fund_sources"],
-                ecaprisSourceId,
-                "source"
-              )}
+              {renderECaprisLabel(fundingSources, ecaprisSourceId, "source")}
             </FormHelperText>
           </FormControl>
         </Grid2>
@@ -326,13 +332,15 @@ const OverrideFundingForm = ({
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2, marginBottom: 2 }}>
+        <Grid2 sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"
             type="submit"
             // Disable save button if editing and no changes made or mutation is loading
-            disabled={(!isNewOverride && !isDirty) || mutationState.loading}
+            disabled={
+              (!isNewOverride && !isDirty) || mutationState.loading || !isValid
+            }
           >
             Save
           </Button>
