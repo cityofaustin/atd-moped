@@ -51,6 +51,7 @@ import ProjectNameEditable from "src/views/projects/projectView/ProjectNameEdita
 import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
 import { useSessionDatabaseData } from "src/auth/user";
+import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
@@ -58,9 +59,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "src/views/errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
-import FeedbackSnackbar, {
-  useFeedbackSnackbar,
-} from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
 function a11yProps(index) {
@@ -103,7 +102,7 @@ const useActiveTabIndex = (tabName) =>
  */
 const ProjectView = () => {
   const { projectId } = useParams();
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
 

@@ -12,7 +12,16 @@ import prettier from "eslint-config-prettier";
  */
 
 export default tseslint.config(
-  { ignores: ["build", "dist", "coverage", "node_modules"] },
+  {
+    ignores: [
+      "build",
+      "dist",
+      "coverage",
+      "node_modules",
+      "**/*.test.{js,jsx,ts,tsx}",
+      "**/test/**",
+    ],
+  },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     extends: [
@@ -35,7 +44,16 @@ export default tseslint.config(
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "error",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          ignoreRestSiblings: true,
+          argsIgnorePattern: "^_",
+        },
+      ],
+      "no-duplicate-imports": "error",
+      /* Needed to surface undefined variables (like missing imports) in JS that would be caught in TS code by tsconfig */
+      "no-undef": "error",
     },
   }
 );

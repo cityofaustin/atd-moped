@@ -26,7 +26,9 @@ export const useSocrataGeojson = (url) => {
         }
       );
   }, [url]);
-  error && console.error(error);
+  if (error) {
+    console.error(error);
+  }
   return { features, error, loading: !features && !error };
 };
 
@@ -56,6 +58,8 @@ export const useSocrataJson = (url) => {
         }
       );
   }, [url]);
-  error && console.error(error);
+  if (error) {
+    console.error(error);
+  }
   return { data, error, loading: !data && !error };
 };

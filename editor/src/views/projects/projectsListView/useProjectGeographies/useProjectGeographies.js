@@ -1,5 +1,5 @@
 import React from "react";
-import { styleMapping } from "../../projectView/ProjectStatusBadge";
+import { styleMapping } from "src/utils/phases";
 
 /* Initial feature collections to pass to the map when data has not yet loaded */
 const initialProjectGeographiesMap = {

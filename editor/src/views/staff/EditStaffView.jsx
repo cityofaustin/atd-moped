@@ -33,7 +33,7 @@ const validationSchema = yup.object().shape({
 
 const EditStaffView = () => {
   const { userId } = useParams();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
 

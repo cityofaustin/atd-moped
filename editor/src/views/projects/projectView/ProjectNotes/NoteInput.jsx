@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -67,11 +67,12 @@ const OnChangePlugin = ({ onChange }) => {
 const OnSavePlugin = ({ noteAddSuccess }) => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
-    noteAddSuccess &&
+    if (noteAddSuccess) {
       editor.update(() => {
         const root = $getRoot();
         root.clear();
       });
+    }
     editor.focus();
   }, [noteAddSuccess, editor]);
   return null;
@@ -88,9 +89,7 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
     const isTextinDatabase = !!htmlContent;
     // If user clicks edit and there is a stored note and a clear editor,
     // populate editor with stored note
-    editingNote &&
-      !isTextInEditor &&
-      isTextinDatabase &&
+    if (editingNote && !isTextInEditor && isTextinDatabase) {
       editor.update(() => {
         // Remove any existing nodes from the EditorState to ensure there are no conflicts
         $getRoot()
@@ -115,6 +114,7 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
           }
         });
       });
+    }
     editor.focus();
   }, [editingNote, htmlContent, editor]);
   return null;
@@ -163,20 +163,10 @@ const NoteInput = ({
   noteTypes,
   validator = null,
 }) => {
-  const [validationErrors, setValidationErrors] = useState(null);
-
   // Validate content when the note text or note type changes
-  useEffect(() => {
-    const errors = validator
-      ? validator({ projectStatusUpdate: noteText })
-      : null;
-
-    if (errors) {
-      setValidationErrors(errors);
-    } else {
-      setValidationErrors(null);
-    }
-  }, [noteText, newNoteType, editingNoteType, validator]);
+  const validationErrors = useMemo(() => {
+    return validator ? validator({ projectStatusUpdate: noteText }) : null;
+  }, [noteText, validator]);
 
   const onChange = (htmlContent) => {
     setNoteText(htmlContent);

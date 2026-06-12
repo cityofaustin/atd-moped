@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import isEqual from "lodash.isequal";
 
 import {
+  Alert,
   Box,
   CircularProgress,
   Paper,
@@ -15,8 +16,7 @@ import {
 } from "@mui/material";
 
 import { PROJECT_ACTIVITY_LOG } from "src/queries/project";
-import { Alert } from "@mui/material";
-import { FormattedDateString } from "src/utils/dateAndTime";
+import FormattedDateString from "src/utils/FormattedDateString";
 import { getUserFullName } from "src/utils/userNames";
 import ProjectActivityEntry from "src/views/projects/projectView/ProjectActivityEntry";
 
@@ -121,10 +121,10 @@ const usePrepareActivityData = (activityData) =>
     if (!activityData) {
       return [];
     }
-    let outputList = [];
+    const outputList = [];
     let createdEvent = {};
     activityData.forEach((event) => {
-      let outputEvent = { ...event };
+      const outputEvent = { ...event };
       // if the description includes "newSchema", we need to manually find the difference in the update
       if (event.description[0]?.newSchema) {
         // if event is an INSERT there is no previous record to compare to
@@ -134,7 +134,7 @@ const usePrepareActivityData = (activityData) =>
           // otherwise compare the old record to the new record to find the field that was updated
           const newData = outputEvent.record_data.event.data.new;
           const oldData = outputEvent.record_data.event.data.old;
-          let changedFields = [];
+          const changedFields = [];
 
           Object.keys(newData).forEach((key) => {
             if (!!newData[key] && typeof newData[key] === "object") {

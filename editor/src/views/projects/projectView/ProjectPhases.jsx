@@ -210,9 +210,11 @@ const ProjectPhases = ({
     data?.project_list_view[0]["substantial_completion_date"];
   const onSubmitCallback = (isNewPhase) => {
     refetch().then(() => {
-      isNewPhase
-        ? handleSnackbar(true, "Project phase added", "success")
-        : handleSnackbar(true, "Project phase updated", "success");
+      if (isNewPhase) {
+        handleSnackbar(true, "Project phase added", "success");
+      } else {
+        handleSnackbar(true, "Project phase updated", "success");
+      }
       setEditPhase(null);
     });
   };

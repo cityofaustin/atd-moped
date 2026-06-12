@@ -16,7 +16,7 @@ import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import { FormattedDateString } from "src/utils/dateAndTime";
+import FormattedDateString from "src/utils/FormattedDateString";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>

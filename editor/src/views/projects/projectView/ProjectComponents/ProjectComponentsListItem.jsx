@@ -8,9 +8,8 @@ import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined
 import LinkIcon from "@mui/icons-material/Link";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
-import { isSignalComponent } from "./utils/componentList";
-import { ComponentIconByLineRepresentation } from "./utils/form";
-import { getIsComponentMapped } from "./utils/componentList";
+import { getIsComponentMapped, isSignalComponent } from "./utils/componentList";
+import ComponentIconByLineRepresentation from "src/views/projects/projectView/ProjectComponents/ComponentIconByLineRepresentation";
 import theme from "src/theme/index";
 
 const ProjectComponentsListItem = ({
@@ -86,6 +85,7 @@ const ProjectComponentsListItem = ({
     <ComponentListItem
       key={component.project_component_id}
       component={component}
+      componentRef={component._ref}
       isExpanded={isExpanded}
       onZoomClick={onZoomClick}
       onListItemClick={onListItemClick}

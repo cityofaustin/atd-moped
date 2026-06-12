@@ -12,7 +12,10 @@ import EditAttributesModal from "src/views/projects/projectView/ProjectComponent
 import DeleteComponentModal from "src/views/projects/projectView/ProjectComponents/DeleteComponentModal";
 import ComponentMapToolbar from "src/views/projects/projectView/ProjectComponents/ComponentMapToolbar";
 import MoveProjectComponentModal from "src/views/projects/projectView/ProjectComponents/MoveProjectComponentModal";
-import { useAppBarHeight } from "src/views/projects/projectView/ProjectComponents/utils/map";
+import {
+  useAppBarHeight,
+  zoomMapToFeatureCollection,
+} from "src/views/projects/projectView/ProjectComponents/utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { getAllComponentFeatures } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
@@ -24,7 +27,6 @@ import {
   updateClickedComponentIdInSearchParams,
 } from "./utils/useComponentLinkParams";
 import { useToolbarErrorMessage } from "src/views/projects/projectView/ProjectComponents/utils/useToolbarErrorMessage";
-import { zoomMapToFeatureCollection } from "src/views/projects/projectView/ProjectComponents/utils/map";
 import { useProjectComponents } from "src/views/projects/projectView/ProjectComponents/utils/useProjectComponents";
 import NewComponentToolbar from "src/views/projects/projectView/ProjectComponents/NewComponentToolbar";
 import DraftComponentList from "src/views/projects/projectView/ProjectComponents/DraftComponentList";
@@ -160,6 +162,7 @@ export default function MapView({
         (component) => component.project_component_id === clickedComponentId
       );
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs clickedComponent with latest project data after refetch
     setClickedComponent(updatedClickedComponent);
   }, [clickedComponent, projectComponents, allRelatedComponents]);
 

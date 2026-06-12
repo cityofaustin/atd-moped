@@ -16,7 +16,7 @@ import { useSessionDatabaseData } from "src/auth/user";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
-import { FormattedDateString } from "src/utils/dateAndTime";
+import FormattedDateString from "src/utils/FormattedDateString";
 import { handleRowEditStop } from "src/components/DataGridPro/utils/helpers.js";
 
 const requiredFields = ["description"];
@@ -127,6 +127,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
   // sets the data grid row data when query data is fetched
   useEffect(() => {
     if (data && data.moped_user_saved_views.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
       setRows(data.moped_user_saved_views);
     }
   }, [data]);

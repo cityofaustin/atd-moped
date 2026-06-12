@@ -110,7 +110,7 @@ export const transformGridToDatabase = (gridRecord) => {
     fdu_record_amount === Number(gridRecord.funding_amount);
 
   // the database expects the funding amount to be an Int or null. An empty string will result in an error, coerce to null
-  const funding_amount = Boolean(gridRecord.funding_amount)
+  const funding_amount = gridRecord.funding_amount
     ? gridRecord.funding_amount
     : null;
 

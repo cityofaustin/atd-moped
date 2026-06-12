@@ -35,7 +35,7 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
 
-  let changes = [];
+  const changes = [];
 
   // if the record has been deleted that supersedes any other changes
   if (newRecord?.["is_deleted"] === true) {
@@ -55,7 +55,7 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
     if (newRecord?.[field] !== oldRecord?.[field]) {
       // filter out fields that are not listed in the activity log table maps to prevent
       // automated field updates (created at, updated at, etc.) from entering the array
-      if (!!entryMap.fields[field]) {
+      if (entryMap.fields[field]) {
         changes.push(entryMap.fields[field]?.label);
       }
     }

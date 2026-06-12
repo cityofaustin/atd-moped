@@ -7,7 +7,7 @@ export const simpleSearchParamName = "search";
 
 export const useSearch = ({ queryConfig }) => {
   /* Get simple search from search params if it exists */
-  let [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const simpleSearchValue = searchParams.get(simpleSearchParamName);
 
   const [searchTerm, setSearchTerm] = useState(simpleSearchValue ?? "");

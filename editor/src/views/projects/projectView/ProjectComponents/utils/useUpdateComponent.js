@@ -15,13 +15,14 @@ import { fitBoundsOptions } from "../mapSettings";
 
 const editReducer = (state, action) => {
   switch (action.type) {
-    case "set_draft_component":
+    case "set_draft_component": {
       const clickedComponent = action.payload;
 
       return {
         ...state,
         draftEditComponent: clickedComponent,
       };
+    }
     case "clear_draft_component":
       return {
         ...state,
@@ -48,13 +49,14 @@ const editReducer = (state, action) => {
         ...state,
         isEditingComponent: false,
       };
-    case "update_clicked_features":
+    case "update_clicked_features": {
       const updatedDraftEditComponent = action.callback(
         state.draftEditComponent
       );
 
       return { ...state, draftEditComponent: updatedDraftEditComponent };
-    case "add_drawn_line":
+    }
+    case "add_drawn_line": {
       const newDrawnLineFeatures = action.payload;
       // Filter duplicates in the case we update an unsaved feature by dragging
       const existingDrawnLineFeatures =
@@ -74,7 +76,8 @@ const editReducer = (state, action) => {
       action.callback(featuresWithNewLines);
 
       return { ...state, draftEditComponent: draftEditComponentWithNewLines };
-    case "add_drawn_point":
+    }
+    case "add_drawn_point": {
       const newDrawnPointFeatures = action.payload;
       // Filter duplicates in the case we update an unsaved feature by dragging
       const existingDrawnPointFeatures =
@@ -94,7 +97,8 @@ const editReducer = (state, action) => {
       action.callback(featuresWithNewPoints);
 
       return { ...state, draftEditComponent: draftEditComponentWithNewPoints };
-    case "update_drawn_lines":
+    }
+    case "update_drawn_lines": {
       const updatedLineFeatures = action.payload;
       // We are only updating one feature at a time
       const lineFeatureToUpdate = updatedLineFeatures[0];
@@ -130,7 +134,8 @@ const editReducer = (state, action) => {
           updatedDrawnLineFeature,
         ],
       };
-    case "update_drawn_points":
+    }
+    case "update_drawn_points": {
       const updatedPointFeatures = action.payload;
       // We are only updating one feature at a time
       const pointFeatureToUpdate = updatedPointFeatures[0];
@@ -169,7 +174,8 @@ const editReducer = (state, action) => {
           updatedDrawnPointFeature,
         ],
       };
-    case "delete_drawn_lines":
+    }
+    case "delete_drawn_lines": {
       const deletedLineFeatures = action.payload;
 
       const lineIdsToDelete = deletedLineFeatures.map((feature) => feature.id);
@@ -185,7 +191,8 @@ const editReducer = (state, action) => {
       };
 
       return { ...state, draftEditComponent: draftComponentWithLineDeletes };
-    case "delete_drawn_points":
+    }
+    case "delete_drawn_points": {
       const deletedPointFeatures = action.payload;
 
       const pointIdsToDelete = deletedPointFeatures.map(
@@ -203,6 +210,7 @@ const editReducer = (state, action) => {
       };
 
       return { ...state, draftEditComponent: draftComponentWithPointDeletes };
+    }
     case "save_edit":
       return {
         ...state,

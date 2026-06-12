@@ -112,7 +112,7 @@ const Search = ({
 }) => {
   const divRef = React.useRef();
 
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   /**
    * The contents of the search box in SearchBar

@@ -20,17 +20,16 @@ import { useSearch } from "src/views/projects/projectsListView/useProjectListVie
 import { useAdvancedSearch } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
-  useCsvExport,
-  CsvDownloadingDialog,
   CsvDownloadOptionsDialog,
-} from "src/views/projects/projectsListView/useProjectListViewQuery/useCsvExport";
+  CsvDownloadingDialog,
+} from "src/views/projects/projectsListView/CsvDownloadingDialogs";
+import { useCsvExport } from "src/views/projects/projectsListView/useProjectListViewQuery/useCsvExport";
 import ProjectListToolbar from "src/views/projects/projectsListView/ProjectListToolbar";
 import { useCurrentData } from "src/views/projects/projectsListView/useProjectListViewQuery/useCurrentData";
 import ProjectsListViewMap from "src/views/projects/projectsListView/ProjectsListViewMap";
 import ActivityMetrics from "src/components/ActivityMetrics";
-import FeedbackSnackbar, {
-  useFeedbackSnackbar,
-} from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
+import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 export const mapSearchParamName = "map";
 

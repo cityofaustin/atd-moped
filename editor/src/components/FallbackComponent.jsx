@@ -1,9 +1,10 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
-import ExternalLink, { createBugReportLink } from "src/components/ExternalLink";
+import ExternalLink from "src/components/ExternalLink";
+import { createBugReportLink } from "src/utils/urls";
 import { useUser } from "src/auth/user";
 
-const FallbackComponent = ({ error, resetErrorBoundary }) => {
+const FallbackComponent = ({ error }) => {
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 

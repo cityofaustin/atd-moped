@@ -130,7 +130,7 @@ export const formatComponentsActivity = (
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
 
-  let changes = [];
+  const changes = [];
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {

@@ -17,11 +17,10 @@ import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
 import { createRecordKeyHash } from "src/utils/urls";
 import CopyTextButton from "src/components/CopyTextButton";
-import FeedbackSnackbar, {
-  useFeedbackSnackbar,
-} from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 import Can from "src/auth/Can";
+import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 /**
  * Scroll to a page element based on its key
@@ -101,7 +100,7 @@ const LookupsView = () => {
     []
   );
 
-  let { hash: recordKeyHash, pathname } = useLocation();
+  const { hash: recordKeyHash, pathname } = useLocation();
   useScrollToHash({ recordKeyHash, refs });
 
   return (
@@ -143,7 +142,8 @@ const LookupsView = () => {
               ))}
             </Grid2>
           </Paper>
-
+          {/* Ignoring because refs is a stable map of { current } objects created in useMemo above */}
+          {/* eslint-disable-next-line react-hooks/refs */}
           {SETTINGS.map((recordType) => (
             <Paper sx={{ px: 3, pb: 3 }} key={recordType.key}>
               <Grid2

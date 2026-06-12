@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { useLocation } from "react-router-dom";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import MapDrawer from "./components/MapDrawer";
 import ProjectsMap from "./components/ProjectsMap";
 import Alert from "@mui/material/Alert";
@@ -39,12 +38,14 @@ const ProjectsListViewMap = ({
   /* Toggle drawer based on whether components are captured in map click or not */
   useEffect(() => {
     if (selectedProjectIds.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- opens drawer when projects are selected on map; setOpen also closes the drawer
       setOpen(true);
     }
   }, [selectedProjectIds, setOpen]);
 
   /* Clear selected project IDs when search filters are changed or reset */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resets map selection when search filters change
     setSelectedProjectIds([]);
   }, [searchWhereString, advancedSearchWhereString]);
 

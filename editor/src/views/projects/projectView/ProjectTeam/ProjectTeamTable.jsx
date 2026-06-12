@@ -333,6 +333,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
       // Set the rows but add the workgroup name to the row data
       // instead of being nested under moped_user.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
       setRows(
         data.moped_project_by_pk.moped_proj_personnel.map((personnel) => ({
           ...personnel,

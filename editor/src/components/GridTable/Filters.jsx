@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
+  Autocomplete,
   Button,
   TextField,
   FormControl,
@@ -13,7 +14,6 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { DeleteOutline, Close, Search, PlaylistAdd } from "@mui/icons-material";
-import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "src/queries/project";
 import {

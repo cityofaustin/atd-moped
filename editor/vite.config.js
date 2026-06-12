@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
+import checker from "vite-plugin-checker";
 
 export default defineConfig(() => {
   return {
@@ -14,7 +15,24 @@ export default defineConfig(() => {
       outDir: "build/moped",
     },
     /* Use SSL for Cognito sign-in using callback set up with port 3000 in local development */
-    plugins: [react(), basicSsl()],
+    plugins: [
+      react(),
+      basicSsl(),
+      checker({
+        eslint: {
+          lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
+          dev: {
+            logLevel: ["error"],
+          },
+          overlay: {
+            initialIsOpen: true,
+            position: "tl", // top-left
+          },
+        },
+        // Disable during build since we lint in our Netlify build command
+        enableBuild: false,
+      }),
+    ],
     resolve: {
       /* Respect the import path aliases set in tsconfig.json */
       tsconfigPaths: true,
