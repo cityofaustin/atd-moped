@@ -42,7 +42,7 @@ export default tseslint.config(
     },
     rules: {
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/exhaustive-deps": "error",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -52,7 +52,7 @@ export default tseslint.config(
         },
       ],
       "no-duplicate-imports": "error",
-      /* Needed to surface undefined (like missing imports) that would be caught in TS code by tsconfig */
+      /* Needed to surface undefined variables (like missing imports) in JS that would be caught in TS code by tsconfig */
       "no-undef": "error",
     },
   }

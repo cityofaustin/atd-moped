@@ -20,7 +20,6 @@ export default defineConfig(() => {
       basicSsl(),
       checker({
         eslint: {
-          // for example, lint .ts and .tsx
           lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
           dev: {
             logLevel: ["error"],
@@ -30,6 +29,8 @@ export default defineConfig(() => {
             position: "tl", // top-left
           },
         },
+        // Disable during build since we lint in our Netlify build command
+        enableBuild: false,
       }),
     ],
     resolve: {

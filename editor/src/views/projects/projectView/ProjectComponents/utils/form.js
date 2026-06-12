@@ -340,7 +340,7 @@ export const useResetDependentFieldOnParentFieldChange = ({
     }
 
     setValue(dependentFieldName, valueToSet, { shouldValidate: true });
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- setPreviousParentValue is an intentional side effects; refactor tracked in issue #XXXX
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- setPreviousParentValue is an intentional side effects; refactor tracked in issue #28934
     setPreviousParentValue(parentValue);
   }, [
     parentValue,
