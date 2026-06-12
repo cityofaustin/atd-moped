@@ -1,6 +1,5 @@
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import { ColumnVisibilityAlert } from "./ColumnVisibilityAlert";
 
 /**
  * DataGridPro wrapper with default styles and props to ensure consistent styling and behavior of data grids
