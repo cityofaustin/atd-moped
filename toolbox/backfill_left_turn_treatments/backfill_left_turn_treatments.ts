@@ -36,11 +36,18 @@ import { requireEnv } from "./helpers/env.ts";
 // Create multiple components for treatments on the same signal on different days. Signal ID 920 appears to be the only case with treatments for different directions in 2023 and 2024
 // Skip treatments with missing signal ID and treatments with no implementation date
 
+// Query for existing left turn protections:
+// SELECT * FROM moped_proj_components
+// LEFT JOIN moped_components ON moped_proj_components.component_id = moped_components.component_id
+// LEFT JOIN moped_proj_components_subcomponents ON moped_proj_components.project_component_id = moped_proj_components_subcomponents.project_component_id
+// WHERE moped_proj_components.component_id = 18
+// AND moped_proj_components_subcomponents.subcomponent_id = 25;
+
 const DRY_RUN = process.argv.includes("--dry-run");
 const MOPED_BASE_URL = requireEnv("MOPED_BASE_URL");
 const SOCRATA_URL =
   "https://data.austintexas.gov/api/v3/views/p53x-x73x/query.json";
-const PHB_FILTER_STRING = encodeURIComponent(
+const TRAFFIC_SIGNAL_FILTER_STRING = encodeURIComponent(
   `
 SELECT signal_id,location_name,location,signal_type,id,turn_on_date
 WHERE
@@ -49,104 +56,12 @@ ORDER BY \`signal_id\` ASC
 `.trim(),
 );
 
-function findDuplicatePHBsInMoped(mopedPHBs: MopedComponent[]): {
-  duplicateIds: string[];
-  logLines: string[];
-} {
-  const signalIdToComponents = new Map<string, MopedComponent[]>();
-
-  mopedPHBs.forEach((component) => {
-    component.feature_signals.forEach((signal) => {
-      const id = String(signal.signal_id);
-      const existing = signalIdToComponents.get(id) ?? [];
-      signalIdToComponents.set(id, [...existing, component]);
-    });
-  });
-
-  const duplicates = [...signalIdToComponents.entries()].filter(
-    ([, components]) => components.length > 1,
-  );
-
-  const logLines = duplicates.map(([id, components]) => {
-    const urls = components.map(
-      (component) =>
-        `${MOPED_BASE_URL}/${component.project_id}?tab=map&project_component_id=${component.project_component_id}`,
-    );
-    return `  Signal ID ${id} appears in multiple Moped components:\n  ${urls.join("\n  ")}`;
-  });
-
-  return {
-    duplicateIds: duplicates.map(([id]) => id),
-    logLines,
-  };
-}
-
-function removeFromInsertQueue(
-  queue: SocrataSignalRecord[],
-  mopedComponents: MopedComponent[],
-): SocrataSignalRecord[] {
-  return queue.filter(
-    (phb) =>
-      !mopedComponents.some((component) =>
-        component.feature_signals.some(
-          (signal) => String(signal.signal_id) === String(phb.signal_id),
-        ),
-      ),
-  );
-}
-
-async function backfillMopedComponents(
-  componentsToBackfill: MopedComponent[],
-  componentsToInsert: SocrataSignalRecord[],
-  mutation: string,
-  duplicatesToSkip: string[],
-): Promise<string[]> {
-  const noMatchUrls: string[] = [];
-
-  for (const component of componentsToBackfill) {
-    const projectId = component.project_id;
-    const mopedComponentId = component.project_component_id;
-    const signalId = component.feature_signals[0].signal_id;
-    const completionDate = componentsToInsert.find(
-      (phb) => String(phb.signal_id) === String(signalId),
-    )?.turn_on_date;
-    const logUrl = `Signal ID ${signalId} in ${MOPED_BASE_URL}/${projectId}?tab=map&project_component_id=${mopedComponentId}`;
-
-    if (duplicatesToSkip.includes(String(signalId))) {
-      continue;
-    }
-
-    if (completionDate) {
-      if (DRY_RUN) {
-        console.log(`[DRY RUN] Would backfill ${logUrl}`);
-      } else {
-        try {
-          await makeHasuraRequest(mutation, {
-            id: mopedComponentId,
-            completion_date: toTimestamptz(completionDate),
-          });
-          console.log(`Backfilled ${logUrl}`);
-        } catch (error) {
-          console.error(
-            `An error occurred while backfilling ${logUrl}:`,
-            error,
-          );
-        }
-      }
-    } else {
-      noMatchUrls.push(logUrl);
-    }
-  }
-
-  return noMatchUrls;
-}
-
 async function main() {
   console.log(`Starting PHB backfill process ${DRY_RUN ? "(DRY RUN)" : ""}...`);
 
   /* 1. Request filtered Data Tracker signal data (ODP) to backfill insert components into Moped */
   let trafficSignals = await makeSocrataRequest<SocrataPHBResponse>(
-    `${SOCRATA_URL}?query=${PHB_FILTER_STRING}`,
+    `${SOCRATA_URL}?query=${TRAFFIC_SIGNAL_FILTER_STRING}`,
   );
 
   /** 2. Collect left-turn treatments from Austin Left Turn Treatment Evaluation dashboard
@@ -181,7 +96,7 @@ async function main() {
   try {
     if (DRY_RUN) {
       console.log(
-        `[DRY RUN] Would insert ${componentPayload.length} new traffic signals with left-turn treatments into a new Moped project.`,
+        `[DRY RUN] Would insert ${componentsToInsert.length} new traffic signals with left-turn treatments into a new Moped project.`,
       );
     } else {
       const projectData = await makeHasuraRequest<MopedProjectInsertResponse>(
@@ -192,12 +107,12 @@ async function main() {
             project_description: `Backfill of traffic signals from Data Tracker with left-turn treatments subcomponents with completion
             date using implementation dates as completion dates from Austin Left Turn Treatment Evaluation Power BI dashboard 
             (https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9)`,
-            moped_proj_components: { data: componentPayload },
+            moped_proj_components: { data: componentsToInsert },
           },
         },
       );
       console.log(
-        `Inserted ${componentPayload.length} new traffic signals from Data Tracker into a new Moped project #${projectData.insert_moped_project_one.project_id}.`,
+        `Inserted ${componentsToInsert.length} new traffic signals from Data Tracker into a new Moped project #${projectData.insert_moped_project_one.project_id}.`,
       );
     }
   } catch (error) {
