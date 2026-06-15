@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import * as readline from "readline";
+import Papa from "papaparse";
 import type {
   LeftTurnTreatmentRecord,
   MopedComponent,
@@ -29,53 +29,60 @@ ORDER BY \`signal_id\` ASC
 `.trim(),
 );
 
+/**
+ * Read csv and handle Power BI export format, extra quotes, and whitespaces
+ */
 async function readCsvData(): Promise<LeftTurnTreatmentRecord[]> {
-  // No need to capture information about recommendation or direction
-  const fileStream = fs.createReadStream(dataFilePath);
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
+  const fileContent = fs.readFileSync(dataFilePath, "utf-8");
+  const { data } = Papa.parse<Record<string, string>>(fileContent, {
+    header: true,
+    skipEmptyLines: true,
+    quoteChar: '"',
+    transformHeader: (h) => h.trim().replace(/^\uFEFF/, ""), // Power BI adds a BOM character to first header of csv
+    transform: (value) => value.trim(),
   });
 
-  const rows: string[][] = [];
-  let headers: string[] = [];
-
-  for await (const line of rl) {
-    const cols = line.split(",");
-    if (!headers.length) {
-      // Handle UTF-8 BOM present in first header of Power BI .csv export
-      headers = cols.map((h) => h.trim().replace(/^\uFEFF/, ""));
-      continue;
-    }
-    rows.push(cols);
-  }
-
-  const idx = (name: string) => headers.indexOf(name);
-  return rows.map((cols) => ({
-    signalId: parseInt(cols[idx("Signal ID")] ?? null),
-    recommendation: cols[idx("Recommendation")] ?? null,
-    implementationDate: cols[idx("Implementation Date")] ?? null,
+  return data.map((row) => ({
+    signalId: parseInt(row["Signal ID"]),
+    recommendation: row["Recommendation"],
+    implementationDate: row["Implementation Date"],
   }));
 }
 
+/**
+ * Filter out missing signal ids, implementation dates, and recommendations for no change to signal treatment
+ */
 function filterLeftTurnTreatments(
   treatments: LeftTurnTreatmentRecord[],
 ): LeftTurnTreatmentRecord[] {
-  treatments = treatments.filter((treatment) => treatment.signalId !== null);
-  treatments = treatments.filter((treatment) => treatment.implementationDate);
+  treatments = treatments.filter((treatment) => !isNaN(treatment.signalId));
+  treatments = treatments.filter((treatment) => !!treatment.implementationDate);
   treatments = treatments.filter(
-    (treatment) => treatment.recommendation.toLowerCase() !== "no change",
+    (treatment) =>
+      treatment.recommendation?.trim().toLowerCase() !== "no change",
   );
 
   return treatments;
 }
 
+/**
+ * Collapse treatments for different directions on the same signal into the same day;
+ * keep duplicate signals with treatments on different days
+ */
 function deduplicateLeftTurnTreatmentsBy(
   treatments: LeftTurnTreatmentRecord[],
 ): LeftTurnTreatmentRecord[] {
-  // Need to de-duplicate by signal ids on same date that represent different directions at the same intersection
-  // Create multiple components for treatments on the same signal on different days. Signal ID 920 appears to be the only case with treatments for different directions in 2023 and 2024
-  return;
+  const uniqueTreatmentsById: { [key: string]: LeftTurnTreatmentRecord } = {};
+  treatments.forEach((treatment) => {
+    const key = `${treatment.signalId}-${treatment.implementationDate}`;
+    if (!uniqueTreatmentsById[key]) {
+      uniqueTreatmentsById[key] = treatment;
+    }
+  });
+  const deduplicatedTreatments: LeftTurnTreatmentRecord[] =
+    Object.values(uniqueTreatmentsById);
+
+  return deduplicatedTreatments;
 }
 
 function createMopedComponents(
@@ -117,21 +124,17 @@ async function main() {
    ** See https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9
    */
   const leftTurnTreatments = await readCsvData();
-  console.log(leftTurnTreatments.length);
   const filteredTreatments = filterLeftTurnTreatments(leftTurnTreatments);
-  console.log(filteredTreatments.length);
-  return;
   const deduplicatedLeftTurnTreatments =
     deduplicateLeftTurnTreatmentsBy(filteredTreatments);
-
   console.log(
-    `Found ${filteredTreatments.length} left-turn treatments to backfill.`,
+    `Found ${deduplicatedLeftTurnTreatments.length} left-turn treatments to backfill.`,
   );
 
   /* 3. Create traffic signal components with protected left-turn phase subcomponents to insert */
   const componentsToInsert = createMopedComponents(
     trafficSignals,
-    filteredTreatments,
+    deduplicatedLeftTurnTreatments,
   );
 
   /*  4. Create traffic signals project and insert traffic signals as components in that project */

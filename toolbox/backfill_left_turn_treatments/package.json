@@ -10,6 +10,10 @@
   },
   "devDependencies": {
     "@types/node": "^24.13.2",
+    "@types/papaparse": "^5.5.2",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "papaparse": "^5.5.3"
   }
 }
