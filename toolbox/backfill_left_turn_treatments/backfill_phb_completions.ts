@@ -21,6 +21,21 @@ import {
 import { toTimestamptz } from "./helpers/time.ts";
 import { requireEnv } from "./helpers/env.ts";
 
+// TODOs:
+// Create a new project to hold backfilled left turn treatment subcomponents on Traffic Signal components in Moped
+// Create a Left Turn Protection project with each of the implementations as Signal components using the same signal details captured in a new signal component defined in Moped
+// Component type (Full): Signal - Traffic
+// Component work type: Mod
+// Component subcomponent: Protected left-turn phase
+// Component phase: Complete
+// Component phase completion date: Implementation date from Left Turn Analysis data linked above (can export as csv from Power BI dasboard)
+// No need to capture information about recommendation or direction
+// Special cases:
+// Exclude rows that have recommendation of “No change”
+// Need to de-duplicate by signal ids on same date that represent different directions at the same intersection
+// Create multiple components for treatments on the same signal on different days. Signal ID 920 appears to be the only case with treatments for different directions in 2023 and 2024
+// Skip treatments with missing signal ID and treatments with no implementation date
+
 const DRY_RUN = process.argv.includes("--dry-run");
 const MOPED_BASE_URL = requireEnv("MOPED_BASE_URL");
 const SOCRATA_URL =
@@ -29,9 +44,7 @@ const PHB_FILTER_STRING = encodeURIComponent(
   `
 SELECT signal_id,location_name,location,signal_type,id,turn_on_date
 WHERE
-  caseless_eq(\`signal_status\`, "TURNED_ON")
-  AND caseless_eq(\`signal_type\`, "PHB")
-  AND \`turn_on_date\` IS NOT NULL
+  caseless_eq(\`signal_type\`, "TRAFFIC")
 ORDER BY \`signal_id\` ASC
 `.trim(),
 );
@@ -131,133 +144,76 @@ async function backfillMopedComponents(
 async function main() {
   console.log(`Starting PHB backfill process ${DRY_RUN ? "(DRY RUN)" : ""}...`);
 
-  /* 1. Request filtered Data Tracker PHB data (ODP) to backfill some and insert others into Moped */
-  let phbsToInsert = await makeSocrataRequest<SocrataPHBResponse>(
+  /* 1. Request filtered Data Tracker signal data (ODP) to backfill insert components into Moped */
+  let trafficSignals = await makeSocrataRequest<SocrataPHBResponse>(
     `${SOCRATA_URL}?query=${PHB_FILTER_STRING}`,
   );
 
-  /* 2. Get PHBs in Moped */
-  const { moped_proj_components: completeMopedPHBs } =
-    await makeHasuraRequest<MopedComponentsResponse>(getCompletedPhbComponents);
-  const { moped_proj_components: needingDateOnly } =
-    await makeHasuraRequest<MopedComponentsResponse>(
-      getCompletedPhbComponentsNeedingDateOnly,
-    );
-  const { moped_proj_components: needingPhaseAndDate } =
-    await makeHasuraRequest<MopedComponentsResponse>(
-      getCompletedPhbComponentsNeedingPhaseAndDate,
-    );
-
+  /** 2. Collect left-turn treatments from Austin Left Turn Treatment Evaluation dashboard
+   ** See https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9
+   */
+  // TODO: Create data folder, read csv from folder and filter to exclude special cases listed above
+  const leftTurnTreatments = [];
   console.log(
-    `Found ${completeMopedPHBs.length} already-complete PHBs in Moped.`,
-  );
-  console.log(
-    `Found ${needingDateOnly.length} PHBs needing completion date backfill.`,
-  );
-  console.log(
-    `Found ${needingPhaseAndDate.length} PHBs needing completion date and phase backfill.`,
+    `Found ${leftTurnTreatments.length} left-turn treatments to backfill.`,
   );
 
-  /* 3. Find duplicates in Moped so we can skip backfilling and flag for manual review */
-  const {
-    duplicateIds: duplicatePhbsInMoped,
-    logLines: duplicatePhbsInMopedLogLines,
-  } = findDuplicatePHBsInMoped([
-    ...completeMopedPHBs,
-    ...needingDateOnly,
-    ...needingPhaseAndDate,
-  ]);
+  /* 3. Create traffic signal components with protected left-turn phase subcomponents to insert */
+  const trafficSignalsToBackfill = [];
+  const componentsToInsert = trafficSignalsToBackfill.map((treatment) => {
+    data: "TODO";
+  });
 
-  /* 4. Remove complete PHBs from insert queue, backfill missing data on those in Moped and remove from insert queue too */
-  phbsToInsert = removeFromInsertQueue(phbsToInsert, completeMopedPHBs);
-  console.log(
-    `Insert queue after removing complete PHBs: ${phbsToInsert.length} remaining.`,
-  );
-
-  console.log("Backfilling PHBs in Moped that are missing completion date...");
-  const noMatchNeedingDateOnlyUrls = await backfillMopedComponents(
-    needingDateOnly,
-    phbsToInsert,
-    updateMopedComponentCompletionDate,
-    duplicatePhbsInMoped,
-  );
-  phbsToInsert = removeFromInsertQueue(phbsToInsert, needingDateOnly);
-  console.log(
-    `Insert queue after backfilling date-only PHBs: ${phbsToInsert.length} remaining.`,
-  );
-
-  console.log(
-    "Backfilling PHBs in Moped that are missing completion date and phase...",
-  );
-  const noMatchNeedingPhaseAndDateUrls = await backfillMopedComponents(
-    needingPhaseAndDate,
-    phbsToInsert,
-    updateMopedComponentCompletionDateAndPhase,
-    duplicatePhbsInMoped,
-  );
-  phbsToInsert = removeFromInsertQueue(phbsToInsert, needingPhaseAndDate);
-  console.log(
-    `Insert queue after backfilling phase and date PHBs: ${phbsToInsert.length} remaining.`,
-  );
-
-  /*  5. Create PHB project and insert remaining PHBs in queue as components in that project */
-  const componentPayload = phbsToInsert.map((phb) => ({
-    component_id: 16, // Signal - PHB component ID
-    location_description: `${phb.signal_id}: ${phb.location_name.trim()}`,
-    phase_id: 11, // Complete phase
-    completion_date: toTimestamptz(phb.turn_on_date),
-    feature_signals: {
-      data: [socrataSignalRecordToFeatureSignalsRecord(phb)],
-    },
-    moped_proj_component_work_types: {
-      data: [{ work_type_id: 7 }], // "New" work type
-    },
-  }));
+  /*  5. Create PHB project and insert traffic signals as components in that project */
+  // const componentPayload = phbsToInsert.map((phb) => ({
+  //   component_id: 16, // Signal - PHB component ID
+  //   location_description: `${phb.signal_id}: ${phb.location_name.trim()}`,
+  //   phase_id: 11, // Complete phase
+  //   completion_date: toTimestamptz(phb.turn_on_date),
+  //   feature_signals: {
+  //     data: [socrataSignalRecordToFeatureSignalsRecord(phb)],
+  //   },
+  //   moped_proj_component_work_types: {
+  //     data: [{ work_type_id: 7 }], // "New" work type
+  //   },
+  // }));
 
   try {
     if (DRY_RUN) {
       console.log(
-        `[DRY RUN] Would insert ${componentPayload.length} new PHBs into a new Moped project.`,
+        `[DRY RUN] Would insert ${componentPayload.length} new traffic signals with left-turn treatments into a new Moped project.`,
       );
     } else {
       const projectData = await makeHasuraRequest<MopedProjectInsertResponse>(
         addProject,
         {
           object: {
-            project_name: "Vision Zero PHB Safety Statistics",
-            project_description: `Backfill of installed PHBs from Data Tracker not already captured in Moped`,
+            project_name: "Vision Zero Left Turn Treatment Statistics",
+            project_description: `Backfill of traffic signals from Data Tracker with left-turn treatments subcomponents with completion
+            date using implementation dates as completion dates from Austin Left Turn Treatment Evaluation Power BI dashboard 
+            (https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9)`,
             moped_proj_components: { data: componentPayload },
           },
         },
       );
       console.log(
-        `Inserted ${componentPayload.length} new PHBs from Data Tracker into a new Moped project #${projectData.insert_moped_project_one.project_id}.`,
+        `Inserted ${componentPayload.length} new traffic signals from Data Tracker into a new Moped project #${projectData.insert_moped_project_one.project_id}.`,
       );
     }
   } catch (error) {
-    console.error("An error occurred while creating the PHB project:", error);
-  }
-
-  if (duplicatePhbsInMopedLogLines.length > 0) {
-    console.log("\nComponents with duplicate signal IDs that need review:");
-    duplicatePhbsInMopedLogLines.forEach((line) => console.log(line));
-  }
-
-  const allNoMatchUrls = [
-    ...noMatchNeedingDateOnlyUrls,
-    ...noMatchNeedingPhaseAndDateUrls,
-  ];
-  if (allNoMatchUrls.length > 0) {
-    console.log(
-      "\nComponents with signal no longer turned on that need review:",
+    console.error(
+      "An error occurred while creating the left-turn treatment project:",
+      error,
     );
-    allNoMatchUrls.forEach((url) => console.log(`  ${url}`));
   }
 
-  console.log("PHB backfill done.");
+  console.log("Left-turn treatment backfill done.");
 }
 
 main().catch((error) => {
-  console.error("An error occurred during the PHB backfill process:", error);
+  console.error(
+    "An error occurred during the left-turn treatment backfill process:",
+    error,
+  );
   process.exit(1);
 });
