@@ -1,5 +1,5 @@
 import { requireEnv } from "./env.ts";
-import type { SocrataSignalRecord } from "../types.ts";
+import type { SocrataTrafficSignalRecord } from "../types.ts";
 
 const SOCRATA_TOKEN = requireEnv("SOCRATA_TOKEN");
 
@@ -29,7 +29,7 @@ export async function makeSocrataRequest<T>(url: string): Promise<T> {
  * Mostly copied from Moped editor code; transforms Socrata signal record into the shape needed for Moped feature_signals records
  */
 export const socrataSignalRecordToFeatureSignalsRecord = (
-  signal: SocrataSignalRecord,
+  signal: SocrataTrafficSignalRecord,
 ) => ({
   // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
   geography: {

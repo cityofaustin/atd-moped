@@ -1,0 +1,15 @@
+{
+  "name": "backfill_left_turn_treatments",
+  "description": "Request Data Tracker traffic signals data (ODP)and backfill signal treatments into new project",
+  "version": "1.0.0",
+  "main": "backfill_left_turn_treatments.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env backfill_left_turn_treatments.ts",
+    "start:dry": "node --env-file=.env backfill_left_turn_treatments.ts --dry-run"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "typescript": "^5.0.0"
+  }
+}
