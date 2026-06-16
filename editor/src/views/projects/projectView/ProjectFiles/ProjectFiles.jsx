@@ -286,9 +286,9 @@ const ProjectFiles = ({ handleSnackbar }) => {
   const [updateProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_UPDATE
   );
-  const [deleteProjectFileAttachment] = useMutation(
-    PROJECT_FILE_ATTACHMENTS_DELETE
-  );
+  const [deleteProjectFileAttachment, { loading: mutationPending }] =
+    useMutation(PROJECT_FILE_ATTACHMENTS_DELETE);
+
   const [createProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
@@ -470,6 +470,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={mutationPending}
       />
     </>
   );

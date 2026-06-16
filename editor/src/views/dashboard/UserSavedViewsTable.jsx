@@ -114,7 +114,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
   });
 
   const [updateUserSavedView] = useMutation(UPDATE_USER_SAVED_VIEW);
-  const [deleteUserSavedView] = useMutation(DELETE_USER_SAVED_VIEW);
+  const [deleteUserSavedView, { loading: mutationPending }] = useMutation(DELETE_USER_SAVED_VIEW);
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -242,6 +242,7 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={mutationPending}
       />
     </>
   );
