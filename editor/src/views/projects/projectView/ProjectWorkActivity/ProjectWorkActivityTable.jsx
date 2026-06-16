@@ -288,6 +288,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         submitDelete={handleDeleteConfirmed}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={deleteInProgress}
       />
     </>
   );

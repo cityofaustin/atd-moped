@@ -319,7 +319,9 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   const [insertProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
   const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
-  const [deleteProjectPersonnel] = useMutation(DELETE_PROJECT_PERSONNEL);
+  const [deleteProjectPersonnel, { loading: mutationPending }] = useMutation(
+    DELETE_PROJECT_PERSONNEL
+  );
 
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -616,6 +618,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         }}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={mutationPending}
       />
     </>
   );

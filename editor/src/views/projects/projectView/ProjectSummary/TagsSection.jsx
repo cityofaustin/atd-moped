@@ -37,7 +37,8 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
   });
 
   const [addProjectTags] = useMutation(ADD_PROJECT_TAGS);
-  const [deleteProjectTag] = useMutation(DELETE_PROJECT_TAG);
+  const [deleteProjectTag, { loading: mutationPending }] =
+    useMutation(DELETE_PROJECT_TAG);
 
   if (error) console.error(error);
   if (loading || !data) return <CircularProgress />;
@@ -147,6 +148,7 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
           submitDelete={() => handleTagDelete(deleteConfirmationId)}
           isDeleteConfirmationOpen={isDeleteConfirmationOpen}
           setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+          mutationPending={mutationPending}
         >
           <Grid2 container spacing={1}>
             {data.moped_proj_tags.map((tag) => (
