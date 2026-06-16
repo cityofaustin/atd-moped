@@ -121,7 +121,8 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   });
 
   const [addComponentTag] = useMutation(ADD_COMPONENT_TAG);
-  const [updateComponentTag] = useMutation(UPDATE_COMPONENT_TAG);
+  const [updateComponentTag, { loading: mutationPending }] =
+    useMutation(UPDATE_COMPONENT_TAG);
 
   const tableRows = useMemo(
     () => transformDatabaseToGrid(data?.moped_component_tags),
@@ -353,6 +354,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         confirmationText="Are you sure you want to remove this component tag? It will be hidden from the data dictionary and downstream views."
         actionButtonText="Remove"
+        mutationPending={mutationPending}
       />
     </>
   );

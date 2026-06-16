@@ -210,7 +210,9 @@ const ProjectMilestones = ({
   const [updateProjectMilestone] = useMutation(
     UPDATE_PROJECT_MILESTONES_MUTATION
   );
-  const [deleteProjectMilestone] = useMutation(DELETE_PROJECT_MILESTONE);
+  const [deleteProjectMilestone, { loading: mutationPending }] = useMutation(
+    DELETE_PROJECT_MILESTONE
+  );
   const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
 
   // rows and rowModesModel used in DataGrid
@@ -493,6 +495,7 @@ const ProjectMilestones = ({
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={mutationPending}
       />
     </>
   );
