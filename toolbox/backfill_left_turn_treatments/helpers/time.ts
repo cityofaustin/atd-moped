@@ -6,7 +6,7 @@
  * Example output: "2023-01-15T06:00:00.000Z" or "2023-01-15T05:00:00.000Z" depending on daylight savings time.
  */
 export function toTimestamptz(floatingTimestamp: string): string {
-  const dateStr = floatingTimestamp.split("T")[0];
+  const dateStr = floatingTimestamp.split(" ")[0];
   const centralMidnight = new Date(
     new Date(`${dateStr}T00:00:00`).toLocaleString("en-US", {
       timeZone: "America/Chicago",
