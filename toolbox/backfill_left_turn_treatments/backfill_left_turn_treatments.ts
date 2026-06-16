@@ -122,11 +122,13 @@ function createMopedComponentsPayload(
         feature_signals: {
           data: [socrataSignalRecordToFeatureSignalsRecord(signal)],
         },
+        // TODO: Add subcomponnent for protected left-turn phase to payload
         moped_proj_component_work_types: {
           data: [{ work_type_id: 6 }], // "Modification" work type
         },
       };
     })
+    // Filter out treatments with no matching signal in Socrata data that were skipped
     .filter((component) => component !== null);
 
   return componentsPayload;
@@ -142,9 +144,7 @@ async function main() {
     `${SOCRATA_URL}?query=${TRAFFIC_SIGNAL_FILTER_STRING}`,
   );
 
-  /** 2. Collect left-turn treatments from Austin Left Turn Treatment Evaluation dashboard
-   ** See https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9
-   */
+  /* 2. Collect left-turn treatments from Austin Left Turn Treatment Evaluation dashboard export */
   const leftTurnTreatments = await readCsvData();
   const filteredTreatments = filterLeftTurnTreatments(leftTurnTreatments);
   const deduplicatedLeftTurnTreatments =
