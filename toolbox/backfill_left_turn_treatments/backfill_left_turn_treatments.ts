@@ -2,11 +2,16 @@ import * as fs from "fs";
 import Papa from "papaparse";
 import type {
   LeftTurnTreatmentRecord,
-  MopedComponent,
+  MopedComponentPayload,
   MopedProjectInsertResponse,
+  SocrataTrafficSignalRecord,
   SocrataTrafficSignalResponse,
 } from "./types.ts";
-import { makeSocrataRequest } from "./helpers/socrata.ts";
+import {
+  makeSocrataRequest,
+  socrataSignalRecordToFeatureSignalsRecord,
+} from "./helpers/socrata.ts";
+import { toTimestamptz } from "./helpers/time.ts";
 import { addProject, makeHasuraRequest } from "./helpers/graphql.ts";
 
 const dataFilePath = "./data/data.csv";
@@ -85,29 +90,46 @@ function deduplicateLeftTurnTreatmentsBy(
   return deduplicatedTreatments;
 }
 
-function createMopedComponents(
+function createMopedComponentsPayload(
   trafficSignals: SocrataTrafficSignalResponse,
   leftTurnTreatments: LeftTurnTreatmentRecord[],
-): MopedComponent[] {
+): MopedComponentPayload[] {
   // Component type (Full): Signal - Traffic
   // Component work type: Mod
   // Component subcomponent: Protected left-turn phase
   // Component phase: Complete
   // Component phase completion date: Implementation date from Left Turn Analysis data linked above (can export as csv from Power BI dasboard)
 
-  // const componentPayload = phbsToInsert.map((phb) => ({
-  //   component_id: 16, // Signal - PHB component ID
-  //   location_description: `${phb.signal_id}: ${phb.location_name.trim()}`,
-  //   phase_id: 11, // Complete phase
-  //   completion_date: toTimestamptz(phb.turn_on_date),
-  //   feature_signals: {
-  //     data: [socrataSignalRecordToFeatureSignalsRecord(phb)],
-  //   },
-  //   moped_proj_component_work_types: {
-  //     data: [{ work_type_id: 7 }], // "New" work type
-  //   },
-  // }));
-  return;
+  const componentsPayload = leftTurnTreatments
+    .map((treatment) => {
+      const signal: SocrataTrafficSignalRecord | undefined =
+        trafficSignals.find(
+          (signal) => signal.signal_id === treatment.signalId.toString(),
+        );
+
+      if (!signal) {
+        console.warn(
+          `No matching signal found in Socrata data for treatment with signal ID ${treatment.signalId}. This treatment will be skipped.`,
+        );
+        return null;
+      }
+
+      return {
+        component_id: 18, // Signal - Traffic component ID
+        location_description: `${signal?.signal_id}: ${signal?.location_name.trim()}`,
+        phase_id: 11, // Complete phase
+        completion_date: toTimestamptz(treatment.implementationDate),
+        feature_signals: {
+          data: [socrataSignalRecordToFeatureSignalsRecord(signal)],
+        },
+        moped_proj_component_work_types: {
+          data: [{ work_type_id: 6 }], // "Modification" work type
+        },
+      };
+    })
+    .filter((component) => component !== null);
+
+  return componentsPayload;
 }
 
 async function main() {
@@ -132,7 +154,7 @@ async function main() {
   );
 
   /* 3. Create traffic signal components with protected left-turn phase subcomponents to insert */
-  const componentsToInsert = createMopedComponents(
+  const componentsToInsert = createMopedComponentsPayload(
     trafficSignals,
     deduplicatedLeftTurnTreatments,
   );
