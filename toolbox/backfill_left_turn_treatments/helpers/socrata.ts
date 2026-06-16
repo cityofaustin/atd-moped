@@ -6,7 +6,9 @@ import type {
 
 const SOCRATA_TOKEN = requireEnv("SOCRATA_TOKEN");
 
-export async function makeSocrataRequest<T>(url: string): Promise<T> {
+export async function makeSocrataRequest<T extends unknown[]>(
+  url: string,
+): Promise<T> {
   console.log("Requesting data from Socrata...");
 
   const res = await fetch(url, {

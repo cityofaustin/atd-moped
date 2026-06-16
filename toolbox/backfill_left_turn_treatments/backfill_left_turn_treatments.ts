@@ -74,7 +74,7 @@ function filterLeftTurnTreatments(
  * Collapse treatments for different directions on the same signal into the same day;
  * keep duplicate signals with treatments on different days
  */
-function deduplicateLeftTurnTreatmentsBy(
+function deduplicateLeftTurnTreatments(
   treatments: LeftTurnTreatmentRecord[],
 ): LeftTurnTreatmentRecord[] {
   const uniqueTreatmentsById: { [key: string]: LeftTurnTreatmentRecord } = {};
@@ -90,16 +90,13 @@ function deduplicateLeftTurnTreatmentsBy(
   return deduplicatedTreatments;
 }
 
+/**
+ * Create Moped completed traffic signal component mods with protected left-turn phase subcomponents with completion dates from left turn treatment data
+ */
 function createMopedComponentsPayload(
   trafficSignals: SocrataTrafficSignalResponse,
   leftTurnTreatments: LeftTurnTreatmentRecord[],
 ): MopedComponentPayload[] {
-  // Component type (Full): Signal - Traffic
-  // Component work type: Mod
-  // Component subcomponent: Protected left-turn phase
-  // Component phase: Complete
-  // Component phase completion date: Implementation date from Left Turn Analysis data linked above (can export as csv from Power BI dasboard)
-
   const componentsPayload = leftTurnTreatments
     .map((treatment) => {
       const signal: SocrataTrafficSignalRecord | undefined =
@@ -116,15 +113,17 @@ function createMopedComponentsPayload(
 
       return {
         component_id: 18, // Signal - Traffic component ID
-        location_description: `${signal?.signal_id}: ${signal?.location_name.trim()}`,
+        location_description: `${signal.signal_id}: ${signal.location_name.trim()}`,
         phase_id: 11, // Complete phase
         completion_date: toTimestamptz(treatment.implementationDate),
         feature_signals: {
           data: [socrataSignalRecordToFeatureSignalsRecord(signal)],
         },
-        // TODO: Add subcomponnent for protected left-turn phase to payload
         moped_proj_component_work_types: {
           data: [{ work_type_id: 6 }], // "Modification" work type
+        },
+        moped_proj_components_subcomponents: {
+          data: [{ subcomponent_id: 25 }], // "Protected left-turn phase" subcomponent
         },
       };
     })
@@ -139,8 +138,8 @@ async function main() {
     `Starting left turn treatment backfill process ${DRY_RUN ? "(DRY RUN)" : ""}...`,
   );
 
-  /* 1. Request filtered Data Tracker signal data (ODP) to backfill insert components into Moped */
-  let trafficSignals = await makeSocrataRequest<SocrataTrafficSignalResponse>(
+  /* 1. Request filtered Data Tracker signal data (ODP) to backfill components into Moped */
+  const trafficSignals = await makeSocrataRequest<SocrataTrafficSignalResponse>(
     `${SOCRATA_URL}?query=${TRAFFIC_SIGNAL_FILTER_STRING}`,
   );
 
@@ -148,7 +147,7 @@ async function main() {
   const leftTurnTreatments = await readCsvData();
   const filteredTreatments = filterLeftTurnTreatments(leftTurnTreatments);
   const deduplicatedLeftTurnTreatments =
-    deduplicateLeftTurnTreatmentsBy(filteredTreatments);
+    deduplicateLeftTurnTreatments(filteredTreatments);
   console.log(
     `Found ${deduplicatedLeftTurnTreatments.length} left-turn treatments to backfill.`,
   );
@@ -171,9 +170,7 @@ async function main() {
         {
           object: {
             project_name: "Vision Zero Left Turn Treatment Statistics",
-            project_description: `Backfill of traffic signals from Data Tracker with left-turn treatments subcomponents with completion
-            date using implementation dates as completion dates from Austin Left Turn Treatment Evaluation Power BI dashboard 
-            (https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9)`,
+            project_description: `Backfill of traffic signals from Data Tracker with left-turn treatments subcomponents with completion date using implementation dates as completion dates from Austin Left Turn Treatment Evaluation Power BI dashboard (https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9)`,
             moped_proj_components: { data: componentsToInsert },
           },
         },

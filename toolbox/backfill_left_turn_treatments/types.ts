@@ -5,7 +5,7 @@ export interface LeftTurnTreatmentRecord {
 }
 
 export type SocrataTrafficSignalLocation = {
-  type: string;
+  type: "Point";
   coordinates: [number, number];
 };
 
@@ -39,6 +39,11 @@ export interface MopedComponentPayload {
   completion_date: string;
   feature_signals: {
     data: MopedTrafficSignalRecord[];
+  };
+  moped_proj_components_subcomponents: {
+    data: {
+      subcomponent_id: number;
+    }[];
   };
   moped_proj_component_work_types: {
     data: {
