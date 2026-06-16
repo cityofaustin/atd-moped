@@ -16,6 +16,10 @@ const MopedDataGrid = ({ sx, slotProps = {}, ...props }) => {
 
   const mergedSlotProps = {
     ...slotProps,
+    loadingOverlay: {
+      variant: "circular-progress",
+      noRowsVariant: "circular-progress",
+    },
     root: {
       ...(slotProps.root || {}),
       sx: mergedRootSx,
