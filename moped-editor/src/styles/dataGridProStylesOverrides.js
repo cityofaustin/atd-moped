@@ -26,7 +26,6 @@ const dataGridProStyleOverrides = {
   "&.MuiDataGrid-root": {
     "--DataGrid-containerBackground": "#fff",
     "--DataGrid-pinnedBackground": "#fff",
-    "--DataGrid-t-color-background-backdrop": "#fff",
     backgroundColor: "#fff",
   },
 };
