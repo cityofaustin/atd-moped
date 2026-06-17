@@ -94,7 +94,8 @@ const DataGridToolbar = ({
         {!!hasSecondRow && <Box>{children}</Box>}
       </Box>
       {showColumnsButton || showFiltersButton ? (
-        <GridToolbarContainer sx={{ padding: "4px 16px 0px" }}>
+        // TO DO: replace the GridToolbar components as they will be deprecated in MUI v9
+        <GridToolbarContainer sx={(theme) => ({ padding: `${theme.spacing(0.5)} ${theme.spacing(2)} ${theme.spacing(0)}` })}>
           {showColumnsButton ? <GridToolbarColumnsButton /> : null}
           {showFiltersButton ? <GridToolbarFilterButton /> : null}
         </GridToolbarContainer>
