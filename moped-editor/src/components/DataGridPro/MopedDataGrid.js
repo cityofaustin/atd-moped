@@ -8,6 +8,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
  * @returns {JSX.Element}
  */
 const MopedDataGrid = ({ sx, slotProps = {}, ...props }) => {
+  // TO DO: refactor the functions below before upgrading to MUI v9
   const mergedRootSx = {
     ...dataGridProStyleOverrides,
     ...sx,
@@ -16,6 +17,10 @@ const MopedDataGrid = ({ sx, slotProps = {}, ...props }) => {
 
   const mergedSlotProps = {
     ...slotProps,
+    loadingOverlay: {
+      variant: "circular-progress",
+      noRowsVariant: "circular-progress",
+    },
     root: {
       ...(slotProps.root || {}),
       sx: mergedRootSx,
