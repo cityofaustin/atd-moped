@@ -297,6 +297,7 @@ const ProjectPhases = ({
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={deleteInProgress}
       />
       <CurrentPhaseDeleteModal
         isOpen={isDeleteCurrentConfirmationOpen}
