@@ -162,7 +162,7 @@ export default function MapView({
         (component) => component.project_component_id === clickedComponentId
       );
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs clickedComponent with latest project data after refetch
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs clickedComponent with latest project data after refetch; refactor in issue #29002
     setClickedComponent(updatedClickedComponent);
   }, [clickedComponent, projectComponents, allRelatedComponents]);
 
