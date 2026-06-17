@@ -37,7 +37,7 @@ ORDER BY \`signal_id\` ASC
 /**
  * Read csv and handle Power BI export format, extra quotes, and whitespaces
  */
-async function readCsvData(): Promise<LeftTurnTreatmentRecord[]> {
+function readCsvData(): LeftTurnTreatmentRecord[] {
   const fileContent = fs.readFileSync(dataFilePath, "utf-8");
   const { data } = Papa.parse<Record<string, string>>(fileContent, {
     header: true,
@@ -55,7 +55,7 @@ async function readCsvData(): Promise<LeftTurnTreatmentRecord[]> {
 }
 
 /**
- * Filter out missing signal ids, implementation dates, and recommendations for no change to signal treatment
+ * Filter out missing signal ids, missing implementation dates, and recommendations for no change to signal treatment
  */
 function filterLeftTurnTreatments(
   treatments: LeftTurnTreatmentRecord[],
@@ -71,7 +71,7 @@ function filterLeftTurnTreatments(
 }
 
 /**
- * Collapse treatments for different directions on the same signal into the same day;
+ * Collapse treatments for different directions on the same signal on the same day;
  * keep duplicate signals with treatments on different days
  */
 function deduplicateLeftTurnTreatments(
@@ -91,7 +91,7 @@ function deduplicateLeftTurnTreatments(
 }
 
 /**
- * Create Moped completed traffic signal component mods with protected left-turn phase subcomponents with completion dates from left turn treatment data
+ * Create Moped completed traffic signal component mods with protected left-turn phase subcomponents and completion dates from dashboard data
  */
 function createMopedComponentsPayload(
   trafficSignals: SocrataTrafficSignalResponse,
@@ -112,7 +112,7 @@ function createMopedComponentsPayload(
       }
 
       return {
-        component_id: 18, // Signal - Traffic component ID
+        component_id: 18, // Signal - Traffic component id
         location_description: `${signal.signal_id}: ${signal.location_name.trim()}`,
         phase_id: 11, // Complete phase
         completion_date: toTimestamptz(treatment.implementationDate),
@@ -135,7 +135,7 @@ function createMopedComponentsPayload(
 
 async function main() {
   console.log(
-    `Starting left turn treatment backfill process ${DRY_RUN ? "(DRY RUN)" : ""}...`,
+    `Starting left turn treatment backfill process${DRY_RUN ? " (DRY RUN)" : ""}...`,
   );
 
   /* 1. Request filtered Data Tracker signal data (ODP) to backfill components into Moped */
@@ -144,7 +144,7 @@ async function main() {
   );
 
   /* 2. Collect left-turn treatments from Austin Left Turn Treatment Evaluation dashboard export */
-  const leftTurnTreatments = await readCsvData();
+  const leftTurnTreatments = readCsvData();
   const filteredTreatments = filterLeftTurnTreatments(leftTurnTreatments);
   const deduplicatedLeftTurnTreatments =
     deduplicateLeftTurnTreatments(filteredTreatments);
