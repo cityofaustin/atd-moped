@@ -135,7 +135,7 @@ const SubprojectFundingModal = ({
 
   const handleRowSelection = useCallback(
     (selectedRows) => {
-      const selectedFduRecords = selectedRows.map((fdu) =>
+      const selectedFduRecords = [...selectedRows.ids].map((fdu) =>
         rows.find((record) => record.fdu === fdu)
       );
       setSelectedFdus(selectedFduRecords);

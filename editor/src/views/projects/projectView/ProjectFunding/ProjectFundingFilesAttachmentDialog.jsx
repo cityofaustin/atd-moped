@@ -167,7 +167,7 @@ const ProjectFundingFilesAttachmentDialog = ({
   /* Existing file attachment tab state and handlers */
   const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
   const handleRowSelection = (newSelection) => {
-    setExistingFileIdToAttach(newSelection[0]);
+    setExistingFileIdToAttach([...newSelection.ids][0]);
   };
 
   const handleAttach = () => {

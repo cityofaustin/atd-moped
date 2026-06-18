@@ -1,6 +1,7 @@
 -- Most recent migration: moped-database/migrations/default/1742416187184_update_current_phase_view_drop_distinct_on/up.sql
 
-CREATE OR REPLACE VIEW current_phase_view AS SELECT
+CREATE OR REPLACE VIEW current_phase_view AS
+SELECT
     mpp.project_id,
     mpp.project_phase_id,
     mpp.phase_id,
