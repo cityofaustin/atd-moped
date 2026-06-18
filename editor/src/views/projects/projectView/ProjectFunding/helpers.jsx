@@ -248,7 +248,7 @@ export const useColumns = ({
             value={props.row.unit_long_name}
             usingShiftKey={usingShiftKey}
             previousColumnField="fdu"
-            nextColumnField="amount"
+            nextColumnField="fund_source"
           />
         ),
       },
