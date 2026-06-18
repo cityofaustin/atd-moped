@@ -1,0 +1,27 @@
+# Default used by production CloudFront-fronted .gov project (production branch)
+[build]
+  publish = "build"
+  ignore = "/bin/false"
+  command = "npm run build:production"
+
+# Redirect root to the app URL space, "/moped/"
+[[redirects]]
+  from = "/"
+  to = "/moped/"
+  status = 302
+
+# Redirect to the index page of the SPA
+[[redirects]]
+  from = "/moped/*"
+  to = "/moped/index.html"
+  status = 200
+
+# main branch uses staging environment
+[context.main]
+  command = "echo 'Build Context Mode: main / Staging' && npm run lint && npm run build:staging"
+
+# Deploy previews use staging environment and override app environment to 'preview' for environment banner
+[context.deploy-preview]
+  command = "echo 'Build Context Mode: Deploy-Preview' && npm run lint && npm run build:staging"
+  [context.deploy-preview.environment]
+    VITE_APP_ENV = "preview"

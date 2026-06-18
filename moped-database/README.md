@@ -146,7 +146,7 @@ We use [SQLFluff](https://sqlfluff.com/) to format SQL code. You'll need to get 
 
 VSCode users: The extension I'm using to provide linting and formatting capabilities in VSCode is [here](https://marketplace.visualstudio.com/items?itemName=dorzey.vscode-sqlfluff).
 
-Users of other editors can adapt the following commands to best suit their needs. These are being run from the `moped-editor/moped-database/views` folder. 
+Users of other editors can adapt the following commands to best suit their needs. These are being run from the `atd-moped/moped-database/views` folder. 
 
 Lint (ie, tell me what i'm doing wrong):
 

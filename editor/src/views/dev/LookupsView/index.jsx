@@ -1,0 +1,272 @@
+import React, { createRef, useMemo, useEffect } from "react";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import { useQuery } from "@apollo/client";
+import { useLocation, Link } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import Container from "@mui/material/Container";
+import Grid2 from "@mui/material/Grid2";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import Page from "src/components/Page";
+import RecordTable from "./RecordTable";
+import ComponentTagsTable from "./ComponentTagsTable";
+import ProjectTagsTable from "./ProjectTagsTable";
+import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
+import { SETTINGS } from "./settings";
+import { createRecordKeyHash } from "src/utils/urls";
+import CopyTextButton from "src/components/CopyTextButton";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
+import Can from "src/auth/Can";
+import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
+
+/**
+ * Scroll to a page element based on its key
+ * @param {string} recordKey - The key representing the record type to scroll to
+ * @param {Object} refs - An object containing refs for each table element on the page
+ * @param {string} behavior - The scroll behavior
+ */
+const scrollToTable = (recordKey, refs, behavior = "smooth") => {
+  const ref = refs?.[recordKey];
+
+  if (ref?.current) {
+    ref.current.scrollIntoView({ behavior });
+  }
+};
+
+/**
+ * Custom hook to scroll to a table when the hash in the URL changes. Listens for changes to the hash and
+ * uses a ResizeObserver to ensure that the element is scrolled into view after any layout shifts.
+ * @param {Object} props
+ * @param {string} props.recordKeyHash - The hash from the URL representing the record key to scroll to
+ * @param {Object} props.refs - An object containing refs for each table element on the page
+ * */
+const useScrollToHash = ({ recordKeyHash, refs }) => {
+  useEffect(() => {
+    if (!recordKeyHash) return;
+
+    const recordKey = recordKeyHash.replace("#", "").replaceAll("-", "_");
+    const resizeObserver = new ResizeObserver(() => {
+      scrollToTable(recordKey, refs, "instant");
+    });
+
+    // Observe resize of every table so we keep scrolling until layout is fully populated with async data
+    Object.values(refs).forEach((ref) => {
+      if (ref.current) resizeObserver.observe(ref.current);
+    });
+
+    return () => resizeObserver.disconnect();
+  }, [recordKeyHash, refs]);
+};
+
+const TAG_TABLE_KEYS = ["moped_component_tags", "moped_tags"];
+
+/**
+ * Page component which renders various Moped record types.
+ * To add a table to this page:
+ * 1. Add an entry to the ./settings/SETTINGS array with the appropriate definitions
+ * 2. Update the query that powers this view to include your data
+ * Tag tables (component tags, project tags) use DataGridPro with CRUD - admin only for edit.
+ * @returns { JSX } a page component
+ */
+const LookupsView = () => {
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
+  const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
+    fetchPolicy: "no-cache",
+  });
+
+  /**
+   * We're using history here (and elsewhere) because it's not possible to use react-router
+   * to replace window.location w/o forcing a re-render.
+   * See // https://github.com/remix-run/react-router/issues/8908
+   */
+  const history = createBrowserHistory();
+
+  /**
+   * Create a ref index for every table element on the page so that we can scroll to them
+   * */
+  const refs = useMemo(
+    () =>
+      SETTINGS.reduce(
+        (prev, recordType) => {
+          prev[recordType.key] = createRef();
+          return prev;
+        },
+        { _scroll_to_top: createRef() }
+      ),
+    []
+  );
+
+  const { hash: recordKeyHash, pathname } = useLocation();
+  useScrollToHash({ recordKeyHash, refs });
+
+  return (
+    <ApolloErrorHandler error={error}>
+      <Page title="Data Dictionary">
+        <Container maxWidth="xl">
+          <Paper sx={{ paddingLeft: 3 }}>
+            <Grid2
+              container
+              spacing={3}
+              sx={{ marginTop: 3, scrollMarginTop: 24 }}
+              ref={refs._scroll_to_top}
+            >
+              <Grid2 size={12}>
+                <Typography
+                  variant="h1"
+                  color="primary"
+                  sx={(theme) => ({ paddingTop: theme.spacing(3) })}
+                >
+                  Data dictionary
+                </Typography>
+              </Grid2>
+              {SETTINGS.map((recordType) => (
+                <Grid2 key={recordType.key} sx={{ marginBottom: 3 }}>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    component={Link}
+                    to={createRecordKeyHash(recordType.key)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToTable(recordType.key, refs);
+                      history.replace(createRecordKeyHash(recordType.key));
+                    }}
+                  >
+                    {recordType.label}
+                  </Button>
+                </Grid2>
+              ))}
+            </Grid2>
+          </Paper>
+          {/* Ignoring because refs is a stable map of { current } objects created in useMemo above */}
+          {/* eslint-disable-next-line react-hooks/refs */}
+          {SETTINGS.map((recordType) => (
+            <Paper sx={{ px: 3, pb: 3 }} key={recordType.key}>
+              <Grid2
+                container
+                spacing={3}
+                sx={{ marginTop: 3 }}
+                ref={refs[recordType.key]}
+              >
+                <Grid2 size={12}>
+                  {TAG_TABLE_KEYS.includes(recordType.key) ? (
+                    <Can
+                      perform="lookups:edit"
+                      yes={
+                        recordType.key === "moped_component_tags" ? (
+                          <ComponentTagsTable
+                            canEdit={true}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        ) : (
+                          <ProjectTagsTable
+                            canEdit={true}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        )
+                      }
+                      no={
+                        recordType.key === "moped_component_tags" ? (
+                          <ComponentTagsTable
+                            canEdit={false}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        ) : (
+                          <ProjectTagsTable
+                            canEdit={false}
+                            handleSnackbar={handleSnackbar}
+                            onScrollToTop={() => {
+                              scrollToTable("_scroll_to_top", refs);
+                              history.replace("");
+                            }}
+                          />
+                        )
+                      }
+                    />
+                  ) : (
+                    <Grid2
+                      container
+                      direction="row"
+                      spacing={1}
+                      sx={(theme) => ({
+                        paddingTop: theme.spacing(3),
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      })}
+                    >
+                      <Grid2>
+                        <Grid2
+                          container
+                          direction="row"
+                          spacing={1}
+                          sx={{ alignItems: "center" }}
+                        >
+                          <Grid2>
+                            <Typography variant="h2">
+                              {recordType.label}
+                            </Typography>
+                          </Grid2>
+                          <Grid2>
+                            <IconButtonWithTooltip
+                              title="Return to top of page"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                scrollToTable("_scroll_to_top", refs);
+                                history.replace("");
+                              }}
+                              size="large"
+                              ariaLabel="return to top"
+                            >
+                              <ArrowUpwardIcon fontSize="small" />
+                            </IconButtonWithTooltip>
+                          </Grid2>
+                        </Grid2>
+                      </Grid2>
+                      <Grid2>
+                        <CopyTextButton
+                          copyButtonText="Copy link"
+                          textToCopy={`${
+                            window.location.origin
+                          }${pathname}${createRecordKeyHash(recordType.key)}`}
+                        />
+                      </Grid2>
+                      <Grid2 size={12}>
+                        <RecordTable
+                          rows={data?.[recordType.key]}
+                          columns={recordType.columns}
+                          loading={loading}
+                        />
+                      </Grid2>
+                    </Grid2>
+                  )}
+                </Grid2>
+              </Grid2>
+            </Paper>
+          ))}
+        </Container>
+        <FeedbackSnackbar
+          snackbarState={snackbarState}
+          handleSnackbarClose={handleSnackbarClose}
+        />
+      </Page>
+    </ApolloErrorHandler>
+  );
+};
+
+export default LookupsView;

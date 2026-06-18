@@ -10,7 +10,7 @@ This utility creates random projects in Moped.
 # ./moped-database
 $ ./hasura-cluster start
 
-# ./moped-editor
+# ./editor
 $ npm run start
 ```
 
