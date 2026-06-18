@@ -31,6 +31,7 @@ import ActivityMetrics from "src/components/ActivityMetrics";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
+import { ColumnVisibilityAlert } from "src/components/DataGridPro/ColumnVisibilityAlert";
 
 export const mapSearchParamName = "map";
 
@@ -254,6 +255,7 @@ const ProjectsListViewTable = () => {
                 }}
                 slots={{
                   toolbar: ProjectListToolbar,
+                  noColumnsOverlay: ColumnVisibilityAlert,
                 }}
                 columns={columns}
                 getRowId={(row) => row.project_id}
