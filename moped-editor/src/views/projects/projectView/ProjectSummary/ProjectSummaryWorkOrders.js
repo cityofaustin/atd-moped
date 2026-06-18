@@ -46,7 +46,7 @@ const ProjectSummaryWorkOrders = ({ project }) => {
     </Grid2>
   ) : (
     // If there is no knack project url, render an empty grid space
-    <Grid2 size={{ xs: 12 }} sx={fieldGridItem} />
+    (<Grid2 size={{ xs: 12 }} sx={fieldGridItem} />)
   );
 };
 export default ProjectSummaryWorkOrders;
