@@ -14,7 +14,6 @@ import { CheckCircle } from "@mui/icons-material";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import KnackComponentAutocomplete from "src/views/projects/projectView/ProjectComponents/KnackComponentAutocomplete";
 import {
-  ComponentOptionWithIcon,
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
   useComponentOptions,
   useComponentOptionsFilteredByLineRepresentation,
@@ -29,6 +28,7 @@ import {
   isOptionEqualToValue,
   isPhaseOptionSimpleComplete,
 } from "src/views/projects/projectView/ProjectComponents/utils/form";
+import ComponentOptionWithIcon from "src/views/projects/projectView/ProjectComponents/ComponentOptionWithIcon";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import {
@@ -121,7 +121,7 @@ const ComponentForm = ({
   // Get and format component and subcomponent options
   const { data: optionsData, error } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
 
-  error && console.error(error);
+  if (error) console.error(error);
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isLineRepresentation =

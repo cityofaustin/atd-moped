@@ -30,7 +30,7 @@ const StaffUpdateUserStatusButtons = ({
   roles,
   isUserActive,
 }) => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   /**
    * Make use of the useUserApi to retrieve the requestApi function and

@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { UserProvider } from "./auth/user";
+import UserProvider from "src/auth/UserProvider";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 

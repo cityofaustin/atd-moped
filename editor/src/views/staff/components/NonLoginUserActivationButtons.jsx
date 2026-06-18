@@ -26,7 +26,7 @@ const NonLoginUserActivationButtons = ({
   userId,
   formValues,
 }) => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const { email, password, roles } = formValues;
 
   const { requestApi } = useUserApi();

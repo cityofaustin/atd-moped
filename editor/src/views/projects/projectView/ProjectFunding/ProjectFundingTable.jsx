@@ -108,10 +108,13 @@ const ProjectFundingTable = ({
   /* Mutations for adding, editing, deleting funding records, and updating eCAPRIS sync status */
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
-  const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
-  const [deleteProjectFundingAndReattach] = useMutation(
-    DELETE_PROJECT_FUNDING_AND_REATTACH
+  const [deleteProjectFunding, { loading: mutationPending }] = useMutation(
+    DELETE_PROJECT_FUNDING
   );
+  const [
+    deleteProjectFundingAndReattach,
+    { loading: mutationPendingReattach },
+  ] = useMutation(DELETE_PROJECT_FUNDING_AND_REATTACH);
   const [updateShouldSyncECapris] = useMutation(
     PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC
   );
@@ -163,6 +166,7 @@ const ProjectFundingTable = ({
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
     setRows(tableFundingRows);
   }, [tableFundingRows]);
 
@@ -555,6 +559,7 @@ const ProjectFundingTable = ({
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={mutationPending || mutationPendingReattach}
       />
       {eCaprisSubprojectId && (
         <SubprojectFundingModal

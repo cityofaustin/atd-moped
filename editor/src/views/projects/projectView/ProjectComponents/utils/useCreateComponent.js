@@ -39,7 +39,7 @@ const createReducer = (state, action) => {
         draftComponent: action.payload,
         isCreatingComponent: true,
       };
-    case "remove_draft_component_feature":
+    case "remove_draft_component_feature": {
       const clickedDraftComponentFeature = action.payload;
       const draftComponentWithDeselectedFeatureRemoved =
         removeFeatureFromDraftComponent(
@@ -51,7 +51,8 @@ const createReducer = (state, action) => {
         ...state,
         draftComponent: draftComponentWithDeselectedFeatureRemoved,
       };
-    case "add_drawn_features":
+    }
+    case "add_drawn_features": {
       const newDrawnFeatures = action.payload;
       const featuresWithAdditions = [
         ...state.draftComponent.features,
@@ -70,8 +71,8 @@ const createReducer = (state, action) => {
       action.callback(drawToolsFeatureOverrides);
 
       return { ...state, draftComponent: newDraftComponent };
-
-    case "update_drawn_features":
+    }
+    case "update_drawn_features": {
       const updatedFeatures = action.payload;
 
       const featureIdsToUpdate = updatedFeatures.map((feature) =>
@@ -94,7 +95,8 @@ const createReducer = (state, action) => {
       };
 
       return { ...state, draftComponent: draftComponentWithUpdates };
-    case "delete_drawn_features":
+    }
+    case "delete_drawn_features": {
       const deletedFeatures = action.payload;
 
       const featureIdsToDelete = deletedFeatures.map((feature) =>
@@ -117,6 +119,7 @@ const createReducer = (state, action) => {
       };
 
       return { ...state, draftComponent: draftComponentWithDeletes };
+    }
     default:
       throw Error(`Unknown action. ${action.type}`);
   }

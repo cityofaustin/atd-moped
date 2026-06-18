@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useRef, useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
@@ -54,12 +54,12 @@ is not guaranteed. a reliable solution would be query the AGOL streets
 layer on-the-fly to grab street names - not sure if this is worth it TBH 
 */
 export const getIntersectionLabel = (point, lines) => {
-  var radius = 10;
-  var options = {
+  const radius = 10;
+  const options = {
     steps: 10,
     units: "meters",
   };
-  var circ = circle(point.geometry.coordinates, radius, options);
+  const circ = circle(point.geometry.coordinates, radius, options);
   const streets = lines.features
     .filter((lineFeature) =>
       booleanIntersects(lineFeature.geometry, circ.geometry)
@@ -144,10 +144,13 @@ export const useZoomToExistingComponents = (
   featureCollection,
   refreshOnComponentsUpdate = false
 ) => {
-  const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
+  const hasMapZoomedInitially = useRef(false);
 
   useEffect(() => {
-    if (!(featureCollection.features.length > 0) || hasMapZoomedInitially)
+    if (
+      !(featureCollection.features.length > 0) ||
+      hasMapZoomedInitially.current
+    )
       return;
     if (!mapRef?.current) return;
 
@@ -157,13 +160,10 @@ export const useZoomToExistingComponents = (
       fitBoundsOptions.zoomToExtent
     );
 
-    !refreshOnComponentsUpdate && setHasMapZoomedInitially(true);
-  }, [
-    featureCollection,
-    hasMapZoomedInitially,
-    mapRef,
-    refreshOnComponentsUpdate,
-  ]);
+    if (!refreshOnComponentsUpdate) {
+      hasMapZoomedInitially.current = true;
+    }
+  }, [featureCollection, mapRef, refreshOnComponentsUpdate]);
 };
 
 /**

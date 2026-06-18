@@ -50,7 +50,7 @@ export function useUserApi() {
       .then((res) => {
         setResult(res.data);
         setLoading(false);
-        !!callback && callback();
+        if (callback) callback();
       })
       .catch((err) => {
         const otherError = err?.response?.data?.message

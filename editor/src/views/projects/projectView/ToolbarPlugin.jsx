@@ -107,9 +107,11 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
   const handleListUpdate = useCallback(
     (command, listType) => {
       const isListApplied = selectionMap[listType];
-      isListApplied
-        ? editor.dispatchCommand(REMOVE_LIST_COMMAND)
-        : editor.dispatchCommand(command);
+      if (isListApplied) {
+        editor.dispatchCommand(REMOVE_LIST_COMMAND);
+      } else {
+        editor.dispatchCommand(command);
+      }
     },
     [editor, selectionMap]
   );
@@ -120,9 +122,11 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
       const selection = $getSelection();
       const textContent = selection.getTextContent();
 
-      isLinkApplied
-        ? editor.dispatchCommand(TOGGLE_LINK_COMMAND, null) // Remove link if already applied
-        : editor.dispatchCommand(TOGGLE_LINK_COMMAND, textContent); // Make selected text into a link
+      if (isLinkApplied) {
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, null); // Remove link if already applied
+      } else {
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, textContent); // Make selected text into a link
+      }
     });
   }, [editor, selectionMap]);
 
@@ -141,7 +145,7 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
     }
   }, []);
 
-  const onAction = useCallback(
+  const dispatchAction = useCallback(
     (id) => {
       switch (id) {
         case "bold":
@@ -162,19 +166,30 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
         case "link":
           handleLinkUpdate();
           break;
-        case "clear":
-          const formatTypes = Object.keys(selectionMap);
-          formatTypes.forEach((formatType) => {
-            if (selectionMap[formatType]) {
-              onAction(formatType);
-            }
-          });
-          break;
         default:
           break;
       }
     },
-    [editor, handleLinkUpdate, handleListUpdate, selectionMap]
+    [editor, handleLinkUpdate, handleListUpdate]
+  );
+
+  const clearFormatting = useCallback(() => {
+    Object.keys(selectionMap).forEach((formatType) => {
+      if (selectionMap[formatType]) {
+        dispatchAction(formatType);
+      }
+    });
+  }, [selectionMap, dispatchAction]);
+
+  const onAction = useCallback(
+    (id) => {
+      if (id === "clear") {
+        clearFormatting();
+      } else {
+        dispatchAction(id);
+      }
+    },
+    [clearFormatting, dispatchAction]
   );
 
   useEffect(() => {
@@ -190,7 +205,7 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
-        (payLoad) => {
+        () => {
           updateToolbar();
           return false;
         },

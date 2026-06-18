@@ -134,9 +134,11 @@ export const onSubmitActivity = ({
   })
     .then((mutation) => onSubmitCallback({ mutation }))
     .catch((error) => {
-      isNewActivity
-        ? handleSnackbar(true, "Error adding work activity", "error", error)
-        : handleSnackbar(true, "Error updating work activity", "error", error);
+      if (isNewActivity) {
+        handleSnackbar(true, "Error adding work activity", "error", error);
+      } else {
+        handleSnackbar(true, "Error updating work activity", "error", error);
+      }
     });
 };
 

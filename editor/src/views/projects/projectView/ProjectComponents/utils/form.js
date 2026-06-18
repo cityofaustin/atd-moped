@@ -1,14 +1,9 @@
 import { useMemo, useEffect, useState } from "react";
-import { Box, Icon } from "@mui/material";
 import {
   featureSchoolBeaconRecordToKnackSchoolBeaconRecord,
   featureSignalsRecordToKnackSignalRecord,
 } from "src/utils/signalComponentHelpers";
 import { isSignalComponent } from "./componentList";
-import {
-  RoomOutlined as RoomOutlinedIcon,
-  Timeline as TimelineIcon,
-} from "@mui/icons-material";
 import get from "lodash.get";
 
 /**
@@ -307,77 +302,12 @@ export const makeTagFormFieldValues = (tags) => {
   }));
 };
 
-export const ComponentIconByLineRepresentation = ({
-  lineRepresentation,
-  color,
-}) => {
-  if (lineRepresentation === true)
-    return (
-      <TimelineIcon
-        sx={{
-          color: color,
-        }}
-      />
-    );
-  if (lineRepresentation === false)
-    return (
-      <RoomOutlinedIcon
-        sx={{
-          color: color,
-        }}
-      />
-    );
-  /* Fall back to a blank icon to keep labels lined up */
-  if (lineRepresentation === null)
-    return (
-      <Icon
-        sx={{
-          color: color,
-        }}
-      />
-    );
-};
-
-/**
- * Renders an option with icon based on the type of geometry (if it exists) and component type label
- * @param {Object} option - Autocomplete option object with label, value, and data about component type
- * @return {JSX.Element}
- */
-export const ComponentOptionWithIcon = ({ option, state, props }) => {
-  const { data: { line_representation = null } = {} } = option;
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "start",
-        alignItems: "center",
-      }}
-      {...props}
-    >
-      <Box
-        sx={(theme) => ({
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginRight: theme.spacing(1),
-        })}
-      >
-        <ComponentIconByLineRepresentation
-          lineRepresentation={line_representation}
-          color={(theme) => theme.palette.primary.main}
-        />
-      </Box>
-      {option.label}
-    </Box>
-  );
-};
-
 /**
  * Watch parent field and reset dependent field to default value when parent field changes
  * @param {Object} parentValue - Option object with value and label
  * @param {string} dependentFieldName - Name of the dependent field
- * @param {*} valueToSet - Any value to set the dependent field to
+ * @param {string} comparisonVariable - Optional value in the parent field option object to compare to prevent unnecessary resets
+ * @param {Object | string} valueToSet - Any value to set the dependent field to
  * @param {Function} setValue - React Hook Form setValue function
  * @param {Boolean} disable - Disable the reset
  * @returns {Object} the field value
@@ -410,6 +340,7 @@ export const useResetDependentFieldOnParentFieldChange = ({
     }
 
     setValue(dependentFieldName, valueToSet, { shouldValidate: true });
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- setPreviousParentValue is an intentional side effects; refactor tracked in issue #28934
     setPreviousParentValue(parentValue);
   }, [
     parentValue,

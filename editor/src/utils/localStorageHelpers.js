@@ -31,7 +31,7 @@ const getPreviousHiddenColumns = (defaultColumnSettings, storageKey) => {
     // By iterating the defaults, we also remove outdated columns no longer in config.
     currentHiddenColumnSettings = Object.keys(defaultColumnSettings).reduce(
       (acc, columnName) => {
-        if (previousHiddenColumnSettings.hasOwnProperty(columnName)) {
+        if (Object.hasOwn(previousHiddenColumnSettings, columnName)) {
           return {
             ...acc,
             [columnName]: previousHiddenColumnSettings[columnName],
@@ -51,18 +51,12 @@ export const useHiddenColumnsSettings = ({
   defaultHiddenColumnSettings,
   storageKey,
 }) => {
-  const [hiddenColumns, setHiddenColumns] = useState({});
-
   /*
-   * Initialize hidden columns from previous local storage
+   * Initialize state with hidden columns from previous local storage
    */
-  useEffect(() => {
-    const initialHiddenColumnSettings = getPreviousHiddenColumns(
-      defaultHiddenColumnSettings,
-      storageKey
-    );
-    setHiddenColumns(initialHiddenColumnSettings);
-  }, [defaultHiddenColumnSettings, storageKey]);
+  const [hiddenColumns, setHiddenColumns] = useState(() =>
+    getPreviousHiddenColumns(defaultHiddenColumnSettings, storageKey)
+  );
 
   /*
    * Sync hidden columns state with local storage

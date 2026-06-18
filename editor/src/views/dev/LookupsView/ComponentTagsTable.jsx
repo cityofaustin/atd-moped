@@ -121,7 +121,8 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   });
 
   const [addComponentTag] = useMutation(ADD_COMPONENT_TAG);
-  const [updateComponentTag] = useMutation(UPDATE_COMPONENT_TAG);
+  const [updateComponentTag, { loading: mutationPending }] =
+    useMutation(UPDATE_COMPONENT_TAG);
 
   const tableRows = useMemo(
     () => transformDatabaseToGrid(data?.moped_component_tags),
@@ -136,6 +137,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
     setRows(tableRows);
   }, [tableRows]);
 
@@ -352,6 +354,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         confirmationText="Are you sure you want to remove this component tag? It will be hidden from the data dictionary and downstream views."
         actionButtonText="Remove"
+        mutationPending={mutationPending}
       />
     </>
   );

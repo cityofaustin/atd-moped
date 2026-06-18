@@ -24,6 +24,7 @@ import NoteInput from "src/views/projects/projectView/ProjectNotes/NoteInput";
 import NoteTypeButton from "src/views/projects/projectView/ProjectNotes/NoteTypeButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectNote from "src/views/projects/projectView/ProjectNotes/ProjectNote";
+import { useNoteTypeObject } from "src/views/projects/projectView/ProjectNotes/useNoteTypeObject";
 
 import * as yup from "yup";
 import { yupValidator } from "src/utils/validation";
@@ -44,24 +45,6 @@ const validationSchema = yup.object().shape({
   projectStatusUpdate: agolValidation.projectStatusUpdate,
 });
 const validator = (value) => yupValidator(value, validationSchema);
-
-/**
- * Hook to create an object mapping note type slugs to their IDs
- * @param {Array} noteTypes - Array of note types from moped_note_types query
- * @returns
- */
-export const useNoteTypeObject = (noteTypes) =>
-  useMemo(
-    () =>
-      noteTypes.reduce(
-        (obj, item) =>
-          Object.assign(obj, {
-            [item.slug]: item.id,
-          }),
-        {}
-      ),
-    [noteTypes]
-  );
 
 /**
  * Hook to filter notes based on the selected note type and if eCAPRIS status syncing is enabled
@@ -233,7 +216,7 @@ const ProjectNotes = ({
     },
   });
 
-  const [deleteExistingNote] = useMutation(DELETE_PROJECT_NOTE, {
+  const [deleteExistingNote, { loading: mutationPending }] = useMutation(DELETE_PROJECT_NOTE, {
     onCompleted() {
       refetch();
       if (isStatusEditModal) {
@@ -461,6 +444,7 @@ const ProjectNotes = ({
                 submitDelete={() => submitDeleteNote(deleteConfirmationId)}
                 isDeleteConfirmationOpen={isDeleteConfirmationOpen}
                 setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+                mutationPending={mutationPending}
               >
                 {displayNotes.map((note, i) => {
                   const isNotLastItem = i < displayNotes.length - 1;

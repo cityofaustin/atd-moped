@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getIntersectionLabel } from "./map";
 import { getAllComponentFeatures } from "./makeFeatureCollections";
@@ -192,12 +192,7 @@ export const useExistingDrawnFeatures = ({
  * @returns {Boolean} - does the draft component have features
  */
 export const useDoesDraftEditComponentHaveFeatures = (draftEditComponent) => {
-  const [
-    doesDraftEditComponentHaveFeatures,
-    setDoesDraftEditComponentHaveFeatures,
-  ] = useState(false);
-
-  useEffect(() => {
+  const doesDraftEditComponentHaveFeatures = useMemo(() => {
     if (draftEditComponent === null) return;
 
     const allDraftComponentFeatures =
@@ -206,7 +201,7 @@ export const useDoesDraftEditComponentHaveFeatures = (draftEditComponent) => {
       allDraftComponentFeatures.length > 0
     );
 
-    setDoesDraftEditComponentHaveFeatures(doesComponentHaveFeatures);
+    return doesComponentHaveFeatures;
   }, [draftEditComponent]);
 
   return doesDraftEditComponentHaveFeatures;

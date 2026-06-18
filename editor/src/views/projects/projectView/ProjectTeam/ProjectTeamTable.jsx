@@ -319,7 +319,9 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   const [insertProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
   const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
-  const [deleteProjectPersonnel] = useMutation(DELETE_PROJECT_PERSONNEL);
+  const [deleteProjectPersonnel, { loading: mutationPending }] = useMutation(
+    DELETE_PROJECT_PERSONNEL
+  );
 
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
@@ -333,6 +335,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
       // Set the rows but add the workgroup name to the row data
       // instead of being nested under moped_user.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
       setRows(
         data.moped_project_by_pk.moped_proj_personnel.map((personnel) => ({
           ...personnel,
@@ -615,6 +618,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         }}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+        mutationPending={mutationPending}
       />
     </>
   );

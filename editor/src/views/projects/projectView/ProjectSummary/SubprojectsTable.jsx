@@ -179,7 +179,9 @@ const SubprojectsTable = ({
   );
 
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
-  const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
+  const [deleteProjectSubproject, { loading: mutationPending }] = useMutation(
+    DELETE_PROJECT_SUBPROJECT
+  );
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -198,6 +200,7 @@ const SubprojectsTable = ({
         data?.parentProject?.[0]?.moped_project
       ) {
         const parentProject = data.parentProject[0].moped_project;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
         setRows([{ ...parentProject, id: parentProject.project_id }]);
       } else {
         setRows([]);
@@ -420,6 +423,7 @@ const SubprojectsTable = ({
         }
         actionButtonText="Unlink"
         actionButtonIcon={<LinkOffIcon />}
+        mutationPending={mutationPending}
       />
     </>
   );

@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
-import ComponentsDrawControl, {
-  isInDrawingMode,
-} from "src/components/Maps/ComponentsDrawControl";
+import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
+import { isInDrawingMode } from "src/components/Maps/helpers";
 import { makeDrawnFeature } from "./utils/features";
 import { useTrashButtonClickable } from "./utils/map";
 import "./utils/map.css";

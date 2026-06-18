@@ -28,7 +28,7 @@ import {
   ADD_PROJECT_PHASE_AND_STATUS_UPDATE,
 } from "src/queries/project";
 import theme from "src/theme";
-import { useNoteTypeObject } from "../ProjectNotes";
+import { useNoteTypeObject } from "src/views/projects/projectView/ProjectNotes/useNoteTypeObject";
 
 const ProjectPhaseForm = ({
   phase,

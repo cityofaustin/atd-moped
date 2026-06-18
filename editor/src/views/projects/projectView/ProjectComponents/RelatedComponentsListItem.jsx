@@ -1,6 +1,6 @@
 import ComponentListItem from "./ComponentListItem";
 import Link from "@mui/material/Link";
-import { ComponentIconByLineRepresentation } from "./utils/form";
+import ComponentIconByLineRepresentation from "src/views/projects/projectView/ProjectComponents/ComponentIconByLineRepresentation";
 import theme from "src/theme/index";
 
 const RelatedComponentsListItem = ({
@@ -31,6 +31,7 @@ const RelatedComponentsListItem = ({
     <ComponentListItem
       key={component.project_component_id}
       component={component}
+      componentRef={component._ref}
       isExpanded={isExpanded}
       onZoomClick={onZoomClick}
       onListItemClick={onRelatedListItemClick}

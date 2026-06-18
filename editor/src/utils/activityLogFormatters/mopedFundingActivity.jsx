@@ -82,7 +82,7 @@ export const formatFundingActivity = (
 
   // Multiple fields in the moped_proj_funding table can be updated at once
   // We list the fields changed in the activity log, this gathers the fields changed
-  let changes = [];
+  const changes = [];
   const fieldsToSkip = [
     "updated_at",
     "updated_by_user_id",

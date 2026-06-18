@@ -121,7 +121,9 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   });
 
   const [addProjectTagLookup] = useMutation(ADD_PROJECT_TAG_LOOKUP);
-  const [updateProjectTagLookup] = useMutation(UPDATE_PROJECT_TAG_LOOKUP);
+  const [updateProjectTagLookup, { loading: mutationPending }] = useMutation(
+    UPDATE_PROJECT_TAG_LOOKUP
+  );
 
   const tableRows = useMemo(
     () => transformDatabaseToGrid(data?.moped_tags),
@@ -136,6 +138,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   const isEditMode = getIsEditMode(rowModesModel);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- rows state is also used for optimistic updates after mutations; refactor in issue #28901
     setRows(tableRows);
   }, [tableRows]);
 
@@ -347,6 +350,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         confirmationText="Are you sure you want to remove this project tag? It will be hidden from the data dictionary and downstream views."
         actionButtonText="Remove"
+        mutationPending={mutationPending}
       />
     </>
   );

@@ -20,7 +20,7 @@ import {
 import Page from "src/components/Page";
 import { ADD_NON_MOPED_USER } from "src/queries/staff";
 
-export const initialFormValues = {
+const initialFormValues = {
   first_name: "",
   last_name: "",
   title: "",
@@ -58,7 +58,7 @@ const validationSchema = yup.object().shape({
 });
 
 const NewStaffView = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
   const [addNonMopedUser] = useMutation(ADD_NON_MOPED_USER);

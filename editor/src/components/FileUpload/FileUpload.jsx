@@ -12,8 +12,7 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert } from "@mui/material";
-import { Grid2 } from "@mui/material";
+import { Alert, Grid2 } from "@mui/material";
 import { useUser, getCognitoIdJwt } from "src/auth/user";
 
 registerPlugin(
@@ -105,7 +104,6 @@ const FileUpload = (props) => {
                 }
               })
               .catch((err) => {
-                // eslint-disable-next-line
                 throw "Error: " + JSON.stringify(err);
               });
 
@@ -179,18 +177,16 @@ const FileUpload = (props) => {
 
     // If the signature is invalid, might as well stop it!
     if (fileSignature == null) {
-      // eslint-disable-next-line
       throw "The file signature for file could not be located.";
     }
 
     // Fields will contain the credentials S3 needs, including the file signature.
-    let fields = [];
+    let fields;
 
     try {
       // Copy the name of each of those keys
       fields = Object.keys(fileSignature.fields);
     } catch (error) {
-      // eslint-disable-next-line
       throw "Error processing file: " + JSON.stringify(error);
     }
 

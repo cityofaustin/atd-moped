@@ -29,7 +29,7 @@ const DataGridTextField = ({
     }
   }, [hasFocus]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event) => {
     const { value: inputValue } = event.target;
 
     apiRef.current.setEditCellValue({

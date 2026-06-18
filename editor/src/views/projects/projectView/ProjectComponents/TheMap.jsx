@@ -23,6 +23,7 @@ import { getInteractiveLayers, useZoomToExistingComponents } from "./utils/map";
 import {
   useAgolFeatures,
   findFeatureInAgolGeojsonFeatures,
+  getZoomFromRef,
 } from "./utils/agol";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
@@ -80,11 +81,10 @@ export default function TheMap({
   const clickedComponentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
-  const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
     linkMode,
     setIsFetchingFeatures,
-    currentZoom,
+    mapRef,
     bounds
   );
 
@@ -95,6 +95,7 @@ export default function TheMap({
   );
 
   useEffect(() => {
+    const currentZoom = getZoomFromRef(mapRef);
     const shouldShowZoomAlert =
       currentZoom < MIN_SELECT_FEATURE_ZOOM &&
       (isCreatingComponent || isEditingComponent) &&
@@ -113,19 +114,19 @@ export default function TheMap({
       errorMessageDispatch({ type: "hide_zoom_error" });
     }
   }, [
-    currentZoom,
+    mapRef,
     isCreatingComponent,
     isEditingComponent,
     isDrawing,
     errorMessageDispatch,
   ]);
 
-  const onMouseEnter = (e) => {
-    !isDrawing && setCursor("pointer");
+  const onMouseEnter = () => {
+    if (!isDrawing) setCursor("pointer");
   };
 
-  const onMouseLeave = (e) => {
-    !isDrawing && setCursor("grab");
+  const onMouseLeave = () => {
+    if (!isDrawing) setCursor("grab");
   };
 
   const handleCreateOnClick = (e) => {
@@ -308,11 +309,11 @@ export default function TheMap({
         makeClickedComponentUpdates(clickedComponentFromMap);
         // Make sure that state reflects whether the clicked component is related or not
         // so that we see the map display features with the corresponding color
-        isNewClickedComponentRelated && setIsClickedComponentRelated(true);
-        !isNewClickedComponentRelated && setIsClickedComponentRelated(false);
+        if (isNewClickedComponentRelated) setIsClickedComponentRelated(true);
+        if (!isNewClickedComponentRelated) setIsClickedComponentRelated(false);
 
         const ref = clickedComponentFromMap?._ref;
-        ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
+        if (ref?.current) ref.current.scrollIntoView({ behavior: "smooth" });
       }
       return;
     }
@@ -330,7 +331,7 @@ export default function TheMap({
     }
   };
 
-  const onMoveEnd = (e) => {
+  const onMoveEnd = () => {
     const newBounds = mapRef.current.getBounds().toArray();
     setBounds(newBounds.flat());
   };

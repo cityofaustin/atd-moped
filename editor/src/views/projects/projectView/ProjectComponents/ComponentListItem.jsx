@@ -27,6 +27,7 @@ export default function ComponentListItem({
   selectedBorderColor,
   additionalListItemText,
   additionalCollapseListItems,
+  componentRef,
 }) {
   const { primary, secondary } = useComponentListItemText(component);
   const isComponentMapped = getIsComponentMapped(component);
@@ -46,7 +47,7 @@ export default function ComponentListItem({
         sx={(theme) => ({
           paddingLeft: theme.spacing(1),
         })}
-        ref={component._ref}
+        ref={componentRef}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
         <Box>

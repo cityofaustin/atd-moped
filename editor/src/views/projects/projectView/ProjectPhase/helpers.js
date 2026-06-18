@@ -53,7 +53,7 @@ const DEFAULT_FORM_VALUES = {
 export const useDefaultValues = (phase) =>
   useMemo(() => {
     // initialize form with default values plus the project id
-    let defaultValues = {
+    const defaultValues = {
       ...DEFAULT_FORM_VALUES,
       project_id: phase.project_id,
     };
@@ -199,8 +199,10 @@ export const onSubmitPhase = ({
   })
     .then(() => onSubmitCallback(isNewPhase))
     .catch((error) => {
-      isNewPhase
-        ? handleSnackbar(true, "Error adding project phase", "error", error)
-        : handleSnackbar(true, "Error updating project phase", "error", error);
+      if (isNewPhase) {
+        handleSnackbar(true, "Error adding project phase", "error", error);
+      } else {
+        handleSnackbar(true, "Error updating project phase", "error", error);
+      }
     });
 };
