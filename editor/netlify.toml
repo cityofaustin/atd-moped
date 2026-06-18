@@ -2,7 +2,7 @@
 [build]
   publish = "build"
   ignore = "/bin/false"
-  command = "npm run build:production"
+  command = "npm run lint && npm run build:production"
 
 # Redirect root to the app URL space, "/moped/"
 [[redirects]]
