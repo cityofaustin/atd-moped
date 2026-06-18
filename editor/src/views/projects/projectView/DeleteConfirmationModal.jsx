@@ -19,6 +19,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
  * @param {string} additionalConfirmationText - Optional additional text to append to the default confirmation message
  * @param {string} actionButtonText - Optional custom text for the delete action button, defaults to "Delete"
  * @param {JSX.Element} actionButtonIcon - Optional custom icon for the delete action button, defaults to a delete icon
+ * @param {boolean} mutationPending - mutation loading status from delete mutation
  * @returns {JSX.Element}
  */
 const DeleteConfirmationModal = ({
@@ -31,6 +32,7 @@ const DeleteConfirmationModal = ({
   additionalConfirmationText,
   actionButtonText = "Delete",
   actionButtonIcon,
+  mutationPending,
 }) => {
   const handleDeleteClose = () => {
     setIsDeleteConfirmationOpen(false);
@@ -61,6 +63,7 @@ const DeleteConfirmationModal = ({
             color="primary"
             variant="contained"
             startIcon={ActionIcon}
+            disabled={mutationPending}
             onClick={() => {
               submitDelete();
               // closing the confirmation modal should happen after the delete mutation completes

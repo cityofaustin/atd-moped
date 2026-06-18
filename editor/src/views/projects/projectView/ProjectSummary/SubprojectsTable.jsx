@@ -179,7 +179,9 @@ const SubprojectsTable = ({
   );
 
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
-  const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
+  const [deleteProjectSubproject, { loading: mutationPending }] = useMutation(
+    DELETE_PROJECT_SUBPROJECT
+  );
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -421,6 +423,7 @@ const SubprojectsTable = ({
         }
         actionButtonText="Unlink"
         actionButtonIcon={<LinkOffIcon />}
+        mutationPending={mutationPending}
       />
     </>
   );

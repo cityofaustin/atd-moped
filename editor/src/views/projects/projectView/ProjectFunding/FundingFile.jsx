@@ -47,11 +47,12 @@ const FundingFile = ({
     setAnchorElement(null);
   };
 
-  const [detachFundingFileAttachment] = useMutation(
-    isSyncedFromECapris
-      ? DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
-      : DETACH_FILE_MOPED_FUNDING_ATTACHMENT
-  );
+  const [detachFundingFileAttachment, { loading: mutationPending }] =
+    useMutation(
+      isSyncedFromECapris
+        ? DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
+        : DETACH_FILE_MOPED_FUNDING_ATTACHMENT
+    );
 
   const handleUnlinkFileAttachment = (id) => {
     detachFundingFileAttachment({
@@ -125,6 +126,7 @@ const FundingFile = ({
           submitDelete={() => handleUnlinkFileAttachment(fileRecordId)}
           isDeleteConfirmationOpen={isDeleteConfirmationOpen}
           setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+          mutationPending={mutationPending}
         />
       )}
     </Box>

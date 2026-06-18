@@ -216,7 +216,7 @@ const ProjectNotes = ({
     },
   });
 
-  const [deleteExistingNote] = useMutation(DELETE_PROJECT_NOTE, {
+  const [deleteExistingNote, { loading: mutationPending }] = useMutation(DELETE_PROJECT_NOTE, {
     onCompleted() {
       refetch();
       if (isStatusEditModal) {
@@ -444,6 +444,7 @@ const ProjectNotes = ({
                 submitDelete={() => submitDeleteNote(deleteConfirmationId)}
                 isDeleteConfirmationOpen={isDeleteConfirmationOpen}
                 setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+                mutationPending={mutationPending}
               >
                 {displayNotes.map((note, i) => {
                   const isNotLastItem = i < displayNotes.length - 1;
