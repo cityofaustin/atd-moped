@@ -242,15 +242,19 @@ export const useColumns = ({
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
         // during editing -- the input field is always disabled
         width: 175,
-        renderEditCell: (props) => (
-          <ViewOnlyTextField
-            {...props}
-            value={props.row.unit_long_name}
-            usingShiftKey={usingShiftKey}
-            previousColumnField="fdu"
-            nextColumnField="amount"
-          />
-        ),
+        renderEditCell: (props) => {
+          console.log(props);
+
+          return (
+            <ViewOnlyTextField
+              {...props}
+              value={props.row.unit_long_name}
+              usingShiftKey={usingShiftKey}
+              previousColumnField="fdu"
+              nextColumnField="fund_source"
+            />
+          );
+        },
       },
       {
         headerName: "Source",
