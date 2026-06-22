@@ -26,6 +26,7 @@ import { mopedUserAutocompleteProps } from "./utils";
 import {
   getIsEditMode,
   handleRowEditStop,
+  makeHandleCancelClick,
 } from "src/components/DataGridPro/utils/helpers.js";
 
 const useWorkgroupLookup = (data) =>
@@ -387,18 +388,26 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     [rowModesModel]
   );
 
-  const handleCancelClick = useCallback(
-    (id) => () => {
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View, ignoreModifications: true },
-      });
-      const editedRow = rows.find((row) => row.project_personnel_id === id);
-      if (editedRow.isNew) {
-        setRows(rows.filter((row) => row.id !== id));
-      }
-    },
-    [rowModesModel, rows]
+  // const handleCancelClick = useCallback(
+  //   (id) => () => {
+  //     setRowModesModel({
+  //       ...rowModesModel,
+  //       [id]: { mode: GridRowModes.View, ignoreModifications: true },
+  //     });
+  //     const editedRow = rows.find((row) => row.project_personnel_id === id);
+  //     if (editedRow.isNew) {
+  //       setRows(rows.filter((row) => row.id !== id));
+  //     }
+  //   },
+  //   [rowModesModel, rows]
+  // );
+
+  const handleCancelClick = makeHandleCancelClick(
+    rows,
+    setRows,
+    rowModesModel,
+    setRowModesModel,
+    (row) => row.project_personnel_id
   );
 
   const handleDeleteOpen = useCallback(
