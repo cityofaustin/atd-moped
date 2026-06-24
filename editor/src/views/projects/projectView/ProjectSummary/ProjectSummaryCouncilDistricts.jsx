@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import {
   fieldBox,
   fieldLabel,
@@ -41,7 +41,7 @@ const ProjectSummaryCouncilDistricts = ({
   childProjectGeography,
 }) => {
   return (
-    <Grid2 size={12}>
+    <Grid size={12}>
       <Typography sx={fieldLabel}>Council district(s)</Typography>
       <Box sx={fieldBox}>
         <Typography sx={fieldLabelTextNoHover}>
@@ -50,7 +50,7 @@ const ProjectSummaryCouncilDistricts = ({
           )}
         </Typography>
       </Box>
-    </Grid2>
+    </Grid>
   );
 };
 

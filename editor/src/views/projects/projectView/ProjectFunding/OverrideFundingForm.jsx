@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import { currencyFormatter } from "src/utils/numberFormatters";
@@ -166,8 +166,8 @@ const OverrideFundingForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <Grid2 container spacing={2} sx={{ pt: 1 }}>
-        <Grid2 size={12}>
+      <Grid container spacing={2} sx={{ pt: 1 }}>
+        <Grid size={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
               control={control}
@@ -193,8 +193,8 @@ const OverrideFundingForm = ({
               {renderECaprisLabel(fundingSources, ecaprisSourceId, "source")}
             </FormHelperText>
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
               control={control}
@@ -226,8 +226,8 @@ const OverrideFundingForm = ({
               )}
             </FormHelperText>
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth>
             <ControlledTextInput
               fullWidth
@@ -239,8 +239,8 @@ const OverrideFundingForm = ({
               size="small"
             />
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
               control={control}
@@ -264,8 +264,8 @@ const OverrideFundingForm = ({
               }
             />
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <Controller
             name="should_use_ecapris_amount"
             control={control}
@@ -294,8 +294,8 @@ const OverrideFundingForm = ({
               />
             )}
           />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth>
             <ControlledTextInput
               fullWidth
@@ -323,16 +323,16 @@ const OverrideFundingForm = ({
               </FormHelperText>
             ) : null}
           </FormControl>
-        </Grid2>
-      </Grid2>
-      <Grid2
+        </Grid>
+      </Grid>
+      <Grid
         container
         sx={{
           display: "flex",
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2 }}>
+        <Grid sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"
@@ -344,8 +344,8 @@ const OverrideFundingForm = ({
           >
             Save
           </Button>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </form>
   );
 };

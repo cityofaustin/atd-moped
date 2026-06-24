@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Grid2 } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import { getOptionLabel, isOptionEqualToValue } from "./utils/form";
@@ -36,8 +36,8 @@ const MoveComponentForm = ({ onSave, component }) => {
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
-      <Grid2 container spacing={2} sx={{ pt: 1 }}>
-        <Grid2 size={12}>
+      <Grid container spacing={2} sx={{ pt: 1 }}>
+        <Grid size={12}>
           <ControlledAutocomplete
             id="project"
             label="Project"
@@ -50,9 +50,9 @@ const MoveComponentForm = ({ onSave, component }) => {
             autoFocus
             helperText="Required"
           />
-        </Grid2>
-      </Grid2>
-      <Grid2
+        </Grid>
+      </Grid>
+      <Grid
         container
         spacing={4}
         sx={{
@@ -60,7 +60,7 @@ const MoveComponentForm = ({ onSave, component }) => {
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 style={{ margin: 5 }}>
+        <Grid style={{ margin: 5 }}>
           <Button
             variant="contained"
             color="primary"
@@ -70,8 +70,8 @@ const MoveComponentForm = ({ onSave, component }) => {
           >
             Move component
           </Button>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </form>
   );
 };

@@ -1,5 +1,5 @@
 import {
-  Grid2,
+  Grid,
   TextField,
   FormControl,
   FormControlLabel,
@@ -41,8 +41,8 @@ const FileUploadSingle = ({
   handleOnFileAdded,
 }) => {
   return (
-    <Grid2 container style={{ marginTop: "5px" }}>
-      <Grid2
+    <Grid container style={{ marginTop: "5px" }}>
+      <Grid
         size={{
           xs: 12,
           md: 12,
@@ -109,8 +109,8 @@ const FileUploadSingle = ({
             labelPlacement="start"
           />
         </FormControl>
-      </Grid2>
-      <Grid2
+      </Grid>
+      <Grid
         sx={(theme) => ({ marginTop: theme.spacing(2) })}
         size={{
           xs: 12,
@@ -137,8 +137,8 @@ const FileUploadSingle = ({
             onFileAdded={handleOnFileAdded}
           />
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 };
 

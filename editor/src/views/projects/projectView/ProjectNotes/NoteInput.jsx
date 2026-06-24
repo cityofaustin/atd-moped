@@ -4,7 +4,7 @@ import {
   Box,
   Button,
   Container,
-  Grid2,
+  Grid,
   FormControl,
   Paper,
   FormHelperText,
@@ -174,8 +174,8 @@ const NoteInput = ({
 
   return (
     <Container>
-      <Grid2 container direction="column" spacing={1}>
-        <Grid2
+      <Grid container direction="column" spacing={1}>
+        <Grid
           size={{
             xs: 12,
             sm: 12,
@@ -210,20 +210,20 @@ const NoteInput = ({
               <ListPlugin />
             </Box>
           </LexicalComposer>
-        </Grid2>
+        </Grid>
         {validationErrors && (
-          <Grid2 size={12}>
+          <Grid size={12}>
             {Object.values(validationErrors).map((error, index) => (
               <FormHelperText key={index} error>
                 {error}
               </FormHelperText>
             ))}
-          </Grid2>
+          </Grid>
         )}
         {
           // only show Note Type Radio Buttons on Notes tab interface
           !isStatusEditModal && (
-            <Grid2
+            <Grid
               style={{ justifyContent: "flex-end" }}
               sx={{
                 display: "flex",
@@ -245,10 +245,10 @@ const NoteInput = ({
                   />
                 )}
               </FormControl>
-            </Grid2>
+            </Grid>
           )
         }
-        <Grid2>
+        <Grid>
           <Box
             style={{ justifyContent: "flex-end" }}
             sx={{
@@ -277,8 +277,8 @@ const NoteInput = ({
               handleButtonClick={isEditingNote ? submitEditNote : submitNewNote}
             />
           </Box>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

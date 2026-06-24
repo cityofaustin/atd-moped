@@ -12,7 +12,7 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert, Grid2 } from "@mui/material";
+import { Alert, Grid } from "@mui/material";
 import { useUser, getCognitoIdJwt } from "src/auth/user";
 
 registerPlugin(
@@ -238,7 +238,7 @@ const FileUpload = (props) => {
   };
 
   return (
-    <Grid2>
+    <Grid>
       {errors.length > 0 &&
         errors.map((err) => {
           return (
@@ -266,7 +266,7 @@ const FileUpload = (props) => {
         beforeAddFile={handleBeforeAdd}
         onprocessfile={(error, file) => handleFileAdded(error, file)}
       />
-    </Grid2>
+    </Grid>
   );
 };
 export default FileUpload;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Chip, Grid2, Button, Tooltip } from "@mui/material";
+import { Box, Chip, Grid, Button, Tooltip } from "@mui/material";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -120,14 +120,14 @@ const FiltersChips = ({
 
   return (
     <Box sx={filtersListStyle}>
-      <Grid2
+      <Grid
         container
         spacing={0.5}
         sx={{
           justifyContent: "flex-start",
         }}
       >
-        <Grid2>
+        <Grid>
           <Tooltip
             placement="bottom-start"
             title="Save these filters to the dashboard"
@@ -143,9 +143,9 @@ const FiltersChips = ({
               SAVE VIEW
             </Button>
           </Tooltip>
-        </Grid2>
+        </Grid>
         {filtersCount > 1 && (
-          <Grid2>
+          <Grid>
             <Chip
               variant="outlined"
               color="primary"
@@ -164,10 +164,10 @@ const FiltersChips = ({
                 )
               }
             />
-          </Grid2>
+          </Grid>
         )}
         {filtersLabels.map((filter, index) => (
-          <Grid2 key={index}>
+          <Grid key={index}>
             <Chip
               onDelete={() => handleDeleteButtonClick(index)}
               label={
@@ -177,9 +177,9 @@ const FiltersChips = ({
                 </>
               }
             />
-          </Grid2>
+          </Grid>
         ))}
-      </Grid2>
+      </Grid>
       <SaveUserViewModal
         showDialog={isSaveViewModalOpen}
         setIsSaveViewModalOpen={setIsSaveViewModalOpen}

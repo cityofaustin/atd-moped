@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
-  Grid2,
+  Grid,
   Switch,
   FormControlLabel,
   FormHelperText,
@@ -255,8 +255,8 @@ const ComponentForm = ({
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Grid2 container spacing={2} sx={{ pt: 1 }}>
-        <Grid2 size={12}>
+      <Grid container spacing={2} sx={{ pt: 1 }}>
+        <Grid size={12}>
           <ControlledAutocomplete
             id="component"
             label="Component Type"
@@ -282,9 +282,9 @@ const ComponentForm = ({
             error={!!errors?.component}
             required={true}
           />
-        </Grid2>
+        </Grid>
         {isSignalComponent && (
-          <Grid2 size={12}>
+          <Grid size={12}>
             <Controller
               id="signal"
               name="signal"
@@ -301,10 +301,10 @@ const ComponentForm = ({
                 />
               )}
             />
-          </Grid2>
+          </Grid>
         )}
         {isSchoolZoneBeacon && (
-          <Grid2 size={12}>
+          <Grid size={12}>
             <Controller
               id="school_beacon"
               name="schoolBeacon"
@@ -321,9 +321,9 @@ const ComponentForm = ({
                 />
               )}
             />
-          </Grid2>
+          </Grid>
         )}
-        <Grid2 size={12}>
+        <Grid size={12}>
           <ControlledAutocomplete
             id="work_type"
             label="Work Type(s)"
@@ -337,11 +337,11 @@ const ComponentForm = ({
             helperText="Required"
             required={true}
           />
-        </Grid2>
+        </Grid>
         {/* Hide unless there are subcomponents for the chosen component
         or if there is a subcomponent chosen for the component */}
         {(subcomponentOptions.length !== 0 || subcomponents.length !== 0) && (
-          <Grid2 size={12}>
+          <Grid size={12}>
             <ControlledAutocomplete
               id="subcomponents"
               label="Subcomponents"
@@ -352,9 +352,9 @@ const ComponentForm = ({
               name="subcomponents"
               control={control}
             />
-          </Grid2>
+          </Grid>
         )}
-        <Grid2 size={12}>
+        <Grid size={12}>
           <ControlledAutocomplete
             id="tags"
             label="Component tags"
@@ -365,8 +365,8 @@ const ComponentForm = ({
             name="tags"
             control={control}
           />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <ControlledTextInput
             fullWidth
             label="Location description"
@@ -376,8 +376,8 @@ const ComponentForm = ({
             error={errors?.locationDescription}
             helperText={errors?.locationDescription?.message}
           />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <ControlledTextInput
             fullWidth
             label="Description"
@@ -390,8 +390,8 @@ const ComponentForm = ({
             error={errors?.description}
             helperText={errors?.description?.message}
           />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <ControlledTextInput
             fullWidth
             label="SRTS Infrastructure ID"
@@ -402,8 +402,8 @@ const ComponentForm = ({
               "The Safe Routes to School infrastructure plan record identifier"
             }
           />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControlLabel
             control={
               <Switch
@@ -427,10 +427,10 @@ const ComponentForm = ({
               overall phase of this project
             </FormHelperText>
           )}
-        </Grid2>
+        </Grid>
         {useComponentPhase && (
           <>
-            <Grid2 size={12}>
+            <Grid size={12}>
               <ControlledAutocomplete
                 id="phase"
                 label="Phase"
@@ -440,9 +440,9 @@ const ComponentForm = ({
                 autoFocus
                 isOptionEqualToValue={isOptionEqualToValue}
               />
-            </Grid2>
+            </Grid>
             {subphaseOptions.length !== 0 && (
-              <Grid2 size={12}>
+              <Grid size={12}>
                 <ControlledAutocomplete
                   id="subphase"
                   label="Subphase"
@@ -451,10 +451,10 @@ const ComponentForm = ({
                   control={control}
                   isOptionEqualToValue={isOptionEqualToValue}
                 />
-              </Grid2>
+              </Grid>
             )}
             {(isPhaseNameSimpleComplete || completionDate) && (
-              <Grid2 size={12}>
+              <Grid size={12}>
                 <Controller
                   id="completion-date"
                   name="completionDate"
@@ -476,22 +476,22 @@ const ComponentForm = ({
                     );
                   }}
                 />
-              </Grid2>
+              </Grid>
             )}
           </>
         )}
-      </Grid2>
+      </Grid>
       {initialFormValues && (
         <ComponentProperties component={initialFormValues} />
       )}
-      <Grid2
+      <Grid
         container
         sx={{
           display: "flex",
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2 }}>
+        <Grid sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"
@@ -501,8 +501,8 @@ const ComponentForm = ({
           >
             {hasGeometry ? "Save" : formButtonText}
           </Button>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </form>
   );
 };

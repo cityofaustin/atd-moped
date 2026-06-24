@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, CardContent, Grid2 } from "@mui/material";
+import { Box, CardContent, Grid } from "@mui/material";
 import { TIMELINE_QUERY } from "src/queries/project";
 import { useQuery } from "@apollo/client";
 import ProjectMilestones from "src/views/projects/projectView/ProjectMilestones";
@@ -50,8 +50,8 @@ const DashboardTimelineModal = ({
         dialogProps={{ maxWidth: "xl" }}
       >
         <CardContent>
-          <Grid2 container spacing={2}>
-            <Grid2 size={12}>
+          <Grid container spacing={2}>
+            <Grid size={12}>
               <Box
                 style={{ maxWidth: "100%" }}
                 sx={{
@@ -77,8 +77,8 @@ const DashboardTimelineModal = ({
                   />
                 )}
               </Box>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </CardContent>
       </FormDialog>
     </>
