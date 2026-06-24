@@ -431,7 +431,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           "Invalid user data, user not found:",
           updatedRow.moped_user
         );
-        throw new Error("Invalid user data");
       }
 
       // normalize the updatedRow and originalRow
@@ -570,7 +569,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         getRowId={getRowIdMemoized}
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        onRowEditStop={handleRowEditStop(rows, setRows, setRowModesModel)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar

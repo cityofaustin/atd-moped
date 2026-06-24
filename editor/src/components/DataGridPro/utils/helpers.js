@@ -11,29 +11,20 @@ export const defaultEditColumnIconStyle = { fontSize: "24px" };
  * @param {Function} setRows - The rows state setter
  * @returns {Function} - A DataGrid `onRowEditStop` event handler
  */
-export const handleRowEditStop =
-  (rows, setRows, setRowModesModel) => (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-      return;
+export const handleRowEditStop = (rows, setRows) => (params, event) => {
+  if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+    event.defaultMuiPrevented = true;
+    return;
+  }
+  if (params.reason === GridRowEditStopReasons.enterKeyDown) {
+    event.defaultMuiPrevented = true;
+  }
+  if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
+    if (params.row.isNew) {
+      setRows(rows.filter((row) => row.id !== params.row.id));
     }
-    if (params.reason === GridRowEditStopReasons.enterKeyDown) {
-      event.defaultMuiPrevented = true;
-    }
-    if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
-      if (params.row.isNew) {
-        const rowIdToRemove = params.row.id;
-        setRows((prevRows) =>
-          prevRows.filter((row) => row.id !== rowIdToRemove)
-        );
-        setRowModesModel((prevRowModesModel) => {
-          const { [rowIdToRemove]: _, ...rest } = prevRowModesModel;
-          return rest;
-        });
-        event.defaultMuiPrevented = true;
-      }
-    }
-  };
+  }
+};
 
 /**
  * Uses the rowModesModel to determine if any row is currently in edit mode
