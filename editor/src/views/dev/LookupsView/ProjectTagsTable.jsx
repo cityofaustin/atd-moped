@@ -223,6 +223,10 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
   const processRowUpdate = (updatedRow, originalRow) => {
     const mutationData = transformGridToDatabase(updatedRow);
 
+    if (!mutationData.slug) {
+      throw new Error("Invalid record, missing required field: slug");
+    }
+
     if (updatedRow.isNew) {
       return addProjectTagLookup({
         variables: {

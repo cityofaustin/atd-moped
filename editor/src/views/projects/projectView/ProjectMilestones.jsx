@@ -312,6 +312,10 @@ const ProjectMilestones = ({
     // moped_milestone object. Deleting from the payload since the db is not expecting it in this shape
     delete updatedMilestoneData.moped_milestone_related_phase;
 
+    if (!updatedRow.milestone_id) {
+      throw new Error("Invalid record, missing required field: milestone_id");
+    }
+
     if (updatedRow.isNew) {
       delete updatedMilestoneData.isNew;
       delete updatedMilestoneData.id;
