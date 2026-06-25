@@ -23,6 +23,9 @@ ALTER TABLE public.files_project_work_activities
 ADD CONSTRAINT files_project_work_activities_entity_id_file_id_key
 UNIQUE (entity_id, file_id);
 
+-- Trigger to set updated_at
+CREATE TRIGGER set_files_updated_at BEFORE UPDATE ON public.files_project_work_activities FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
 COMMENT ON TABLE public.files_project_work_activities IS 'Join table to link Moped work activity rows and Moped project files to create work activity file attachments.';
 COMMENT ON COLUMN public.files_project_work_activities.entity_id IS 'References the Moped project work activity record to which the file attachment belongs.';
 COMMENT ON COLUMN public.files_project_work_activities.file_id IS 'References the file that is attached to the work activity row.';
