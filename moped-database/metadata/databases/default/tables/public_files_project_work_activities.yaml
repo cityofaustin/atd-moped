@@ -1,0 +1,62 @@
+table:
+  name: files_project_work_activities
+  schema: public
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - is_deleted
+        - updated_at
+    comment: ""
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - is_deleted
+        - updated_at
+    comment: ""
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - id
+        - is_deleted
+        - updated_at
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - created_at
+        - entity_id
+        - file_id
+        - id
+        - is_deleted
+        - updated_at
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - is_deleted
+      filter: {}
+      check: null
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - is_deleted
+      filter: {}
+      check: null
+    comment: ""
