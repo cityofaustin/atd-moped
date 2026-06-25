@@ -30,6 +30,7 @@ export interface MopedTrafficSignalRecord {
   location_name: string;
   signal_type: string;
   signal_id: string;
+  created_by_user_id: number;
 }
 
 export interface MopedComponentPayload {
@@ -37,17 +38,20 @@ export interface MopedComponentPayload {
   location_description: string;
   phase_id: number;
   completion_date: string;
+  created_by_user_id: number;
   feature_signals: {
     data: MopedTrafficSignalRecord[];
   };
   moped_proj_components_subcomponents: {
     data: {
       subcomponent_id: number;
+      created_by_user_id: number;
     }[];
   };
   moped_proj_component_work_types: {
     data: {
       work_type_id: number;
+      created_by_user_id: number;
     }[];
   };
 }

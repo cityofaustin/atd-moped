@@ -46,4 +46,5 @@ export const socrataSignalRecordToFeatureSignalsRecord = (
   location_name: signal.location_name.trim(),
   signal_type: signal.signal_type,
   signal_id: signal.signal_id,
+  created_by_user_id: 1,
 });

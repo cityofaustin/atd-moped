@@ -33,6 +33,7 @@ WHERE
 ORDER BY \`signal_id\` ASC
 `.trim(),
 );
+const DATA_AND_TECH_ADMIN_USER_ID = 1;
 
 /**
  * Read csv and handle Power BI export format, extra quotes, and whitespaces
@@ -116,14 +117,25 @@ function createMopedComponentsPayload(
         location_description: `${signal.signal_id}: ${signal.location_name.trim()}`,
         phase_id: 11, // Complete phase
         completion_date: toTimestamptz(treatment.implementationDate),
+        created_by_user_id: DATA_AND_TECH_ADMIN_USER_ID,
         feature_signals: {
           data: [socrataSignalRecordToFeatureSignalsRecord(signal)],
         },
         moped_proj_component_work_types: {
-          data: [{ work_type_id: 6 }], // "Modification" work type
+          data: [
+            {
+              work_type_id: 6,
+              created_by_user_id: DATA_AND_TECH_ADMIN_USER_ID,
+            },
+          ], // "Modification" work type
         },
         moped_proj_components_subcomponents: {
-          data: [{ subcomponent_id: 25 }], // "Protected left-turn phase" subcomponent
+          data: [
+            {
+              subcomponent_id: 25,
+              created_by_user_id: DATA_AND_TECH_ADMIN_USER_ID,
+            },
+          ], // "Protected left-turn phase" subcomponent
         },
       };
     })
@@ -171,6 +183,7 @@ async function main() {
           object: {
             project_name: "Vision Zero Left Turn Treatment Statistics",
             project_description: `Backfill of traffic signals from Data Tracker with left-turn treatments subcomponents with completion date using implementation dates as completion dates from Austin Left Turn Treatment Evaluation Power BI dashboard (https://app.powerbigov.us/groups/me/reports/746b8c1d-d0e5-45a8-a661-bea2fd331764/ReportSectiond62e57c030a1e78218a9)`,
+            added_by: DATA_AND_TECH_ADMIN_USER_ID,
             moped_proj_components: { data: componentsToInsert },
           },
         },
