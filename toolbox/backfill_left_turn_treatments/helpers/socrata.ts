@@ -3,6 +3,7 @@ import type {
   MopedTrafficSignalRecord,
   SocrataTrafficSignalRecord,
 } from "../types.ts";
+import { DATA_AND_TECH_ADMIN_USER_ID } from "../backfill_left_turn_treatments.ts";
 
 const SOCRATA_TOKEN = requireEnv("SOCRATA_TOKEN");
 
@@ -46,5 +47,5 @@ export const socrataSignalRecordToFeatureSignalsRecord = (
   location_name: signal.location_name.trim(),
   signal_type: signal.signal_type,
   signal_id: signal.signal_id,
-  created_by_user_id: 1,
+  created_by_user_id: DATA_AND_TECH_ADMIN_USER_ID,
 });

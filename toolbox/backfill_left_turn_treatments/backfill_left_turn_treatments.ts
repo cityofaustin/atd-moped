@@ -33,7 +33,7 @@ WHERE
 ORDER BY \`signal_id\` ASC
 `.trim(),
 );
-const DATA_AND_TECH_ADMIN_USER_ID = 1;
+export const DATA_AND_TECH_ADMIN_USER_ID = 1;
 
 /**
  * Read csv and handle Power BI export format, extra quotes, and whitespaces
