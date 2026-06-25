@@ -34,3 +34,20 @@ COMMENT ON COLUMN public.files_project_work_activities.updated_at IS 'Timestamp 
 COMMENT ON COLUMN public.files_project_work_activities.created_by_user_id IS 'References the user who created the file attachment record.';
 COMMENT ON COLUMN public.files_project_work_activities.updated_by_user_id IS 'References the user who last updated the file attachment record.';
 COMMENT ON COLUMN public.files_project_work_activities.is_deleted IS 'Indicates soft deletion';
+
+-- Add foreign key constraints for created_by_user_id and updated_by_user_id
+ALTER TABLE moped_proj_components ADD CONSTRAINT fk_created_by_user_id FOREIGN KEY (
+    created_by_user_id
+) REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE moped_proj_components ADD CONSTRAINT fk_updated_by_user_id FOREIGN KEY (
+    updated_by_user_id
+) REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE moped_proj_milestones ADD CONSTRAINT fk_created_by_user_id FOREIGN KEY (
+    created_by_user_id
+) REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE moped_proj_milestones ADD CONSTRAINT fk_updated_by_user_id FOREIGN KEY (
+    updated_by_user_id
+) REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE moped_proj_notes ADD CONSTRAINT fk_updated_by_user_id FOREIGN KEY (
+    updated_by_user_id
+) REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE;
