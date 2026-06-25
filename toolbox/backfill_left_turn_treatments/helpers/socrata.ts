@@ -1,0 +1,51 @@
+import { requireEnv } from "./env.ts";
+import type {
+  MopedTrafficSignalRecord,
+  SocrataTrafficSignalRecord,
+} from "../types.ts";
+import { DATA_AND_TECH_ADMIN_USER_ID } from "../backfill_left_turn_treatments.ts";
+
+const SOCRATA_TOKEN = requireEnv("SOCRATA_TOKEN");
+
+export async function makeSocrataRequest<T extends unknown[]>(
+  url: string,
+): Promise<T> {
+  console.log("Requesting data from Socrata...");
+
+  const res = await fetch(url, {
+    headers: {
+      Accept: "application/json",
+      "X-App-Token": SOCRATA_TOKEN,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch Socrata data: ${res.status} ${res.statusText}`,
+    );
+  }
+
+  const data = await res.json();
+  console.log(`Found ${data.length} records from Socrata.`);
+
+  return data;
+}
+
+/**
+ * Mostly copied from Moped editor code; transforms Socrata signal record into the shape needed for Moped feature_signals records
+ */
+export const socrataSignalRecordToFeatureSignalsRecord = (
+  signal: SocrataTrafficSignalRecord,
+): MopedTrafficSignalRecord => ({
+  // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
+  geography: {
+    location: signal.location,
+    type: "MultiPoint",
+    coordinates: [signal.location.coordinates],
+  },
+  knack_id: signal.id,
+  location_name: signal.location_name.trim(),
+  signal_type: signal.signal_type,
+  signal_id: signal.signal_id,
+  created_by_user_id: DATA_AND_TECH_ADMIN_USER_ID,
+});
