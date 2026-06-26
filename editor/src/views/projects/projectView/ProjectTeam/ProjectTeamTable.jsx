@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,7 +25,7 @@ import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutoco
 import { mopedUserAutocompleteProps } from "./utils";
 import {
   getIsEditMode,
-  handleRowEditStop,
+  useCanceledRowFix,
 } from "src/components/DataGridPro/utils/helpers.js";
 
 const useWorkgroupLookup = (data) =>
@@ -387,19 +387,12 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     [rowModesModel]
   );
 
-  const handleCancelClick = useCallback(
-    (id) => () => {
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View, ignoreModifications: true },
-      });
-      const editedRow = rows.find((row) => row.project_personnel_id === id);
-      if (editedRow.isNew) {
-        setRows(rows.filter((row) => row.id !== id));
-      }
-    },
-    [rowModesModel, rows]
-  );
+  const { wasCanceled, makeHandleCancelClick, makeHandleRowEditStop } =
+    useCanceledRowFix();
+  const handleCancelClick = makeHandleCancelClick({
+    setRows,
+    setRowModesModel,
+  });
 
   const handleDeleteOpen = useCallback(
     (id) => () => {
@@ -411,6 +404,12 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   const processRowUpdate = useCallback(
     (updatedRow, originalRow) => {
+      const rowId = updatedRow.id;
+      if (wasCanceled(rowId)) {
+        console.log("skipping mutation for cancelled row:", rowId);
+        return originalRow; // Return original row to skip mutation
+      }
+
       let userId;
 
       const userObject = data.moped_users.find((user) => {
@@ -535,6 +534,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
       projectId,
       refetch,
       handleSnackbar,
+      wasCanceled,
     ]
   );
 
@@ -569,7 +569,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         getRowId={getRowIdMemoized}
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowEditStop={makeHandleRowEditStop({ setRows, setRowModesModel })}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar

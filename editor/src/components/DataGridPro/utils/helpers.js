@@ -1,3 +1,4 @@
+import { useCallback, useRef } from "react";
 import { GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid-pro";
 
 export const defaultEditColumnIconStyle = { fontSize: "24px" };
@@ -50,3 +51,98 @@ export const handleRowEditStop = (rows, setRows) => (params, event) => {
  */
 export const getIsEditMode = (rowModesModel) =>
   Object.values(rowModesModel).some((m) => m?.mode === GridRowModes.Edit);
+
+/**
+ * Custom hook to contain workaround fix for bug described in https://github.com/mui/mui-x/issues/21766
+ * Handles issue where canceling an edit on a row does not properly prevent the subsequent processRowUpdate from executing.
+ * So, we track the ids of canceled rows and check those ids during processRowUpdate to skip mutation.
+ */
+export const useCanceledRowFix = ({ getRowId = (row) => row.id } = {}) => {
+  // Track canceled row IDs so we can check in processRowUpdate if a row's edit was canceled
+  // and skip mutations for those rows
+  const canceledRowIds = useRef(new Set());
+
+  /**
+   * Call at the start of processRowUpdate to skip mutation if marked as canceled
+   */
+  const wasCanceled = useCallback((id) => {
+    if (canceledRowIds.current.has(id)) {
+      canceledRowIds.current.delete(id);
+      return true;
+    }
+    return false;
+  }, []);
+
+  /**
+   * Mark row as canceled by id
+   */
+  const markCanceled = useCallback((id) => {
+    canceledRowIds.current.add(id);
+  }, []);
+
+  /**
+   * Make cancel handler that marks rows as canceled and updates row and rowModesModel state
+   */
+  const makeHandleCancelClick = useCallback(
+    ({ setRows, setRowModesModel }) =>
+      (id) =>
+      () => {
+        markCanceled(id);
+        // Remove the row's entry from the rowModesModel to force out of edit mode
+        setRowModesModel((prev) => {
+          const { [id]: _, ...rest } = prev;
+          return rest;
+        });
+        // If the row is new, remove it from the rows state
+        setRows((prev) => {
+          const editedRow = prev.find((row) => getRowId(row) === id);
+          return editedRow?.isNew
+            ? prev.filter((row) => getRowId(row) !== id)
+            : prev;
+        });
+      },
+    [getRowId, markCanceled]
+  );
+
+  /**
+   * Builds the onRowEditStop handler; see handleRowEditStop for events handled
+   */
+  const makeHandleRowEditStop = useCallback(
+    ({ setRows, setRowModesModel }) =>
+      (params, event) => {
+        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+          event.defaultMuiPrevented = true;
+          return;
+        }
+        if (params.reason === GridRowEditStopReasons.enterKeyDown) {
+          event.defaultMuiPrevented = true;
+        }
+        if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
+          const id = getRowId(params.row);
+          markCanceled(id);
+          // Same as in makeHandleCancelClick: if the row is new, remove it from the rows state and rowModesModel
+          if (params.row.isNew) {
+            setRows((prev) => prev.filter((row) => getRowId(row) !== id));
+            if (setRowModesModel) {
+              setRowModesModel((prev) => {
+                const { [id]: _, ...rest } = prev;
+                return rest;
+              });
+            }
+          } else if (setRowModesModel) {
+            setRowModesModel((prev) => ({
+              ...prev,
+              [id]: { mode: GridRowModes.View, ignoreModifications: true },
+            }));
+          }
+        }
+      },
+    [getRowId, markCanceled]
+  );
+
+  return {
+    wasCanceled,
+    makeHandleCancelClick,
+    makeHandleRowEditStop,
+  };
+};
