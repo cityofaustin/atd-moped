@@ -797,6 +797,35 @@ export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
   }
 `;
 
+export const CREATE_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
+  mutation InsertFileWithWorkActivityConnection(
+    $object: moped_project_files_insert_input!
+  ) {
+    insert_moped_project_files_one(object: $object) {
+      project_file_id
+      files_project_work_activities {
+        id
+      }
+    }
+  }
+`;
+
+export const ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY = gql`
+  mutation AttachExistingFileToWorkActivity(
+    $object: files_project_work_activities_insert_input!
+  ) {
+    insert_files_project_work_activities_one(
+      object: $object
+      on_conflict: {
+        constraint: files_project_work_activities_entity_id_file_id_key
+        update_columns: [is_deleted]
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
     update_moped_project(
