@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash.isequal";
 import { v4 as uuidv4 } from "uuid";
 
@@ -558,6 +558,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     }
   };
 
+  const handleOnRowModesModelChange = (newModel) => {
+    setRowModesModel(newModel);
+  };
+
   return (
     <>
       <MopedDataGridInlineEdit
@@ -568,7 +572,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         loading={loading || !data}
         getRowId={getRowIdMemoized}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={setRowModesModel}
+        onRowModesModelChange={handleOnRowModesModelChange}
         onRowEditStop={makeHandleRowEditStop({ setRows, setRowModesModel })}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}

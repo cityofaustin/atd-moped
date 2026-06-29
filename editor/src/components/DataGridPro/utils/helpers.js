@@ -107,6 +107,7 @@ export const useCanceledRowFix = ({ getRowId = (row) => row.id } = {}) => {
   /**
    * Builds the onRowEditStop handler; see handleRowEditStop for events handled
    */
+  // TODO: Figure out why populating Name column make handleOnRowModesModelChange fire twice - first with view mode and then with edit mode
   const makeHandleRowEditStop = useCallback(
     ({ setRows, setRowModesModel }) =>
       (params, event) => {
@@ -120,21 +121,15 @@ export const useCanceledRowFix = ({ getRowId = (row) => row.id } = {}) => {
         if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
           const id = getRowId(params.row);
           markCanceled(id);
-          // Same as in makeHandleCancelClick: if the row is new, remove it from the rows state and rowModesModel
+          // Same as in makeHandleCancelClick: if the row is new, remove it from the rows state
           if (params.row.isNew) {
             setRows((prev) => prev.filter((row) => getRowId(row) !== id));
-            if (setRowModesModel) {
-              setRowModesModel((prev) => {
-                const { [id]: _, ...rest } = prev;
-                return rest;
-              });
-            }
-          } else if (setRowModesModel) {
-            setRowModesModel((prev) => ({
-              ...prev,
-              [id]: { mode: GridRowModes.View, ignoreModifications: true },
-            }));
           }
+          // Remove the row's entry from the rowModesModel to force out of edit mode
+          setRowModesModel((prev) => {
+            const { [id]: _, ...rest } = prev;
+            return rest;
+          });
         }
       },
     [getRowId, markCanceled]
