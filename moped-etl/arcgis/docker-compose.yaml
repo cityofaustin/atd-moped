@@ -7,7 +7,7 @@ services:
     entrypoint: python /app/components_to_agol.py
     command: -d
     environment:
-      - AGOL_USERNAME=${AGOL_USERNAME}
-      - AGOL_PASSWORD=${AGOL_PASSWORD}
-      - HASURA_ENDPOINT=${HASURA_ENDPOINT}
-      - HASURA_ADMIN_SECRET=${HASURA_ADMIN_SECRET}
+      - AGOL_USERNAME=${AGOL_USERNAME?AGOL_USERNAME is required}
+      - AGOL_PASSWORD=${AGOL_PASSWORD?AGOL_PASSWORD is required}
+      - HASURA_ENDPOINT=${HASURA_ENDPOINT?HASURA_ENDPOINT is required}
+      - HASURA_ADMIN_SECRET=${HASURA_ADMIN_SECRET?HASURA_ADMIN_SECRET is required}
