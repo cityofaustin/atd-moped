@@ -83,72 +83,63 @@ export const useCanceledRowFix = ({ getRowId = (row) => row.id } = {}) => {
   /**
    * Make cancel handler that marks rows as canceled and updates row and rowModesModel state
    */
-  const makeHandleCancelClick = useCallback(
+  const makeHandleCancelClick =
     ({ setRows, setRowModesModel }) =>
-      (id) =>
-      () => {
+    (id) =>
+    () => {
+      markCanceled(id);
+      // Remove the row's entry from the rowModesModel to force out of edit mode
+      setRowModesModel((prev) => {
+        const { [id]: _, ...rest } = prev;
+        return rest;
+      });
+      // If the row is new, remove it from the rows state
+      setRows((prev) => {
+        const editedRow = prev.find((row) => getRowId(row) === id);
+        return editedRow?.isNew
+          ? prev.filter((row) => getRowId(row) !== id)
+          : prev;
+      });
+    };
+
+  /**
+   * Builds the onRowEditStop handler; see handleRowEditStop for events handled
+   */
+  const makeHandleRowEditStop =
+    ({ setRows, setRowModesModel }) =>
+    (params, event) => {
+      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+        event.defaultMuiPrevented = true;
+        return;
+      }
+      if (params.reason === GridRowEditStopReasons.enterKeyDown) {
+        event.defaultMuiPrevented = true;
+      }
+      if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
+        const id = getRowId(params.row);
         markCanceled(id);
+        // Same as in makeHandleCancelClick: if the row is new, remove it from the rows state
+        if (params.row.isNew) {
+          setRows((prev) => prev.filter((row) => getRowId(row) !== id));
+        }
         // Remove the row's entry from the rowModesModel to force out of edit mode
         setRowModesModel((prev) => {
           const { [id]: _, ...rest } = prev;
           return rest;
         });
-        // If the row is new, remove it from the rows state
-        setRows((prev) => {
-          const editedRow = prev.find((row) => getRowId(row) === id);
-          return editedRow?.isNew
-            ? prev.filter((row) => getRowId(row) !== id)
-            : prev;
-        });
-      },
-    [getRowId, markCanceled]
-  );
-
-  /**
-   * Builds the onRowEditStop handler; see handleRowEditStop for events handled
-   */
-  const makeHandleRowEditStop = useCallback(
-    ({ setRows, setRowModesModel }) =>
-      (params, event) => {
-        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-          event.defaultMuiPrevented = true;
-          return;
-        }
-        if (params.reason === GridRowEditStopReasons.enterKeyDown) {
-          event.defaultMuiPrevented = true;
-        }
-        if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
-          const id = getRowId(params.row);
-          markCanceled(id);
-          // Same as in makeHandleCancelClick: if the row is new, remove it from the rows state
-          if (params.row.isNew) {
-            setRows((prev) => prev.filter((row) => getRowId(row) !== id));
-          }
-          // Remove the row's entry from the rowModesModel to force out of edit mode
-          setRowModesModel((prev) => {
-            const { [id]: _, ...rest } = prev;
-            return rest;
-          });
-        }
-      },
-    [getRowId, markCanceled]
-  );
+      }
+    };
 
   /**
    * Build the model-change handler in the hook so it can reference canceled ids
    */
-  const makeHandleRowModesModelChange = useCallback(
-    (setRowModesModel) => (newModel) => {
-      // Drop entries for rows that were just canceled
-      const filtered = Object.fromEntries(
-        Object.entries(newModel).filter(
-          ([id]) => !canceledRowIds.current.has(id)
-        )
-      );
-      setRowModesModel(filtered);
-    },
-    []
-  );
+  const makeHandleRowModesModelChange = (setRowModesModel) => (newModel) => {
+    // Drop entries for rows that were just canceled
+    const filtered = Object.fromEntries(
+      Object.entries(newModel).filter(([id]) => !canceledRowIds.current.has(id))
+    );
+    setRowModesModel(filtered);
+  };
 
   return {
     wasCanceled,

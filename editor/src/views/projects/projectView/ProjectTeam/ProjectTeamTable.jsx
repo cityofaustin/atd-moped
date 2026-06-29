@@ -411,7 +411,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     (updatedRow, originalRow) => {
       const rowId = updatedRow.project_personnel_id;
       if (wasCanceled(rowId)) {
-        console.log("skipping mutation for cancelled row:", rowId);
         return originalRow; // Return original row to skip mutation
       }
 
