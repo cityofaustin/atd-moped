@@ -20,24 +20,39 @@ The data for the first three layers listed above is sourced from a view, `compon
 
 The fourth layer is sourced from a derivative view, `exploded_component_arcgis_online_view`, which takes the previous view and explodes MultiPoint geometries into individual points.
 
+## Configuration
+
+Environment variables are defined and validated in [`.env.schema`](.env.schema) using [Varlock](https://varlock.dev/). AGOL credentials are resolved from 1Password at runtime via the `@varlock/1password-plugin`; Hasura settings default to the local Moped stack (`host.docker.internal:8082`).
+
+### Prerequisites
+
+1. [Node.js](https://nodejs.org/) v24 (see [`.nvmrc`](.nvmrc); run `nvm use` if you use nvm).
+1. The [1Password CLI](https://developer.1password.com/docs/cli/get-started/) (`op`) installed and on your `$PATH`.
+1. The [1Password desktop app](https://1password.com/downloads/) with [CLI integration enabled](https://developer.1password.com/docs/cli/app-integration/), signed in to the team vault that holds the AGOL Scripts Publisher credentials.
+
+### Setup
+
+From this directory:
+
+1. `npm install` to install Varlock and the 1Password plugin.
+1. (Optional) `npx varlock load` to validate the schema and confirm 1Password secrets resolve.
+
 ## Running the Script
 
 1. (If running full refresh) Ensure the local Moped stack is running with a current snapshot.
 
-1. Configure an `env_file` according to the `env_template` example. You can find the AGOL Scripts Publisher username and password in the API Secrets vault in the team password store.
-
 1. `docker compose build` to build the container.
 
-1. Run the script via one or more of the following:
-   - `docker compose run arcgis -d` to start the script with the default interval of changes over the last week.
-   - `docker compose run arcgis -f` to start the script with a full refresh.
-   - `docker compose run arcgis -d <timestamptz>` to start the script with a refresh since the given timestamp.
-   - `docker compose run --entrypoint /bin/bash arcgis` to start a shell inside the container.
+1. Run the script via Varlock so resolved environment variables are passed into Docker Compose. Use one or more of the following:
+   - `npx varlock run -- docker compose run arcgis -d` to start the script with the default interval of changes over the last week.
+   - `npx varlock run -- docker compose run arcgis -f` to start the script with a full refresh.
+   - `npx varlock run -- docker compose run arcgis -d <timestamptz>` to start the script with a refresh since the given timestamp.
+   - `npx varlock run -- docker compose run --entrypoint /bin/bash arcgis` to start a shell inside the container.
 
 ## Testing the Script
 
 To run the script without making changes to the AGOL dataset, use the `-n` flag (`--dry-run`) to see what changes would be made without executing them. This is useful to observe what projects have updated and what component data will be transferred without updating the production AGOL dataset.
 
 1. Run the script with the dry-run flag and any of the available options above:
-   - `docker compose run arcgis -d <timestamptz> -n` to start the script in dry-run mode with a refresh since the given timestamp.
-   - `docker compose run arcgis -f -n` to see what a full refresh would do without actually executing it.
+   - `npx varlock run -- docker compose run arcgis -d <timestamptz> -n` to start the script in dry-run mode with a refresh since the given timestamp.
+   - `npx varlock run -- docker compose run arcgis -f -n` to see what a full refresh would do without actually executing it.
