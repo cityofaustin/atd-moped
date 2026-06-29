@@ -387,8 +387,13 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     [rowModesModel]
   );
 
-  const { wasCanceled, makeHandleCancelClick, makeHandleRowEditStop } =
-    useCanceledRowFix();
+  const {
+    wasCanceled,
+    makeHandleCancelClick,
+    makeHandleRowEditStop,
+    makeHandleRowModesModelChange,
+  } = useCanceledRowFix({ getRowId: (row) => row.project_personnel_id });
+
   const handleCancelClick = makeHandleCancelClick({
     setRows,
     setRowModesModel,
@@ -404,7 +409,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   const processRowUpdate = useCallback(
     (updatedRow, originalRow) => {
-      const rowId = updatedRow.id;
+      const rowId = updatedRow.project_personnel_id;
       if (wasCanceled(rowId)) {
         console.log("skipping mutation for cancelled row:", rowId);
         return originalRow; // Return original row to skip mutation
@@ -558,10 +563,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     }
   };
 
-  const handleOnRowModesModelChange = (newModel) => {
-    setRowModesModel(newModel);
-  };
-
   return (
     <>
       <MopedDataGridInlineEdit
@@ -572,7 +573,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         loading={loading || !data}
         getRowId={getRowIdMemoized}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={handleOnRowModesModelChange}
+        onRowModesModelChange={makeHandleRowModesModelChange(setRowModesModel)}
         onRowEditStop={makeHandleRowEditStop({ setRows, setRowModesModel })}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}

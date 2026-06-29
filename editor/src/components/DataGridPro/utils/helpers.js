@@ -107,7 +107,6 @@ export const useCanceledRowFix = ({ getRowId = (row) => row.id } = {}) => {
   /**
    * Builds the onRowEditStop handler; see handleRowEditStop for events handled
    */
-  // TODO: Figure out why populating Name column make handleOnRowModesModelChange fire twice - first with view mode and then with edit mode
   const makeHandleRowEditStop = useCallback(
     ({ setRows, setRowModesModel }) =>
       (params, event) => {
@@ -135,9 +134,26 @@ export const useCanceledRowFix = ({ getRowId = (row) => row.id } = {}) => {
     [getRowId, markCanceled]
   );
 
+  /**
+   * Build the model-change handler in the hook so it can reference canceled ids
+   */
+  const makeHandleRowModesModelChange = useCallback(
+    (setRowModesModel) => (newModel) => {
+      // Drop entries for rows that were just canceled
+      const filtered = Object.fromEntries(
+        Object.entries(newModel).filter(
+          ([id]) => !canceledRowIds.current.has(id)
+        )
+      );
+      setRowModesModel(filtered);
+    },
+    []
+  );
+
   return {
     wasCanceled,
     makeHandleCancelClick,
     makeHandleRowEditStop,
+    makeHandleRowModesModelChange,
   };
 };
