@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -19,7 +20,12 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import FormattedDateString from "src/utils/FormattedDateString";
 
 /** Hook that provides memoized column settings */
-const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
+const useColumns = ({
+  deleteInProgress,
+  onDeleteActivity,
+  setEditActivity,
+  handleFileAttachmentClick,
+}) =>
   useMemo(() => {
     return [
       {
@@ -129,32 +135,46 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         filterable: false,
         sortable: false,
         defaultVisible: true,
-        width: 100,
-        renderCell: ({ row }) => {
+        width: 110,
+        type: "actions",
+        renderCell: ({ id, row }) => {
+          // do we want to use data grid actions
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div style={{ width: "100px" }}>
+            <>
               <IconButton
                 aria-label="edit"
-                sx={{ color: "inherit" }}
+                sx={{ color: "inherit", padding: "5px" }}
                 onClick={() => setEditActivity(row)}
               >
                 <EditOutlinedIcon />
               </IconButton>
               <IconButton
+                aria-label="attachment"
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={handleFileAttachmentClick(id)}
+              >
+                <AttachFileOutlinedIcon />
+              </IconButton>
+              <IconButton
                 aria-label="delete"
-                sx={{ color: "inherit" }}
-                onClick={() => onDeleteActivity({ id: row.id })}
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={() => onDeleteActivity(id)}
               >
                 <DeleteOutlineIcon />
               </IconButton>
-            </div>
+            </>
           );
         },
       },
     ];
-  }, [deleteInProgress, onDeleteActivity, setEditActivity]);
+  }, [
+    deleteInProgress,
+    onDeleteActivity,
+    setEditActivity,
+    handleFileAttachmentClick,
+  ]);
 
 const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
   const [editActivity, setEditActivity] = useState(null);
@@ -178,7 +198,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
 
   const onClickAddActivity = () => setEditActivity({ project_id: projectId });
 
-  const onDeleteActivity = useCallback(({ id }) => {
+  const onDeleteActivity = useCallback((id) => {
     setActivityToDelete(id);
     setIsDeleteConfirmationOpen(true);
   }, []);
@@ -210,10 +230,20 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     });
   };
 
+  const handleFileAttachmentClick = useCallback(
+    (id) => () => {
+      console.log(id);
+      // setFileAttachmentId(id);
+      // setIsFileAttachmentDialogOpen(true);
+    },
+    []
+  );
+
   const columns = useColumns({
     deleteInProgress,
     onDeleteActivity,
     setEditActivity,
+    handleFileAttachmentClick,
   });
 
   // Open activity edit modal when double clicking in a cell
