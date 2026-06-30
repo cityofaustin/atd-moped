@@ -826,6 +826,15 @@ export const ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY = gql`
   }
 `;
 
+export const FILE_TYPES_LOOKUP = gql`
+  query FileTypesLookup {
+    moped_file_types {
+      id
+      name
+    }
+  }
+`;
+
 export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
     update_moped_project(

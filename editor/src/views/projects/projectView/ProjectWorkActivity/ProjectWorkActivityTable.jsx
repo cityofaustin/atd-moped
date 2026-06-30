@@ -17,6 +17,7 @@ import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import ProjectWorkActivityFilesAttachmentDialog from "./ProjectWorkActivityFilesAttachmentDialog";
 import FormattedDateString from "src/utils/FormattedDateString";
 
 /** Hook that provides memoized column settings */
@@ -184,6 +185,11 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     useState(false);
   const [activityToDelete, setActivityToDelete] = useState(null);
 
+  /* File attachment state and handlers */
+  const [fileAttachmentId, setFileAttachmentId] = useState(null);
+  const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
+    useState(false);
+
   const { loading, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
       projectId: projectId,
@@ -232,9 +238,8 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
 
   const handleFileAttachmentClick = useCallback(
     (id) => () => {
-      console.log(id);
-      // setFileAttachmentId(id);
-      // setIsFileAttachmentDialogOpen(true);
+      setFileAttachmentId(id);
+      setIsFileAttachmentDialogOpen(true);
     },
     []
   );
@@ -320,6 +325,21 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         mutationPending={deleteInProgress}
       />
+      {isFileAttachmentDialogOpen && (
+        <ProjectWorkActivityFilesAttachmentDialog
+          projectId={projectId}
+          fileAttachmentId={fileAttachmentId}
+          isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
+          handleSnackbar={handleSnackbar}
+          onClose={() => {
+            setIsFileAttachmentDialogOpen(false);
+            setFileAttachmentId(null);
+          }}
+          dataLookups={[]}
+          refetch={refetch}
+          rows={activities}
+        />
+      )}
     </>
   );
 };
