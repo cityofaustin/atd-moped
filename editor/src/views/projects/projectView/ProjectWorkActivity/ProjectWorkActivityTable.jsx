@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -16,10 +17,16 @@ import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
 import FormattedDateString from "src/utils/FormattedDateString";
 
 /** Hook that provides memoized column settings */
-const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
+const useColumns = ({
+  deleteInProgress,
+  onDeleteActivity,
+  setEditActivity,
+  handleFileAttachmentClick,
+}) =>
   useMemo(() => {
     return [
       {
@@ -129,32 +136,46 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         filterable: false,
         sortable: false,
         defaultVisible: true,
-        width: 100,
-        renderCell: ({ row }) => {
+        width: 110,
+        type: "actions",
+        renderCell: ({ id, row }) => {
+          // do we want to use data grid actions
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div style={{ width: "100px" }}>
+            <>
               <IconButton
                 aria-label="edit"
-                sx={{ color: "inherit" }}
+                sx={{ color: "inherit", padding: "5px" }}
                 onClick={() => setEditActivity(row)}
               >
                 <EditOutlinedIcon />
               </IconButton>
               <IconButton
+                aria-label="attachment"
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={handleFileAttachmentClick(id)}
+              >
+                <AttachFileOutlinedIcon />
+              </IconButton>
+              <IconButton
                 aria-label="delete"
-                sx={{ color: "inherit" }}
-                onClick={() => onDeleteActivity({ id: row.id })}
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={() => onDeleteActivity(id)}
               >
                 <DeleteOutlineIcon />
               </IconButton>
-            </div>
+            </>
           );
         },
       },
     ];
-  }, [deleteInProgress, onDeleteActivity, setEditActivity]);
+  }, [
+    deleteInProgress,
+    onDeleteActivity,
+    setEditActivity,
+    handleFileAttachmentClick,
+  ]);
 
 const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
   const [editActivity, setEditActivity] = useState(null);
@@ -163,6 +184,11 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [activityToDelete, setActivityToDelete] = useState(null);
+
+  /* File attachment state and handlers */
+  const [fileAttachmentId, setFileAttachmentId] = useState(null);
+  const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
+    useState(false);
 
   const { loading, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
@@ -178,7 +204,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
 
   const onClickAddActivity = () => setEditActivity({ project_id: projectId });
 
-  const onDeleteActivity = useCallback(({ id }) => {
+  const onDeleteActivity = useCallback((id) => {
     setActivityToDelete(id);
     setIsDeleteConfirmationOpen(true);
   }, []);
@@ -210,10 +236,19 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     });
   };
 
+  const handleFileAttachmentClick = useCallback(
+    (id) => () => {
+      setFileAttachmentId(id);
+      setIsFileAttachmentDialogOpen(true);
+    },
+    []
+  );
+
   const columns = useColumns({
     deleteInProgress,
     onDeleteActivity,
     setEditActivity,
+    handleFileAttachmentClick,
   });
 
   // Open activity edit modal when double clicking in a cell
@@ -290,6 +325,24 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         mutationPending={deleteInProgress}
       />
+      {isFileAttachmentDialogOpen && (
+        <ProjectFilesAttachmentDialog
+          projectId={projectId}
+          fileAttachmentId={fileAttachmentId}
+          isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
+          handleSnackbar={handleSnackbar}
+          onClose={() => {
+            setIsFileAttachmentDialogOpen(false);
+            setFileAttachmentId(null);
+          }}
+          dataLookups={[]} // we need this
+          refetch={refetch}
+          rows={activities}
+          addFileMutation={}
+          existingFileMutation={}
+          filesType={}
+        />
+      )}
     </>
   );
 };

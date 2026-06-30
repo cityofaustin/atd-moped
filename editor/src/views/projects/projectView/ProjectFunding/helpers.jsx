@@ -190,6 +190,27 @@ export const isCellEditable = (params) => {
   }
 };
 
+export const createFileConnectionData = (fundingRecord, projectId) => {
+  const entityId = fundingRecord?.proj_funding_id;
+  const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
+  return isSyncedFromECapris
+      ? {
+          files_ecapris_fundings: {
+            data: {
+              project_id: projectId,
+              entity_id: entityId,
+            },
+          },
+        }
+      : {
+          files_project_fundings: {
+            data: {
+              entity_id: entityId,
+            },
+          },
+        };
+}
+
 /** Hook that provides memoized column settings */
 export const useColumns = ({
   dataProjectFunding,
