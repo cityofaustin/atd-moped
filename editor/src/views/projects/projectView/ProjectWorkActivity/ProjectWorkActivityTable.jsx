@@ -17,7 +17,7 @@ import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import ProjectWorkActivityFilesAttachmentDialog from "./ProjectWorkActivityFilesAttachmentDialog";
+import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
 import FormattedDateString from "src/utils/FormattedDateString";
 
 /** Hook that provides memoized column settings */
@@ -326,7 +326,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         mutationPending={deleteInProgress}
       />
       {isFileAttachmentDialogOpen && (
-        <ProjectWorkActivityFilesAttachmentDialog
+        <ProjectFilesAttachmentDialog
           projectId={projectId}
           fileAttachmentId={fileAttachmentId}
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
@@ -335,9 +335,12 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
             setIsFileAttachmentDialogOpen(false);
             setFileAttachmentId(null);
           }}
-          dataLookups={[]}
+          dataLookups={[]} // we need this
           refetch={refetch}
           rows={activities}
+          addFileMutation={}
+          existingFileMutation={}
+          filesType={}
         />
       )}
     </>
