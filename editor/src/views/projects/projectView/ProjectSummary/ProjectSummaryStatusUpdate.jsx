@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 
 import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 import { formatRelativeDate } from "src/utils/dateAndTime";
@@ -34,7 +34,7 @@ const ProjectSummaryStatusUpdate = ({
   const eCaprisSubprojectId = data.moped_project[0]?.ecapris_subproject_id;
 
   return (
-    <Grid2 sx={fieldGridItem} size={12}>
+    <Grid sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Status update</Typography>
       <Box
         sx={[
@@ -61,7 +61,7 @@ const ProjectSummaryStatusUpdate = ({
           statusUpdateDateCreated={dateCreated}
         />
       </Box>
-    </Grid2>
+    </Grid>
   );
 };
 export default ProjectSummaryStatusUpdate;

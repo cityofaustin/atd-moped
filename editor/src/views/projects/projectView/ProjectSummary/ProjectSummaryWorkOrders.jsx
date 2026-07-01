@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
@@ -24,7 +24,7 @@ const ProjectSummaryWorkOrders = ({ project }) => {
     : "";
 
   return knackProjectURL ? (
-    <Grid2 size={{ xs: 12 }} sx={fieldGridItem}>
+    <Grid size={{ xs: 12 }} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>Work orders</Typography>
       <Box
         sx={[
@@ -43,10 +43,10 @@ const ProjectSummaryWorkOrders = ({ project }) => {
           }
         />
       </Box>
-    </Grid2>
+    </Grid>
   ) : (
     // If there is no knack project url, render an empty grid space
-    (<Grid2 size={{ xs: 12 }} sx={fieldGridItem} />)
+    (<Grid size={{ xs: 12 }} sx={fieldGridItem} />)
   );
 };
 export default ProjectSummaryWorkOrders;

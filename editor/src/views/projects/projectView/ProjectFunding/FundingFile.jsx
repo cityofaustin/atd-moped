@@ -97,7 +97,13 @@ const FundingFile = ({
         keepMounted
         open={menuOpen}
         onClose={handleMenuClose}
-        TransitionComponent={Fade}
+        slotProps={{
+          transition: {
+            fade: {
+              in: true,
+            },
+          },
+        }}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "center",

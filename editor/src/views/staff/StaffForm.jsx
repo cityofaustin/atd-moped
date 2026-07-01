@@ -16,7 +16,7 @@ import {
   FormControlLabel,
   FormLabel,
   FormHelperText,
-  Grid2,
+  Grid,
   InputLabel,
   TextField,
   MenuItem,
@@ -120,8 +120,8 @@ const StaffForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid2 container spacing={2}>
-        <Grid2
+      <Grid container spacing={2}>
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -144,8 +144,8 @@ const StaffForm = ({
               formatApiErrors(userApiErrors?.first_name)
             }
           />
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -167,8 +167,8 @@ const StaffForm = ({
               formatApiErrors(userApiErrors?.last_name)
             }
           />
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -189,8 +189,8 @@ const StaffForm = ({
               errors.title?.message || formatApiErrors(userApiErrors?.title)
             }
           />
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -211,9 +211,9 @@ const StaffForm = ({
               errors.email?.message || formatApiErrors(userApiErrors?.email)
             }
           />
-        </Grid2>
+        </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
-        <Grid2
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -252,9 +252,9 @@ const StaffForm = ({
               helperText={"Password not required for non-login users"}
             />
           )}
-        </Grid2>
+        </Grid>
 
-        <Grid2
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -310,9 +310,9 @@ const StaffForm = ({
               )}
             </FormControl>
           )}
-        </Grid2>
+        </Grid>
 
-        <Grid2
+        <Grid
           size={{
             xs: 12,
             md: 3,
@@ -343,8 +343,8 @@ const StaffForm = ({
               )}
             />
           </FormControl>
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{
             xs: 12,
             md: 3,
@@ -383,8 +383,8 @@ const StaffForm = ({
               )}
             />
           </FormControl>
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -402,16 +402,16 @@ const StaffForm = ({
             variant="outlined"
             {...register("note")}
           />
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{
             xs: 12,
             md: 6,
           }}
         >
           &nbsp;
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{
             xs: 12,
             md: 6,
@@ -443,8 +443,8 @@ const StaffForm = ({
             isOpen={!!userApiErrors}
             onClose={clearApiErrors}
           />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </form>
   );
 };

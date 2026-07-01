@@ -6,7 +6,7 @@ import ExternalLink from "src/components/ExternalLink";
 import { createBugReportLink } from "src/utils/urls";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { Box, Grid2, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { useUser } from "src/auth/user";
 import { filterOptions } from "src/utils/autocompleteHelpers";
@@ -116,7 +116,7 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <Grid2 size={12} sx={fieldGridItem}>
+    <Grid size={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
       <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
         {editMode && (
@@ -206,7 +206,7 @@ const ProjectSummaryProjectECapris = ({
           </Stack>
         )}
       </Box>
-    </Grid2>
+    </Grid>
   );
 };
 

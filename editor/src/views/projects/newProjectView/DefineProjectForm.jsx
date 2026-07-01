@@ -1,7 +1,7 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, FormControlLabel, Grid2, Switch } from "@mui/material";
+import { Box, FormControlLabel, Grid, Switch } from "@mui/material";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { agolValidation } from "src/constants/projects";
 import KnackComponentAutocomplete from "src/views/projects/projectView/ProjectComponents/KnackComponentAutocomplete";
@@ -66,10 +66,10 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
       onSubmit={handleSubmit(handleSave)}
       sx={{ paddingX: 9, paddingY: 9 }}
     >
-      <Grid2 container spacing={6}>
-        <Grid2 size={12}>
-          <Grid2 container spacing={3}>
-            <Grid2
+      <Grid container spacing={6}>
+        <Grid size={12}>
+          <Grid container spacing={3}>
+            <Grid
               size={{
                 sm: 6,
                 xs: 12,
@@ -115,8 +115,8 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   )}
                 />
               )}
-            </Grid2>
-            <Grid2
+            </Grid>
+            <Grid
               sx={{
                 alignContent: "flex-end",
               }}
@@ -144,12 +144,12 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   />
                 )}
               />
-            </Grid2>
-          </Grid2>
-        </Grid2>
-        <Grid2 size={12}>
-          <Grid2 container spacing={3}>
-            <Grid2
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid size={12}>
+          <Grid container spacing={3}>
+            <Grid
               size={{
                 sm: 6,
                 xs: 12,
@@ -168,12 +168,12 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   disabled: loading,
                 }}
               />
-            </Grid2>
-          </Grid2>
-        </Grid2>
-        <Grid2 size={12}>
-          <Grid2 container spacing={3}>
-            <Grid2
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid size={12}>
+          <Grid container spacing={3}>
+            <Grid
               size={{
                 sm: 6,
                 xs: 12,
@@ -193,10 +193,10 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   disabled: loading,
                 }}
               />
-            </Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
       <Box
         sx={{
           display: "flex",
