@@ -191,7 +191,7 @@ export const isCellEditable = (params) => {
 };
 
 //
-export const createFileConnectionData = (fundingRecord, projectId) => {
+export const createFundingFileConnectionData = (fundingRecord, projectId) => {
   const entityId = fundingRecord?.proj_funding_id;
   const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
   const addFileConnection = isSyncedFromECapris

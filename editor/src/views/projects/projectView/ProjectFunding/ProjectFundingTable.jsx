@@ -49,7 +49,7 @@ import {
   transformGridToDatabase,
   isCellEditable,
   useColumns,
-  createFileConnectionData,
+  createFundingFileConnectionData,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 
@@ -611,7 +611,7 @@ const ProjectFundingTable = ({
           dataLookups={dataLookups}
           rows={rows}
           fileAttachmentParentRecord={fileAttachmentParentRecord}
-          fileConnectionData={createFileConnectionData(fileAttachmentParentRecord, projectId)}
+          fileConnectionData={createFundingFileConnectionData(fileAttachmentParentRecord, projectId)}
           addFileMutation={
             fileAttachmentParentRecord?.isSyncedFromECapris
               ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
