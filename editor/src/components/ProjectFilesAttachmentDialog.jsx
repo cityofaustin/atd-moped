@@ -92,7 +92,7 @@ const ProjectFilesAttachmentDialog = ({
           file_key: fileDataBundle?.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
           file_url: fileDataBundle?.url,
-          ...fileConnectionData,
+          ...fileConnectionData.addFileConnection,
         },
       },
     })
@@ -140,9 +140,11 @@ const ProjectFilesAttachmentDialog = ({
       variables: {
         object: {
           file_id: existingFileIdToAttach,
-          entity_id: fundingRecord?.proj_funding_id,
+          entity_id: fileConnectionData.entityId,
           is_deleted: false,
-          ...(isSyncedFromECapris && { project_id: projectId }),
+          ...(fileConnectionData.projectId && {
+            project_id: fileConnectionData.projectId,
+          }),
         },
       },
     })

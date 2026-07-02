@@ -338,9 +338,9 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           dataLookups={[]} // we need this
           refetch={refetch}
           rows={activities}
-          addFileMutation={}
-          existingFileMutation={}
-          filesType={}
+          // addFileMutation={}
+          // existingFileMutation={}
+          // filesType={}
         />
       )}
     </>
