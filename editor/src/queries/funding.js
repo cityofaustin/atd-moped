@@ -284,6 +284,15 @@ export const WORK_ACTIVITY_QUERY = gql`
           workgroup_name
         }
       }
+      work_activity_files(where: { is_deleted: { _eq: false } }) {
+        id
+        moped_project_file {
+          project_file_id
+          file_url
+          file_key
+          file_name
+        }
+      }
     }
   }
 `;

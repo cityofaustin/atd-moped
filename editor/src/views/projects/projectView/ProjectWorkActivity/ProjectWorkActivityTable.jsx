@@ -14,6 +14,9 @@ import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
 import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
+import {
+CREATE_FILE_WORK_ACTIVITY_ATTACHMENT, ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY
+} from "src/queries/project";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
@@ -338,9 +341,9 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           dataLookups={[]} // we need this
           refetch={refetch}
           rows={activities}
-          // addFileMutation={}
-          // existingFileMutation={}
-          // filesType={}
+          addFileMutation={CREATE_FILE_WORK_ACTIVITY_ATTACHMENT}
+          existingFileMutation={ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY}
+          filesType={"work_activity_files"}
         />
       )}
     </>
