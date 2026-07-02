@@ -49,6 +49,10 @@ function a11yProps(index) {
  * @param {function} refetch - Refetch project funding data after attaching/detaching files
  * @param {Array} dataLookups - Lookup data for file types
  * @param {Array} rows - Array of project funding records, used to determine which files are currently attached to the given funding record (fileAttachmentId)
+ * @param {function} addFileMutation - the graphql mutation used to add a new file
+ * @param {function} existingFileMutation - the graphql mutation used to associate an existing file with the funding record
+ * @param {string} filesType - file type relationship name, one of moped_funding_files, ecapris_funding_files or *****
+ * @param {object} fileConnectionData - additional file specific information needed in mutation
  * @returns {JSX.Element}
  */
 const ProjectFilesAttachmentDialog = ({
