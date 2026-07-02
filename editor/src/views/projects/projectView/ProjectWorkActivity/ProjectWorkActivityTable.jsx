@@ -15,13 +15,15 @@ import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
 import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import {
-CREATE_FILE_WORK_ACTIVITY_ATTACHMENT, ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY
+  CREATE_FILE_WORK_ACTIVITY_ATTACHMENT,
+  ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY,
 } from "src/queries/project";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
 import FormattedDateString from "src/utils/FormattedDateString";
+import { createWorkActivityFileConnectionData } from "src/views/projects/projectView/ProjectWorkActivity/helpers";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
@@ -247,6 +249,13 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     []
   );
 
+  // add a comment what this does
+  const fileAttachmentParentRecord = useMemo(
+    () =>
+      activities ? activities.find((row) => row.id === fileAttachmentId) : {},
+    [activities, fileAttachmentId]
+  );
+
   const columns = useColumns({
     deleteInProgress,
     onDeleteActivity,
@@ -341,6 +350,10 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           dataLookups={[]} // we need this
           refetch={refetch}
           rows={activities}
+          fileConnectionData={createWorkActivityFileConnectionData(
+            fileAttachmentParentRecord,
+            projectId
+          )}
           addFileMutation={CREATE_FILE_WORK_ACTIVITY_ATTACHMENT}
           existingFileMutation={ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY}
           filesType={"work_activity_files"}

@@ -151,6 +151,7 @@ const ProjectFundingTable = ({
     []
   );
 
+  // add a comment what this does
   const fileAttachmentParentRecord = useMemo(
     () => rows.find((row) => row.id === fileAttachmentId),
     [rows, fileAttachmentId]
@@ -610,7 +611,6 @@ const ProjectFundingTable = ({
           refetch={refetch}
           dataLookups={dataLookups}
           rows={rows}
-          fileAttachmentParentRecord={fileAttachmentParentRecord}
           fileConnectionData={createFundingFileConnectionData(fileAttachmentParentRecord, projectId)}
           addFileMutation={
             fileAttachmentParentRecord?.isSyncedFromECapris
