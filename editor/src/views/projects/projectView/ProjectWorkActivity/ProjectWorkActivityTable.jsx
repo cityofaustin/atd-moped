@@ -17,6 +17,7 @@ import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import {
   CREATE_FILE_WORK_ACTIVITY_ATTACHMENT,
   ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY,
+  FILE_TYPES_LOOKUP,
 } from "src/queries/project";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
@@ -135,6 +136,19 @@ const useColumns = ({
         ),
       },
       {
+        headerName: "Files",
+        field: "file_url",
+        minWidth: 150,
+        flex: 1,
+        editable: false,
+        sortable: false,
+        renderCell: ({ row }) => {
+          if (row?.work_activity_files[0]) {
+            return row?.work_activity_files[0].moped_project_file.file_url;
+          }
+        },
+      },
+      {
         headerName: "",
         field: "Edit",
         hideable: false,
@@ -201,6 +215,8 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     },
     fetchPolicy: "no-cache",
   });
+
+  const { data: fileTypes } = useQuery(FILE_TYPES_LOOKUP);
 
   const [deleteContract, { loading: deleteInProgress }] =
     useMutation(DELETE_WORK_ACTIVITY);
@@ -347,7 +363,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
             setIsFileAttachmentDialogOpen(false);
             setFileAttachmentId(null);
           }}
-          dataLookups={[]} // we need this
+          dataLookups={fileTypes}
           refetch={refetch}
           rows={activities}
           fileConnectionData={createWorkActivityFileConnectionData(
