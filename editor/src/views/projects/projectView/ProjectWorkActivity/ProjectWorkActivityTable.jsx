@@ -388,7 +388,6 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
       {isFileAttachmentDialogOpen && (
         <ProjectFilesAttachmentDialog
           projectId={projectId}
-          fileAttachmentId={fileAttachmentId}
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
           handleSnackbar={handleSnackbar}
           onClose={() => {
@@ -397,7 +396,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           }}
           dataLookups={fileTypes}
           refetch={refetch}
-          rows={activities}
+          fileAttachmentParentRecord={fileAttachmentParentRecord}
           fileConnectionData={createWorkActivityFileConnectionData(
             fileAttachmentParentRecord,
             projectId

@@ -603,7 +603,6 @@ const ProjectFundingTable = ({
       {isFileAttachmentDialogOpen && (
         <ProjectFilesAttachmentDialog
           projectId={projectId}
-          fileAttachmentId={fileAttachmentId}
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
           handleSnackbar={handleSnackbar}
           onClose={() => {
@@ -612,7 +611,7 @@ const ProjectFundingTable = ({
           }}
           refetch={refetch}
           dataLookups={dataLookups}
-          rows={rows}
+          fileAttachmentParentRecord={fileAttachmentParentRecord}
           fileConnectionData={createFundingFileConnectionData(
             fileAttachmentParentRecord,
             projectId

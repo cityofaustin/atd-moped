@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Box, Tabs, Tab } from "@mui/material";
 
 import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
 import FormDialog from "src/components/FormDialog";
 import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
-import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable"; //*
+import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
 
 function AttachmentTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -40,34 +40,32 @@ function a11yProps(index) {
 }
 
 /**
- * Dialog for attaching files to project funding record and detaching existing attachments
- * @param {number} projectId - ID of the project to which the funding record (and thus file attachment) belongs
- * @param {number} fileAttachmentId - ID of the funding record to which files are being attached/detached
+ * Dialog for attaching files to records in data grid table, used in funding and work activities
+ * @param {number} projectId - ID of the project to which the record (and thus file attachment) belongs
+ * @param {number} fileAttachmentId - ID of the record to which files are being attached/detached
  * @param {function} handleSnackbar - Snackbar handler function for user feedback on success/failure of attaching/detaching files
  * @param {boolean} isFileAttachmentDialogOpen - Boolean state for whether the dialog is open
  * @param {function} onClose - Fires when closing this dialog
- * @param {function} refetch - Refetch project funding data after attaching/detaching files
+ * @param {function} refetch - Refetch project data after attaching/detaching files
  * @param {Array} dataLookups - Lookup data for file types
- * @param {Array} rows - Array of project funding records, used to determine which files are currently attached to the given funding record (fileAttachmentId)
  * @param {function} addFileMutation - the graphql mutation used to add a new file
- * @param {function} existingFileMutation - the graphql mutation used to associate an existing file with the funding record
+ * @param {function} existingFileMutation - the graphql mutation used to associate an existing file with the record
  * @param {string} filesType - file type relationship name, one of moped_funding_files, ecapris_funding_files or work_activity_files
  * @param {object} fileConnectionData - additional file specific information needed in mutation
  * @returns {JSX.Element}
  */
 const ProjectFilesAttachmentDialog = ({
   projectId,
-  fileAttachmentId,
   handleSnackbar,
   isFileAttachmentDialogOpen,
   onClose,
   refetch,
   dataLookups,
-  rows,
   addFileMutation,
   existingFileMutation,
   filesType,
   fileConnectionData,
+  fileAttachmentParentRecord
 }) => {
   const [addFileAttachment, { loading: addFileLoading }] =
     useMutation(addFileMutation);
@@ -76,13 +74,9 @@ const ProjectFilesAttachmentDialog = ({
 
   const isLoading = addFileLoading || attachFileLoading;
 
-  const filesAttachedToId = useMemo(() => {
-    const filesAttachedToId = rows.find((row) => row.id === fileAttachmentId)?.[
-      filesType
-    ];
+  /* Array of files on parent record  */
+  const filesAttachedToId = fileAttachmentParentRecord[filesType]
 
-    return filesAttachedToId ? filesAttachedToId : [];
-  }, [fileAttachmentId, rows, filesType]);
 
   /* File upload form state and handlers */
   const handleClickSaveFile = (fileDataBundle) => {
