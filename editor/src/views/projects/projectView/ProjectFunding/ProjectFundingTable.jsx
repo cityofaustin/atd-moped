@@ -152,7 +152,7 @@ const ProjectFundingTable = ({
   );
 
   /**
-   * Finds funding record in table that corresponds to the row id of row interacting with the file attachement dialog
+   * Finds funding record in table that corresponds to the row id of row interacting with the file attachment dialog
    */
   const fileAttachmentParentRecord = useMemo(
     () => rows.find((row) => row.id === fileAttachmentId),

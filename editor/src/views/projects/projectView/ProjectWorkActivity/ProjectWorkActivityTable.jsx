@@ -16,15 +16,16 @@ import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
 import {
   CREATE_FILE_WORK_ACTIVITY_ATTACHMENT,
   ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY,
+  DETACH_FILE_WORK_ACTIVITY_ATTACHMENT,
   FILE_TYPES_LOOKUP,
 } from "src/queries/project";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
+import AttachedFile from "src/components/AttachedFile";
 import FormattedDateString from "src/utils/FormattedDateString";
 import { createWorkActivityFileConnectionData } from "src/views/projects/projectView/ProjectWorkActivity/helpers";
-import FundingFile from "../ProjectFunding/FundingFile";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
@@ -128,7 +129,6 @@ const useColumns = ({
           if (!row?.work_activity_files) {
             return;
           }
-          console.log(row.work_activity_files);
           return (
             <Stack
               direction="column"
@@ -139,12 +139,14 @@ const useColumns = ({
                 const file = file_record.moped_project_file;
                 if (!file) return null;
                 return (
-                  <FundingFile
+                  <AttachedFile
                     key={file.project_file_id}
                     fileRecordId={file_record.id}
                     file={file}
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
+                    detachFileMutation={DETACH_FILE_WORK_ACTIVITY_ATTACHMENT}
+                    confirmationFileType="work activity"
                   />
                 );
               })}
@@ -292,7 +294,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
   );
 
   /**
-   * Finds work activity record in table that corresponds to the row id of row interacting with the file attachement dialog
+   * Finds work activity record in table that corresponds to the row id of row interacting with the file attachment dialog
    */
   const fileAttachmentParentRecord = useMemo(
     () =>

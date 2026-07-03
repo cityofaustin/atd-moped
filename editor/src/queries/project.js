@@ -826,6 +826,17 @@ export const ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY = gql`
   }
 `;
 
+export const DETACH_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
+  mutation DetachFileWorkActivity($id: Int!) {
+    update_files_project_work_activities_by_pk(
+      pk_columns: { id: $id }
+      _set: { is_deleted: true }
+    ) {
+      id
+    }
+  }
+`;
+
 export const FILE_TYPES_LOOKUP = gql`
   query FileTypesLookup {
     moped_file_types {
