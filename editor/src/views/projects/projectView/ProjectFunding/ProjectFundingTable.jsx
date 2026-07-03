@@ -151,7 +151,9 @@ const ProjectFundingTable = ({
     []
   );
 
-  // add a comment what this does
+  /**
+   * Finds funding record in table that corresponds to the row id of row interacting with the file attachement dialog
+   */
   const fileAttachmentParentRecord = useMemo(
     () => rows.find((row) => row.id === fileAttachmentId),
     [rows, fileAttachmentId]
@@ -611,7 +613,10 @@ const ProjectFundingTable = ({
           refetch={refetch}
           dataLookups={dataLookups}
           rows={rows}
-          fileConnectionData={createFundingFileConnectionData(fileAttachmentParentRecord, projectId)}
+          fileConnectionData={createFundingFileConnectionData(
+            fileAttachmentParentRecord,
+            projectId
+          )}
           addFileMutation={
             fileAttachmentParentRecord?.isSyncedFromECapris
               ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT

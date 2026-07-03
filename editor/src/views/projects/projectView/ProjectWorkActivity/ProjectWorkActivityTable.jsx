@@ -2,13 +2,12 @@ import { useMemo, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import CircularProgress from "@mui/material/CircularProgress";
-import Button from "@mui/material/Button";
+import { Button, Divider, Stack, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import IconButton from "@mui/material/IconButton";
 import ExternalLink from "src/components/ExternalLink";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
@@ -25,6 +24,7 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
 import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
 import FormattedDateString from "src/utils/FormattedDateString";
 import { createWorkActivityFileConnectionData } from "src/views/projects/projectView/ProjectWorkActivity/helpers";
+import FundingFile from "../ProjectFunding/FundingFile";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
@@ -32,6 +32,8 @@ const useColumns = ({
   onDeleteActivity,
   setEditActivity,
   handleFileAttachmentClick,
+  refetch,
+  handleSnackbar,
 }) =>
   useMemo(() => {
     return [
@@ -116,6 +118,41 @@ const useColumns = ({
         defaultVisible: true,
       },
       {
+        headerName: "Files",
+        field: "file_url",
+        minWidth: 175,
+        flex: 1,
+        editable: false,
+        sortable: false,
+        renderCell: ({ row }) => {
+          if (!row?.work_activity_files) {
+            return;
+          }
+          console.log(row.work_activity_files);
+          return (
+            <Stack
+              direction="column"
+              spacing={0.5}
+              divider={<Divider sx={{ my: 0.5 }} />}
+            >
+              {row?.work_activity_files.map((file_record) => {
+                const file = file_record.moped_project_file;
+                if (!file) return null;
+                return (
+                  <FundingFile
+                    key={file.project_file_id}
+                    fileRecordId={file_record.id}
+                    file={file}
+                    refetch={refetch}
+                    handleSnackbar={handleSnackbar}
+                  />
+                );
+              })}
+            </Stack>
+          );
+        },
+      },
+      {
         headerName: "Updated by",
         field: "updated_by_user",
         width: 150,
@@ -134,19 +171,6 @@ const useColumns = ({
             secondary="absolute"
           />
         ),
-      },
-      {
-        headerName: "Files",
-        field: "file_url",
-        minWidth: 150,
-        flex: 1,
-        editable: false,
-        sortable: false,
-        renderCell: ({ row }) => {
-          if (row?.work_activity_files[0]) {
-            return row?.work_activity_files[0].moped_project_file.file_url;
-          }
-        },
       },
       {
         headerName: "",
@@ -194,6 +218,8 @@ const useColumns = ({
     onDeleteActivity,
     setEditActivity,
     handleFileAttachmentClick,
+    refetch,
+    handleSnackbar,
   ]);
 
 const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
@@ -265,7 +291,9 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     []
   );
 
-  // add a comment what this does
+  /**
+   * Finds work activity record in table that corresponds to the row id of row interacting with the file attachement dialog
+   */
   const fileAttachmentParentRecord = useMemo(
     () =>
       activities ? activities.find((row) => row.id === fileAttachmentId) : {},
@@ -277,6 +305,8 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     onDeleteActivity,
     setEditActivity,
     handleFileAttachmentClick,
+    refetch,
+    handleSnackbar,
   });
 
   // Open activity edit modal when double clicking in a cell
