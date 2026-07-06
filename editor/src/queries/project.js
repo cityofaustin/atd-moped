@@ -966,38 +966,6 @@ export const PROJECT_CLEAR_INTERIM_ID = gql`
   }
 `;
 
-export const PROJECT_CLEAR_NO_CURRENT_PHASE = gql`
-  mutation ClearProjectPhases($projectId: Int!) {
-    update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_id: { _eq: $projectId } }
-    ) {
-      affected_rows
-    }
-    update_moped_project(
-      _set: { current_phase: null }
-      where: { project_id: { _eq: $projectId } }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const UPDATE_PROJECT_TASK_ORDER = gql`
-  mutation TaskOrderMutation($projectId: Int!, $taskOrder: jsonb) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { task_order: $taskOrder }
-    ) {
-      affected_rows
-      returning {
-        task_order
-        project_id
-      }
-    }
-  }
-`;
-
 export const PROJECT_UPDATE_ECAPRIS_SYNC = gql`
   mutation UpdateProjectECaprisSync($projectId: Int!, $shouldSync: Boolean!) {
     update_moped_project(
