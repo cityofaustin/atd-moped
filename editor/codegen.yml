@@ -1,10 +1,11 @@
 schema:
-  - ${HASURA_GRAPHQL_ENDPOINT}:
+  - http://localhost:8082/v1/graphql:
       headers:
-        x-hasura-admin-secret: ${HASURA_ADMIN_SECRET}
+        x-hasura-admin-secret: hasurapassword
 
 documents:
   - 'src/queries/project.js'
+  - 'src/queries/components.js'
 
 generates:
   src/generated/graphql.ts:

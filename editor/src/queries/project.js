@@ -602,7 +602,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
 `;
 
 export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
-  query getMopedProjectChanges($activityId: uuid!) {
+  query getMopedProjectChangeDetails($activityId: uuid!) {
     moped_activity_log(where: { activity_id: { _eq: $activityId } }) {
       activity_id
       created_at
@@ -956,7 +956,7 @@ export const PROJECT_UPDATE_INTERIM_ID = gql`
 `;
 
 export const PROJECT_CLEAR_INTERIM_ID = gql`
-  mutation UpdateProjectInterimId($projectId: Int!) {
+  mutation ClearProjectInterimId($projectId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { interim_project_id: null }
