@@ -142,7 +142,7 @@ const ProjectView = () => {
    * The query to gather the project summary data
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
-    variables: { projectId, userId },
+    variables: { projectId: Number(projectId), userId },
     fetchPolicy: "network-only",
   });
 
@@ -277,7 +277,7 @@ const ProjectView = () => {
     })
       .then(() => {
         // Do not close the dialog, redirect will take care
-        window.location = "/moped/projects";
+        window.location.href = "/moped/projects";
       })
       .catch((err) => {
         // If there is an error, show it in the dialog

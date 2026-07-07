@@ -26,7 +26,7 @@
 
     /* Linting that we can tighten with more TypeScript coverage */
     "strict": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
