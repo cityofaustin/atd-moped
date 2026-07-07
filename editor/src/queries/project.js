@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 import { PROJECT_COMPONENT_FIELDS } from "./components";
 
 export const ADD_PROJECT = gql`
@@ -17,7 +18,7 @@ export const ADD_PROJECT = gql`
   }
 `;
 
-export const SUMMARY_QUERY = gql`
+export const SUMMARY_QUERY = graphql(`
   ${PROJECT_COMPONENT_FIELDS}
   query ProjectSummary($projectId: Int, $userId: Int) {
     moped_project(where: { project_id: { _eq: $projectId } }) {
@@ -147,7 +148,7 @@ export const SUMMARY_QUERY = gql`
       subproject_name
     }
   }
-`;
+`);
 
 export const TEAM_QUERY = gql`
   query TeamQuery($projectId: Int!) {
