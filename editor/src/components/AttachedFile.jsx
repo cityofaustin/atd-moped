@@ -18,7 +18,7 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
  *
  * @param {Object} file - File information object to pass into ProjectFileLink
  * @param {Function} refetch - Provides a manual callback to update the Apollo cache
- * @param {number} fileRecordId - files_project_funding id /  ecapris_subproject_funding id for record
+ * @param {number} fileRecordId - files_project_funding id /  ecapris_subproject_funding id  / files_project_work_activities id for record
  * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
  * @param {Function} detachFileMutation - function to detach file from parent record
  * @param {string} confirmationFileType - type of file, either funding or work activity. Used in delete confirmation message
