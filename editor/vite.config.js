@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
+import codegen from "vite-plugin-graphql-codegen";
 
 export default defineConfig(() => {
   return {
@@ -31,6 +32,9 @@ export default defineConfig(() => {
         },
         // Disable during build since we lint in our Netlify build command
         enableBuild: false,
+      }),
+      codegen({
+        runOnBuild: false,
       }),
     ],
     resolve: {

@@ -19,6 +19,7 @@ export default tseslint.config(
       "coverage",
       "node_modules",
       "**/*.test.{js,jsx,ts,tsx}",
+      "src/gql/**",
       "**/test/**",
     ],
   },
