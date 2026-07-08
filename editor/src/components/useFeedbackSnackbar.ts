@@ -1,17 +1,18 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
+import { AlertProps } from "@mui/material";
+
+interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: AlertProps["severity"] | "";
+}
 
 /**
  * Custom hook to manage snackbar state
- * @returns {Object} - snackbarState, handleSnackbar, handleSnackbarClose
+ * @returns An object containing snackbarState, handleSnackbar, and handleSnackbarClose
  */
 export const useFeedbackSnackbar = () => {
-  /**
-   * State for the snackbar
-   * @property {boolean} open - Whether the snackbar is open
-   * @property {String} message - The message to display in the snackbar
-   * @property {String} severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
-   */
-  const [snackbarState, setSnackbarState] = useState({
+  const [snackbarState, setSnackbarState] = useState<SnackbarState>({
     open: false,
     message: "",
     severity: "",
@@ -19,13 +20,14 @@ export const useFeedbackSnackbar = () => {
 
   /**
    * Wrapper around snackbar state setter
-   * @param {boolean} open - The new state of open
-   * @param {String} message - The message for the snackbar
-   * @param {String} severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
-   * @param {Object} error - The error to be displayed and logged
    */
   const handleSnackbar = useCallback(
-    (open, message, severity, error) => {
+    (
+      open: boolean,
+      message: string,
+      severity: AlertProps["severity"] | "",
+      error?: unknown
+    ) => {
       // if there is an error, render error message,
       // otherwise, render success message
       if (error) {
@@ -49,7 +51,10 @@ export const useFeedbackSnackbar = () => {
   /**
    * Callback to reset the snackbar state on snackbar close
    */
-  const handleSnackbarClose = (_, reason) => {
+  const handleSnackbarClose = (
+    _event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }

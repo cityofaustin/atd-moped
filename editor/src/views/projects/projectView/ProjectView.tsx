@@ -97,8 +97,6 @@ const useActiveTabIndex = (tabName: string) =>
 
 /**
  * The project summary view
- * @return {JSX.Element}
- * @constructor
  */
 const ProjectView = () => {
   const { projectId } = useParams();
