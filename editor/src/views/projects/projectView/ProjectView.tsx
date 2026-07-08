@@ -534,7 +534,7 @@ const ProjectView = () => {
                               : null
                           }
                         >
-                          {/* @ts-expect-error - IconButtonWithTooltip needs to be converted to .tsx in issue #29271 */}
+                          {/* @ts-expect-error - Adding types is captured in issue #29271 */}
                           <TabComponent
                             loading={loading}
                             data={data}

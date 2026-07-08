@@ -48,7 +48,7 @@ const ProjectFollowButton = ({
         await followProject({
           variables: {
             object: {
-              project_id: projectId,
+              project_id: Number(projectId),
               user_id: userId,
             },
           },
@@ -63,7 +63,7 @@ const ProjectFollowButton = ({
       try {
         await unfollowProject({
           variables: {
-            project_id: projectId,
+            project_id: Number(projectId),
             user_id: userId,
           },
         });

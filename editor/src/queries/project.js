@@ -500,16 +500,16 @@ export const ADD_PROJECT_MILESTONE = gql`
   }
 `;
 
-export const PROJECT_FOLLOW = gql`
+export const PROJECT_FOLLOW = graphql(`
   mutation FollowProject($object: moped_user_followed_projects_insert_input!) {
     insert_moped_user_followed_projects_one(object: $object) {
       project_id
       user_id
     }
   }
-`;
+`);
 
-export const PROJECT_UNFOLLOW = gql`
+export const PROJECT_UNFOLLOW = graphql(`
   mutation UnfollowProject($project_id: Int!, $user_id: Int!) {
     delete_moped_user_followed_projects(
       where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }
@@ -517,7 +517,7 @@ export const PROJECT_UNFOLLOW = gql`
       affected_rows
     }
   }
-`;
+`);
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
