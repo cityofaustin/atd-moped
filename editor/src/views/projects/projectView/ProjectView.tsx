@@ -62,7 +62,7 @@ import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
-function a11yProps(index) {
+function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
@@ -89,7 +89,7 @@ const TABS = [
  * @param {*} tabName - a `tab` name from the url search string
  * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
  */
-const useActiveTabIndex = (tabName) =>
+const useActiveTabIndex = (tabName: string) =>
   useMemo(() => {
     const activeTabIndex = TABS.findIndex((tab) => tab.param === tabName);
     return activeTabIndex > -1 ? activeTabIndex : 0;
@@ -125,14 +125,22 @@ const ProjectView = () => {
    */
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogState, setDialogState] = useState(null);
+  const [dialogState, setDialogState] = useState<{
+    title: string | React.JSX.Element;
+    body: string | React.JSX.Element;
+    actions: string | React.JSX.Element;
+  } | null>(null);
   const [anchorElement, setAnchorElement] = useState(null);
 
   const menuOpen = Boolean(anchorElement);
 
   const queryContext = useContext(ProjectListViewQueryContext);
 
-  const userSessionData = useSessionDatabaseData();
+  const userSessionData = useSessionDatabaseData() as
+    | {
+        user_id: number;
+      }
+    | undefined;
   const userId = userSessionData?.user_id;
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
@@ -154,7 +162,7 @@ const ProjectView = () => {
    * @param {int} newTab - The number of the tab
    */
   const handleChange = useCallback(
-    (event, newTab) => {
+    (_event: React.SyntheticEvent, newTab: number) => {
       // Preserve the queryString state when changing tabs
       setSearchParams(
         {
