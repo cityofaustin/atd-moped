@@ -62,6 +62,12 @@ import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
+interface DialogState {
+  title: React.ReactNode;
+  body: React.ReactNode;
+  actions: React.ReactNode;
+}
+
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
@@ -86,8 +92,6 @@ const TABS = [
 
 /**
  * Get the index of the currently active tab
- * @param {*} tabName - a `tab` name from the url search string
- * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
  */
 const useActiveTabIndex = (tabName: string) =>
   useMemo(() => {
@@ -102,7 +106,7 @@ const ProjectView = () => {
   const { projectId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const activeTab = useActiveTabIndex(searchParams.get("tab"));
+  const activeTab = useActiveTabIndex(searchParams.get("tab") ?? "");
 
   /* Create link back to previous filters using queryString state passed with React Router */
   const locationState = location?.state;
@@ -123,12 +127,8 @@ const ProjectView = () => {
    */
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogState, setDialogState] = useState<{
-    title: string | React.JSX.Element;
-    body: string | React.JSX.Element;
-    actions: string | React.JSX.Element;
-  } | null>(null);
-  const [anchorElement, setAnchorElement] = useState(null);
+  const [dialogState, setDialogState] = useState<DialogState | null>(null);
+  const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
 
   const menuOpen = Boolean(anchorElement);
 
@@ -193,7 +193,11 @@ const ProjectView = () => {
    * @param {string|JSX} body - The body of the dialog
    * @param {string|JSX} actions - The buttons area for the dialog at the bottom
    */
-  const setDialogContent = (title, body, actions) => {
+  const setDialogContent = (
+    title: React.ReactNode,
+    body: React.ReactNode,
+    actions: React.ReactNode
+  ) => {
     setDialogState({
       title: title,
       body: body,
@@ -220,7 +224,7 @@ const ProjectView = () => {
    * Handles mouse event to open the menu
    * @param {Object} event - The mouse click event
    */
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElement(event.currentTarget);
   };
 
@@ -301,7 +305,7 @@ const ProjectView = () => {
    */
   const currentPhase =
     data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
-  const isProjectDeleted = data?.moped_project[0]?.is_deleted;
+  const isProjectDeleted = data?.moped_project[0]?.is_deleted ?? false;
 
   /**
    * This function exists to enable closing the Map tab
@@ -530,6 +534,7 @@ const ProjectView = () => {
                               : null
                           }
                         >
+                          {/* @ts-expect-error - IconButtonWithTooltip needs to be converted to .tsx in issue #29271 */}
                           <TabComponent
                             loading={loading}
                             data={data}
@@ -615,6 +620,7 @@ const ProjectView = () => {
           )}
         </Page>
       )}
+      {/* @ts-expect-error - FeedbackSnackbar needs to be converted to .tsx in issue #29270 */}
       <FeedbackSnackbar
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}

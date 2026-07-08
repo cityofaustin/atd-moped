@@ -12,6 +12,12 @@ interface SnackbarState {
  * @returns An object containing snackbarState, handleSnackbar, and handleSnackbarClose
  */
 export const useFeedbackSnackbar = () => {
+  /**
+   * State for the snackbar
+   * @property open - Whether the snackbar is open
+   * @property message - The message to display in the snackbar
+   * @property severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
+   */
   const [snackbarState, setSnackbarState] = useState<SnackbarState>({
     open: false,
     message: "",
@@ -20,6 +26,10 @@ export const useFeedbackSnackbar = () => {
 
   /**
    * Wrapper around snackbar state setter
+   * @param open - The new state of open
+   * @param message - The message for the snackbar
+   * @param severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
+   * @param error - The error to be displayed and logged
    */
   const handleSnackbar = useCallback(
     (

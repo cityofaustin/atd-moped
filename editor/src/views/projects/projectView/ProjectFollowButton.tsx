@@ -1,25 +1,42 @@
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { useMutation } from "@apollo/client";
+import { ApolloQueryResult, useMutation } from "@apollo/client";
 import { useSessionDatabaseData } from "src/auth/user";
 import { PROJECT_FOLLOW, PROJECT_UNFOLLOW } from "src/queries/project";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
+import { ProjectSummaryQuery } from "src/gql/graphql";
+import { AlertProps } from "@mui/material";
+
+interface ProjectFollowButtonProps {
+  projectId: string | undefined;
+  isFollowing: boolean;
+  refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  handleSnackbar: (
+    open: boolean,
+    message: string,
+    severity: AlertProps["severity"] | "",
+    error?: unknown
+  ) => void;
+}
 
 /**
  * Icon button to follow/unfollow a project
- * @param {Number} projectId - The id of the current project to follow/unfollow
- * @param {Boolean} isFollowing - Whether the user is currently following the project
- * @param {Function} refetch - The refetch function from Apollo
- * @param {Function} handleSnackbar - The function to show the snackbar
- * @return {JSX.Element}
+ * @param projectId - The id of the current project to follow/unfollow
+ * @param isFollowing - Whether the user is currently following the project
+ * @param refetch - The refetch function from Apollo
+ * @param handleSnackbar - The function to show the snackbar
  */
 const ProjectFollowButton = ({
   projectId,
   isFollowing,
   refetch,
   handleSnackbar,
-}) => {
-  const userSessionData = useSessionDatabaseData();
+}: ProjectFollowButtonProps) => {
+  const userSessionData = useSessionDatabaseData() as
+    | {
+        user_id: number;
+      }
+    | undefined;
   const userId = userSessionData?.user_id;
 
   const [followProject] = useMutation(PROJECT_FOLLOW);
@@ -60,6 +77,7 @@ const ProjectFollowButton = ({
   };
 
   return (
+    // @ts-expect-error - IconButtonWithTooltip needs to be converted to .tsx in issue #29269
     <IconButtonWithTooltip
       title={isFollowing ? "Unfollow" : "Follow"}
       onClick={() => handleFollowProject()}
