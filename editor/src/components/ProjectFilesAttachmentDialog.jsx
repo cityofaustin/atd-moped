@@ -21,8 +21,7 @@ function AttachmentTabPanel(props) {
       // 0px measurement warning by the DataGridPro table inside.
       style={{
         position: value === index ? "static" : "absolute",
-        visibility: value === index ? "visible" : "hidden",
-        display: value === index ? "block" : "none",
+        left: value === index ? 0 : "-9999px",
         width: "100%",
       }}
       {...other}
@@ -65,7 +64,7 @@ const ProjectFilesAttachmentDialog = ({
   existingFileMutation,
   filesType,
   fileConnectionData,
-  fileAttachmentParentRecord
+  fileAttachmentParentRecord,
 }) => {
   const [addFileAttachment, { loading: addFileLoading }] =
     useMutation(addFileMutation);
@@ -75,8 +74,7 @@ const ProjectFilesAttachmentDialog = ({
   const isLoading = addFileLoading || attachFileLoading;
 
   /* Array of files on parent record  */
-  const filesAttachedToId = fileAttachmentParentRecord[filesType]
-
+  const filesAttachedToId = fileAttachmentParentRecord[filesType];
 
   /* File upload form state and handlers */
   const handleClickSaveFile = (fileDataBundle) => {
