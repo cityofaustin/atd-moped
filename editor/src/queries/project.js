@@ -706,6 +706,12 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
     ) {
       affected_rows
     }
+    update_files_project_work_activities(
+      where: { file_id: { _eq: $fileId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
   }
 `;
 
