@@ -25,7 +25,7 @@ import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutoco
 import { mopedUserAutocompleteProps } from "./utils";
 import {
   getIsEditMode,
-  useCanceledRowFix,
+  handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
 
 const useWorkgroupLookup = (data) =>
@@ -387,17 +387,19 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     [rowModesModel]
   );
 
-  const {
-    wasCanceled,
-    makeHandleCancelClick,
-    makeHandleRowEditStop,
-    makeHandleRowModesModelChange,
-  } = useCanceledRowFix({ getRowId: (row) => row.project_personnel_id });
-
-  const handleCancelClick = makeHandleCancelClick({
-    setRows,
-    setRowModesModel,
-  });
+  const handleCancelClick = useCallback(
+    (id) => () => {
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View, ignoreModifications: true },
+      });
+      const editedRow = rows.find((row) => row.project_personnel_id === id);
+      if (editedRow.isNew) {
+        setRows(rows.filter((row) => row.id !== id));
+      }
+    },
+    [rowModesModel, rows]
+  );
 
   const handleDeleteOpen = useCallback(
     (id) => () => {
@@ -409,11 +411,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
 
   const processRowUpdate = useCallback(
     (updatedRow, originalRow) => {
-      const rowId = updatedRow.project_personnel_id;
-      if (wasCanceled(rowId)) {
-        return originalRow; // Return original row to skip mutation
-      }
-
       let userId;
 
       const userObject = data.moped_users.find((user) => {
@@ -434,6 +431,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           "Invalid user data, user not found:",
           updatedRow.moped_user
         );
+        throw new Error("Invalid user data");
       }
 
       // normalize the updatedRow and originalRow
@@ -538,7 +536,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
       projectId,
       refetch,
       handleSnackbar,
-      wasCanceled,
     ]
   );
 
@@ -572,8 +569,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         loading={loading || !data}
         getRowId={getRowIdMemoized}
         rowModesModel={rowModesModel}
-        onRowModesModelChange={makeHandleRowModesModelChange(setRowModesModel)}
-        onRowEditStop={makeHandleRowEditStop({ setRows, setRowModesModel })}
+        onRowModesModelChange={setRowModesModel}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         toolbar
