@@ -398,8 +398,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
           refetch={refetch}
           fileAttachmentParentRecord={fileAttachmentParentRecord}
           fileConnectionData={createWorkActivityFileConnectionData(
-            fileAttachmentParentRecord,
-            projectId
+            fileAttachmentParentRecord
           )}
           addFileMutation={CREATE_FILE_WORK_ACTIVITY_ATTACHMENT}
           existingFileMutation={ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY}
