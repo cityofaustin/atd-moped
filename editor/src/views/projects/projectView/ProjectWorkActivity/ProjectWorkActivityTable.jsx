@@ -385,7 +385,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         mutationPending={deleteInProgress}
       />
-      {isFileAttachmentDialogOpen && (
+      {isFileAttachmentDialogOpen && fileAttachmentParentRecord && (
         <ProjectFilesAttachmentDialog
           projectId={projectId}
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}

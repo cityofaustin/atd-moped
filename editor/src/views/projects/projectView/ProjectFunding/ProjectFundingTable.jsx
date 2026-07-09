@@ -600,7 +600,7 @@ const ProjectFundingTable = ({
           dataProjectFunding={dataProjectFunding}
         />
       )}
-      {isFileAttachmentDialogOpen && (
+      {isFileAttachmentDialogOpen && fileAttachmentParentRecord && (
         <ProjectFilesAttachmentDialog
           projectId={projectId}
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
