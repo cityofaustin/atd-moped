@@ -132,7 +132,7 @@ const ProjectView = () => {
 
   const menuOpen = Boolean(anchorElement);
 
-  const queryContext = useContext(ProjectListViewQueryContext)!;
+  const queryContext = useContext(ProjectListViewQueryContext);
 
   const userSessionData = useSessionDatabaseData() as
     | {
@@ -224,7 +224,7 @@ const ProjectView = () => {
 
   /**
    * Handles mouse event to open the menu
-   * @param {Object} event - The mouse click event
+   * @param event - The mouse click event
    */
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElement(event.currentTarget);
@@ -554,7 +554,7 @@ const ProjectView = () => {
                               data.moped_project[0].ecapris_subproject_id
                             }
                             onCloseTab={onCloseTab}
-                            listViewQuery={queryContext.listViewQuery}
+                            listViewQuery={queryContext?.listViewQuery}
                             handleSnackbar={handleSnackbar}
                           />
                         </TabPanel>
