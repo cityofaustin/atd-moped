@@ -118,12 +118,12 @@ const ProjectView = () => {
     : `/moped/projects${previousProjectListViewQueryString}`;
 
   /**
-   * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
-   * @constant {boolean} dialogOpen - When true, the dialog shows
-   * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
-   * @constant {JSX} anchorElement - The element our 'MoreHorizontal' menu anchors to.
-   * @constant {object} snackbarState - The current state of the snackbar's configuration
-   * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
+   * @constant isEditing - When true, it signals a child component we want to edit the project name
+   * @constant dialogOpen - When true, the dialog shows
+   * @constant dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
+   * @constant anchorElement - The element our 'MoreHorizontal' menu anchors to.
+   * @constant snackbarState - The current state of the snackbar's configuration
+   * @constant menuOpen - If true, it shows the menu component. Immutable.
    */
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -132,7 +132,7 @@ const ProjectView = () => {
 
   const menuOpen = Boolean(anchorElement);
 
-  const queryContext = useContext(ProjectListViewQueryContext);
+  const queryContext = useContext(ProjectListViewQueryContext)!;
 
   const userSessionData = useSessionDatabaseData() as
     | {
@@ -152,27 +152,29 @@ const ProjectView = () => {
     fetchPolicy: "network-only",
   });
 
-  const isFollowing = data?.moped_user_followed_projects.length > 0;
+  const isFollowing = (data?.moped_user_followed_projects?.length ?? 0) > 0;
+
+  /**
+   * Navigate to a tab by index, preserving location state
+   */
+  const navigateToTab = useCallback(
+    (tabIndex: number) => {
+      setSearchParams({ tab: TABS[tabIndex].param }, { state: locationState });
+      if (tabIndex === 0) refetch();
+    },
+    [refetch, setSearchParams, locationState]
+  );
 
   /**
    * Handles the click on a tab, which should trigger a change.
-   * @param {Object} event - The click event
-   * @param {int} newTab - The number of the tab
+   * @param event - The click event
+   * @param newTab - The number of the tab
    */
   const handleChange = useCallback(
     (_event: React.SyntheticEvent, newTab: number) => {
-      // Preserve the queryString state when changing tabs
-      setSearchParams(
-        {
-          tab: TABS[newTab].param,
-        },
-        {
-          state: locationState, // Preserve the location state when changing tabs
-        }
-      );
-      if (newTab === 0) refetch();
+      navigateToTab(newTab);
     },
-    [refetch, setSearchParams, locationState]
+    [navigateToTab]
   );
 
   /**
@@ -189,9 +191,9 @@ const ProjectView = () => {
 
   /**
    * Changes the dialog contents
-   * @param {string|JSX} title - The title of the dialog
-   * @param {string|JSX} body - The body of the dialog
-   * @param {string|JSX} actions - The buttons area for the dialog at the bottom
+   * @param title - The title of the dialog
+   * @param body - The body of the dialog
+   * @param actions - The buttons area for the dialog at the bottom
    */
   const setDialogContent = (
     title: React.ReactNode,
@@ -311,8 +313,8 @@ const ProjectView = () => {
    * This function exists to enable closing the Map tab
    */
   const onCloseTab = useCallback(() => {
-    handleChange(null, 0);
-  }, [handleChange]);
+    navigateToTab(0);
+  }, [navigateToTab]);
 
   return (
     <>
@@ -406,8 +408,8 @@ const ProjectView = () => {
                         >
                           <Box>
                             <ProjectStatusBadge
-                              phaseKey={currentPhase?.phase_key}
-                              phaseName={currentPhase?.phase_name}
+                              phaseKey={currentPhase?.phase_key ?? ""}
+                              phaseName={currentPhase?.phase_name ?? ""}
                             />
                           </Box>
                           <Box>

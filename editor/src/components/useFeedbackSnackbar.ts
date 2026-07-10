@@ -7,6 +7,13 @@ interface SnackbarState {
   severity: AlertProps["severity"] | "";
 }
 
+export type HandleSnackbar = (
+  open: boolean,
+  message: string,
+  severity: AlertProps["severity"] | "",
+  error?: unknown
+) => void;
+
 /**
  * Custom hook to manage snackbar state
  * @returns An object containing snackbarState, handleSnackbar, and handleSnackbarClose
@@ -31,13 +38,8 @@ export const useFeedbackSnackbar = () => {
    * @param severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
    * @param error - The error to be displayed and logged
    */
-  const handleSnackbar = useCallback(
-    (
-      open: boolean,
-      message: string,
-      severity: AlertProps["severity"] | "",
-      error?: unknown
-    ) => {
+  const handleSnackbar: HandleSnackbar = useCallback(
+    (open, message, severity, error) => {
       // if there is an error, render error message,
       // otherwise, render success message
       if (error) {

@@ -5,11 +5,11 @@ import { defaultIcon, defaultLabel, styleMapping } from "src/utils/phases";
  * Retrieves the style configuration for an individual phase
  */
 const getStyle = (phaseKey: string) => {
-  return styleMapping?.[phaseKey] ?? styleMapping.default;
+  return styleMapping[phaseKey] ?? styleMapping.default;
 };
 
 interface GetChipStylesProps {
-  phaseKey?: string;
+  phaseKey: string;
   condensed?: boolean;
   clickable?: boolean;
   leftMargin?: boolean;
@@ -42,16 +42,16 @@ const getChipStyles = ({
  * Renders a chip
  */
 interface ProjectStatusBadgeProps {
-  phaseKey?: string;
-  phaseName?: string;
+  phaseKey: string;
+  phaseName: string;
   condensed?: boolean;
   leftMargin?: boolean;
   clickable?: boolean;
 }
 
 const ProjectStatusBadge = ({
-  phaseKey = "",
-  phaseName = "",
+  phaseKey,
+  phaseName,
   condensed = false,
   leftMargin = false,
   clickable = false,
@@ -59,8 +59,8 @@ const ProjectStatusBadge = ({
   /**
    * Create an abstract component pointer
    */
-  const style = getStyle(phaseKey ?? "");
-  const ChipIcon = style?.icon ?? defaultIcon;
+  const style = getStyle(phaseKey);
+  const ChipIcon = style.icon ?? defaultIcon;
 
   return (
     <Chip

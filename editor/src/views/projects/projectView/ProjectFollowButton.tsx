@@ -5,18 +5,13 @@ import { useSessionDatabaseData } from "src/auth/user";
 import { PROJECT_FOLLOW, PROJECT_UNFOLLOW } from "src/queries/project";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 import { ProjectSummaryQuery } from "src/gql/graphql";
-import { AlertProps } from "@mui/material";
+import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 interface ProjectFollowButtonProps {
   projectId: string | undefined;
   isFollowing: boolean;
   refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
-  handleSnackbar: (
-    open: boolean,
-    message: string,
-    severity: AlertProps["severity"] | "",
-    error?: unknown
-  ) => void;
+  handleSnackbar: HandleSnackbar;
 }
 
 /**
@@ -49,7 +44,7 @@ const ProjectFollowButton = ({
           variables: {
             object: {
               project_id: Number(projectId),
-              user_id: userId,
+              user_id: Number(userId),
             },
           },
         });
@@ -64,7 +59,7 @@ const ProjectFollowButton = ({
         await unfollowProject({
           variables: {
             project_id: Number(projectId),
-            user_id: userId,
+            user_id: Number(userId),
           },
         });
         await refetch();

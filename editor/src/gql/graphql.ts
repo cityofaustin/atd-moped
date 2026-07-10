@@ -4671,6 +4671,7 @@ export type Moped_Project_Bool_Exp = {
   geography?: Project_Geography_Bool_Exp | null | undefined;
   geography_aggregate?: Project_Geography_Aggregate_Bool_Exp | null | undefined;
   interim_project_id?: Int_Comparison_Exp | null | undefined;
+  is_cool?: Boolean_Comparison_Exp | null | undefined;
   is_deleted?: Boolean_Comparison_Exp | null | undefined;
   is_migrated_from_access_db?: Boolean_Comparison_Exp | null | undefined;
   knack_project_id?: String_Comparison_Exp | null | undefined;
@@ -4869,6 +4870,7 @@ export type Moped_Project_Insert_Input = {
   ecapris_subproject_id?: string | null | undefined;
   geography?: Project_Geography_Arr_Rel_Insert_Input | null | undefined;
   interim_project_id?: number | null | undefined;
+  is_cool?: boolean | null | undefined;
   /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   is_migrated_from_access_db?: boolean | null | undefined;
@@ -5007,6 +5009,8 @@ export type Moped_Project_Select_Column =
   /** column name */
   | "interim_project_id"
   /** column name */
+  | "is_cool"
+  /** column name */
   | "is_deleted"
   /** column name */
   | "is_migrated_from_access_db"
@@ -5044,6 +5048,8 @@ export type Moped_Project_Select_Column =
 /** select "moped_project_aggregate_bool_exp_bool_and_arguments_columns" columns of table "moped_project" */
 export type Moped_Project_Select_Column_Moped_Project_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
+  | "is_cool"
+  /** column name */
   | "is_deleted"
   /** column name */
   | "is_migrated_from_access_db"
@@ -5054,6 +5060,8 @@ export type Moped_Project_Select_Column_Moped_Project_Aggregate_Bool_Exp_Bool_An
 
 /** select "moped_project_aggregate_bool_exp_bool_or_arguments_columns" columns of table "moped_project" */
 export type Moped_Project_Select_Column_Moped_Project_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
+  /** column name */
+  | "is_cool"
   /** column name */
   | "is_deleted"
   /** column name */
@@ -5073,6 +5081,8 @@ export type Moped_Project_Update_Column =
   | "ecapris_subproject_id"
   /** column name */
   | "interim_project_id"
+  /** column name */
+  | "is_cool"
   /** column name */
   | "is_deleted"
   /** column name */
