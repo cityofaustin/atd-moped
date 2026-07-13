@@ -1,10 +1,10 @@
 # MOPED Database
 
-You will want to check the documentation in the [MOPED Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
+You will want to check the documentation in the [Moped Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
 
 ## Architecture Description
 
-Broadly, the Moped application uses a backend [PostgreSQL](https://www.postgresql.org/) database server which is protected from the larger internet on a private subnet. An instance of [Hasura](https://hasura.io/)'s [graphql-engine](https://github.com/hasura/graphql-engine) is used as middleware exposing a graphql endpoint for use by the application running on a client's computer. The `graphql-engine` instance is provided by [the official docker images](https://hub.docker.com/r/hasura/graphql-engine) provided by hasura on DockerHub. 
+Broadly, the Moped application uses a backend [PostgreSQL](https://www.postgresql.org/) database server which is protected from the larger internet on a private subnet. An instance of [Hasura](https://hasura.io/)'s [graphql-engine](https://github.com/hasura/graphql-engine) is used as middleware exposing a GraphQL endpoint for use by the application running on a client's computer. The `graphql-engine` instance is provided by [the official Docker images](https://hub.docker.com/r/hasura/graphql-engine) provided by Hasura on DockerHub. 
 
 ### `graphql-engine` update plan
 
@@ -18,7 +18,7 @@ The intent is to stay generally up-to-date, but avoid `.0` releases and to maint
 
 #### 1. Install Docker & Docker Compose
 
-You will want to follow the docker documentation on how to install docker in your system.
+You will want to follow the Docker documentation on how to install Docker in your system.
 
 For Mac: https://docs.docker.com/docker-for-mac/install/
 
@@ -51,7 +51,7 @@ https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html
 #### 3. The Hasura Cluster Helper
 
 There is a tool we've created that has a few shortcuts available, it's called [hasura-cluster](https://github.com/cityofaustin/atd-moped/blob/main/moped-database/hasura-cluster).
-It is a bash script that runs a few docker-compose commands.
+It is a bash script that runs a few `docker compose` commands.
 
 Syntax:
 
@@ -108,7 +108,7 @@ If you would prefer to bypass downloading a new copy of production and instead j
 $ ./hasura-cluster replicate -j
 ```
 
-- Restarting the hasura cluster without migrations:
+- Restarting the Hasura cluster without migrations:
 
 ```bash
 ./hasura-cluster reload
@@ -176,28 +176,26 @@ We use triggers with prefixes of `notify_hasura_activity_log_` that are auto-gen
 
 ### SQL Formatting
 
-We use [SQLFluff](https://sqlfluff.com/) to format SQL code. You'll need to get `sqlfluff` installed on your computer and in the path. If you're using `brew`, you can `brew install sqlfluff`. Make sure it's in your path by doing `which sqlfluff` in your terminal, and if it gives you the path to program, then you're good to go. 
+We use [sqruff](https://github.com/quarylabs/sqruff) to lint and format SQL code. You'll need `sqruff` installed and on your path. If you're using `brew`, you can `brew install sqruff`. Confirm it's on your path with `which sqruff` in your terminal, and, if it gives you the path to the program, you're good to go.
 
-VSCode users: The extension I'm using to provide linting and formatting capabilities in VSCode is [here](https://marketplace.visualstudio.com/items?itemName=dorzey.vscode-sqlfluff).
+VSCode users: install the [sqruff extension](https://marketplace.visualstudio.com/items?itemName=Quary.sqruff), which depends on the CLI being installed.
 
-Users of other editors can adapt the following commands to best suit their needs. These are being run from the `atd-moped/moped-database/views` folder. 
+Users of other editors can adapt the following commands to best suit their needs. These are being run from the `atd-moped/moped-database/views` folder, using the `.sqruff` config file at the repo root. From the database folder:
 
-Lint (ie, tell me what i'm doing wrong):
+#### Lint (ie, tell me what i'm doing wrong)
 
-`sqlfluff lint --config ../../.sqlfluff project_list_view.sql`
+`sqruff lint --config ../.sqruff ./views/project_list_view.sql`
 
-Format (ie, clean up all my indention and fix things you can fix automatically):
+#### Fix (ie, clean up all my indention and fix things you can fix automatically):
 
-`sqlfluff format --config ../../.sqlfluff project_list_view.sql`
+`sqruff fix --config ../.sqruff ./views/project_list_view.sql`
 
-## How to connect the database with Postgres GUI tools (example: TablePlus, DBeaver, P etc)
+## How to connect the database with Postgres GUI tools (example: TablePlus, DBeaver, etc)
 
 _Here are some docs in Gitbook that explain [How to connect the database with Postgres GUI tools](https://atd-dts.gitbook.io/moped-documentation/dev-guides/how-tos/connecting-with-postgres-gui)_
 
 ## Read the docs
 
-More documentation is available in the [MOPED Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
+More documentation is available in the [Moped Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
 
-You are also encouraged to learn [Hasura Migrations from their documentation](https://hasura.io/docs/2.0/migrations-metadata-seeds/overview/). 
-
-[SchemaSpy Analysis of moped](https://db-docs.austinmobility.io/atd-moped-production/index.html)
+You are also encouraged to learn [Hasura Migrations from their documentation](https://hasura.io/docs/2.0/migrations-metadata-seeds/overview/).
