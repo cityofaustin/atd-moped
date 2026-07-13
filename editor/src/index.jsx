@@ -8,6 +8,7 @@ import App from "./App";
 import { Amplify, Hub } from "aws-amplify";
 
 import config from "./config";
+import UmamiAnalytics from "src/components/UmamiAnalytics";
 
 // https://aws-amplify.github.io/docs/js/hub
 Hub.listen(/.*/, ({ channel, payload }) =>
@@ -49,6 +50,7 @@ Amplify.configure({
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
+    <UmamiAnalytics />
     <UserProvider>
       <App />
     </UserProvider>
