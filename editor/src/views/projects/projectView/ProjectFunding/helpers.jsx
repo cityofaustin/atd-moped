@@ -194,7 +194,7 @@ export const isCellEditable = (params) => {
   }
 };
 
-//
+// creates object needed in the file attachement mutation
 export const createFundingFileConnectionData = (fundingRecord, projectId) => {
   const entityId = fundingRecord?.proj_funding_id;
   const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
