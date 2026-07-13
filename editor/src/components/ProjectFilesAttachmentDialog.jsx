@@ -21,8 +21,9 @@ function AttachmentTabPanel(props) {
       // 0px measurement warning by the DataGridPro table inside.
       style={{
         position: value === index ? "static" : "absolute",
-        left: value === index ? 0 : "-9999px",
+        visibility: value === index ? "visible" : "hidden",
         width: "100%",
+        top: "0px",
       }}
       {...other}
     >
