@@ -1,5 +1,5 @@
 import {
-  Grid2,
+  Grid,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
@@ -98,8 +98,8 @@ const ProjectNotes = ({
           marginTop: 3,
         }}
       >
-        <Grid2 container spacing={0.5}>
-          <Grid2
+        <Grid container spacing={0.5}>
+          <Grid
             sx={{
               alignItems: "center",
               display: "flex",
@@ -107,8 +107,8 @@ const ProjectNotes = ({
             }}
           >
             <SecondaryInformationChip chipLabel={note.note_type_name} />
-          </Grid2>
-          <Grid2>
+          </Grid>
+          <Grid>
             <IconButtonWithTooltip
               title={
                 note.note_type_name === "eCAPRIS"
@@ -126,8 +126,8 @@ const ProjectNotes = ({
             >
               <EditIcon />
             </IconButtonWithTooltip>
-          </Grid2>
-          <Grid2>
+          </Grid>
+          <Grid>
             {!isEditingNote && (
               <IconButtonWithTooltip
                 title={
@@ -147,8 +147,8 @@ const ProjectNotes = ({
                 <DeleteIcon />
               </IconButtonWithTooltip>
             )}
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </ListItemSecondaryAction>
     </ListItem>
   );
