@@ -27,7 +27,7 @@ import {
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 
-import { LicenseInfo } from "@mui/x-license";
+import { LicenseInfo, muiXTelemetrySettings } from "@mui/x-license";
 
 const HASURA_ENDPOINT = import.meta.env.VITE_HASURA_ENDPOINT;
 
@@ -98,7 +98,9 @@ const useApolloClient = () => {
   return { apolloClient, error, setError };
 };
 
+// import the MUI X license key from .env.local and disable telemetry to avoid import error in the console
 LicenseInfo.setLicenseKey(import.meta.env.VITE_MUIX_LICENSE_KEY);
+muiXTelemetrySettings.disableTelemetry();
 
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
