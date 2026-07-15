@@ -7,7 +7,7 @@ We use **[Umami](https://umami.is)**, a privacy-focused analytics tool hosted on
 **What we collect**
 
 - **Pages visited** — URL and page title
-- **Approximate location** — Country (and sometimes region or city), derived from IP address. We do **not** store your IP address in an identifiable form.
+- **Approximate location** — Country (and sometimes region or city), derived from IP address. We do not store or harvest your IP address for tracking purposes.
 - **Browser and device type** — e.g. Chrome, Safari, Windows, mobile
 - **Referrer** — The site or page you came from (or the previous page on our site)
 - **Optional interactions** — When we have added event tracking, we may record anonymous actions (e.g. use of a filter or button) with no personal data
