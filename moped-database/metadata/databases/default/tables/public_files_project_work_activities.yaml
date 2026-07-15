@@ -62,6 +62,8 @@ update_permissions:
         - is_deleted
       filter: {}
       check: null
+      set:
+        updated_by_user_id: x-hasura-user-db-id
     comment: ""
   - role: moped-editor
     permission:
@@ -69,4 +71,6 @@ update_permissions:
         - is_deleted
       filter: {}
       check: null
+      set:
+        updated_by_user_id: x-hasura-user-db-id
     comment: ""
