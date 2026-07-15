@@ -13,26 +13,24 @@ import { LinkOff } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import {
-  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
-  DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
-} from "src/queries/project";
 
 /**
  *
  * @param {Object} file - File information object to pass into ProjectFileLink
- * @param {Boolean} isSyncedFromECapris - if parent funding record is synced from eCAPRIS
  * @param {Function} refetch - Provides a manual callback to update the Apollo cache
- * @param {number} fileRecordId - files_project_funding id /  ecapris_subproject_funding id for record
+ * @param {number} fileRecordId - files_project_funding id /  ecapris_subproject_funding id  / files_project_work_activities id for record
  * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
+ * @param {Function} detachFileMutation - function to detach file from parent record
+ * @param {string} confirmationFileType - type of file, either funding or work activity. Used in delete confirmation message
  * @returns {JSX.Element}
  */
-const FundingFile = ({
+const AttachedFile = ({
   file,
-  isSyncedFromECapris,
   refetch,
   fileRecordId,
   handleSnackbar,
+  detachFileMutation,
+  confirmationFileType,
 }) => {
   const [anchorElement, setAnchorElement] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
@@ -48,11 +46,7 @@ const FundingFile = ({
   };
 
   const [detachFundingFileAttachment, { loading: mutationPending }] =
-    useMutation(
-      isSyncedFromECapris
-        ? DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
-        : DETACH_FILE_MOPED_FUNDING_ATTACHMENT
-    );
+    useMutation(detachFileMutation);
 
   const handleUnlinkFileAttachment = (id) => {
     detachFundingFileAttachment({
@@ -121,7 +115,7 @@ const FundingFile = ({
         <DeleteConfirmationModal
           type="file attachment"
           actionButtonText="Detach"
-          additionalConfirmationText="This will not delete the file, only detach it from this funding record."
+          additionalConfirmationText={`This will not delete the file, only detach it from this ${confirmationFileType} record.`}
           actionButtonIcon={<LinkOff />}
           submitDelete={() => handleUnlinkFileAttachment(fileRecordId)}
           isDeleteConfirmationOpen={isDeleteConfirmationOpen}
@@ -133,4 +127,4 @@ const FundingFile = ({
   );
 };
 
-export default FundingFile;
+export default AttachedFile;
