@@ -17,13 +17,13 @@ function AttachmentTabPanel(props) {
       id={`attachment-tabpanel-${index}`}
       aria-labelledby={`attachment-tab-${index}`}
       // Keep inactive tab content mounted but hidden with CSS rather than the
-      // `hidden` attribute to avoid UI shift on tab selection and prevent
-      // 0px measurement warning by the DataGridPro table inside.
+      // `hidden` attribute to avoid UI shift on tab selection
+      // TODO: fix parent DOM element of the Data Grid has an empty width. issue 29378
       style={{
         position: value === index ? "static" : "absolute",
         visibility: value === index ? "visible" : "hidden",
+        display: value === index ? "inherit" : "none",
         width: "100%",
-        top: "0px",
       }}
       {...other}
     >
