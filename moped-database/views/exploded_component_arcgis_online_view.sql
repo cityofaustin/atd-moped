@@ -10,5 +10,5 @@ SELECT
     st_asgeojson(dump.geom)               AS exploded_geometry,
     component_arcgis_online_view.project_updated_at
 FROM component_arcgis_online_view,
-LATERAL st_dump (st_geomfromgeojson (component_arcgis_online_view.geometry)) dump (path, geom)
-WHERE st_geometrytype (st_geomfromgeojson (component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;
+LATERAL st_dump(st_geomfromgeojson(component_arcgis_online_view.geometry)) dump(path, geom)
+WHERE st_geometrytype(st_geomfromgeojson(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;
