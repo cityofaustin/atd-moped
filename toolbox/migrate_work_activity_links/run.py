@@ -56,8 +56,8 @@ def make_hasura_request(*, query, variables, env):
         raise ValueError(data)
 
 
-"""Using the same logic as getExternalLinkText in editor/src/components/ExternalLink.jsx, defaulting to 'Work order link' """
 def make_file_name(work_order_url):
+    """Using the same logic as getExternalLinkText in editor/src/components/ExternalLink.jsx, defaulting to 'Work order link'"""
     if "https://atd.knack.com/amd" in work_order_url.lower():
         return "AMD Data Tracker"
     if "https://atd.knack.com/signs-markings" in work_order_url.lower():
@@ -65,7 +65,7 @@ def make_file_name(work_order_url):
     return "Work order link"
 
 
-def main(env):
+def main(env, dry_run=False):
     work_activities = make_hasura_request(
         query=WORK_ACTIVITIES_TO_MIGRATE_QUERY, env=env, variables=None
     )["moped_proj_work_activity"]
@@ -97,15 +97,19 @@ def main(env):
             }
         )
 
-    print(f"{len(new_file_records)} files to create")
-
-    for new_file in new_file_records:
-        response = make_hasura_request(
-            query=ADD_FILE_WITH_WORK_ACTIVITY_CONNECTION_MUTATION,
-            variables={"object": new_file},
-            env=env,
-        )["insert_moped_project_files_one"]
-        print(f"Inserted file {response["project_file_id"]} for project {response["project_id"]}")
+    if dry_run:
+        print(f"[DRY RUN], would create {len(new_file_records)} files")
+    else:
+        for new_file in new_file_records:
+            response = make_hasura_request(
+                query=ADD_FILE_WITH_WORK_ACTIVITY_CONNECTION_MUTATION,
+                variables={"object": new_file},
+                env=env,
+            )["insert_moped_project_files_one"]
+            print(
+                f"Inserted file {response["project_file_id"]} for project {response["project_id"]}"
+            )
+        print(f"{len(new_file_records)} files created")
 
 
 if __name__ == "__main__":
@@ -117,9 +121,16 @@ if __name__ == "__main__":
         type=str,
         choices=["local", "staging", "prod"],
         default="local",
-        help=f"Environment",
+        help=f"Which moped environment to use, defaults to local",
+    )
+
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Log what changes would be made without executing them",
     )
 
     args = parser.parse_args()
 
-    main(args.env)
+    main(args.env, args.dry_run)
