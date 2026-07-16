@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import {
   Box,
   Button,
-  Grid2,
+  Grid,
   Paper,
   Popper,
   ClickAwayListener,
@@ -200,8 +200,8 @@ const Search = ({
           }}
         >
           <Paper ref={divRef}>
-            <Grid2 container sx={searchBarContainerStyle}>
-              <Grid2
+            <Grid container sx={searchBarContainerStyle}>
+              <Grid
                 sx={gridSearchPaddingStyle}
                 size={{
                   xs: 12,
@@ -226,8 +226,8 @@ const Search = ({
                   setSearchParams={setSearchParams}
                   handleSnackbar={handleSnackbar}
                 />
-              </Grid2>
-              <Grid2
+              </Grid>
+              <Grid
                 sx={downloadButtonGridStyle}
                 size={{
                   xs: 12,
@@ -284,8 +284,8 @@ const Search = ({
                     </>
                   )}
                 </div>
-              </Grid2>
-            </Grid2>
+              </Grid>
+            </Grid>
           </Paper>
         </Box>
         <Popper

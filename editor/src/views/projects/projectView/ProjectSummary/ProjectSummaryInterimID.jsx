@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid2, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
@@ -96,7 +96,7 @@ const ProjectSummaryInterimID = ({
   };
 
   return (
-    <Grid2 sx={fieldGridItem} size={12}>
+    <Grid sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Interim MPD (Access) ID</Typography>
       <Box
         sx={[
@@ -135,7 +135,7 @@ const ProjectSummaryInterimID = ({
           />
         )}
       </Box>
-    </Grid2>
+    </Grid>
   );
 };
 

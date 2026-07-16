@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid2, Container, Typography } from "@mui/material";
+import { Grid, Container, Typography } from "@mui/material";
 import Page from "src/components/Page";
 import TypographyView from "./TypographyView";
 import ColorsView from "./ColorsView";
@@ -15,8 +15,8 @@ const DeviasStyleView = () => {
       title="Moped Styles"
     >
       <Container maxWidth={"lg"}>
-        <Grid2 container spacing={3}>
-          <Grid2
+        <Grid container spacing={3}>
+          <Grid
             size={{
               lg: 12,
             }}
@@ -24,8 +24,8 @@ const DeviasStyleView = () => {
             <Typography variant="h1" component="h2">
               Styles
             </Typography>
-          </Grid2>
-          <Grid2
+          </Grid>
+          <Grid
             size={{
               lg: 8,
               md: 12,
@@ -34,8 +34,8 @@ const DeviasStyleView = () => {
             }}
           >
             <TypographyView />
-          </Grid2>
-          <Grid2
+          </Grid>
+          <Grid
             size={{
               lg: 4,
               md: 6,
@@ -44,8 +44,8 @@ const DeviasStyleView = () => {
             }}
           >
             <ColorsView />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Container>
     </Page>
   );

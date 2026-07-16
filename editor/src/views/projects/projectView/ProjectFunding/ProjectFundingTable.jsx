@@ -5,7 +5,7 @@ import isEqual from "lodash.isequal";
 import {
   Button,
   FormControlLabel,
-  Grid2,
+  Grid,
   Switch,
   Tooltip,
 } from "@mui/material";
@@ -492,7 +492,7 @@ const ProjectFundingTable = ({
             documentationLink:
               "https://atd-dts.gitbook.io/moped-documentation/user-guides/add-funding-to-a-project",
             children: (
-              <Grid2
+              <Grid
                 container
                 direction="row"
                 sx={{
@@ -500,7 +500,7 @@ const ProjectFundingTable = ({
                   alignItems: "center",
                 }}
               >
-                <Grid2
+                <Grid
                   size={{
                     xs: 6,
                     md: 4,
@@ -517,8 +517,8 @@ const ProjectFundingTable = ({
                     handleSnackbar={handleSnackbar}
                     disabled={isEditMode}
                   />
-                </Grid2>
-                <Grid2
+                </Grid>
+                <Grid
                   container
                   sx={{
                     justifyContent: "flex-end",
@@ -548,8 +548,8 @@ const ProjectFundingTable = ({
                       }
                     />
                   </Tooltip>
-                </Grid2>
-              </Grid2>
+                </Grid>
+              </Grid>
             ),
           },
         }}

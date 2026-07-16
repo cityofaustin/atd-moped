@@ -3,6 +3,25 @@ import { GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid-pro";
 export const defaultEditColumnIconStyle = { fontSize: "24px" };
 
 /**
+ * Checks if a DataGrid inline edit input is empty to initialize validation state
+ * as invalid; an empty required field is not valid no matter the data type
+ * @param {string|object|array|date|number|boolean|null|undefined} value - value of input
+ * @returns
+ */
+export const isEmpty = (value) => {
+  if (value === null || value === undefined) return true;
+  // Strings
+  if (typeof value === "string") return value.trim() === "";
+  // Number (excluding NaN)
+  if (typeof value === "number") return Number.isNaN(value);
+  // Check for array and date first since they are also objects
+  if (Array.isArray(value)) return value.length === 0;
+  if (value instanceof Date) return Number.isNaN(value.getTime());
+  if (typeof value === "object") return Object.keys(value).length === 0;
+  return false;
+};
+
+/**
  * Custom event handler for the DataGrid `onRowEditStop` event that:
  * 1. Prevents saving on Enter key press
  * 2. Prevents saving on click-away
