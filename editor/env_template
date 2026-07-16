@@ -13,3 +13,8 @@ VITE_KNACK_DATA_TRACKER_URL_BASE=https://mobility.austin.gov/moped/projects/
 VITE_MUIX_LICENSE_KEY=Find in "Moped MUI X Pro License Key" entry
 VITE_NEARMAP_TOKEN=Find in "Moped Nearmap API Key" entry
 VITE_MAPBOX_TOKEN=Find in "Moped Mapbox API Key" entry
+VITE_UMAMI_SCRIPT_URL=https://umami.austinmobility.io/script.js
+# Use the staging website ID from Umami (not production). data-domains limits hits to localhost.
+VITE_UMAMI_WEBSITE_ID=
+VITE_UMAMI_DOMAINS=localhost
+VITE_UMAMI_TAG=local

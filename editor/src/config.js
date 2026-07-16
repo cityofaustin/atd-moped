@@ -4,6 +4,12 @@ const config = {
     APP_HASURA_ENDPOINT: import.meta.env.VITE_HASURA_ENDPOINT,
     APP_API_ENDPOINT: import.meta.env.VITE_API_ENDPOINT,
   },
+  umami: {
+    SCRIPT_URL: import.meta.env.VITE_UMAMI_SCRIPT_URL,
+    WEBSITE_ID: import.meta.env.VITE_UMAMI_WEBSITE_ID,
+    DOMAINS: import.meta.env.VITE_UMAMI_DOMAINS,
+    TAG: import.meta.env.VITE_UMAMI_TAG,
+  },
   cognito: {
     APP_CLIENT_ID: import.meta.env.VITE_AWS_COGNITO_APP_CLIENT_ID,
     DOMAIN: import.meta.env.VITE_AWS_COGNITO_DOMAIN,
