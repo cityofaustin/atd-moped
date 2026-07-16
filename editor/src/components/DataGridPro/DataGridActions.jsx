@@ -12,7 +12,10 @@ import {
   AttachFileOutlined as AttachFileOutlinedIcon,
 } from "@mui/icons-material";
 
-import { defaultEditColumnIconStyle } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  defaultEditColumnIconStyle,
+  isEmpty,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 /** Component for Data Grid table action buttons
  * @param {Number} id - Data Grid row id (same as project id)
@@ -57,7 +60,7 @@ const DataGridActions = ({
 
     for (const field of requiredFields) {
       const hasError = Boolean(editState[id]?.[field]?.error);
-      const hasValue = Boolean(editState[id]?.[field]?.value);
+      const hasValue = !isEmpty(editState[id]?.[field]?.value);
 
       if (hasError || !hasValue) {
         return false;
