@@ -47,13 +47,13 @@ const useColumns = () =>
         display: "flex",
         renderCell: ({ row }) => (
           // Box wrapper workaround for ProjectFileLink styles not applying properly within flex cell needed to center align
-          <Box sx={{ minWidth: 0, overflow: "hidden", width: "100%" }}>
+          (<Box sx={{ minWidth: 0, overflow: "hidden", width: "100%" }}>
             <ProjectFileLink
               fileKey={row?.file_key}
               fileUrl={row?.file_url}
               fileName={row?.file_url} // Pass url as fileName to match edit cell value
             />
-          </Box>
+          </Box>)
         ),
       },
     ];

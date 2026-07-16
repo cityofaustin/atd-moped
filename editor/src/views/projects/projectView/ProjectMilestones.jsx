@@ -134,7 +134,7 @@ const useColumns = ({
             label="Completion estimate"
           />
         ),
-        width: 180,
+        width: 185,
       },
       {
         headerName: "Date completed",
@@ -149,7 +149,7 @@ const useColumns = ({
             label="Date (actual)"
           />
         ),
-        width: 180,
+        width: 185,
       },
       {
         headerName: "Complete",

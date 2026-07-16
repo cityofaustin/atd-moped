@@ -38,9 +38,13 @@ const DataGridDateFieldEdit = ({ value, hasFocus, id, field, ...props }) => {
       format="MM/dd/yyyy"
       value={value ? parseISO(value) : null}
       onChange={handleChange}
-      InputProps={{ style: { minWidth: "100px" } }}
       slotProps={{
         actionBar: { actions: ["accept", "cancel", "clear"] },
+        textField: {
+          slotProps: {
+            htmlInput: { style: { minWidth: "100px" } },
+          },
+        },
       }}
       {...props}
     />
