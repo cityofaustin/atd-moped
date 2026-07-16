@@ -59,7 +59,6 @@ const ProjectFileLink = ({
             overflow: "hidden",
             display: "block",
             textOverflow: "ellipsis",
-            ...(condensed && { minWidth: 0 }),
           },
           noWrap: condensed,
           title: fileUrl,

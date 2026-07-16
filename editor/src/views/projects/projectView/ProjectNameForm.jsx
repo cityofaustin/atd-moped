@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { Box, Grid2 } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
@@ -85,8 +85,8 @@ const ProjectNameForm = ({
         sx={{ width: "100%" }}
         onSubmit={handleSubmit(handleSave)}
       >
-        <Grid2 container spacing={2}>
-          <Grid2
+        <Grid container spacing={2}>
+          <Grid
             size='grow'
           >
             <ControlledTextInput
@@ -108,8 +108,8 @@ const ProjectNameForm = ({
                 disabled: loading,
               }}
             />
-          </Grid2>
-          <Grid2
+          </Grid>
+          <Grid
             size='grow'
           >
             <ControlledTextInput
@@ -131,8 +131,8 @@ const ProjectNameForm = ({
                 disabled: loading,
               }}
             />
-          </Grid2>
-          <Grid2
+          </Grid>
+          <Grid
             sx={{
               display: "flex",
               alignItems: "center",
@@ -144,8 +144,8 @@ const ProjectNameForm = ({
               disabledCondition={!isDirty || !isValid}
               loading={loading}
             />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Box>
     </>
   );

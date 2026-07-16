@@ -25,7 +25,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Grid2,
+  Grid,
   Menu,
   MenuItem,
   Fade,
@@ -372,8 +372,8 @@ const ProjectView = () => {
                         pb: 1,
                       }}
                     >
-                      <Grid2 container>
-                        <Grid2
+                      <Grid container>
+                        <Grid
                           sx={(theme) => ({
                             minHeight: theme.spacing(8), // Prevent jumping when edit form appears
                             display: "flex",
@@ -395,8 +395,8 @@ const ProjectView = () => {
                               refetch={refetch}
                             />
                           </Box>
-                        </Grid2>
-                        <Grid2
+                        </Grid>
+                        <Grid
                           sx={{
                             justifyItems: "right",
                             display: "flex",
@@ -481,8 +481,8 @@ const ProjectView = () => {
                               </MenuItem>
                             </Menu>
                           </Box>
-                        </Grid2>
-                      </Grid2>
+                        </Grid>
+                      </Grid>
                     </Box>
                     <Divider />
                     <AppBar
