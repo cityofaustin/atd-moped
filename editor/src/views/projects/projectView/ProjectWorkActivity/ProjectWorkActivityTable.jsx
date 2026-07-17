@@ -8,7 +8,6 @@ import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import ExternalLink from "src/components/ExternalLink";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
@@ -81,21 +80,6 @@ const useColumns = ({
             ))}
           </div>
         ),
-      },
-      {
-        headerName: "Work Order Link",
-        field: "work_order_url",
-        width: 175,
-        defaultVisible: true,
-        renderCell: ({ row }) =>
-          row.work_order_url ? (
-            <ExternalLink
-              url={row.work_order_url}
-              linkColor="primary"
-              useFriendlyUrl
-              showExternalLinkIcon={false}
-            />
-          ) : null,
       },
       {
         headerName: "Status",
