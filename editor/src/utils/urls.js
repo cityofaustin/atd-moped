@@ -38,3 +38,15 @@ export const makeUrlValid = (url) => {
 export const createBugReportLink = (error, userEmail) => {
   return `https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%2C%22field_400%22%3A%22${error.message}%22%2C%22field_406%22%3A%22${userEmail}%22%7D`;
 };
+
+// Returns link text based on url when no text prop is provided, can be expanded to include more cases as needed
+export const getExternalLinkText = (url) => {
+  switch (true) {
+    case url.toLowerCase().includes("https://atd.knack.com/amd"):
+      return "AMD Data Tracker";
+    case url.toLowerCase().includes("https://atd.knack.com/signs-markings"):
+      return "Signs & Markings";
+    default:
+      return null;
+  }
+};
