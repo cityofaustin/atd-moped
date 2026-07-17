@@ -112,9 +112,12 @@ const addWorkOrderUrlToActivity = (
   mutation,
   data,
   addWorkActivityFile,
-  isNewActivity
+  isNewActivity,
+  onSubmitCallback
 ) => {
-  const entityId = isNewActivity;
+  const entityId = isNewActivity
+    ? mutation.data.insert_moped_proj_work_activity_one.id
+    : data.id;
   const fileName =
     getExternalLinkText(data.work_order_url) ?? "Work order link";
 
@@ -133,7 +136,9 @@ const addWorkOrderUrlToActivity = (
         },
       },
     },
-  }).catch((error) => console.error(error));
+  })
+    .then(onSubmitCallback({ mutation }))
+    .catch((error) => console.error(error));
 };
 
 export const onSubmitActivity = ({
@@ -164,15 +169,18 @@ export const onSubmitActivity = ({
     variables,
   })
     .then((mutation) => {
+      // if work order url included, add as file and attach to record. onSubmitCallback once that mutation is done
       if (workOrderUrl) {
         addWorkOrderUrlToActivity(
           mutation,
           data,
           addWorkActivityFile,
-          isNewActivity
+          isNewActivity,
+          onSubmitCallback
         );
+      } else {
+        onSubmitCallback({ mutation });
       }
-      onSubmitCallback({ mutation });
     })
     .catch((error) => {
       if (isNewActivity) {
