@@ -6,6 +6,7 @@ import {
   INT_4_MAX,
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
+import { getExternalLinkText } from "src/utils/urls";
 
 export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
   "Arterial Management",
@@ -107,14 +108,44 @@ const FORM_PAYLOAD_FIELDS = [
   "work_order_url",
 ];
 
+const addWorkOrderUrlToActivity = (
+  mutation,
+  data,
+  addWorkActivityFile,
+  isNewActivity
+) => {
+  const entityId = isNewActivity;
+  const fileName =
+    getExternalLinkText(data.work_order_url) ?? "Work order link";
+
+  addWorkActivityFile({
+    variables: {
+      object: {
+        project_id: data.project_id,
+        file_name: fileName,
+        file_type: 5,
+        file_size: 0,
+        file_url: data.work_order_url,
+        files_project_work_activities: {
+          data: {
+            entity_id: entityId,
+          },
+        },
+      },
+    },
+  }).catch((error) => console.error(error));
+};
+
 export const onSubmitActivity = ({
   data,
   mutate,
   onSubmitCallback,
   handleSnackbar,
   isNewActivity,
+  addWorkActivityFile,
 }) => {
   const { id } = data;
+  const workOrderUrl = data.work_order_url;
 
   const payload = FORM_PAYLOAD_FIELDS.reduce((obj, key) => {
     obj[key] = data[key];
@@ -132,7 +163,17 @@ export const onSubmitActivity = ({
   mutate({
     variables,
   })
-    .then((mutation) => onSubmitCallback({ mutation }))
+    .then((mutation) => {
+      if (workOrderUrl) {
+        addWorkOrderUrlToActivity(
+          mutation,
+          data,
+          addWorkActivityFile,
+          isNewActivity
+        );
+      }
+      onSubmitCallback({ mutation });
+    })
     .catch((error) => {
       if (isNewActivity) {
         handleSnackbar(true, "Error adding work activity", "error", error);
