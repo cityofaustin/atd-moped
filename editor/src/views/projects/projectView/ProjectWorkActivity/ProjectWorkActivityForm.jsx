@@ -31,7 +31,7 @@ import {
   useDefaultValues,
   activityValidationSchema,
   IMPLEMENTATION_WORKGROUP_OPTIONS,
-} from "./utils/form";
+} from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
 
 const ProjectWorkActivitiesForm = ({
   activity,
@@ -312,7 +312,9 @@ const ProjectWorkActivitiesForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !isNewActivity) || mutationState.loading || !isValid}
+            disabled={
+              (!isDirty && !isNewActivity) || mutationState.loading || !isValid
+            }
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />
