@@ -22,9 +22,7 @@ import {
   ADD_WORK_ACTIVITIY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
-import {
-  CREATE_FILE_WORK_ACTIVITY_ATTACHMENT
-} from "src/queries/project";
+import { CREATE_FILE_WORK_ACTIVITY_ATTACHMENT } from "src/queries/project";
 import {
   amountOnChangeHandler,
   taskOrderOnChangeHandler,
@@ -95,7 +93,9 @@ const ProjectWorkActivitiesForm = ({
     isNewActivity ? ADD_WORK_ACTIVITIY : UPDATE_WORK_ACTIVITY
   );
 
-  const [addWorkActivityFile] = useMutation(CREATE_FILE_WORK_ACTIVITY_ATTACHMENT)
+  const [addWorkActivityFile] = useMutation(
+    CREATE_FILE_WORK_ACTIVITY_ATTACHMENT
+  );
 
   if (errorStatuses || errorTaskOrders || mutationState.error) {
     return (
@@ -297,9 +297,13 @@ const ProjectWorkActivitiesForm = ({
               name="work_order_url"
               size="small"
             />
-            {formErrors?.work_order_url && (
+            {formErrors?.work_order_url ? (
               <FormHelperText>
                 {formErrors.work_order_url.message}
+              </FormHelperText>
+            ) : (
+              <FormHelperText>
+                Optionally add a new file attachment to this work activity
               </FormHelperText>
             )}
           </FormControl>
