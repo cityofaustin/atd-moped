@@ -17,8 +17,7 @@ import {
   ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { format } from "date-fns";
-import parseISO from "date-fns/parseISO";
+import { parseISO, format } from "date-fns";
 
 import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
