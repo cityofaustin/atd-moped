@@ -118,7 +118,11 @@ const ProjectSummaryProjectECapris = ({
   return (
     <Grid size={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
-      <Box display="flex" justifyContent="flex-start" sx={fieldBox}>
+      <Box
+        sx={[{
+          display: "flex",
+          justifyContent: "flex-start"
+        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
         {editMode && (
           <>
             <Autocomplete

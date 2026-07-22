@@ -127,19 +127,25 @@ const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
       <SpeedDialAction
         key={"streets"}
         icon={<Typography sx={actionLabelTypographySx}>Streets</Typography>}
-        tooltipTitle={"Streets Base Map"}
-        tooltipPlacement={"top"}
         onClick={() => onBasemapSelect("streets")}
         sx={speedDialActionStreetsSx}
-      />
+        slotProps={{
+          tooltip: {
+            title: "Streets Base Map",
+            placement: "top"
+          }
+        }} />
       <SpeedDialAction
         key={"aerial"}
         icon={<Typography sx={actionLabelTypographySx}>Aerial</Typography>}
-        tooltipTitle={"Aerial Base Map"}
-        tooltipPlacement={"top"}
         sx={speedDialActionAerialSx}
         onClick={() => onBasemapSelect("aerial")}
-      />
+        slotProps={{
+          tooltip: {
+            title: "Aerial Base Map",
+            placement: "top"
+          }
+        }} />
     </SpeedDial>
   );
 };

@@ -52,9 +52,6 @@ const ProjectNotes = ({
   return (
     <ListItem alignItems="flex-start">
       <ListItemText
-        secondaryTypographyProps={{
-          sx: editButtonStyles,
-        }}
         primary={
           <>
             <Typography
@@ -91,6 +88,11 @@ const ProjectNotes = ({
           </>
         }
         secondary={secondary}
+        slotProps={{
+          secondary: {
+            sx: editButtonStyles,
+          }
+        }}
       />
       <ListItemSecondaryAction
         sx={{

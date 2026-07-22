@@ -215,7 +215,9 @@ export const useColumns = ({
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
-            <Stack direction="column" alignItems="flex-start" spacing={0.5}>
+            <Stack direction="column" spacing={0.5} sx={{
+              alignItems: "flex-start"
+            }}>
               <span>{value?.fdu}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>

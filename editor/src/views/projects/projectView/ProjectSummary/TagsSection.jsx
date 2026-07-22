@@ -191,9 +191,12 @@ const TagsSection = ({ projectId, handleSnackbar }) => {
                 <TextField
                   {...params}
                   error={error}
-                  InputLabelProps={{ required: false }}
                   label="Tag"
                   variant="outlined"
+                  slotProps={{
+                    ...params.slotProps,
+                    inputLabel: { required: false }
+                  }}
                 />
               )}
             />

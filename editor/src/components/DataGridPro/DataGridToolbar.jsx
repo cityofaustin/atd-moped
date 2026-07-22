@@ -62,11 +62,10 @@ const DataGridToolbar = ({
         >
           <Box
             sx={{
+              gap: 1,
               display: "flex",
-              alignItems: "center",
-            }}
-            gap={1}
-          >
+              alignItems: "center"
+            }}>
             <Typography variant="h2" color="primary">
               {title}
             </Typography>
