@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import { CheckCircleOutline, ContentCopyOutlined } from "@mui/icons-material";
+import { CheckCircleOutlined, ContentCopyOutlined } from "@mui/icons-material";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 /**
@@ -26,7 +26,7 @@ const CopyTextButton = ({
   const [copied, setCopied] = useState(false);
   const buttonText = copied ? copiedButtonText : copyButtonText;
   const startIcon = copied ? (
-    <CheckCircleOutline color="success" {...iconProps} />
+    <CheckCircleOutlined color="success" {...iconProps} />
   ) : (
     <ContentCopyOutlined {...iconProps} />
   );

@@ -1,13 +1,13 @@
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
-import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import PauseCircleOutlinedIcon from "@mui/icons-material/PauseCircleOutlined";
+import RemoveCircleOutlinedIcon from "@mui/icons-material/RemoveCircleOutlined";
+import PlayCircleOutlinedIcon from "@mui/icons-material/PlayCircleOutlined";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
 
 import theme from "src/theme";
 
-export const defaultIcon = HelpOutlineIcon;
+export const defaultIcon = HelpOutlinedIcon;
 export const defaultLabel = "Unknown";
 
 /**
@@ -34,57 +34,57 @@ export const styleMapping = {
   planned: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   preliminary_engineering: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   scoping: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   preliminary_design: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   design: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   pre_construction: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   bid_award_execution: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   construction_ready: {
     color: white,
     background: backgroundColors.success,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   construction: {
     color: primary,
     background: backgroundColors.warning,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   post_construction: {
     color: white,
     background: backgroundColors.info,
-    icon: PlayCircleOutlineOutlinedIcon,
+    icon: PlayCircleOutlinedIcon,
   },
   potential: {
     color: primary,
     background: backgroundColors.default,
-    icon: RemoveCircleOutlineOutlinedIcon,
+    icon: RemoveCircleOutlinedIcon,
   },
   canceled: {
     color: white,
@@ -94,12 +94,12 @@ export const styleMapping = {
   on_hold: {
     color: primary,
     background: backgroundColors.default,
-    icon: PauseCircleOutlineOutlinedIcon,
+    icon: PauseCircleOutlinedIcon,
   },
   complete: {
     color: white,
     background: backgroundColors.info,
-    icon: CheckCircleOutlineOutlinedIcon,
+    icon: CheckCircleOutlinedIcon,
   },
   default: {
     color: primary,
