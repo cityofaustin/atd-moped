@@ -25,11 +25,11 @@ funding_sources_lookup AS (
         string_agg(
             DISTINCT cfv.source_name, ', '::text
             ORDER BY cfv.source_name
-        ) AS funding_source_name,
+        )               AS funding_source_name,
         string_agg(
             DISTINCT cfv.program_name, ', '::text
             ORDER BY cfv.program_name
-        ) AS funding_program_names,
+        )               AS funding_program_names,
         string_agg(
             DISTINCT
             CASE
@@ -50,7 +50,8 @@ funding_sources_lookup AS (
                     ELSE null::text
                 END
             )
-        ) AS funding_source_and_program_names
+        )               AS funding_source_and_program_names,
+        sum(cfv.amount) AS project_funding_total
     FROM combined_project_funding_view cfv
     INNER JOIN moped_project ON cfv.project_id = moped_project.project_id
     WHERE
@@ -336,6 +337,7 @@ SELECT
     fsl.funding_source_name,
     fsl.funding_program_names,
     fsl.funding_source_and_program_names,
+    fsl.project_funding_total,
     construction_start_dates.construction_start_date,
     phase_dates.min_confirmed_phase_date                                       AS substantial_completion_date,
     CASE
@@ -389,8 +391,7 @@ LEFT JOIN LATERAL (
     ORDER BY combined_project_notes_view.created_at DESC
     LIMIT 1
 ) proj_status_update ON true
-WHERE mp.is_deleted = false
-;
+WHERE mp.is_deleted = false;
 
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
@@ -640,6 +641,7 @@ SELECT
     plv.project_partners,
     plv.task_order_names,
     plv.funding_source_and_program_names        AS funding_sources,
+    plv.project_funding_total,
     plv.project_status_update,
     plv.project_status_update_date_created,
     to_char(
@@ -722,8 +724,7 @@ LEFT JOIN LATERAL
             ) AS result
     ) project_development_status_date
     ON true
-WHERE mpc.is_deleted = false AND plv.is_deleted = false
-;
+WHERE mpc.is_deleted = false AND plv.is_deleted = false;
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS
 SELECT
