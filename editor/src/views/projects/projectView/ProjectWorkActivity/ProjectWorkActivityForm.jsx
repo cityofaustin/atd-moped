@@ -22,7 +22,6 @@ import {
   ADD_WORK_ACTIVITY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
-import { CREATE_FILE_WORK_ACTIVITY_ATTACHMENT } from "src/queries/project";
 import {
   amountOnChangeHandler,
   taskOrderOnChangeHandler,
@@ -93,10 +92,6 @@ const ProjectWorkActivitiesForm = ({
     isNewActivity ? ADD_WORK_ACTIVITY : UPDATE_WORK_ACTIVITY
   );
 
-  const [addWorkActivityFile] = useMutation(
-    CREATE_FILE_WORK_ACTIVITY_ATTACHMENT
-  );
-
   if (errorStatuses || errorTaskOrders || mutationState.error) {
     return (
       <Grid2 container spacing={2}>
@@ -126,7 +121,6 @@ const ProjectWorkActivitiesForm = ({
           onSubmitCallback,
           handleSnackbar,
           isNewActivity,
-          addWorkActivityFile,
         })
       )}
       autoComplete="off"
