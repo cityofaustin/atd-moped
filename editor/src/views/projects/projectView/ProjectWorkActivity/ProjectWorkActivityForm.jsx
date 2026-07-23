@@ -19,7 +19,7 @@ import ControlledSelect from "src/components/forms/ControlledSelect";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import {
   WORK_ACTIVITY_STATUSES_QUERY,
-  ADD_WORK_ACTIVITIY,
+  ADD_WORK_ACTIVITY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
 import { CREATE_FILE_WORK_ACTIVITY_ATTACHMENT } from "src/queries/project";
@@ -90,7 +90,7 @@ const ProjectWorkActivitiesForm = ({
   );
 
   const [mutate, mutationState] = useMutation(
-    isNewActivity ? ADD_WORK_ACTIVITIY : UPDATE_WORK_ACTIVITY
+    isNewActivity ? ADD_WORK_ACTIVITY : UPDATE_WORK_ACTIVITY
   );
 
   const [addWorkActivityFile] = useMutation(

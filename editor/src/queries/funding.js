@@ -305,7 +305,7 @@ export const WORK_ACTIVITY_STATUSES_QUERY = gql`
   }
 `;
 
-export const ADD_WORK_ACTIVITIY = gql`
+export const ADD_WORK_ACTIVITY = gql`
   mutation AddWorkActivity($object: moped_proj_work_activity_insert_input!) {
     insert_moped_proj_work_activity_one(object: $object) {
       id
