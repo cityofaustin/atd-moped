@@ -108,46 +108,12 @@ const FORM_PAYLOAD_FIELDS = [
   "work_order_url",
 ];
 
-const addWorkOrderUrlToActivity = (
-  mutation,
-  data,
-  addWorkActivityFile,
-  isNewActivity,
-  onSubmitCallback
-) => {
-  const entityId = isNewActivity
-    ? mutation.data.insert_moped_proj_work_activity_one.id
-    : data.id;
-  const fileName =
-    getExternalLinkText(data.work_order_url) ?? "Work order link";
-
-  addWorkActivityFile({
-    variables: {
-      object: {
-        project_id: data.project_id,
-        file_name: fileName,
-        file_type: 5,
-        file_size: 0,
-        file_url: data.work_order_url,
-        files_project_work_activities: {
-          data: {
-            entity_id: entityId,
-          },
-        },
-      },
-    },
-  })
-    .then(onSubmitCallback({ mutation }))
-    .catch((error) => console.error(error));
-};
-
 export const onSubmitActivity = ({
   data,
   mutate,
   onSubmitCallback,
   handleSnackbar,
   isNewActivity,
-  addWorkActivityFile,
 }) => {
   const { id } = data;
   const workOrderUrl = data.work_order_url;
@@ -156,6 +122,27 @@ export const onSubmitActivity = ({
     obj[key] = data[key];
     return obj;
   }, {});
+
+  if (workOrderUrl) {
+    const fileName =
+      getExternalLinkText(data.work_order_url) ?? "Work order link";
+
+    payload["work_activity_files"] = {
+      data: [
+        {
+          moped_project_file: {
+            data: {
+              project_id: data.project_id,
+              file_name: fileName,
+              file_type: 5,
+              file_size: 0,
+              file_url: workOrderUrl,
+            },
+          },
+        },
+      ],
+    };
+  }
 
   const variables = { object: payload };
 
@@ -168,20 +155,7 @@ export const onSubmitActivity = ({
   mutate({
     variables,
   })
-    .then((mutation) => {
-      // if work order url included, add as file and attach to record. onSubmitCallback once that mutation is done
-      if (workOrderUrl) {
-        addWorkOrderUrlToActivity(
-          mutation,
-          data,
-          addWorkActivityFile,
-          isNewActivity,
-          onSubmitCallback
-        );
-      } else {
-        onSubmitCallback({ mutation });
-      }
-    })
+    .then((mutation) => onSubmitCallback({ mutation }))
     .catch((error) => {
       if (isNewActivity) {
         handleSnackbar(true, "Error adding work activity", "error", error);
