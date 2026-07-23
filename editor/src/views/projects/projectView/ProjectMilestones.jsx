@@ -130,7 +130,7 @@ const useColumns = ({
           <DataGridDateFieldEdit
             {...props}
             name="date_estimate"
-            label="Completion estimate"
+            label="Target date"
           />
         ),
         width: 185,
@@ -145,7 +145,7 @@ const useColumns = ({
           <DataGridDateFieldEdit
             {...props}
             name="date_actual"
-            label="Date (actual)"
+            label="Actual date"
           />
         ),
         width: 185,
