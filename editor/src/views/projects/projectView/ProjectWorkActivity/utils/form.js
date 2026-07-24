@@ -105,7 +105,6 @@ const FORM_PAYLOAD_FIELDS = [
   "status_id",
   "status_note",
   "task_orders",
-  "work_order_url",
 ];
 
 export const onSubmitActivity = ({
@@ -123,33 +122,44 @@ export const onSubmitActivity = ({
     return obj;
   }, {});
 
-  if (workOrderUrl) {
-    const fileName =
-      getExternalLinkText(data.work_order_url) ?? "Work order link";
-
-    payload["work_activity_files"] = {
-      data: [
-        {
+  const filePayload = workOrderUrl
+    ? isNewActivity
+      ? {
           moped_project_file: {
             data: {
               project_id: data.project_id,
-              file_name: fileName,
+              file_name:
+                getExternalLinkText(data.work_order_url) ?? "Work order link",
               file_type: 5,
               file_size: 0,
               file_url: workOrderUrl,
             },
           },
-        },
-      ],
-    };
-  }
+        }
+      : {
+          project_id: data.project_id,
+          file_name:
+            getExternalLinkText(data.work_order_url) ?? "Work order link",
+          file_type: 5,
+          file_size: 0,
+          file_url: workOrderUrl,
+          files_project_work_activities: {
+            data: {
+              entity_id: id,
+            },
+          },
+        }
+    : null;
 
   const variables = { object: payload };
 
+  // if there is an id, this is an update mutation, otherwise its an add mutation
   if (id) {
     variables.id = id;
+    variables.fileObject = filePayload;
   } else {
     variables.object.project_id = data.project_id;
+    variables.object["work_activity_files"] = { data: [filePayload] };
   }
 
   mutate({
