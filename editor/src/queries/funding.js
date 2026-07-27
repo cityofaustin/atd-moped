@@ -317,7 +317,7 @@ export const UPDATE_WORK_ACTIVITY = gql`
   mutation UpdateWorkActivity(
     $id: Int!
     $object: moped_proj_work_activity_set_input!
-    $fileObject: moped_project_files_insert_input!
+    $fileObjects: [moped_project_files_insert_input]!
   ) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
@@ -325,10 +325,9 @@ export const UPDATE_WORK_ACTIVITY = gql`
     ) {
       id
     }
-    insert_moped_project_files_one(object: $fileObject) {
-      project_file_id
-      files_project_work_activities {
-        id
+    insert_moped_project_files(objects: $fileObjects) {
+      returning {
+        api_response
       }
     }
   }
