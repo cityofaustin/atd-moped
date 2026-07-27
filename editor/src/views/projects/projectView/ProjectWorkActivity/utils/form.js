@@ -151,7 +151,7 @@ export const onSubmitActivity = ({
 
   const filePayload = workOrderUrl
     ? createFileMutationPayload(workOrderUrl, data, isNewActivity)
-    : null;
+    : {};
 
   const variables = { object: payload };
 
