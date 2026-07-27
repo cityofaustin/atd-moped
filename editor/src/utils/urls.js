@@ -41,6 +41,9 @@ export const createBugReportLink = (error, userEmail) => {
 
 // Returns link text based on url when no text prop is provided, can be expanded to include more cases as needed
 export const getExternalLinkText = (url) => {
+  if (typeof url !== "string") {
+    return null;
+  }
   switch (true) {
     case url.toLowerCase().includes("https://atd.knack.com/amd"):
       return "AMD Data Tracker";

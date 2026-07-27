@@ -166,8 +166,6 @@ export const onSubmitActivity = ({
     }
   }
 
-  console.log(variables);
-
   mutate({
     variables,
   })
