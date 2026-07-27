@@ -151,16 +151,14 @@ export const onSubmitActivity = ({
 
   const filePayload = workOrderUrl
     ? createFileMutationPayload(workOrderUrl, data, isNewActivity)
-    : {};
-
-  console.log(filePayload);
+    : null;
 
   const variables = { object: payload };
 
   // if there is an id, this is an update mutation, otherwise its an add mutation
   if (id) {
     variables.id = id;
-    variables.fileObjects = [filePayload];
+    variables.fileObjects = filePayload ? [filePayload] : [];
   } else {
     variables.object.project_id = data.project_id;
     if (workOrderUrl) {
