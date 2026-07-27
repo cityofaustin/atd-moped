@@ -107,6 +107,33 @@ const FORM_PAYLOAD_FIELDS = [
   "task_orders",
 ];
 
+const createFileMutationPayload = (workOrderUrl, data, isNewActivity) => {
+  const fileDetails = {
+    project_id: data.project_id,
+    file_name: getExternalLinkText(data.work_order_url) ?? "Work order link",
+    file_type: 5,
+    file_size: 0,
+    file_url: workOrderUrl,
+  };
+
+  if (isNewActivity) {
+    return {
+      moped_project_file: {
+        data: fileDetails,
+      },
+    };
+  } else {
+    return {
+      ...fileDetails,
+      files_project_work_activities: {
+        data: {
+          entity_id: data.id,
+        },
+      },
+    };
+  }
+};
+
 export const onSubmitActivity = ({
   data,
   mutate,
@@ -123,32 +150,7 @@ export const onSubmitActivity = ({
   }, {});
 
   const filePayload = workOrderUrl
-    ? isNewActivity
-      ? {
-          moped_project_file: {
-            data: {
-              project_id: data.project_id,
-              file_name:
-                getExternalLinkText(data.work_order_url) ?? "Work order link",
-              file_type: 5,
-              file_size: 0,
-              file_url: workOrderUrl,
-            },
-          },
-        }
-      : {
-          project_id: data.project_id,
-          file_name:
-            getExternalLinkText(data.work_order_url) ?? "Work order link",
-          file_type: 5,
-          file_size: 0,
-          file_url: workOrderUrl,
-          files_project_work_activities: {
-            data: {
-              entity_id: id,
-            },
-          },
-        }
+    ? createFileMutationPayload(workOrderUrl, data, isNewActivity)
     : null;
 
   const variables = { object: payload };
