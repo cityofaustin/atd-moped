@@ -332,12 +332,18 @@ export const UPDATE_WORK_ACTIVITY = gql`
 `;
 
 export const DELETE_WORK_ACTIVITY = gql`
-  mutation DeletePurchaseOrder($id: Int!) {
+  mutation DeleteWorkActivity($id: Int!) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
       _set: { is_deleted: true }
     ) {
       id
+    }
+    update_files_project_work_activities(
+      where: { entity_id: { _eq: $id } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
     }
   }
 `;
