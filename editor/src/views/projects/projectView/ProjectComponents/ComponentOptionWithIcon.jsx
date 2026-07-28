@@ -8,6 +8,7 @@ import ComponentIconByLineRepresentation from "src/views/projects/projectView/Pr
  */
 const ComponentOptionWithIcon = ( { option, props }) => {
   const { data: { line_representation = null } = {} } = option;
+  // Destructure the key from the props so it can be applied to the outer Box, and collect the rest of the props for the Box component
   const { key, ...boxProps } = props || {};
   return (
     <Box
