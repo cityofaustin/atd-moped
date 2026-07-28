@@ -17,8 +17,7 @@ import {
   ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { format } from "date-fns";
-import parseISO from "date-fns/parseISO";
+import { parseISO, format } from "date-fns";
 
 import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
@@ -131,10 +130,10 @@ const useColumns = ({
           <DataGridDateFieldEdit
             {...props}
             name="date_estimate"
-            label="Completion estimate"
+            label="Target date"
           />
         ),
-        width: 180,
+        width: 185,
       },
       {
         headerName: "Date completed",
@@ -146,10 +145,10 @@ const useColumns = ({
           <DataGridDateFieldEdit
             {...props}
             name="date_actual"
-            label="Date (actual)"
+            label="Actual date"
           />
         ),
-        width: 180,
+        width: 185,
       },
       {
         headerName: "Complete",
