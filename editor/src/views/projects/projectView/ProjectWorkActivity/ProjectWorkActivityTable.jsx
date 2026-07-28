@@ -82,27 +82,6 @@ const useColumns = ({
         ),
       },
       {
-        headerName: "Status",
-        field: "moped_work_activity_status",
-        defaultVisible: true,
-        valueGetter: (field) => field.name,
-        width: 150,
-      },
-      {
-        headerName: "Amount",
-        field: "contract_amount",
-        width: 150,
-        defaultVisible: true,
-        valueGetter: (field) =>
-          isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
-      },
-      {
-        headerName: "Status update",
-        field: "status_note",
-        width: 150,
-        defaultVisible: true,
-      },
-      {
         headerName: "Files",
         field: "file_url",
         minWidth: 175,
@@ -137,6 +116,27 @@ const useColumns = ({
             </Stack>
           );
         },
+      },
+      {
+        headerName: "Status",
+        field: "moped_work_activity_status",
+        defaultVisible: true,
+        valueGetter: (field) => field.name,
+        width: 150,
+      },
+      {
+        headerName: "Amount",
+        field: "contract_amount",
+        width: 150,
+        defaultVisible: true,
+        valueGetter: (field) =>
+          isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
+      },
+      {
+        headerName: "Status update",
+        field: "status_note",
+        width: 150,
+        defaultVisible: true,
       },
       {
         headerName: "Updated by",
