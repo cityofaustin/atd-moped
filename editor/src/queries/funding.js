@@ -326,9 +326,7 @@ export const UPDATE_WORK_ACTIVITY = gql`
       id
     }
     insert_moped_project_files(objects: $fileObjects) {
-      returning {
-        api_response
-      }
+      affected_rows
     }
   }
 `;
