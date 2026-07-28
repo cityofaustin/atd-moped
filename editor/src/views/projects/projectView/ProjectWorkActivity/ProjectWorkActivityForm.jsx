@@ -5,6 +5,7 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid2 from "@mui/material/Grid2";
@@ -32,6 +33,7 @@ import {
   activityValidationSchema,
   IMPLEMENTATION_WORKGROUP_OPTIONS,
 } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
+import theme from "src/theme";
 
 const ProjectWorkActivitiesForm = ({
   activity,
@@ -280,6 +282,9 @@ const ProjectWorkActivitiesForm = ({
               <FormHelperText>{formErrors.status_note.message}</FormHelperText>
             )}
           </FormControl>
+        </Grid2>
+        <Grid2 sx={{ marginY: theme.spacing(2) }} size={12}>
+          <Divider />
         </Grid2>
         <Grid2 size={12}>
           <FormControl fullWidth error={!!formErrors?.work_order_url}>
