@@ -99,9 +99,13 @@ export default function ControlledAutocomplete({
                 helperText={helperText}
                 error={error}
                 required={isFieldRequired}
-                {...(isFieldRequired
-                  ? { InputLabelProps: { required: true } }
-                  : {})}
+                slotProps={{
+                  ...params.slotProps,
+                  inputLabel: {
+                    ...params.slotProps.inputLabel,
+                    ...(isFieldRequired ? { required: true } : {}),
+                  },
+                }}
               />
             )}
             {...autoCompleteProps}

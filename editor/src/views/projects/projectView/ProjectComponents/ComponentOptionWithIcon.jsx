@@ -6,17 +6,18 @@ import ComponentIconByLineRepresentation from "src/views/projects/projectView/Pr
  * @param {Object} option - Autocomplete option object with label, value, and data about component type
  * @return {JSX.Element}
  */
-const ComponentOptionWithIcon = ({ option, props }) => {
+const ComponentOptionWithIcon = ( { option, props }) => {
   const { data: { line_representation = null } = {} } = option;
-
+  const { key, ...boxProps } = props || {};
   return (
     <Box
+      key={key}
       sx={{
         display: "flex",
         justifyContent: "start",
         alignItems: "center",
       }}
-      {...props}
+      {...boxProps}
     >
       <Box
         sx={(theme) => ({
