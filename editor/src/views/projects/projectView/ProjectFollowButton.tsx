@@ -8,18 +8,18 @@ import { ProjectSummaryQuery } from "src/gql/graphql";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 interface ProjectFollowButtonProps {
+  /** The id of the current project to follow/unfollow */
   projectId: string | undefined;
+  /** Whether the user is currently following the project */
   isFollowing: boolean;
+  /** The refetch function from Apollo */
   refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  /** The function to show the snackbar */
   handleSnackbar: HandleSnackbar;
 }
 
 /**
  * Icon button to follow/unfollow a project
- * @param projectId - The id of the current project to follow/unfollow
- * @param isFollowing - Whether the user is currently following the project
- * @param refetch - The refetch function from Apollo
- * @param handleSnackbar - The function to show the snackbar
  */
 const ProjectFollowButton = ({
   projectId,

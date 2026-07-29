@@ -43,7 +43,7 @@ We use [GraphQL Codegen](https://the-guild.dev/graphql/codegen) with the `client
 
 ### How it works
 
-The Vite dev server runs codegen automatically on startup and re-runs it whenever a file in `src/queries/` is saved using [Vite Plugin GraphQL Codegen](https://www.npmjs.com/package/vite-plugin-graphql-codegen). Make sure the local Hasura stack to be running before starting `npm run dev`.
+The Vite dev server runs codegen automatically on startup and re-runs it whenever a file in `src/queries/` is saved using [Vite Plugin GraphQL Codegen](https://www.npmjs.com/package/vite-plugin-graphql-codegen). Make sure the local Hasura stack is running before starting `npm run dev`.
 
 Queries and mutations must be wrapped with the `graphql()` function from `src/gql` for codegen to generate types for them:
 

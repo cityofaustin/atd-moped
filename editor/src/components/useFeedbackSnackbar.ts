@@ -2,11 +2,21 @@ import React, { useCallback, useState } from "react";
 import { AlertProps } from "@mui/material";
 
 interface SnackbarState {
+  /** Whether the snackbar is open */
   open: boolean;
+  /** The message to display in the snackbar */
   message: string;
+  /** The MUI Alert severity ("success", "error", "warning", "info") */
   severity: AlertProps["severity"] | "";
 }
 
+/**
+ * Function to update the snackbar state
+ * @param open - Whether the snackbar is open
+ * @param message - The message for the snackbar
+ * @param severity - The MUI Alert severity ("success", "error", "warning", "info")
+ * @param error - The error to be displayed and logged
+ */
 export type HandleSnackbar = (
   open: boolean,
   message: string,
@@ -21,9 +31,6 @@ export type HandleSnackbar = (
 export const useFeedbackSnackbar = () => {
   /**
    * State for the snackbar
-   * @property open - Whether the snackbar is open
-   * @property message - The message to display in the snackbar
-   * @property severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
    */
   const [snackbarState, setSnackbarState] = useState<SnackbarState>({
     open: false,
@@ -33,10 +40,6 @@ export const useFeedbackSnackbar = () => {
 
   /**
    * Wrapper around snackbar state setter
-   * @param open - The new state of open
-   * @param message - The message for the snackbar
-   * @param severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
-   * @param error - The error to be displayed and logged
    */
   const handleSnackbar: HandleSnackbar = useCallback(
     (open, message, severity, error) => {
