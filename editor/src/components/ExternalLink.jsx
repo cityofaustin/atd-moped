@@ -1,18 +1,7 @@
 import React from "react";
 import Link from "@mui/material/Link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-
-// Returns link text based on url when no text prop is provided, can be expanded to include more cases as needed
-const getExternalLinkText = (url) => {
-  switch (true) {
-    case url.toLowerCase().includes("https://atd.knack.com/amd"):
-      return "AMD Data Tracker";
-    case url.toLowerCase().includes("https://atd.knack.com/signs-markings"):
-      return "Signs & Markings";
-    default:
-      return null;
-  }
-};
+import { getExternalLinkText } from "src/utils/urls";
 
 /**
  * ExternalLink component

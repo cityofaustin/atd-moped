@@ -8,7 +8,6 @@ import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import ExternalLink from "src/components/ExternalLink";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
@@ -83,42 +82,6 @@ const useColumns = ({
         ),
       },
       {
-        headerName: "Work Order Link",
-        field: "work_order_url",
-        width: 175,
-        defaultVisible: true,
-        renderCell: ({ row }) =>
-          row.work_order_url ? (
-            <ExternalLink
-              url={row.work_order_url}
-              linkColor="primary"
-              useFriendlyUrl
-              showExternalLinkIcon={false}
-            />
-          ) : null,
-      },
-      {
-        headerName: "Status",
-        field: "moped_work_activity_status",
-        defaultVisible: true,
-        valueGetter: (field) => field.name,
-        width: 150,
-      },
-      {
-        headerName: "Amount",
-        field: "contract_amount",
-        width: 150,
-        defaultVisible: true,
-        valueGetter: (field) =>
-          isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
-      },
-      {
-        headerName: "Status update",
-        field: "status_note",
-        width: 150,
-        defaultVisible: true,
-      },
-      {
         headerName: "Files",
         field: "file_url",
         minWidth: 175,
@@ -153,6 +116,27 @@ const useColumns = ({
             </Stack>
           );
         },
+      },
+      {
+        headerName: "Status",
+        field: "moped_work_activity_status",
+        defaultVisible: true,
+        valueGetter: (field) => field.name,
+        width: 150,
+      },
+      {
+        headerName: "Amount",
+        field: "contract_amount",
+        width: 150,
+        defaultVisible: true,
+        valueGetter: (field) =>
+          isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
+      },
+      {
+        headerName: "Status update",
+        field: "status_note",
+        width: 150,
+        defaultVisible: true,
       },
       {
         headerName: "Updated by",
