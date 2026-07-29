@@ -3,11 +3,10 @@ import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutli
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
-
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import theme from "src/theme";
 
-export const defaultIcon = HelpOutlinedIcon;
+export const defaultIcon = HelpOutlineOutlinedIcon;
 export const defaultLabel = "Unknown";
 
 /**
