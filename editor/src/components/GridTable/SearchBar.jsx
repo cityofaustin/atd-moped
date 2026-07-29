@@ -123,43 +123,45 @@ const SearchBar = ({
       <TextField
         fullWidth
         autoFocus
-        inputProps={{
-          style: {
-            paddingTop: 12,
-            paddingBottom: 12,
-          },
-        }}
         onChange={(e) => handleSearchValueChange(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e.key)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SvgIcon fontSize="small" color="action">
-                <SearchIcon />
-              </SvgIcon>
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              {!!loading && (
-                <IconButton>
-                  <CircularProgress size="2rem" />
-                </IconButton>
-              )}
-              <IconButton
-                onClick={toggleAdvancedSearch}
-                sx={getAdvancedSearchSx()}
-                size="large"
-              >
-                <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
         placeholder={getSearchPlaceholder()}
         variant="outlined"
         value={searchFieldValue}
-      />
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SvgIcon fontSize="small" color="action">
+                  <SearchIcon />
+                </SvgIcon>
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                {!!loading && (
+                  <IconButton>
+                    <CircularProgress size="2rem" />
+                  </IconButton>
+                )}
+                <IconButton
+                  onClick={toggleAdvancedSearch}
+                  sx={getAdvancedSearchSx()}
+                  size="large"
+                >
+                  <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+
+          htmlInput: {
+            style: {
+              paddingTop: 12,
+              paddingBottom: 12,
+            },
+          }
+        }} />
       {(filterStateActive || searchTerm) && !advancedSearchAnchor && (
         <FiltersChips
           filters={filters}

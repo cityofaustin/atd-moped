@@ -133,9 +133,6 @@ const StaffForm = ({
             id="first-name"
             label="First Name"
             disabled={!isUserActive}
-            InputLabelProps={{
-              shrink: true,
-            }}
             variant="outlined"
             {...register("first_name")}
             error={!!errors.first_name || !!userApiErrors?.first_name}
@@ -143,7 +140,11 @@ const StaffForm = ({
               errors.first_name?.message ||
               formatApiErrors(userApiErrors?.first_name)
             }
-          />
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              }
+            }} />
         </Grid>
         <Grid
           size={{
@@ -156,9 +157,6 @@ const StaffForm = ({
             id="last-name"
             label="Last Name"
             disabled={!isUserActive}
-            InputLabelProps={{
-              shrink: true,
-            }}
             variant="outlined"
             {...register("last_name")}
             error={!!errors.last_name || !!userApiErrors?.last_name}
@@ -166,7 +164,11 @@ const StaffForm = ({
               errors.last_name?.message ||
               formatApiErrors(userApiErrors?.last_name)
             }
-          />
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              }
+            }} />
         </Grid>
         <Grid
           size={{
@@ -179,16 +181,17 @@ const StaffForm = ({
             id="title"
             label="Title"
             disabled={!isUserActive}
-            InputLabelProps={{
-              shrink: true,
-            }}
             variant="outlined"
             {...register("title")}
             error={!!errors.title || !!userApiErrors?.title}
             helperText={
               errors.title?.message || formatApiErrors(userApiErrors?.title)
             }
-          />
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              }
+            }} />
         </Grid>
         <Grid
           size={{
@@ -201,16 +204,17 @@ const StaffForm = ({
             id="email"
             label="Email"
             disabled={!isUserActive}
-            InputLabelProps={{
-              shrink: true,
-            }}
             variant="outlined"
             {...register("email")}
             error={!!errors.email || !!userApiErrors?.email}
             helperText={
               errors.email?.message || formatApiErrors(userApiErrors?.email)
             }
-          />
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              }
+            }} />
         </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
         <Grid
@@ -226,9 +230,6 @@ const StaffForm = ({
               id="password"
               label="Password"
               type="password"
-              InputLabelProps={{
-                shrink: true,
-              }}
               variant="outlined"
               {...register("password")}
               error={!!errors.password || !!userApiErrors?.password}
@@ -236,7 +237,11 @@ const StaffForm = ({
                 errors.password?.message ||
                 formatApiErrors(userApiErrors?.password)
               }
-            />
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                }
+              }} />
           ) : (
             <TextField
               fullWidth
@@ -244,12 +249,14 @@ const StaffForm = ({
               label="Password"
               disabled={true}
               {...register("password")}
-              InputLabelProps={{
-                shrink: true,
-              }}
               variant="outlined"
               error={!!errors.password || !!userApiErrors?.password}
               helperText={"Password not required for non-login users"}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                }
+              }}
             />
           )}
         </Grid>
@@ -396,12 +403,13 @@ const StaffForm = ({
             rows={4}
             id="note"
             label="Note"
-            InputLabelProps={{
-              shrink: true,
-            }}
             variant="outlined"
             {...register("note")}
-          />
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              }
+            }} />
         </Grid>
         <Grid
           size={{

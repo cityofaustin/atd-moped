@@ -13,7 +13,7 @@ import {
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { DeleteOutline, Close, Search, PlaylistAdd } from "@mui/icons-material";
+import { DeleteOutlined, Close, Search, PlaylistAdd } from "@mui/icons-material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "src/queries/project";
 import {
@@ -516,7 +516,7 @@ const Filters = ({
                     onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                     size="large"
                   >
-                    <DeleteOutline sx={deleteIconStyle} />
+                    <DeleteOutlined sx={deleteIconStyle} />
                   </IconButton>
                 </Grid>
                 <Grid
@@ -529,7 +529,7 @@ const Filters = ({
                     variant="outlined"
                     onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                   >
-                    <DeleteOutline />
+                    <DeleteOutlined />
                   </Button>
                 </Grid>
               </>

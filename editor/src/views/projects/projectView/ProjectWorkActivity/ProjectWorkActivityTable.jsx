@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import IconButton from "@mui/material/IconButton";
 import ExternalLink from "src/components/ExternalLink";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
@@ -147,7 +147,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
                 sx={{ color: "inherit" }}
                 onClick={() => onDeleteActivity({ id: row.id })}
               >
-                <DeleteOutlineIcon />
+                <DeleteOutlinedIcon />
               </IconButton>
             </div>
           );
