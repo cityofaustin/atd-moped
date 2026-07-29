@@ -15,6 +15,9 @@ const config: CodegenConfig = {
       config: {
         skipTypeNameForRoot: true,
         nonOptionalTypename: true,
+        scalars: {
+          timestamptz: "string",
+        },
       },
     },
   },
