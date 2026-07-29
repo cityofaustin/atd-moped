@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1779394583779_fix-timezone-labels/up.sql
+-- Most recent migration: moped-database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS
 SELECT

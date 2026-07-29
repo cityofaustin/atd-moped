@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1779394583779_fix-timezone-labels/up.sql
+-- Most recent migration: moped-database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
 WITH work_types AS (
@@ -40,7 +40,8 @@ comp_geography AS (
         string_agg(DISTINCT feature_union.signal_id::text, ', '::text)             AS signal_ids,
         sum(
             feature_union.length_feet
-        )                                                                          AS length_feet_total
+        )                                                                          AS length_feet_total,
+        count(feature_union.id)                                                    AS feature_count
     FROM (SELECT
         feature_signals.id,
         feature_signals.component_id,
@@ -188,6 +189,7 @@ SELECT
     round(
         comp_geography.length_feet_total::numeric / 5280::numeric, 2
     )                                           AS length_miles_total,
+    comp_geography.feature_count,
     mc.component_name,
     mc.component_subtype,
     mc.component_name_full,
@@ -242,6 +244,7 @@ SELECT
     plv.project_partners,
     plv.task_order_names,
     plv.funding_source_and_program_names        AS funding_sources,
+    plv.project_funding_total,
     plv.project_status_update,
     plv.project_status_update_date_created,
     to_char(
