@@ -17,7 +17,15 @@ export default defineConfig(() => {
     },
     /* Use SSL for Cognito sign-in using callback set up with port 3000 in local development */
     plugins: [
-      react(),
+      react({
+        plugins: [
+          [
+            /* https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size */
+            "@swc-contrib/plugin-graphql-codegen-client-preset",
+            { artifactDirectory: "./src/gql", gqlTagName: "graphql" },
+          ],
+        ],
+      }),
       basicSsl(),
       checker({
         eslint: {
