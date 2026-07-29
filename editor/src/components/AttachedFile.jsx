@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Fade,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -91,7 +90,13 @@ const AttachedFile = ({
         keepMounted
         open={menuOpen}
         onClose={handleMenuClose}
-        TransitionComponent={Fade}
+        slotProps={{
+          transition: {
+            fade: {
+              in: true,
+            },
+          },
+        }}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "center",

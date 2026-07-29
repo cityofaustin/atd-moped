@@ -7,7 +7,7 @@ import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFund
 import NotableCellPopover from "src/components/NotableCellPopover";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import {
@@ -246,7 +246,9 @@ export const useColumns = ({
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
-            <Stack direction="column" alignItems="flex-start" spacing={0.5}>
+            <Stack direction="column" spacing={0.5} sx={{
+              alignItems: "flex-start"
+            }}>
               <span>{value?.fdu}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>
@@ -468,7 +470,7 @@ export const useColumns = ({
                 disabled={!!row.is_synced_from_ecapris}
                 onClick={handleDeleteOpen(id)}
               >
-                <DeleteOutlineIcon />
+                <DeleteOutlinedIcon />
               </IconButtonWithTooltip>
             </>
           ),

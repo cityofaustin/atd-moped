@@ -84,8 +84,6 @@ const LookupAutocompleteComponent = ({
     <Autocomplete
       sx={{ width: "100%", mx: 1, alignContent: "center" }}
       value={value?.[`${name}_id`] ? value : null}
-      // use customized popper component so menu expands to fullwidth
-      PopperComponent={fullWidthPopper && FullWidthPopper}
       id={name}
       filterOptions={filterOptions}
       options={options}
@@ -96,7 +94,8 @@ const LookupAutocompleteComponent = ({
           inputRef={ref}
           {...textFieldProps}
           slotProps={{
-            htmlInput: { "data-1p-ignore": true, ...params.inputProps },
+            ...params.slotProps,
+            htmlInput: { "data-1p-ignore": true, ...params.slotProps.htmlInput }
           }}
         />
       )}
@@ -118,7 +117,9 @@ const LookupAutocompleteComponent = ({
       onClose={() => {
         setOpen(false);
       }}
-    />
+      slots={{
+        popper: fullWidthPopper && FullWidthPopper
+      }} />
   );
 };
 

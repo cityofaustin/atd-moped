@@ -5,7 +5,7 @@ import {
   Card,
   CircularProgress,
   Divider,
-  Grid2,
+  Grid,
   List,
   Typography,
   FormControlLabel,
@@ -331,21 +331,21 @@ const ProjectNotes = ({
 
   if (error) {
     return (
-      <Grid2 container spacing={2}>
-        <Grid2 size={12}>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <Alert severity="error">
             Something went wrong. Refresh the page to try again.
           </Alert>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   }
 
   return (
-    <Grid2 container spacing={2}>
+    <Grid container spacing={2}>
       {/*New Note Form*/}
       {!isEditingNote && (
-        <Grid2 size={12}>
+        <Grid size={12}>
           <Card>
             <NoteInput
               noteText={noteText}
@@ -363,12 +363,12 @@ const ProjectNotes = ({
               validator={isStatusUpdate ? validator : null}
             />
           </Card>
-        </Grid2>
+        </Grid>
       )}
       {/* Visible note types can only be filtered on the Notes Tab.
           The status edit modal only shows statuses, and does not show internal notes */}
       {!isStatusEditModal && (
-        <Grid2
+        <Grid
           container
           sx={{
             justifyContent: "space-between",
@@ -376,7 +376,7 @@ const ProjectNotes = ({
           }}
           size={12}
         >
-          <Grid2>
+          <Grid>
             <NoteTypeButton
               filterNoteType={filterNoteType}
               setFilterNoteType={setFilterNoteType}
@@ -397,8 +397,8 @@ const ProjectNotes = ({
                 disabledMessage="Enable eCAPRIS syncing to filter to eCAPRIS statuses"
               />
             ))}
-          </Grid2>
-          <Grid2>
+          </Grid>
+          <Grid>
             <Tooltip
               placement="top"
               title={
@@ -425,11 +425,11 @@ const ProjectNotes = ({
                 ) : null}
               </Box>
             </Tooltip>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       )}
       {/*Now the notes*/}
-      <Grid2 size={12}>
+      <Grid size={12}>
         <Card>
           {loading || !displayNotes ? (
             <CircularProgress />
@@ -505,8 +505,8 @@ const ProjectNotes = ({
             </Typography>
           )}
         </Card>
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 };
 

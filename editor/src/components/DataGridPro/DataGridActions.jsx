@@ -8,11 +8,14 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   EditOutlined as EditOutlinedIcon,
-  DeleteOutline as DeleteOutlineIcon,
+  DeleteOutlined as DeleteOutlinedIcon,
   AttachFileOutlined as AttachFileOutlinedIcon,
 } from "@mui/icons-material";
 
-import { defaultEditColumnIconStyle } from "src/components/DataGridPro/utils/helpers.js";
+import {
+  defaultEditColumnIconStyle,
+  isEmpty,
+} from "src/components/DataGridPro/utils/helpers.js";
 
 /** Component for Data Grid table action buttons
  * @param {Number} id - Data Grid row id (same as project id)
@@ -23,7 +26,7 @@ import { defaultEditColumnIconStyle } from "src/components/DataGridPro/utils/hel
  * @param {Function} handleSaveClick - handles save button click, optionally render save button if handler is passed
  * @param {Function} handleEditClick - handles edit button click, optionally render edit button if handler is passed
  * @param {Function} handleFileAttachmentClick - handles attachment button click, optionally render attachment button if handler is passed
- * @param {React.ReactNode} deleteIcon - custom delete icon, defaults to DeleteOutlineIcon
+ * @param {React.ReactNode} deleteIcon - custom delete icon, defaults to DeleteOutlinedIcon
  * @param {Boolean} editDisabled - disables edit button when true, optional
  * @param {Boolean} deleteDisabled - disables delete button when true, optional
  * @return {JSX.Element}
@@ -57,7 +60,7 @@ const DataGridActions = ({
 
     for (const field of requiredFields) {
       const hasError = Boolean(editState[id]?.[field]?.error);
-      const hasValue = Boolean(editState[id]?.[field]?.value);
+      const hasValue = !isEmpty(editState[id]?.[field]?.value);
 
       if (hasError || !hasValue) {
         return false;
@@ -94,7 +97,7 @@ const DataGridActions = ({
   }
 
   const DeleteIcon = deleteIcon || (
-    <DeleteOutlineIcon sx={defaultEditColumnIconStyle} />
+    <DeleteOutlinedIcon sx={defaultEditColumnIconStyle} />
   );
 
   return [

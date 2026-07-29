@@ -1,4 +1,4 @@
-import React from "react";
+import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { getExternalLinkText } from "src/utils/urls";
@@ -29,12 +29,14 @@ const ExternalLink = ({
   const displayText = friendlyText || text || url;
 
   return (
-    <span
+    <Box
+      component="span"
       onClick={(e) => {
         if (stopPropagation) {
           e.stopPropagation();
         }
       }}
+      sx={{ overflow: "hidden", minWidth: 0 }}
     >
       <Link
         href={url}
@@ -57,7 +59,7 @@ const ExternalLink = ({
           />
         )}
       </Link>
-    </span>
+    </Box>
   );
 };
 

@@ -66,7 +66,9 @@ const ViewOnlyTextField = ({
       name={field}
       type="text"
       value={textFieldValue || ""}
-      InputProps={{ readOnly: true, disableUnderline: true }}
+      slotProps={{
+        input: { readOnly: true, disableUnderline: true }
+      }}
     />
   );
 };

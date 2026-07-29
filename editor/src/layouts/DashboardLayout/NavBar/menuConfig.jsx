@@ -1,5 +1,5 @@
 import React from "react";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
@@ -20,7 +20,7 @@ export const helpItems = [
     linkType: "external",
     link: serviceRequestLink,
     title: "Contact support",
-    Icon: <MailOutlineIcon fontSize="small" />,
+    Icon: <MailOutlinedIcon fontSize="small" />,
   },
   {
     linkType: "external",
