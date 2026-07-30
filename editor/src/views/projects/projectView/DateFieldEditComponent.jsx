@@ -25,10 +25,15 @@ const DateFieldEditComponent = React.forwardRef(
         format="MM/dd/yyyy"
         value={value ? parseISO(value) : null}
         onChange={handleDateChange}
-        InputProps={{ style: { minWidth: "100px" } }}
         slotProps={{
           actionBar: { actions: ["accept", "cancel", "clear"] },
-          textField: textFieldProps,
+          textField: {
+            ...textFieldProps,
+
+            slotProps: {
+              htmlInput: { style: { minWidth: "100px" } },
+            },
+          },
         }}
         {...props}
       />

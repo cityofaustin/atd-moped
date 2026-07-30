@@ -5,6 +5,7 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
@@ -19,7 +20,7 @@ import ControlledSelect from "src/components/forms/ControlledSelect";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import {
   WORK_ACTIVITY_STATUSES_QUERY,
-  ADD_WORK_ACTIVITIY,
+  ADD_WORK_ACTIVITY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
 import {
@@ -31,7 +32,8 @@ import {
   useDefaultValues,
   activityValidationSchema,
   IMPLEMENTATION_WORKGROUP_OPTIONS,
-} from "./utils/form";
+} from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
+import theme from "src/theme";
 
 const ProjectWorkActivitiesForm = ({
   activity,
@@ -89,7 +91,7 @@ const ProjectWorkActivitiesForm = ({
   );
 
   const [mutate, mutationState] = useMutation(
-    isNewActivity ? ADD_WORK_ACTIVITIY : UPDATE_WORK_ACTIVITY
+    isNewActivity ? ADD_WORK_ACTIVITY : UPDATE_WORK_ACTIVITY
   );
 
   if (errorStatuses || errorTaskOrders || mutationState.error) {
@@ -281,6 +283,9 @@ const ProjectWorkActivitiesForm = ({
             )}
           </FormControl>
         </Grid>
+        <Grid sx={{ marginY: theme.spacing(2) }} size={12}>
+          <Divider />
+        </Grid>
         <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.work_order_url}>
             <ControlledTextInput
@@ -291,9 +296,13 @@ const ProjectWorkActivitiesForm = ({
               name="work_order_url"
               size="small"
             />
-            {formErrors?.work_order_url && (
+            {formErrors?.work_order_url ? (
               <FormHelperText>
                 {formErrors.work_order_url.message}
+              </FormHelperText>
+            ) : (
+              <FormHelperText>
+                Optionally add a new file attachment to this work activity
               </FormHelperText>
             )}
           </FormControl>
@@ -312,7 +321,9 @@ const ProjectWorkActivitiesForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !isNewActivity) || mutationState.loading || !isValid}
+            disabled={
+              (!isDirty && !isNewActivity) || mutationState.loading || !isValid
+            }
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />

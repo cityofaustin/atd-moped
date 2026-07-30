@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1779394583779_fix-timezone-labels/up.sql
+-- Most recent migration: moped-database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS
 SELECT
@@ -10,5 +10,5 @@ SELECT
     st_asgeojson(dump.geom)               AS exploded_geometry,
     component_arcgis_online_view.project_updated_at
 FROM component_arcgis_online_view,
-LATERAL st_dump (st_geomfromgeojson (component_arcgis_online_view.geometry)) dump (path, geom)
-WHERE st_geometrytype (st_geomfromgeojson (component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;
+LATERAL st_dump(st_geomfromgeojson(component_arcgis_online_view.geometry)) dump(path, geom)
+WHERE st_geometrytype(st_geomfromgeojson(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;

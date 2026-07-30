@@ -80,15 +80,20 @@ function DrawerContent({
           padding: theme.spacing(1),
         })}
       >
-        <Grid container alignItems="center">
+        <Grid container sx={{
+          alignItems: "center"
+        }}>
           <Grid
-            flexGrow={1}
-            display={showDrawerContent && open ? "flex" : "none"}
-          >
+            sx={{
+              flexGrow: 1,
+              display: showDrawerContent && open ? "flex" : "none"
+            }}>
             <Typography
               variant="h2"
               color={(theme) => theme.palette.text.primary}
-              paddingLeft={(theme) => theme.spacing(1)}
+              sx={{
+                paddingLeft: (theme) => theme.spacing(1)
+              }}
             >
               {title}
             </Typography>
@@ -109,12 +114,13 @@ function DrawerContent({
         </Grid>
       </Grid>
       <Box
-        flexGrow={1}
-        display={showDrawerContent && open ? "flex" : "none"}
-        overflow="scroll"
-        padding={(theme) => theme.spacing(1)}
-        paddingLeft={(theme) => theme.spacing(2)}
-      >
+        sx={{
+          flexGrow: 1,
+          display: showDrawerContent && open ? "flex" : "none",
+          overflow: "scroll",
+          padding: (theme) => theme.spacing(1),
+          paddingLeft: (theme) => theme.spacing(2)
+        }}>
         {children}
       </Box>
     </>

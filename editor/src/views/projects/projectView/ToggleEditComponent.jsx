@@ -44,9 +44,12 @@ const ToggleEditComponent = ({ id, value, field, hasFocus }) => {
           onChange={handleChange}
           color="primary"
           name={field}
-          inputProps={{ "aria-label": "primary checkbox" }}
-          inputRef={ref}
-        />
+          slotProps={{
+            input: {
+              "aria-label": "primary checkbox",
+              ref: ref
+            }
+          }} />
       </Grid>
     </Grid>
   );

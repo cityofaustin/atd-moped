@@ -138,7 +138,9 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                         color="primary"
                         checked={value}
                         onChange={onChange}
-                        inputProps={{ "aria-label": "primary checkbox" }}
+                        slotProps={{
+                          input: { "aria-label": "primary checkbox" }
+                        }}
                       />
                     }
                   />

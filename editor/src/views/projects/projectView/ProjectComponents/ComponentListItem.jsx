@@ -10,7 +10,7 @@ import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
 import { Grid, Chip } from "@mui/material";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { COLORS } from "./mapStyleSettings";
 import ProjectStatusBadge from "../ProjectStatusBadge";
 import {
@@ -49,7 +49,7 @@ export default function ComponentListItem({
         })}
         ref={componentRef}
       >
-        {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
+        {isComponentMapped ? Icon : <ErrorOutlinedIcon color="error" />}
         <Box>
           <Box
             sx={{

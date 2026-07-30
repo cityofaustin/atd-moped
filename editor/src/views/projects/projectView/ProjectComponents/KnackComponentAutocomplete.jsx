@@ -85,12 +85,14 @@ const KnackComponentAutocomplete = React.forwardRef(
             {...params}
             inputRef={ref}
             error={error}
-            InputLabelProps={{ required: false }}
             label={componentLabel}
             variant="outlined"
             size="small"
             {...textInputOptions}
-          />
+            slotProps={{
+              ...params.slotProps,
+              inputLabel: { required: false }
+            }} />
         )}
         value={value}
       />

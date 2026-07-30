@@ -6,6 +6,7 @@ import {
   INT_4_MAX,
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
+import { getExternalLinkText } from "src/utils/urls";
 
 export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
   "Arterial Management",
@@ -104,8 +105,34 @@ const FORM_PAYLOAD_FIELDS = [
   "status_id",
   "status_note",
   "task_orders",
-  "work_order_url",
 ];
+
+const createFileMutationPayload = (workOrderUrl, data, isNewActivity) => {
+  const fileDetails = {
+    project_id: data.project_id,
+    file_name: getExternalLinkText(data.work_order_url) ?? "Work order link",
+    file_type: 5,
+    file_size: 0,
+    file_url: workOrderUrl,
+  };
+
+  if (isNewActivity) {
+    return {
+      moped_project_file: {
+        data: fileDetails,
+      },
+    };
+  } else {
+    return {
+      ...fileDetails,
+      files_project_work_activities: {
+        data: {
+          entity_id: data.id,
+        },
+      },
+    };
+  }
+};
 
 export const onSubmitActivity = ({
   data,
@@ -115,18 +142,28 @@ export const onSubmitActivity = ({
   isNewActivity,
 }) => {
   const { id } = data;
+  const workOrderUrl = data.work_order_url;
 
   const payload = FORM_PAYLOAD_FIELDS.reduce((obj, key) => {
     obj[key] = data[key];
     return obj;
   }, {});
 
+  const filePayload = workOrderUrl
+    ? createFileMutationPayload(workOrderUrl, data, isNewActivity)
+    : null;
+
   const variables = { object: payload };
 
+  // if there is an id, this is an update mutation, otherwise its an add mutation
   if (id) {
     variables.id = id;
+    variables.fileObjects = filePayload ? [filePayload] : [];
   } else {
     variables.object.project_id = data.project_id;
+    if (workOrderUrl) {
+      variables.object["work_activity_files"] = { data: [filePayload] };
+    }
   }
 
   mutate({

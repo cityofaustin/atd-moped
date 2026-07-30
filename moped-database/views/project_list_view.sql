@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1778169083589_speed_up_project_list_view/up.sql
+-- Most recent migration: moped-database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS
 WITH project_person_list_lookup AS (
@@ -48,7 +48,10 @@ funding_sources_lookup AS (
                     ELSE null::text
                 END
             )
-        ) AS funding_source_and_program_names
+        ) AS funding_source_and_program_names,
+        sum(
+            cfv.amount
+        ) AS project_funding_total
     FROM combined_project_funding_view cfv
     INNER JOIN moped_project ON cfv.project_id = moped_project.project_id
     WHERE
@@ -334,6 +337,7 @@ SELECT
     fsl.funding_source_name,
     fsl.funding_program_names,
     fsl.funding_source_and_program_names,
+    fsl.project_funding_total,
     construction_start_dates.construction_start_date,
     phase_dates.min_confirmed_phase_date                                       AS substantial_completion_date,
     CASE

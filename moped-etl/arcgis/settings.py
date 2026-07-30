@@ -30,6 +30,7 @@ query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_
     ecapris_subproject_id
     feature_ids
     funding_sources
+    project_funding_total
     geometry
     geometry_type
     interim_project_component_id
@@ -38,6 +39,7 @@ query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_
     knack_data_tracker_project_record_id
     length_feet_total
     length_miles_total
+    feature_count
     line_geometry
     parent_project_id
     parent_project_name
