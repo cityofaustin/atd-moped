@@ -352,7 +352,7 @@ const ComponentTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-        confirmationText="Are you sure you want to remove this component tag? It will be hidden from the data dictionary and downstream views."
+        confirmationText="Are you sure you want to remove this component tag? It will be hidden from the data dictionary but remain visible on downstream components and views."
         actionButtonText="Remove"
         mutationPending={mutationPending}
       />
