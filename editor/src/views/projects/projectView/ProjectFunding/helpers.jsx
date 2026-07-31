@@ -246,9 +246,13 @@ export const useColumns = ({
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
-            <Stack direction="column" spacing={0.5} sx={{
-              alignItems: "flex-start"
-            }}>
+            <Stack
+              direction="column"
+              spacing={0.5}
+              sx={{
+                alignItems: "flex-start",
+              }}
+            >
               <span>{value?.fdu}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>
@@ -427,8 +431,18 @@ export const useColumns = ({
         editable: false,
         width: 110,
         type: "actions",
-        renderCell: ({ id, row }) =>
-          row.is_manual ? (
+        renderCell: ({ id, row }) => {
+          const isOverride =
+            !row.should_use_ecapris_amount &&
+            !row.is_manual &&
+            !row.is_synced_from_ecapris;
+          const deleteTooltipMessage = isOverride
+            ? "Removing this row will restore the synced eCAPRIS FDU"
+            : row.is_synced_from_ecapris
+              ? "Switch off eCAPRIS sync to remove synced rows"
+              : null;
+
+          return row.is_manual ? (
             <DataGridActions
               id={id}
               rowModesModel={rowModesModel}
@@ -460,11 +474,7 @@ export const useColumns = ({
                 <AttachFileOutlinedIcon />
               </IconButton>
               <IconButtonWithTooltip
-                title={
-                  row.is_synced_from_ecapris
-                    ? "Switch off eCAPRIS sync to remove synced rows"
-                    : null
-                }
+                title={deleteTooltipMessage}
                 aria-label="delete"
                 iconButtonProps={{ sx: { color: "inherit", padding: "5px" } }}
                 disabled={!!row.is_synced_from_ecapris}
@@ -473,7 +483,8 @@ export const useColumns = ({
                 <DeleteOutlinedIcon />
               </IconButtonWithTooltip>
             </>
-          ),
+          );
+        },
       },
     ];
   }, [
