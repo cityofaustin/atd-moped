@@ -236,6 +236,8 @@ export const useColumns = ({
   logUserEvent,
   handleSnackbar,
   refetch,
+  shouldSyncEcaprisFunding,
+  projectECaprisSubprojectId,
 }) =>
   useMemo(() => {
     return [
@@ -432,15 +434,16 @@ export const useColumns = ({
         width: 110,
         type: "actions",
         renderCell: ({ id, row }) => {
-          const isOverride =
-            !row.should_use_ecapris_amount &&
-            !row.is_manual &&
-            !row.is_synced_from_ecapris;
-          const deleteTooltipMessage = isOverride
-            ? "Removing this row will restore the synced eCAPRIS FDU"
-            : row.is_synced_from_ecapris
-              ? "Switch off eCAPRIS sync to remove synced rows"
-              : null;
+          const doesFDUBelongToCurrentSubproject =
+            row.ecapris_subproject_id === projectECaprisSubprojectId;
+          const wouldDeletingSyncedRowRestoreSyncedRow =
+            !row.is_synced_from_ecapris && doesFDUBelongToCurrentSubproject;
+          const deleteTooltipMessage =
+            wouldDeletingSyncedRowRestoreSyncedRow && shouldSyncEcaprisFunding
+              ? "Removing this row will restore the synced eCAPRIS FDU"
+              : row.is_synced_from_ecapris
+                ? "Switch off eCAPRIS sync to remove synced rows"
+                : null;
 
           return row.is_manual ? (
             <DataGridActions
@@ -501,4 +504,6 @@ export const useColumns = ({
     logUserEvent,
     refetch,
     handleSnackbar,
+    shouldSyncEcaprisFunding,
+    projectECaprisSubprojectId,
   ]);
