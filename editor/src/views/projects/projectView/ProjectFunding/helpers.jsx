@@ -436,10 +436,10 @@ export const useColumns = ({
         renderCell: ({ id, row }) => {
           const doesFDUBelongToCurrentSubproject =
             row.ecapris_subproject_id === projectECaprisSubprojectId;
-          const wouldDeletingSyncedRowRestoreSyncedRow =
+          const wouldDeletingRowRestoreSyncedRow =
             !row.is_synced_from_ecapris && doesFDUBelongToCurrentSubproject;
           const deleteTooltipMessage =
-            wouldDeletingSyncedRowRestoreSyncedRow && shouldSyncEcaprisFunding
+            wouldDeletingRowRestoreSyncedRow && shouldSyncEcaprisFunding
               ? "Removing this row will restore the synced eCAPRIS FDU"
               : row.is_synced_from_ecapris
                 ? "Switch off eCAPRIS sync to remove synced rows"

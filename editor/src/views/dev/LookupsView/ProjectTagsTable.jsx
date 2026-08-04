@@ -348,7 +348,7 @@ const ProjectTagsTable = ({ canEdit, handleSnackbar, onScrollToTop }) => {
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-        confirmationText="Are you sure you want to remove this project tag? It will be hidden from the data dictionary but remain visible on downstream projects and views."
+        confirmationText="Are you sure you want to remove this project tag? It will be hidden from the data dictionary and tag dropdowns but remain visible on existing tagged projects and downstream database views."
         actionButtonText="Remove"
         mutationPending={mutationPending}
       />
