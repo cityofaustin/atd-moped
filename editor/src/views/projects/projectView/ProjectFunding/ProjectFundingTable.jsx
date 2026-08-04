@@ -2,13 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 
-import {
-  Button,
-  FormControlLabel,
-  Grid,
-  Switch,
-  Tooltip,
-} from "@mui/material";
+import { Button, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   GridRowModes,
@@ -431,6 +425,8 @@ const ProjectFundingTable = ({
     logUserEvent,
     refetch,
     handleSnackbar,
+    shouldSyncEcaprisFunding,
+    projectECaprisSubprojectId: eCaprisSubprojectId,
   });
 
   const handleECaprisSwitch = () => {
