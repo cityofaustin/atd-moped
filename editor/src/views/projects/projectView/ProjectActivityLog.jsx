@@ -249,12 +249,11 @@ const ProjectActivityLog = () => {
                       }}
                     >
                       <Box
-                        p={0}
                         sx={{
                           p: 0,
-                          display: "flex",
-                        }}
-                      >
+                          p: 0,
+                          display: "flex"
+                        }}>
                         <Box
                           sx={{
                             p: 0,

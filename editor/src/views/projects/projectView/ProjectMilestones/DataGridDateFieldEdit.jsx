@@ -18,7 +18,7 @@ const DataGridDateFieldEdit = ({ value, hasFocus, id, field, ...props }) => {
 
   React.useEffect(() => {
     if (hasFocus) {
-      ref.current.focus();
+      ref.current?.focusField();
     }
   }, [hasFocus]);
 
@@ -34,13 +34,17 @@ const DataGridDateFieldEdit = ({ value, hasFocus, id, field, ...props }) => {
   return (
     <MobileDatePicker
       sx={{ mx: 1 }}
-      inputRef={ref}
       format="MM/dd/yyyy"
       value={value ? parseISO(value) : null}
       onChange={handleChange}
-      InputProps={{ style: { minWidth: "100px" } }}
       slotProps={{
         actionBar: { actions: ["accept", "cancel", "clear"] },
+        field: { fieldRef: ref },
+        textField: {
+          slotProps: {
+            htmlInput: { style: { minWidth: "100px" } },
+          },
+        },
       }}
       {...props}
     />

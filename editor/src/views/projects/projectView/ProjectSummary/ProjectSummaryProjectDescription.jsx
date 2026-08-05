@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 
@@ -96,7 +96,7 @@ const ProjectSummaryProjectDescription = ({
   };
 
   return (
-    <Grid2 sx={fieldGridItem} size={12}>
+    <Grid sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Description</Typography>
       <Box
         component="form"
@@ -147,7 +147,7 @@ const ProjectSummaryProjectDescription = ({
           />
         )}
       </Box>
-    </Grid2>
+    </Grid>
   );
 };
 

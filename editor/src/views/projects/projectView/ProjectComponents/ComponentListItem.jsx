@@ -9,8 +9,8 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
-import { Grid2, Chip } from "@mui/material";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { Grid, Chip } from "@mui/material";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import { COLORS } from "./mapStyleSettings";
 import ProjectStatusBadge from "../ProjectStatusBadge";
 import {
@@ -49,7 +49,7 @@ export default function ComponentListItem({
         })}
         ref={componentRef}
       >
-        {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
+        {isComponentMapped ? Icon : <ErrorOutlinedIcon color="error" />}
         <Box>
           <Box
             sx={{
@@ -125,9 +125,9 @@ export default function ComponentListItem({
                   paddingLeft: theme.spacing(4),
                 })}
               >
-                <Grid2 container spacing={0.5}>
+                <Grid container spacing={0.5}>
                   {component.moped_proj_component_work_types.map((element) => (
-                    <Grid2 key={element.moped_work_type.id}>
+                    <Grid key={element.moped_work_type.id}>
                       <Chip
                         label={element.moped_work_type.name}
                         sx={{
@@ -141,9 +141,9 @@ export default function ComponentListItem({
                           height: "1.75rem",
                         }}
                       />
-                    </Grid2>
+                    </Grid>
                   ))}
-                </Grid2>
+                </Grid>
               </ListItem>
             )}
             {component.description && (

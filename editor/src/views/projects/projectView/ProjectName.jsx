@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid2, Box, Typography } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 
 /**
  * Component to display the project name and secondary name
@@ -8,8 +8,8 @@ import { Grid2, Box, Typography } from "@mui/material";
  * @returns {JSX.Element}
  */
 const ProjectName = ({ projectData, setIsEditing }) => (
-  <Grid2 container>
-    <Grid2 size={12}>
+  <Grid container>
+    <Grid size={12}>
       <Box sx={{ display: "inline", cursor: "pointer" }}>
         <Typography
           color="textPrimary"
@@ -34,8 +34,8 @@ const ProjectName = ({ projectData, setIsEditing }) => (
           </Typography>
         </Box>
       ) : null}
-    </Grid2>
-  </Grid2>
+    </Grid>
+  </Grid>
 );
 
 export default ProjectName;

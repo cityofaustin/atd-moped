@@ -2,24 +2,39 @@ import { useMemo, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import CircularProgress from "@mui/material/CircularProgress";
-import Button from "@mui/material/Button";
+import { Button, Divider, Stack, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import IconButton from "@mui/material/IconButton";
-import ExternalLink from "src/components/ExternalLink";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
 import { getUserFullName } from "src/utils/userNames";
 import { WORK_ACTIVITY_QUERY, DELETE_WORK_ACTIVITY } from "src/queries/funding";
+import {
+  CREATE_FILE_WORK_ACTIVITY_ATTACHMENT,
+  ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY,
+  DETACH_FILE_WORK_ACTIVITY_ATTACHMENT,
+  FILE_TYPES_LOOKUP,
+} from "src/queries/project";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
+import AttachedFile from "src/components/AttachedFile";
 import FormattedDateString from "src/utils/FormattedDateString";
+import { createWorkActivityFileConnectionData } from "src/views/projects/projectView/ProjectWorkActivity/helpers";
 
 /** Hook that provides memoized column settings */
-const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
+const useColumns = ({
+  deleteInProgress,
+  onDeleteActivity,
+  setEditActivity,
+  handleFileAttachmentClick,
+  refetch,
+  handleSnackbar,
+}) =>
   useMemo(() => {
     return [
       {
@@ -67,19 +82,40 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         ),
       },
       {
-        headerName: "Work Order Link",
-        field: "work_order_url",
-        width: 175,
-        defaultVisible: true,
-        renderCell: ({ row }) =>
-          row.work_order_url ? (
-            <ExternalLink
-              url={row.work_order_url}
-              linkColor="primary"
-              useFriendlyUrl
-              showExternalLinkIcon={false}
-            />
-          ) : null,
+        headerName: "Files",
+        field: "file_url",
+        minWidth: 175,
+        flex: 1,
+        editable: false,
+        sortable: false,
+        renderCell: ({ row }) => {
+          if (!row?.work_activity_files) {
+            return;
+          }
+          return (
+            <Stack
+              direction="column"
+              spacing={0.5}
+              divider={<Divider sx={{ my: 0.5 }} />}
+            >
+              {row?.work_activity_files.map((file_record) => {
+                const file = file_record.moped_project_file;
+                if (!file) return null;
+                return (
+                  <AttachedFile
+                    key={file.project_file_id}
+                    fileRecordId={file_record.id}
+                    file={file}
+                    refetch={refetch}
+                    handleSnackbar={handleSnackbar}
+                    detachFileMutation={DETACH_FILE_WORK_ACTIVITY_ATTACHMENT}
+                    confirmationFileType="work activity"
+                  />
+                );
+              })}
+            </Stack>
+          );
+        },
       },
       {
         headerName: "Status",
@@ -129,32 +165,48 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         filterable: false,
         sortable: false,
         defaultVisible: true,
-        width: 100,
-        renderCell: ({ row }) => {
+        width: 110,
+        type: "actions",
+        renderCell: ({ id, row }) => {
+          // do we want to use data grid actions
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div style={{ width: "100px" }}>
+            <>
               <IconButton
                 aria-label="edit"
-                sx={{ color: "inherit" }}
+                sx={{ color: "inherit", padding: "5px" }}
                 onClick={() => setEditActivity(row)}
               >
                 <EditOutlinedIcon />
               </IconButton>
               <IconButton
-                aria-label="delete"
-                sx={{ color: "inherit" }}
-                onClick={() => onDeleteActivity({ id: row.id })}
+                aria-label="attachment"
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={handleFileAttachmentClick(id)}
               >
-                <DeleteOutlineIcon />
+                <AttachFileOutlinedIcon />
               </IconButton>
-            </div>
+              <IconButton
+                aria-label="delete"
+                sx={{ color: "inherit", padding: "5px" }}
+                onClick={() => onDeleteActivity(id)}
+              >
+                <DeleteOutlinedIcon />
+              </IconButton>
+            </>
           );
         },
       },
     ];
-  }, [deleteInProgress, onDeleteActivity, setEditActivity]);
+  }, [
+    deleteInProgress,
+    onDeleteActivity,
+    setEditActivity,
+    handleFileAttachmentClick,
+    refetch,
+    handleSnackbar,
+  ]);
 
 const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
   const [editActivity, setEditActivity] = useState(null);
@@ -164,12 +216,19 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     useState(false);
   const [activityToDelete, setActivityToDelete] = useState(null);
 
+  /* File attachment state and handlers */
+  const [fileAttachmentId, setFileAttachmentId] = useState(null);
+  const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
+    useState(false);
+
   const { loading, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
       projectId: projectId,
     },
     fetchPolicy: "no-cache",
   });
+
+  const { data: fileTypes } = useQuery(FILE_TYPES_LOOKUP);
 
   const [deleteContract, { loading: deleteInProgress }] =
     useMutation(DELETE_WORK_ACTIVITY);
@@ -178,7 +237,7 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
 
   const onClickAddActivity = () => setEditActivity({ project_id: projectId });
 
-  const onDeleteActivity = useCallback(({ id }) => {
+  const onDeleteActivity = useCallback((id) => {
     setActivityToDelete(id);
     setIsDeleteConfirmationOpen(true);
   }, []);
@@ -210,10 +269,30 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
     });
   };
 
+  const handleFileAttachmentClick = useCallback(
+    (id) => () => {
+      setFileAttachmentId(id);
+      setIsFileAttachmentDialogOpen(true);
+    },
+    []
+  );
+
+  /**
+   * Finds work activity record in table that corresponds to the row id of row interacting with the file attachment dialog
+   */
+  const fileAttachmentParentRecord = useMemo(
+    () =>
+      activities ? activities.find((row) => row.id === fileAttachmentId) : {},
+    [activities, fileAttachmentId]
+  );
+
   const columns = useColumns({
     deleteInProgress,
     onDeleteActivity,
     setEditActivity,
+    handleFileAttachmentClick,
+    refetch,
+    handleSnackbar,
   });
 
   // Open activity edit modal when double clicking in a cell
@@ -290,6 +369,26 @@ const ProjectWorkActivitiesTable = ({ handleSnackbar }) => {
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         mutationPending={deleteInProgress}
       />
+      {isFileAttachmentDialogOpen && fileAttachmentParentRecord && (
+        <ProjectFilesAttachmentDialog
+          projectId={projectId}
+          isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
+          handleSnackbar={handleSnackbar}
+          onClose={() => {
+            setIsFileAttachmentDialogOpen(false);
+            setFileAttachmentId(null);
+          }}
+          dataLookups={fileTypes}
+          refetch={refetch}
+          fileAttachmentParentRecord={fileAttachmentParentRecord}
+          fileConnectionData={createWorkActivityFileConnectionData(
+            fileAttachmentParentRecord
+          )}
+          addFileMutation={CREATE_FILE_WORK_ACTIVITY_ATTACHMENT}
+          existingFileMutation={ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY}
+          filesType={"work_activity_files"}
+        />
+      )}
     </>
   );
 };

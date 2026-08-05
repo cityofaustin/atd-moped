@@ -5,9 +5,10 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,7 +20,7 @@ import ControlledSelect from "src/components/forms/ControlledSelect";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import {
   WORK_ACTIVITY_STATUSES_QUERY,
-  ADD_WORK_ACTIVITIY,
+  ADD_WORK_ACTIVITY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
 import {
@@ -31,7 +32,8 @@ import {
   useDefaultValues,
   activityValidationSchema,
   IMPLEMENTATION_WORKGROUP_OPTIONS,
-} from "./utils/form";
+} from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
+import theme from "src/theme";
 
 const ProjectWorkActivitiesForm = ({
   activity,
@@ -89,26 +91,26 @@ const ProjectWorkActivitiesForm = ({
   );
 
   const [mutate, mutationState] = useMutation(
-    isNewActivity ? ADD_WORK_ACTIVITIY : UPDATE_WORK_ACTIVITY
+    isNewActivity ? ADD_WORK_ACTIVITY : UPDATE_WORK_ACTIVITY
   );
 
   if (errorStatuses || errorTaskOrders || mutationState.error) {
     return (
-      <Grid2 container spacing={2}>
-        <Grid2 size={12}>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <Alert severity="error">
             Something went wrong. Refresh the page to try again.
           </Alert>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   } else if (loadingStatuses || loadingTaskOrders) {
     return (
-      <Grid2 container spacing={2}>
-        <Grid2 size={12}>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <CircularProgress color="primary" size={20} />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   }
 
@@ -125,9 +127,9 @@ const ProjectWorkActivitiesForm = ({
       )}
       autoComplete="off"
     >
-      <Grid2 container spacing={2} sx={{ pt: 1 }}>
+      <Grid container spacing={2} sx={{ pt: 1 }}>
         {!isNewActivity && (
-          <Grid2 size={12}>
+          <Grid size={12}>
             <FormControl fullWidth>
               <TextField
                 id="id"
@@ -138,9 +140,9 @@ const ProjectWorkActivitiesForm = ({
                 value={activity.reference_id}
               />
             </FormControl>
-          </Grid2>
+          </Grid>
         )}
-        <Grid2 size={12}>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.status_id}>
             <InputLabel id="status-label" required={true}>
               Status
@@ -159,8 +161,8 @@ const ProjectWorkActivitiesForm = ({
             />
             <FormHelperText>Required</FormHelperText>
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.workgroup_contractor}>
             <ControlledAutocomplete
               control={control}
@@ -178,8 +180,8 @@ const ProjectWorkActivitiesForm = ({
               </FormHelperText>
             )}
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.contract_number}>
             <ControlledTextInput
               fullWidth
@@ -195,8 +197,8 @@ const ProjectWorkActivitiesForm = ({
               </FormHelperText>
             )}
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.work_assignment_id}>
             <ControlledTextInput
               fullWidth
@@ -212,8 +214,8 @@ const ProjectWorkActivitiesForm = ({
               </FormHelperText>
             )}
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.contract_amount}>
             <ControlledTextInput
               fullWidth
@@ -230,8 +232,8 @@ const ProjectWorkActivitiesForm = ({
               </FormHelperText>
             )}
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
               control={control}
@@ -247,8 +249,8 @@ const ProjectWorkActivitiesForm = ({
               error={formErrors?.task_orders}
             />
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.description}>
             <ControlledTextInput
               fullWidth
@@ -264,8 +266,8 @@ const ProjectWorkActivitiesForm = ({
               <FormHelperText>{formErrors.description.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.status_note}>
             <ControlledTextInput
               fullWidth
@@ -280,8 +282,11 @@ const ProjectWorkActivitiesForm = ({
               <FormHelperText>{formErrors.status_note.message}</FormHelperText>
             )}
           </FormControl>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid sx={{ marginY: theme.spacing(2) }} size={12}>
+          <Divider />
+        </Grid>
+        <Grid size={12}>
           <FormControl fullWidth error={!!formErrors?.work_order_url}>
             <ControlledTextInput
               control={control}
@@ -291,28 +296,34 @@ const ProjectWorkActivitiesForm = ({
               name="work_order_url"
               size="small"
             />
-            {formErrors?.work_order_url && (
+            {formErrors?.work_order_url ? (
               <FormHelperText>
                 {formErrors.work_order_url.message}
               </FormHelperText>
+            ) : (
+              <FormHelperText>
+                Optionally add a new file attachment to this work activity
+              </FormHelperText>
             )}
           </FormControl>
-        </Grid2>
-      </Grid2>
-      <Grid2
+        </Grid>
+      </Grid>
+      <Grid
         container
         sx={{
           display: "flex",
           justifyContent: "flex-end",
         }}
       >
-        <Grid2 sx={{ marginTop: 2 }}>
+        <Grid sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !isNewActivity) || mutationState.loading || !isValid}
+            disabled={
+              (!isDirty && !isNewActivity) || mutationState.loading || !isValid
+            }
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />
@@ -320,8 +331,8 @@ const ProjectWorkActivitiesForm = ({
               "Save"
             )}
           </Button>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </form>
   );
 };

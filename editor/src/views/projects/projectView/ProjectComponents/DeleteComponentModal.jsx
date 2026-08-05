@@ -1,7 +1,7 @@
 import {
   Button,
   Box,
-  Grid2,
+  Grid,
   List,
   ListItem,
   ListItemText,
@@ -27,7 +27,7 @@ const DeleteComponentModal = ({
       open={showDialog}
       handleClose={onClose}
     >
-      <Grid2 container spacing={1}>
+      <Grid container spacing={1}>
         <List>
           <Box
             sx={{
@@ -43,8 +43,8 @@ const DeleteComponentModal = ({
             </ListItem>
           </Box>
         </List>
-      </Grid2>
-      <Grid2
+      </Grid>
+      <Grid
         container
         spacing={2}
         sx={{
@@ -52,7 +52,7 @@ const DeleteComponentModal = ({
           justifyContent: "flex-end",
         }}
       >
-        <Grid2>
+        <Grid>
           <Button
             size="small"
             sx={{ color: "text.primary" }}
@@ -61,8 +61,8 @@ const DeleteComponentModal = ({
           >
             Cancel
           </Button>
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           <Button
             variant="contained"
             color="primary"
@@ -72,8 +72,8 @@ const DeleteComponentModal = ({
           >
             Delete component
           </Button>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </FormDialog>
   );
 };

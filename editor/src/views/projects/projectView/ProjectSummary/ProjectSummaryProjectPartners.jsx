@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Checkbox,
-  Grid2,
+  Grid,
   Input,
   ListItemText,
   MenuItem,
@@ -125,7 +125,7 @@ const ProjectSummaryProjectPartners = ({
   };
 
   return (
-    <Grid2 sx={fieldGridItem} size={12}>
+    <Grid sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Partners</Typography>
       <Box
         sx={[
@@ -185,7 +185,7 @@ const ProjectSummaryProjectPartners = ({
           />
         )}
       </Box>
-    </Grid2>
+    </Grid>
   );
 };
 

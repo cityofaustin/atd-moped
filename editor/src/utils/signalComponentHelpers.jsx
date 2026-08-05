@@ -96,11 +96,13 @@ export const renderSignalInput = (
       {...params}
       variant="standard"
       error={signalError}
-      InputLabelProps={{ required: false }}
       label="Signal"
       required
       helperText="Required"
       size={size}
+      slotProps={{
+        inputLabel: { required: false }
+      }}
     />
   );
 };

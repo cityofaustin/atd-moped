@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid2, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 
 import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
@@ -84,7 +84,7 @@ const ProjectSummaryProjectWebsite = ({
   };
 
   return (
-    <Grid2 sx={fieldGridItem} size={12}>
+    <Grid sx={fieldGridItem} size={12}>
       <Typography sx={fieldLabel}>Website</Typography>
       <Box
         sx={[
@@ -128,7 +128,7 @@ const ProjectSummaryProjectWebsite = ({
           />
         )}
       </Box>
-    </Grid2>
+    </Grid>
   );
 };
 

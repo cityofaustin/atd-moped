@@ -137,15 +137,17 @@ const ProjectComponentsListItem = ({
             </span>
           </Tooltip>
           <Tooltip
-            PopperProps={{
-              disablePortal: true,
-            }}
             open={!!copiedUrl}
             disableFocusListener
             disableHoverListener
             disableTouchListener
             title="Copied!"
             placement="top"
+            slotProps={{
+              popper: {
+                disablePortal: true,
+              }
+            }}
           >
             {/* This span prevents warning about providing title prop to child of Tooltip */}
             <span>
