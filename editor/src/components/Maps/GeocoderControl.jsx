@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { useControl, Marker } from "react-map-gl";
+import { useControl, Marker } from "react-map-gl/mapbox";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { mapParameters } from "src/views/projects/projectView/ProjectComponents/mapSettings";
 
@@ -21,6 +21,30 @@ const austinFullPurposeJurisdictionFeatureCollection = {
 export default function GeocoderControl(props) {
   const [marker, setMarker] = useState(null);
 
+  const handleLoading = (...args) => {
+    if (typeof props.onLoading === "function") {
+      props.onLoading(...args);
+    }
+  };
+
+  const handleResults = (...args) => {
+    if (typeof props.onResults === "function") {
+      props.onResults(...args);
+    }
+  };
+
+  const handleResult = (evt) => {
+    if (typeof props.onResult === "function") {
+      props.onResult(evt);
+    }
+  };
+
+  const handleError = (...args) => {
+    if (typeof props.onError === "function") {
+      props.onError(...args);
+    }
+  };
+
   const geocoder = useControl(
     () => {
       const ctrl = new MapboxGeocoder({
@@ -29,10 +53,10 @@ export default function GeocoderControl(props) {
         accessToken: mapParameters.mapboxAccessToken,
         bbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
       });
-      ctrl.on("loading", props.onLoading);
-      ctrl.on("results", props.onResults);
+      ctrl.on("loading", handleLoading);
+      ctrl.on("results", handleResults);
       ctrl.on("result", (evt) => {
-        props.onResult(evt);
+        handleResult(evt);
 
         const { result } = evt;
         const location =
@@ -51,7 +75,7 @@ export default function GeocoderControl(props) {
           setMarker(null);
         }
       });
-      ctrl.on("error", props.onError);
+      ctrl.on("error", handleError);
       return ctrl;
     },
     {

@@ -1,6 +1,6 @@
 import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { useControl } from "react-map-gl";
+import { useControl } from "react-map-gl/mapbox";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools.
