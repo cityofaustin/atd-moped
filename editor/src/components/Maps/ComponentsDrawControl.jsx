@@ -1,42 +1,42 @@
 import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { useControl } from "react-map-gl";
+import { useControl } from "react-map-gl/mapbox";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools.
 // We need to drill it down here so that we can assign the draw instance that exposes the
 // mapbox-gl-draw methods that are returned from useControl as its current value.
-export const DrawControl = React.forwardRef((props, ref) => {
-  ref.current = useControl(
-    ({ map }) => {
-      map.on("draw.create", props.onCreate);
-      map.on("draw.update", props.onUpdate);
-      map.on("draw.delete", props.onDelete);
-      map.on("draw.modechange", props.onModeChange);
-      map.on("draw.selectionchange", props.onSelectionChange);
+// defaultProps is deprecated in React 19, so we'll use default parameters
+export const DrawControl = React.forwardRef(
+  (
+    { onCreate = () => {}, onUpdate = () => {}, onDelete = () => {}, ...props },
+    ref
+  ) => {
+    ref.current = useControl(
+      ({ map }) => {
+        map.on("draw.create", onCreate);
+        map.on("draw.update", onUpdate);
+        map.on("draw.delete", onDelete);
+        map.on("draw.modechange", props.onModeChange);
+        map.on("draw.selectionchange", props.onSelectionChange);
 
-      return new MapboxDraw(props);
-    },
-    ({ map }) => {
-      map.off("draw.create", props.onCreate);
-      map.off("draw.update", props.onUpdate);
-      map.off("draw.delete", props.onDelete);
-      map.off("draw.modechange", props.onModeChange);
-      map.off("draw.selectionchange", props.onSelectionChange);
-    },
-    {
-      position: props.position,
-    }
-  );
+        return new MapboxDraw(props);
+      },
+      ({ map }) => {
+        map.off("draw.create", onCreate);
+        map.off("draw.update", onUpdate);
+        map.off("draw.delete", onDelete);
+        map.off("draw.modechange", props.onModeChange);
+        map.off("draw.selectionchange", props.onSelectionChange);
+      },
+      {
+        position: props.position,
+      }
+    );
 
-  return null;
-});
-
-DrawControl.defaultProps = {
-  onCreate: () => {},
-  onUpdate: () => {},
-  onDelete: () => {},
-};
+    return null;
+  }
+);
 
 /*
  * mapbox-gl-draw doesn't support rendering draw tool icons dynamically based on the control configuration

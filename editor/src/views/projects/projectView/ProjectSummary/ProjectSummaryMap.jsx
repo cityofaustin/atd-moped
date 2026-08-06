@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MapGL, { NavigationControl } from "react-map-gl";
+import MapGL, { NavigationControl } from "react-map-gl/mapbox";
 import { Box } from "@mui/material";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
