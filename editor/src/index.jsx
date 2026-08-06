@@ -49,7 +49,7 @@ Amplify.configure({
 });
 
 createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
+  <BrowserRouter basename="/moped">
     <UmamiAnalytics />
     <UserProvider>
       <App />
