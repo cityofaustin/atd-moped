@@ -6,7 +6,7 @@ import { useControl } from "react-map-gl/mapbox";
 // Ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools.
 // We need to drill it down here so that we can assign the draw instance that exposes the
 // mapbox-gl-draw methods that are returned from useControl as its current value.
-// defaultProps is deprecated in React 19, so we'll use default parameters until we implement TypeScript
+// defaultProps is deprecated in React 19, so we'll use default parameters
 export const DrawControl = React.forwardRef(
   (
     { onCreate = () => {}, onUpdate = () => {}, onDelete = () => {}, ...props },

@@ -18,7 +18,7 @@ const austinFullPurposeJurisdictionFeatureCollection = {
 };
 
 // See https://github.com/visgl/react-map-gl/tree/7.0-release/examples/geocoder
-// defaultProps is deprecated in React 19, so we'll use default parameters until we implement TypeScript
+// defaultProps is deprecated in React 19, so we'll use default parameters
 export default function GeocoderControl({
   onLoading = () => {},
   onResults = () => {},
