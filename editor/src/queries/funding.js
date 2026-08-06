@@ -261,7 +261,6 @@ export const WORK_ACTIVITY_QUERY = gql`
       contract_amount
       status_id
       reference_id
-      work_order_url
       moped_work_activity_status {
         id
         name
@@ -284,6 +283,15 @@ export const WORK_ACTIVITY_QUERY = gql`
           workgroup_name
         }
       }
+      work_activity_files(where: { is_deleted: { _eq: false } }) {
+        id
+        moped_project_file {
+          project_file_id
+          file_url
+          file_key
+          file_name
+        }
+      }
     }
   }
 `;
@@ -297,7 +305,7 @@ export const WORK_ACTIVITY_STATUSES_QUERY = gql`
   }
 `;
 
-export const ADD_WORK_ACTIVITIY = gql`
+export const ADD_WORK_ACTIVITY = gql`
   mutation AddWorkActivity($object: moped_proj_work_activity_insert_input!) {
     insert_moped_proj_work_activity_one(object: $object) {
       id
@@ -309,6 +317,7 @@ export const UPDATE_WORK_ACTIVITY = gql`
   mutation UpdateWorkActivity(
     $id: Int!
     $object: moped_proj_work_activity_set_input!
+    $fileObjects: [moped_project_files_insert_input]!
   ) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
@@ -316,16 +325,25 @@ export const UPDATE_WORK_ACTIVITY = gql`
     ) {
       id
     }
+    insert_moped_project_files(objects: $fileObjects) {
+      affected_rows
+    }
   }
 `;
 
 export const DELETE_WORK_ACTIVITY = gql`
-  mutation DeletePurchaseOrder($id: Int!) {
+  mutation DeleteWorkActivity($id: Int!) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
       _set: { is_deleted: true }
     ) {
       id
+    }
+    update_files_project_work_activities(
+      where: { entity_id: { _eq: $id } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
     }
   }
 `;

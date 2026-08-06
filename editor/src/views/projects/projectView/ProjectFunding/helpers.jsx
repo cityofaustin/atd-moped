@@ -15,8 +15,12 @@ import {
   isAmountOutOfRange,
   outOfRangeErrorMessage,
 } from "src/utils/numberFormatters";
-import FundingFile from "src/views/projects/projectView/ProjectFunding/FundingFile";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
+import AttachedFile from "src/components/AttachedFile";
+import {
+  DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
+} from "src/queries/project";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
@@ -190,6 +194,33 @@ export const isCellEditable = (params) => {
   }
 };
 
+// creates object needed in the file attachement mutation
+export const createFundingFileConnectionData = (fundingRecord, projectId) => {
+  const entityId = fundingRecord?.proj_funding_id;
+  const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
+  const addFileConnection = isSyncedFromECapris
+    ? {
+        files_ecapris_fundings: {
+          data: {
+            project_id: projectId,
+            entity_id: entityId,
+          },
+        },
+      }
+    : {
+        files_project_fundings: {
+          data: {
+            entity_id: entityId,
+          },
+        },
+      };
+  return {
+    addFileConnection,
+    entityId,
+    ...(isSyncedFromECapris && { project_id: projectId }),
+  };
+};
+
 /** Hook that provides memoized column settings */
 export const useColumns = ({
   dataProjectFunding,
@@ -347,7 +378,7 @@ export const useColumns = ({
       {
         headerName: "Files",
         field: "file_url",
-        minWidth: 150,
+        minWidth: 175,
         flex: 1,
         editable: false,
         sortable: false,
@@ -368,13 +399,18 @@ export const useColumns = ({
                 const file = file_record.moped_project_file;
                 if (!file) return null;
                 return (
-                  <FundingFile
+                  <AttachedFile
                     key={file.project_file_id}
                     fileRecordId={file_record.id}
                     file={file}
-                    isSyncedFromECapris={row.is_synced_from_ecapris}
                     refetch={refetch}
                     handleSnackbar={handleSnackbar}
+                    detachFileMutation={
+                      row.is_synced_from_ecapris
+                        ? DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT
+                        : DETACH_FILE_MOPED_FUNDING_ATTACHMENT
+                    }
+                    confirmationFileType="funding"
                   />
                 );
               })}

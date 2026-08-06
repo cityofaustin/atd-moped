@@ -26,7 +26,13 @@ import {
   GET_FUNDING_LOOKUPS,
   DELETE_PROJECT_FUNDING_AND_REATTACH,
 } from "src/queries/funding";
-import { PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC } from "src/queries/project";
+import {
+  PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC,
+  CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT,
+  CREATE_FILE_MOPED_FUNDING_ATTACHMENT,
+  ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING,
+  ATTACH_EXISTING_FILE_TO_MOPED_FUNDING,
+} from "src/queries/project";
 
 import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
@@ -37,12 +43,13 @@ import {
   handleRowEditStop,
 } from "src/components/DataGridPro/utils/helpers.js";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
-import ProjectFundingFilesAttachmentDialog from "src/views/projects/projectView/ProjectFunding/ProjectFundingFilesAttachmentDialog";
+import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
 import {
   transformDatabaseToGrid,
   transformGridToDatabase,
   isCellEditable,
   useColumns,
+  createFundingFileConnectionData,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 
@@ -142,6 +149,14 @@ const ProjectFundingTable = ({
       setIsFileAttachmentDialogOpen(true);
     },
     []
+  );
+
+  /**
+   * Finds funding record in table that corresponds to the row id of row interacting with the file attachment dialog
+   */
+  const fileAttachmentParentRecord = useMemo(
+    () => rows.find((row) => row.id === fileAttachmentId),
+    [rows, fileAttachmentId]
   );
 
   const handleSubprojectDialogClose = () => {
@@ -585,10 +600,9 @@ const ProjectFundingTable = ({
           dataProjectFunding={dataProjectFunding}
         />
       )}
-      {isFileAttachmentDialogOpen && (
-        <ProjectFundingFilesAttachmentDialog
+      {isFileAttachmentDialogOpen && fileAttachmentParentRecord && (
+        <ProjectFilesAttachmentDialog
           projectId={projectId}
-          fileAttachmentId={fileAttachmentId}
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}
           handleSnackbar={handleSnackbar}
           onClose={() => {
@@ -597,7 +611,26 @@ const ProjectFundingTable = ({
           }}
           refetch={refetch}
           dataLookups={dataLookups}
-          rows={rows}
+          fileAttachmentParentRecord={fileAttachmentParentRecord}
+          fileConnectionData={createFundingFileConnectionData(
+            fileAttachmentParentRecord,
+            projectId
+          )}
+          addFileMutation={
+            fileAttachmentParentRecord?.isSyncedFromECapris
+              ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
+              : CREATE_FILE_MOPED_FUNDING_ATTACHMENT
+          }
+          existingFileMutation={
+            fileAttachmentParentRecord?.isSyncedFromECapris
+              ? ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING
+              : ATTACH_EXISTING_FILE_TO_MOPED_FUNDING
+          }
+          filesType={
+            fileAttachmentParentRecord?.is_synced_from_ecapris
+              ? "ecapris_funding_files"
+              : "moped_funding_files"
+          }
         />
       )}
     </div>
