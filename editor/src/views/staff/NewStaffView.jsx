@@ -4,7 +4,7 @@ import {
   StaffFormResetButton,
   StaffFormSaveButton,
 } from "./components/StaffFormButtons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { isUserNonLoginUser, useUserApi, nonLoginUserRole } from "./helpers";
 import { useMutation } from "@apollo/client";
 import * as yup from "yup";

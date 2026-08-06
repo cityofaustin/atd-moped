@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import StaffForm from "./StaffForm";
 import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
 import { useUserApi, nonLoginUserRole, isUserNonLoginUser } from "./helpers";

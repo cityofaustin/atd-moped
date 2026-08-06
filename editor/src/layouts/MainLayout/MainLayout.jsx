@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { Outlet, Navigate, useLocation } from "react-router";
 import { useUser } from "src/auth/user";
 import Box from "@mui/material/Box";
 

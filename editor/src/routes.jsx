@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import Can from "src/auth/Can";
 import DashboardLayout from "src/layouts/DashboardLayout/DashboardLayout";
 import MainLayout from "src/layouts/MainLayout/MainLayout";

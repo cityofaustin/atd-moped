@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { CircularProgress, Container, Paper } from "@mui/material";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";

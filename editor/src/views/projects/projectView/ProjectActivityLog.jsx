@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import isEqual from "lodash.isequal";
 
 import {
