@@ -2,13 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash.isequal";
 
-import {
-  Button,
-  FormControlLabel,
-  Grid,
-  Switch,
-  Tooltip,
-} from "@mui/material";
+import { Button, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   GridRowModes,
@@ -278,6 +272,9 @@ const ProjectFundingTable = ({
 
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
+        // TODO: This is where the bug is - figure out why isDeletingOverride is not being set correctly in some cases
+        // 1. When deleting an override with the same amount as eCAPRIS amount, DeleteProjectFunding is used
+        // 2. When deleting an override with a different amount than eCAPRIS amount, DeleteProjectFundingAndReattach is used
         const isDeletingOverride =
           !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
         const fileIds =
