@@ -18,32 +18,15 @@ const austinFullPurposeJurisdictionFeatureCollection = {
 };
 
 // See https://github.com/visgl/react-map-gl/tree/7.0-release/examples/geocoder
-export default function GeocoderControl(props) {
+// defaultProps is deprecated in React 19, so we'll use default parameters until we implement TypeScript
+export default function GeocoderControl({
+  onLoading = () => {},
+  onResults = () => {},
+  onResult = () => {},
+  onError = () => {},
+  ...props
+}) {
   const [marker, setMarker] = useState(null);
-
-  const handleLoading = (...args) => {
-    if (typeof props.onLoading === "function") {
-      props.onLoading(...args);
-    }
-  };
-
-  const handleResults = (...args) => {
-    if (typeof props.onResults === "function") {
-      props.onResults(...args);
-    }
-  };
-
-  const handleResult = (evt) => {
-    if (typeof props.onResult === "function") {
-      props.onResult(evt);
-    }
-  };
-
-  const handleError = (...args) => {
-    if (typeof props.onError === "function") {
-      props.onError(...args);
-    }
-  };
 
   const geocoder = useControl(
     () => {
@@ -53,10 +36,10 @@ export default function GeocoderControl(props) {
         accessToken: mapParameters.mapboxAccessToken,
         bbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
       });
-      ctrl.on("loading", handleLoading);
-      ctrl.on("results", handleResults);
+      ctrl.on("loading", onLoading);
+      ctrl.on("results", onResults);
       ctrl.on("result", (evt) => {
-        handleResult(evt);
+        onResult(evt);
 
         const { result } = evt;
         const location =
@@ -75,7 +58,7 @@ export default function GeocoderControl(props) {
           setMarker(null);
         }
       });
-      ctrl.on("error", handleError);
+      ctrl.on("error", onError);
       return ctrl;
     },
     {
@@ -142,14 +125,3 @@ export default function GeocoderControl(props) {
   }
   return marker;
 }
-
-const noop = () => {};
-
-// To do: replace defaultProps
-GeocoderControl.defaultProps = {
-  marker: true,
-  onLoading: noop,
-  onResults: noop,
-  onResult: noop,
-  onError: noop,
-};
