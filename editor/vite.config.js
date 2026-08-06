@@ -17,6 +17,7 @@ export default defineConfig(() => {
     },
     /* Use SSL for Cognito sign-in using callback set up with port 3000 in local development */
     plugins: [
+      reactRouter(),
       react(),
       basicSsl(),
       checker({
@@ -33,7 +34,6 @@ export default defineConfig(() => {
         // Disable during build since we lint in our Netlify build command
         enableBuild: false,
       }),
-      reactRouter(),
     ],
     resolve: {
       /* Respect the import path aliases set in tsconfig.json */
