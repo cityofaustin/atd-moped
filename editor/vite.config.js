@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
-import { reactRouter } from "@react-router/dev/vite";
 
 export default defineConfig(() => {
   return {
@@ -17,7 +16,6 @@ export default defineConfig(() => {
     },
     /* Use SSL for Cognito sign-in using callback set up with port 3000 in local development */
     plugins: [
-      reactRouter(),
       react(),
       basicSsl(),
       checker({
