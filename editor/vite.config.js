@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
+import { reactRouter } from "@react-router/dev/vite";
 
 export default defineConfig(() => {
   return {
@@ -32,6 +33,7 @@ export default defineConfig(() => {
         // Disable during build since we lint in our Netlify build command
         enableBuild: false,
       }),
+      reactRouter(),
     ],
     resolve: {
       /* Respect the import path aliases set in tsconfig.json */

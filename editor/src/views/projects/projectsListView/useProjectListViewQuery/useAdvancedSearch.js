@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
 import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommonOperators";
 import { parseGqlString } from "src/utils/gridTableHelpers";
