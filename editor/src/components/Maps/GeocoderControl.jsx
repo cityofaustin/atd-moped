@@ -145,6 +145,7 @@ export default function GeocoderControl(props) {
 
 const noop = () => {};
 
+// To do: replace defaultProps
 GeocoderControl.defaultProps = {
   marker: true,
   onLoading: noop,

@@ -32,6 +32,7 @@ export const DrawControl = React.forwardRef((props, ref) => {
   return null;
 });
 
+// To do: replace defaultProps
 DrawControl.defaultProps = {
   onCreate: () => {},
   onUpdate: () => {},
