@@ -1,5 +1,5 @@
 table:
-  name: files_ecapris_funding
+  name: files_project_work_activities
   schema: public
 object_relationships:
   - name: moped_project_file
@@ -17,7 +17,6 @@ insert_permissions:
         - entity_id
         - file_id
         - is_deleted
-        - project_id
         - updated_at
     comment: ""
   - role: moped-editor
@@ -31,7 +30,6 @@ insert_permissions:
         - entity_id
         - file_id
         - is_deleted
-        - project_id
         - updated_at
     comment: ""
 select_permissions:
@@ -43,7 +41,6 @@ select_permissions:
         - file_id
         - id
         - is_deleted
-        - project_id
         - updated_at
       filter: {}
     comment: ""
@@ -55,7 +52,6 @@ select_permissions:
         - file_id
         - id
         - is_deleted
-        - project_id
         - updated_at
       filter: {}
     comment: ""
