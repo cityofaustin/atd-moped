@@ -246,9 +246,13 @@ export const useColumns = ({
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
-            <Stack direction="column" spacing={0.5} sx={{
-              alignItems: "flex-start"
-            }}>
+            <Stack
+              direction="column"
+              spacing={0.5}
+              sx={{
+                alignItems: "flex-start",
+              }}
+            >
               <span>{value?.fdu}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>
@@ -291,6 +295,26 @@ export const useColumns = ({
         width: 180,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
+        renderCell: ({ row, value }) => {
+          // Make sure not to give asterisk to empty cells
+          const hasValue = value !== null && value !== undefined;
+          const isSourceOverridden =
+            row.ecapris_funding?.funding_source_id !==
+            row.fund_source?.funding_source_id;
+          const showOverrideIndicator =
+            hasValue &&
+            isSourceOverridden &&
+            !row.is_manual &&
+            !row.is_synced_from_ecapris;
+
+          return (
+            <NotableCellPopover
+              value={value?.funding_source_name}
+              isEnabled={showOverrideIndicator}
+              popoverText="eCAPRIS override"
+            />
+          );
+        },
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -305,7 +329,26 @@ export const useColumns = ({
         field: "fund_program",
         width: 180,
         editable: true,
-        valueFormatter: (value) => value?.funding_program_name,
+        renderCell: ({ row, value }) => {
+          // Make sure not to give asterisk to empty cells
+          const hasValue = value !== null && value !== undefined;
+          const isSourceOverridden =
+            row.ecapris_funding?.funding_program_id !==
+            row.fund_program?.funding_program_id;
+          const showOverrideIndicator =
+            hasValue &&
+            isSourceOverridden &&
+            !row.is_manual &&
+            !row.is_synced_from_ecapris;
+
+          return (
+            <NotableCellPopover
+              value={value?.funding_program_name}
+              isEnabled={showOverrideIndicator}
+              popoverText="eCAPRIS override"
+            />
+          );
+        },
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -349,9 +392,11 @@ export const useColumns = ({
           const formattedValue = hasValue
             ? currencyFormatter.format(value)
             : "";
+          const isAmountOverridden =
+            row.ecapris_funding?.app !== row.funding_amount;
           const showOverrideIndicator =
             hasValue &&
-            !row.should_use_ecapris_amount &&
+            isAmountOverridden &&
             !row.is_manual &&
             !row.is_synced_from_ecapris;
 
