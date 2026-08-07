@@ -4,7 +4,7 @@ import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutoco
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
-import NotableCellPopover from "src/components/NotableCellPopover";
+import EcaprisOverridableCell from "src/views/projects/projectView/ProjectFunding/EcaprisOverridableCell";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -295,26 +295,14 @@ export const useColumns = ({
         width: 180,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
-        renderCell: ({ row, value }) => {
-          // Make sure not to give asterisk to empty cells
-          const hasValue = value !== null && value !== undefined;
-          const isSourceOverridden =
-            row.ecapris_funding?.funding_source_id !==
-            row.fund_source?.funding_source_id;
-          const showOverrideIndicator =
-            hasValue &&
-            isSourceOverridden &&
-            !row.is_manual &&
-            !row.is_synced_from_ecapris;
-
-          return (
-            <NotableCellPopover
-              value={value?.funding_source_name}
-              isEnabled={showOverrideIndicator}
-              popoverText="eCAPRIS override"
-            />
-          );
-        },
+        renderCell: ({ row, value }) => (
+          <EcaprisOverridableCell
+            row={row}
+            ecaprisValue={row.ecapris_funding?.funding_source_id}
+            currentValue={row.fund_source?.funding_source_id}
+            displayValue={value?.funding_source_name}
+          />
+        ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -329,26 +317,14 @@ export const useColumns = ({
         field: "fund_program",
         width: 180,
         editable: true,
-        renderCell: ({ row, value }) => {
-          // Make sure not to give asterisk to empty cells
-          const hasValue = value !== null && value !== undefined;
-          const isSourceOverridden =
-            row.ecapris_funding?.funding_program_id !==
-            row.fund_program?.funding_program_id;
-          const showOverrideIndicator =
-            hasValue &&
-            isSourceOverridden &&
-            !row.is_manual &&
-            !row.is_synced_from_ecapris;
-
-          return (
-            <NotableCellPopover
-              value={value?.funding_program_name}
-              isEnabled={showOverrideIndicator}
-              popoverText="eCAPRIS override"
-            />
-          );
-        },
+        renderCell: ({ row, value }) => (
+          <EcaprisOverridableCell
+            row={row}
+            ecaprisValue={row.ecapris_funding?.funding_program_id}
+            currentValue={row.fund_program?.funding_program_id}
+            displayValue={value?.funding_program_name}
+          />
+        ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -386,28 +362,16 @@ export const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
-        renderCell: ({ row, value }) => {
-          // Make sure not to give asterisk to empty cells
-          const hasValue = value !== null && value !== undefined;
-          const formattedValue = hasValue
-            ? currencyFormatter.format(value)
-            : "";
-          const isAmountOverridden =
-            row.ecapris_funding?.app !== row.funding_amount;
-          const showOverrideIndicator =
-            hasValue &&
-            isAmountOverridden &&
-            !row.is_manual &&
-            !row.is_synced_from_ecapris;
-
-          return (
-            <NotableCellPopover
-              value={formattedValue}
-              isEnabled={showOverrideIndicator}
-              popoverText="eCAPRIS override"
-            />
-          );
-        },
+        renderCell: ({ row, value }) => (
+          <EcaprisOverridableCell
+            row={row}
+            ecaprisValue={row.ecapris_funding?.app}
+            currentValue={row.funding_amount}
+            displayValue={
+              value === null ? null : currencyFormatter.format(value)
+            }
+          />
+        ),
         preProcessEditCellProps: (params) => {
           return {
             ...params.props,
