@@ -263,34 +263,12 @@ const ProjectFundingTable = ({
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
       const deletedRow = rows.find((row) => row.id === id);
-      const {
-        proj_funding_id,
-        is_manual,
-        should_use_ecapris_amount,
-        is_synced_from_ecapris,
-      } = deletedRow;
+      const { proj_funding_id, is_manual, is_synced_from_ecapris } = deletedRow;
 
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
-        // TODO: This is where the bug is - figure out why isDeletingOverride is not being set correctly in some cases
-        // 1. When deleting an override with the same amount as eCAPRIS amount, DeleteProjectFunding is used
-        // isDeletingOverride: false
-        // is_manual: false
-        // is_synced_from_ecapris: false
-        // should_use_ecapris_amount: true
-        // 2. When deleting an override with a different amount than eCAPRIS amount, DeleteProjectFundingAndReattach is used
-        // isDeletingOverride: true
-        // is_manual: false
-        // is_synced_from_ecapris: false
-        // should_use_ecapris_amount: false
-        const isDeletingOverride =
-          !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
-        console.log({
-          should_use_ecapris_amount,
-          is_manual,
-          is_synced_from_ecapris,
-          isDeletingOverride,
-        });
+        const isDeletingOverride = !is_manual && !is_synced_from_ecapris;
+
         const fileIds =
           deletedRow.moped_funding_files?.map(
             (file) => file.moped_project_file.project_file_id
