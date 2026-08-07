@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { PROJECT_COMPONENT_FIELDS } from "./components";
+import { graphql } from "src/gql";
 
 export const ADD_PROJECT = gql`
   mutation AddProject($object: moped_project_insert_input!) {
@@ -17,8 +17,7 @@ export const ADD_PROJECT = gql`
   }
 `;
 
-export const SUMMARY_QUERY = gql`
-  ${PROJECT_COMPONENT_FIELDS}
+export const SUMMARY_QUERY = graphql(`
   query ProjectSummary($projectId: Int, $userId: Int) {
     moped_project(where: { project_id: { _eq: $projectId } }) {
       project_id
@@ -147,7 +146,7 @@ export const SUMMARY_QUERY = gql`
       subproject_name
     }
   }
-`;
+`);
 
 export const TEAM_QUERY = gql`
   query TeamQuery($projectId: Int!) {
@@ -501,16 +500,16 @@ export const ADD_PROJECT_MILESTONE = gql`
   }
 `;
 
-export const PROJECT_FOLLOW = gql`
+export const PROJECT_FOLLOW = graphql(`
   mutation FollowProject($object: moped_user_followed_projects_insert_input!) {
     insert_moped_user_followed_projects_one(object: $object) {
       project_id
       user_id
     }
   }
-`;
+`);
 
-export const PROJECT_UNFOLLOW = gql`
+export const PROJECT_UNFOLLOW = graphql(`
   mutation UnfollowProject($project_id: Int!, $user_id: Int!) {
     delete_moped_user_followed_projects(
       where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }
@@ -518,7 +517,7 @@ export const PROJECT_UNFOLLOW = gql`
       affected_rows
     }
   }
-`;
+`);
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
@@ -602,7 +601,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
 `;
 
 export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
-  query getMopedProjectChanges($activityId: uuid!) {
+  query getMopedProjectChangeDetails($activityId: uuid!) {
     moped_activity_log(where: { activity_id: { _eq: $activityId } }) {
       activity_id
       created_at
@@ -1011,44 +1010,12 @@ export const PROJECT_UPDATE_INTERIM_ID = gql`
 `;
 
 export const PROJECT_CLEAR_INTERIM_ID = gql`
-  mutation UpdateProjectInterimId($projectId: Int!) {
+  mutation ClearProjectInterimId($projectId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { interim_project_id: null }
     ) {
       interim_project_id
-    }
-  }
-`;
-
-export const PROJECT_CLEAR_NO_CURRENT_PHASE = gql`
-  mutation ClearProjectPhases($projectId: Int!) {
-    update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_id: { _eq: $projectId } }
-    ) {
-      affected_rows
-    }
-    update_moped_project(
-      _set: { current_phase: null }
-      where: { project_id: { _eq: $projectId } }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const UPDATE_PROJECT_TASK_ORDER = gql`
-  mutation TaskOrderMutation($projectId: Int!, $taskOrder: jsonb) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { task_order: $taskOrder }
-    ) {
-      affected_rows
-      returning {
-        task_order
-        project_id
-      }
     }
   }
 `;

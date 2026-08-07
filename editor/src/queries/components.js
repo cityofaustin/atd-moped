@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
 export const GET_COMPONENTS_FORM_OPTIONS = gql`
   query GetComponentsFormOptions {
@@ -165,6 +166,113 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     }
   }
 `;
+
+export const PROJECT_COMPONENT_FIELDS_FRAGMENT = graphql(`
+  fragment projectComponentFields on moped_proj_components {
+    project_component_id
+    component_id
+    description
+    phase_id
+    subphase_id
+    completion_date
+    project_id
+    srts_id
+    location_description
+    moped_components {
+      component_id
+      component_name
+      component_subtype
+      feature_layer {
+        internal_table
+      }
+      asset_feature_layer {
+        internal_table
+      }
+      line_representation
+    }
+    moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
+      subcomponent_id
+      moped_subcomponent {
+        subcomponent_name
+      }
+    }
+    moped_proj_component_work_types(where: { is_deleted: { _eq: false } }) {
+      moped_work_type {
+        id
+        name
+      }
+    }
+    # Do not filter by moped_component_tag.is_deleted here — soft-deleted
+    # tags that were previously applied should still appear on projects.
+    # See https://github.com/cityofaustin/atd-moped/pull/1120#discussion_r1316179730
+    moped_proj_component_tags(where: { is_deleted: { _eq: false } }) {
+      component_tag_id
+      moped_component_tag {
+        full_name
+      }
+    }
+    moped_phase {
+      phase_id
+      phase_name
+      phase_name_simple
+      phase_key
+      moped_subphases {
+        subphase_id
+        subphase_name
+      }
+    }
+    moped_subphase {
+      subphase_id
+      subphase_name
+    }
+    feature_street_segments(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      ctn_segment_id
+      component_id
+    }
+    feature_intersections(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      intersection_id
+      component_id
+    }
+    feature_signals(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      component_id
+      location_name
+      signal_id
+      signal_type
+      knack_id
+    }
+    feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      component_id
+    }
+    feature_drawn_points(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      component_id
+    }
+    feature_school_beacons(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      component_id
+      knack_id
+      location_name
+      beacon_id
+      school_zone_beacon_id
+      zone_name
+      beacon_name
+    }
+  }
+`);
 
 export const GET_PROJECT_COMPONENTS = gql`
   ${PROJECT_COMPONENT_FIELDS}
