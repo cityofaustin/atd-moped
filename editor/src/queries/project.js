@@ -705,6 +705,12 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
     ) {
       affected_rows
     }
+    update_files_project_work_activities(
+      where: { file_id: { _eq: $fileId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
   }
 `;
 
@@ -792,6 +798,55 @@ export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
       }
     ) {
       id
+    }
+  }
+`;
+
+export const CREATE_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
+  mutation InsertFileWithWorkActivityConnection(
+    $object: moped_project_files_insert_input!
+  ) {
+    insert_moped_project_files_one(object: $object) {
+      project_file_id
+      files_project_work_activities {
+        id
+      }
+    }
+  }
+`;
+
+export const ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY = gql`
+  mutation AttachExistingFileToWorkActivity(
+    $object: files_project_work_activities_insert_input!
+  ) {
+    insert_files_project_work_activities_one(
+      object: $object
+      on_conflict: {
+        constraint: files_project_work_activities_entity_id_file_id_key
+        update_columns: [is_deleted]
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+export const DETACH_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
+  mutation DetachFileWorkActivity($id: Int!) {
+    update_files_project_work_activities_by_pk(
+      pk_columns: { id: $id }
+      _set: { is_deleted: true }
+    ) {
+      id
+    }
+  }
+`;
+
+export const FILE_TYPES_LOOKUP = gql`
+  query FileTypesLookup {
+    moped_file_types {
+      id
+      name
     }
   }
 `;

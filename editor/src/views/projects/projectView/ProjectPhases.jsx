@@ -5,8 +5,8 @@ import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 import { green } from "@mui/material/colors";
 import {
   EditOutlined as EditOutlinedIcon,
-  DeleteOutline as DeleteOutlineIcon,
-  CheckCircleOutline,
+  DeleteOutlined as DeleteOutlinedIcon,
+  CheckCircleOutlined,
   AddCircle as AddCircleIcon,
 } from "@mui/icons-material";
 import DataGridToolbar from "src/components/DataGridPro/DataGridToolbar";
@@ -104,7 +104,7 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
                 display: "flex",
               }}
             >
-              <CheckCircleOutline style={{ color: green[500] }} />
+              <CheckCircleOutlined style={{ color: green[500] }} />
             </Box>
           ) : (
             ""
@@ -137,7 +137,7 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
                   })
                 }
               >
-                <DeleteOutlineIcon />
+                <DeleteOutlinedIcon />
               </IconButton>
             </div>
           );

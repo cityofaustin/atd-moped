@@ -10,6 +10,7 @@ from settings import LAYER_IDS
 
 AGOL_USERNAME = os.getenv("AGOL_USERNAME")
 AGOL_PASSWORD = os.getenv("AGOL_PASSWORD")
+AGOL_COMPONENTS_ENDPOINT=os.getenv("AGOL_COMPONENTS_ENDPOINT")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_SECRET = os.getenv("HASURA_ADMIN_SECRET")
 AGOL_ORG_BASE_URL = "https://austin.maps.arcgis.com"
@@ -29,7 +30,7 @@ def get_endpoint(method, feature_type):
         Str: an endpoint URL
     """
     layer_id = LAYER_IDS[feature_type]
-    return f"https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/Moped_Project_Components/FeatureServer/{layer_id}/{method}"
+    return f"{AGOL_COMPONENTS_ENDPOINT}/{layer_id}/{method}"
 
 
 def chunks(lst, n):

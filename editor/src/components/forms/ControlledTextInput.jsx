@@ -38,6 +38,9 @@ export default function ControlledTextInput({
   valueHandler = defaultValueHandler,
   ...inputProps
 }) {
+  // Parse out the global TextField props from the inputProps object so that InputProps can be passed separately to the input slot
+  const { InputProps, ...textFieldProps } = inputProps || {};
+
   return (
     <Controller
       name={name}
@@ -46,9 +49,12 @@ export default function ControlledTextInput({
         return (
           <TextField
             {...field}
-            {...inputProps}
+            {...textFieldProps}
             onChange={(e) => onChangeHandler(e.target.value, field)}
             value={valueHandler(field.value)}
+            slotProps={{
+              input: { ...InputProps },
+            }}
           />
         );
       }}

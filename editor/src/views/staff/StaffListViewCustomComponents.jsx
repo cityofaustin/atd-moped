@@ -127,8 +127,10 @@ export const CopyMugUsersButton = ({ users }) => {
         anchorEl={anchorEl}
         open={menuOpen}
         onClose={handleCloseMenu}
-        MenuListProps={{
-          "aria-labelledby": "copy-users-menu-button",
+        slotProps={{
+          list: {
+            "aria-labelledby": "copy-users-menu-button",
+          }
         }}
       >
         <MenuItem onClick={() => onMenuItemClick("mug")}>

@@ -84,6 +84,19 @@ export type String_Comparison_Exp = {
   _similar?: string | null | undefined;
 };
 
+/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
+export type Bigint_Comparison_Exp = {
+  _eq?: unknown;
+  _gt?: unknown;
+  _gte?: unknown;
+  _in?: Array<unknown> | null | undefined;
+  _is_null?: boolean | null | undefined;
+  _lt?: unknown;
+  _lte?: unknown;
+  _neq?: unknown;
+  _nin?: Array<unknown> | null | undefined;
+};
+
 /** Boolean expression to compare columns of type "citext". All fields are combined with logical 'AND'. */
 export type Citext_Comparison_Exp = {
   _eq?: unknown;
@@ -1446,6 +1459,145 @@ export type Files_Project_Funding_Update_Column =
   /** column name */
   | "updated_by_user_id";
 
+export type Files_Project_Work_Activities_Aggregate_Bool_Exp = {
+  bool_and?:
+    | Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_And
+    | null
+    | undefined;
+  bool_or?:
+    Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_Or | null | undefined;
+  count?:
+    Files_Project_Work_Activities_Aggregate_Bool_Exp_Count | null | undefined;
+};
+
+export type Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_And = {
+  arguments: Files_Project_Work_Activities_Select_Column_Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
+  distinct?: boolean | null | undefined;
+  filter?: Files_Project_Work_Activities_Bool_Exp | null | undefined;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_Or = {
+  arguments: Files_Project_Work_Activities_Select_Column_Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
+  distinct?: boolean | null | undefined;
+  filter?: Files_Project_Work_Activities_Bool_Exp | null | undefined;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Files_Project_Work_Activities_Aggregate_Bool_Exp_Count = {
+  arguments?:
+    Array<Files_Project_Work_Activities_Select_Column> | null | undefined;
+  distinct?: boolean | null | undefined;
+  filter?: Files_Project_Work_Activities_Bool_Exp | null | undefined;
+  predicate: Int_Comparison_Exp;
+};
+
+/** input type for inserting array relation for remote table "files_project_work_activities" */
+export type Files_Project_Work_Activities_Arr_Rel_Insert_Input = {
+  data: Array<Files_Project_Work_Activities_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: Files_Project_Work_Activities_On_Conflict | null | undefined;
+};
+
+/** Boolean expression to filter rows from the table "files_project_work_activities". All fields are combined with a logical 'AND'. */
+export type Files_Project_Work_Activities_Bool_Exp = {
+  _and?: Array<Files_Project_Work_Activities_Bool_Exp> | null | undefined;
+  _not?: Files_Project_Work_Activities_Bool_Exp | null | undefined;
+  _or?: Array<Files_Project_Work_Activities_Bool_Exp> | null | undefined;
+  created_at?: Timestamptz_Comparison_Exp | null | undefined;
+  created_by_user_id?: Int_Comparison_Exp | null | undefined;
+  entity_id?: Int_Comparison_Exp | null | undefined;
+  file_id?: Int_Comparison_Exp | null | undefined;
+  id?: Int_Comparison_Exp | null | undefined;
+  is_deleted?: Boolean_Comparison_Exp | null | undefined;
+  moped_project_file?: Moped_Project_Files_Bool_Exp | null | undefined;
+  updated_at?: Timestamptz_Comparison_Exp | null | undefined;
+  updated_by_user_id?: Int_Comparison_Exp | null | undefined;
+};
+
+/** unique or primary key constraints on table "files_project_work_activities" */
+export type Files_Project_Work_Activities_Constraint =
+  /** unique or primary key constraint on columns "file_id", "entity_id" */
+  | "files_project_work_activities_entity_id_file_id_key"
+  /** unique or primary key constraint on columns "id" */
+  | "files_project_work_activities_pkey";
+
+/** input type for inserting data into table "files_project_work_activities" */
+export type Files_Project_Work_Activities_Insert_Input = {
+  /** Timestamp for when the record was created. */
+  created_at?: string | null | undefined;
+  /** References the user who created the file attachment record. */
+  created_by_user_id?: number | null | undefined;
+  /** References the Moped project work activity record to which the file attachment belongs. */
+  entity_id?: number | null | undefined;
+  /** References the file that is attached to the work activity row. */
+  file_id?: number | null | undefined;
+  id?: number | null | undefined;
+  /** Indicates soft deletion */
+  is_deleted?: boolean | null | undefined;
+  moped_project_file?:
+    Moped_Project_Files_Obj_Rel_Insert_Input | null | undefined;
+  /** Timestamp for when the record was last updated. */
+  updated_at?: string | null | undefined;
+  /** References the user who last updated the file attachment record. */
+  updated_by_user_id?: number | null | undefined;
+};
+
+/** on_conflict condition type for table "files_project_work_activities" */
+export type Files_Project_Work_Activities_On_Conflict = {
+  constraint: Files_Project_Work_Activities_Constraint;
+  update_columns?: Array<Files_Project_Work_Activities_Update_Column>;
+  where?: Files_Project_Work_Activities_Bool_Exp | null | undefined;
+};
+
+/** select columns of table "files_project_work_activities" */
+export type Files_Project_Work_Activities_Select_Column =
+  /** column name */
+  | "created_at"
+  /** column name */
+  | "created_by_user_id"
+  /** column name */
+  | "entity_id"
+  /** column name */
+  | "file_id"
+  /** column name */
+  | "id"
+  /** column name */
+  | "is_deleted"
+  /** column name */
+  | "updated_at"
+  /** column name */
+  | "updated_by_user_id";
+
+/** select "files_project_work_activities_aggregate_bool_exp_bool_and_arguments_columns" columns of table "files_project_work_activities" */
+export type Files_Project_Work_Activities_Select_Column_Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
+  /** column name */
+  "is_deleted";
+
+/** select "files_project_work_activities_aggregate_bool_exp_bool_or_arguments_columns" columns of table "files_project_work_activities" */
+export type Files_Project_Work_Activities_Select_Column_Files_Project_Work_Activities_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
+  /** column name */
+  "is_deleted";
+
+/** update columns of table "files_project_work_activities" */
+export type Files_Project_Work_Activities_Update_Column =
+  /** column name */
+  | "created_at"
+  /** column name */
+  | "created_by_user_id"
+  /** column name */
+  | "entity_id"
+  /** column name */
+  | "file_id"
+  /** column name */
+  | "id"
+  /** column name */
+  | "is_deleted"
+  /** column name */
+  | "updated_at"
+  /** column name */
+  | "updated_by_user_id";
+
 export type Geography_Cast_Exp = {
   geometry?: Geometry_Comparison_Exp | null | undefined;
 };
@@ -1541,6 +1693,10 @@ export type Jsonb_Comparison_Exp = {
   _has_keys_any?: Array<string> | null | undefined;
   _in?: Array<unknown> | null | undefined;
   _is_null?: boolean | null | undefined;
+  /** does the jsonpath return any item for the specified JSON value */
+  _jsonb_path_exists?: string | null | undefined;
+  /** does the jsonpath predicate check return true for the specified JSON value */
+  _jsonb_path_match?: string | null | undefined;
   _lt?: unknown;
   _lte?: unknown;
   _neq?: unknown;
@@ -2783,6 +2939,7 @@ export type Moped_Proj_Components_Insert_Input = {
   completion_date?: string | null | undefined;
   component_id?: number | null | undefined;
   created_at?: string | null | undefined;
+  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   description?: string | null | undefined;
   feature_drawn_lines?:
@@ -2817,6 +2974,7 @@ export type Moped_Proj_Components_Insert_Input = {
   srts_id?: string | null | undefined;
   subphase_id?: number | null | undefined;
   updated_at?: string | null | undefined;
+  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -3357,6 +3515,7 @@ export type Moped_Proj_Milestones_Constraint =
 export type Moped_Proj_Milestones_Insert_Input = {
   completed?: boolean | null | undefined;
   created_at?: string | null | undefined;
+  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   date_actual?: unknown;
   date_estimate?: unknown;
@@ -3519,6 +3678,7 @@ export type Moped_Proj_Notes_Constraint =
 /** input type for inserting data into table "moped_proj_notes" */
 export type Moped_Proj_Notes_Insert_Input = {
   created_at?: string | null | undefined;
+  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
@@ -4444,6 +4604,10 @@ export type Moped_Proj_Work_Activity_Bool_Exp = {
   updated_at?: Timestamptz_Comparison_Exp | null | undefined;
   updated_by_user?: Moped_Users_Bool_Exp | null | undefined;
   updated_by_user_id?: Int_Comparison_Exp | null | undefined;
+  work_activity_files?:
+    Files_Project_Work_Activities_Bool_Exp | null | undefined;
+  work_activity_files_aggregate?:
+    Files_Project_Work_Activities_Aggregate_Bool_Exp | null | undefined;
   work_assignment_id?: String_Comparison_Exp | null | undefined;
   work_order_url?: String_Comparison_Exp | null | undefined;
   workgroup_contractor?: String_Comparison_Exp | null | undefined;
@@ -4475,8 +4639,10 @@ export type Moped_Proj_Work_Activity_Insert_Input = {
   updated_at?: string | null | undefined;
   updated_by_user?: Moped_Users_Obj_Rel_Insert_Input | null | undefined;
   updated_by_user_id?: number | null | undefined;
+  work_activity_files?:
+    Files_Project_Work_Activities_Arr_Rel_Insert_Input | null | undefined;
   work_assignment_id?: string | null | undefined;
-  /** External link to a related work order. E.g., to the Knack Data Tracker */
+  /** (Deprecated) External link to a related work order. E.g., to the Knack Data Tracker */
   work_order_url?: string | null | undefined;
   workgroup_contractor?: string | null | undefined;
 };
@@ -4764,6 +4930,10 @@ export type Moped_Project_Files_Bool_Exp = {
   files_project_fundings?: Files_Project_Funding_Bool_Exp | null | undefined;
   files_project_fundings_aggregate?:
     Files_Project_Funding_Aggregate_Bool_Exp | null | undefined;
+  files_project_work_activities?:
+    Files_Project_Work_Activities_Bool_Exp | null | undefined;
+  files_project_work_activities_aggregate?:
+    Files_Project_Work_Activities_Aggregate_Bool_Exp | null | undefined;
   is_deleted?: Boolean_Comparison_Exp | null | undefined;
   is_scanned?: Boolean_Comparison_Exp | null | undefined;
   moped_project?: Moped_Project_Bool_Exp | null | undefined;
@@ -4796,6 +4966,8 @@ export type Moped_Project_Files_Insert_Input = {
     Files_Ecapris_Funding_Arr_Rel_Insert_Input | null | undefined;
   files_project_fundings?:
     Files_Project_Funding_Arr_Rel_Insert_Input | null | undefined;
+  files_project_work_activities?:
+    Files_Project_Work_Activities_Arr_Rel_Insert_Input | null | undefined;
   /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   is_scanned?: boolean | null | undefined;
@@ -5812,6 +5984,7 @@ export type Project_List_View_Bool_Exp = {
   project_description?: String_Comparison_Exp | null | undefined;
   project_designer?: String_Comparison_Exp | null | undefined;
   project_feature?: Json_Comparison_Exp | null | undefined;
+  project_funding_total?: Bigint_Comparison_Exp | null | undefined;
   project_id?: Int_Comparison_Exp | null | undefined;
   project_inspector?: String_Comparison_Exp | null | undefined;
   project_lead?: String_Comparison_Exp | null | undefined;
@@ -5869,6 +6042,7 @@ export type Project_List_View_Insert_Input = {
   project_description?: string | null | undefined;
   project_designer?: string | null | undefined;
   project_feature?: unknown;
+  project_funding_total?: unknown;
   project_id?: number | null | undefined;
   project_inspector?: string | null | undefined;
   project_lead?: string | null | undefined;
@@ -7062,6 +7236,10 @@ export type DeleteProjectFileAttachmentMutation = {
     __typename: "files_project_funding_mutation_response";
     affected_rows: number;
   } | null;
+  update_files_project_work_activities: {
+    __typename: "files_project_work_activities_mutation_response";
+    affected_rows: number;
+  } | null;
 };
 
 export type Insert_Single_ArticleMutationVariables = Exact<{
@@ -7147,6 +7325,53 @@ export type AttachExistingFileToMopedFundingMutation = {
     __typename: "files_project_funding";
     id: number;
   } | null;
+};
+
+export type InsertFileWithWorkActivityConnectionMutationVariables = Exact<{
+  object: Moped_Project_Files_Insert_Input;
+}>;
+
+export type InsertFileWithWorkActivityConnectionMutation = {
+  insert_moped_project_files_one: {
+    __typename: "moped_project_files";
+    project_file_id: number;
+    files_project_work_activities: Array<{
+      __typename: "files_project_work_activities";
+      id: number;
+    }>;
+  } | null;
+};
+
+export type AttachExistingFileToWorkActivityMutationVariables = Exact<{
+  object: Files_Project_Work_Activities_Insert_Input;
+}>;
+
+export type AttachExistingFileToWorkActivityMutation = {
+  insert_files_project_work_activities_one: {
+    __typename: "files_project_work_activities";
+    id: number;
+  } | null;
+};
+
+export type DetachFileWorkActivityMutationVariables = Exact<{
+  id: number;
+}>;
+
+export type DetachFileWorkActivityMutation = {
+  update_files_project_work_activities_by_pk: {
+    __typename: "files_project_work_activities";
+    id: number;
+  } | null;
+};
+
+export type FileTypesLookupQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FileTypesLookupQuery = {
+  moped_file_types: Array<{
+    __typename: "moped_file_types";
+    id: number;
+    name: string;
+  }>;
 };
 
 export type ArchiveMopedProjectMutationVariables = Exact<{
@@ -15979,6 +16204,64 @@ export const DeleteProjectFileAttachmentDocument = {
               ],
             },
           },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "update_files_project_work_activities",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "file_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "fileId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -16489,6 +16772,265 @@ export const AttachExistingFileToMopedFundingDocument = {
 } as unknown as DocumentNode<
   AttachExistingFileToMopedFundingMutation,
   AttachExistingFileToMopedFundingMutationVariables
+>;
+export const InsertFileWithWorkActivityConnectionDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "InsertFileWithWorkActivityConnection" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "moped_project_files_insert_input" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_project_files_one" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "object" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_file_id" },
+                },
+                {
+                  kind: "Field",
+                  name: {
+                    kind: "Name",
+                    value: "files_project_work_activities",
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  InsertFileWithWorkActivityConnectionMutation,
+  InsertFileWithWorkActivityConnectionMutationVariables
+>;
+export const AttachExistingFileToWorkActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AttachExistingFileToWorkActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: {
+                kind: "Name",
+                value: "files_project_work_activities_insert_input",
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "insert_files_project_work_activities_one",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "object" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "on_conflict" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "constraint" },
+                      value: {
+                        kind: "EnumValue",
+                        value:
+                          "files_project_work_activities_entity_id_file_id_key",
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "update_columns" },
+                      value: {
+                        kind: "ListValue",
+                        values: [{ kind: "EnumValue", value: "is_deleted" }],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AttachExistingFileToWorkActivityMutation,
+  AttachExistingFileToWorkActivityMutationVariables
+>;
+export const DetachFileWorkActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DetachFileWorkActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "update_files_project_work_activities_by_pk",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "id" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DetachFileWorkActivityMutation,
+  DetachFileWorkActivityMutationVariables
+>;
+export const FileTypesLookupDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "FileTypesLookup" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_file_types" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  FileTypesLookupQuery,
+  FileTypesLookupQueryVariables
 >;
 export const ArchiveMopedProjectDocument = {
   kind: "Document",

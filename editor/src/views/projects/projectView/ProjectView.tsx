@@ -437,7 +437,6 @@ const ProjectView = () => {
                               open={menuOpen}
                               onClose={handleMenuClose}
                               autoFocus={false}
-                              TransitionComponent={Fade}
                               anchorOrigin={{
                                 vertical: "bottom",
                                 horizontal: "center",
@@ -445,6 +444,9 @@ const ProjectView = () => {
                               transformOrigin={{
                                 vertical: "top",
                                 horizontal: "center",
+                              }}
+                              slots={{
+                                transition: Fade
                               }}
                             >
                               <MenuItem
