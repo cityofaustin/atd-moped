@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
+import codegen from "vite-plugin-graphql-codegen";
 
 export default defineConfig(() => {
   return {
@@ -16,7 +17,15 @@ export default defineConfig(() => {
     },
     /* Use SSL for Cognito sign-in using callback set up with port 3000 in local development */
     plugins: [
-      react(),
+      react({
+        plugins: [
+          [
+            /* https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size */
+            "@swc-contrib/plugin-graphql-codegen-client-preset",
+            { artifactDirectory: "./src/gql", gqlTagName: "graphql" },
+          ],
+        ],
+      }),
       basicSsl(),
       checker({
         eslint: {
@@ -31,6 +40,9 @@ export default defineConfig(() => {
         },
         // Disable during build since we lint in our Netlify build command
         enableBuild: false,
+      }),
+      codegen({
+        runOnBuild: false,
       }),
     ],
     resolve: {
