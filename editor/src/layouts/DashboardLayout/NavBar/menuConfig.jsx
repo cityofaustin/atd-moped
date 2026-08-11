@@ -6,7 +6,7 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import BarChart from "@mui/icons-material/BarChart";
 
 export const serviceRequestLink =
-  "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_399%22%3A%22Moped%22%7D";
+  "https://atd.knack.com/dts#new-service-request/";
 
 /**
  * Configuration for help menu items we iterate to render menu items in DropdownMenu and MobileDropdownMenu

@@ -36,7 +36,10 @@ export const makeUrlValid = (url) => {
 // includes the error.message as the text in field 400 ("Describe the problem")
 // and the email of the user logged in in field 406
 export const createBugReportLink = (error, userEmail) => {
-  return `https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%2C%22field_400%22%3A%22${error.message}%22%2C%22field_406%22%3A%22${userEmail}%22%7D`;
+  // remove quotes from error message before encoding
+  const encodedError = encodeURIComponent(error.message.replace(/['"]/g, ""));
+  const encodedEmail = encodeURIComponent(userEmail);
+  return `https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_400%22%3A%22${encodedError}%22%2C%22field_406%22%3A%22${encodedEmail}%22%7D`;
 };
 
 // Returns link text based on url when no text prop is provided, can be expanded to include more cases as needed
