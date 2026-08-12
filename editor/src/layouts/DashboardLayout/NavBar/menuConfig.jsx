@@ -5,6 +5,9 @@ import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import BarChart from "@mui/icons-material/BarChart";
 
+// field 1130 is the connected knack field for "What application are you using"
+// "6840ccb60b6c9802c3029207" is the record ID for the Moped option
+// The decoded url is https://atd.knack.com/dts#new-service-request/?view_249_vars={"field_1130":["5d8938ed899f8d001156b66f"]}
 export const serviceRequestLink =
   "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_1130%22%3A%5B%225d8938ed899f8d001156b66f%22%5D%7D";
 
