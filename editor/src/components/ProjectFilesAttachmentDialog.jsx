@@ -114,7 +114,7 @@ const ProjectFilesAttachmentDialog = ({
     clearState();
   };
 
-  const handleCancel = () => {
+  const handleDialogClose = () => {
     clearState();
     onClose();
   };
@@ -168,9 +168,8 @@ const ProjectFilesAttachmentDialog = ({
     <FormDialog
       title="Attach files"
       open={isFileAttachmentDialogOpen}
-      handleClose={onClose}
+      handleClose={handleDialogClose}
       handleSave={isExistingFileTab ? handleAttach : handleSave}
-      handleCancel={handleCancel}
       saveDisabled={
         isLoading || (isExistingFileTab ? !existingFileIdToAttach : !fileReady)
       }
