@@ -20,7 +20,7 @@ export const DrawControl = React.forwardRef(
         map.on("draw.modechange", props.onModeChange);
         map.on("draw.selectionchange", props.onSelectionChange);
 
-        return new MapboxDraw(props);
+        return new MapboxDraw({ onCreate, onUpdate, onDelete, ...props });
       },
       ({ map }) => {
         map.off("draw.create", onCreate);
