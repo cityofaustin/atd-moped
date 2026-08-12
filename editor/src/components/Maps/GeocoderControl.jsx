@@ -24,7 +24,6 @@ export default function GeocoderControl({
   onResults = () => {},
   onResult = () => {},
   onError = () => {},
-  marker = true,
   ...props
 }) {
   const [marker, setMarker] = useState(null);
