@@ -220,13 +220,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
     setDialogOpen(true);
   };
 
-  /**
-   * Handles the cancel button onClick behavior
-   */
-  const handleClickCloseUploadFile = () => {
-    setDialogOpen(false);
-  };
-
   const handleDeleteOpen = useCallback(
     (id) => () => {
       setIsDeleteConfirmationOpen(true);
@@ -407,9 +400,10 @@ const ProjectFiles = ({ handleSnackbar }) => {
     clearState();
   };
 
-  const handleCancel = () => {
+  /* Handles the close button onClick behavior */
+  const handleClickCloseUploadFile = () => {
     clearState();
-    handleClickCloseUploadFile();
+    setDialogOpen(false);
   };
 
   return (
@@ -452,7 +446,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
           open={dialogOpen}
           handleClose={handleClickCloseUploadFile}
           handleSave={handleSave}
-          handleCancel={handleCancel}
           saveDisabled={!fileReady}
           saveButtonLabel={formProps.externalFile ? "Save" : "Upload"}
           showDialogActions={true}

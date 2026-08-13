@@ -14,7 +14,6 @@ import SaveIcon from "@mui/icons-material/Save";
  * This supports our RHF forms with their own buttons and forms that manage their own state.
  * @param {string} title - title of the dialog
  * @param {string} saveButtonLabel - label for the save button
- * @param {string} cancelButtonLabel - label for the cancel button
  * @param {boolean} saveDisabled - boolean that controls whether the save button is disabled or not
  * @param {function} handleClose - handles closing the dialog
  * @param {function} handleSave - handles saving the form
@@ -28,11 +27,9 @@ import SaveIcon from "@mui/icons-material/Save";
 const FormDialog = ({
   title,
   saveButtonLabel = "Save",
-  cancelButtonLabel = "Cancel",
   saveDisabled,
   handleClose,
   handleSave,
-  handleCancel,
   open,
   children,
   showDialogActions = false,
@@ -63,9 +60,6 @@ const FormDialog = ({
       <DialogContent>{children}</DialogContent>
       {showDialogActions && (
         <DialogActions sx={{ pr: 3, pb: 2 }}>
-          <Button onClick={handleCancel} color="primary">
-            {cancelButtonLabel}
-          </Button>
           <Button
             onClick={handleSave}
             color="primary"
