@@ -1,25 +1,37 @@
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { useMutation } from "@apollo/client";
+import { ApolloQueryResult, useMutation } from "@apollo/client";
 import { useSessionDatabaseData } from "src/auth/user";
 import { PROJECT_FOLLOW, PROJECT_UNFOLLOW } from "src/queries/project";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
+import { ProjectSummaryQuery } from "src/gql/graphql";
+import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
+
+interface ProjectFollowButtonProps {
+  /** The id of the current project to follow/unfollow */
+  projectId: string | undefined;
+  /** Whether the user is currently following the project */
+  isFollowing: boolean;
+  /** The refetch function from Apollo */
+  refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  /** The function to show the snackbar */
+  handleSnackbar: HandleSnackbar;
+}
 
 /**
  * Icon button to follow/unfollow a project
- * @param {Number} projectId - The id of the current project to follow/unfollow
- * @param {Boolean} isFollowing - Whether the user is currently following the project
- * @param {Function} refetch - The refetch function from Apollo
- * @param {Function} handleSnackbar - The function to show the snackbar
- * @return {JSX.Element}
  */
 const ProjectFollowButton = ({
   projectId,
   isFollowing,
   refetch,
   handleSnackbar,
-}) => {
-  const userSessionData = useSessionDatabaseData();
+}: ProjectFollowButtonProps) => {
+  const userSessionData = useSessionDatabaseData() as
+    | {
+        user_id: number;
+      }
+    | undefined;
   const userId = userSessionData?.user_id;
 
   const [followProject] = useMutation(PROJECT_FOLLOW);
@@ -31,8 +43,8 @@ const ProjectFollowButton = ({
         await followProject({
           variables: {
             object: {
-              project_id: projectId,
-              user_id: userId,
+              project_id: Number(projectId),
+              user_id: Number(userId),
             },
           },
         });
@@ -46,8 +58,8 @@ const ProjectFollowButton = ({
       try {
         await unfollowProject({
           variables: {
-            project_id: projectId,
-            user_id: userId,
+            project_id: Number(projectId),
+            user_id: Number(userId),
           },
         });
         await refetch();
@@ -60,6 +72,7 @@ const ProjectFollowButton = ({
   };
 
   return (
+    // @ts-expect-error - IconButtonWithTooltip needs to be converted to .tsx in issue #29269
     <IconButtonWithTooltip
       title={isFollowing ? "Unfollow" : "Follow"}
       onClick={() => handleFollowProject()}

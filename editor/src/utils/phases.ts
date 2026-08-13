@@ -3,6 +3,7 @@ import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutli
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import { SvgIconComponent } from "@mui/icons-material";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 
 import theme from "src/theme";
@@ -13,24 +14,27 @@ export const defaultLabel = "Unknown";
 /**
  * Font colors
  */
-const primary = theme?.palette?.text?.primary;
-const white = theme?.palette?.background?.paper;
+const primary = theme.palette.text.primary;
+const white = theme.palette.background.paper;
 
 /**
  * Background color mapping
  */
 const backgroundColors = {
-  default: theme?.palette?.grey?.[300],
-  warning: theme?.palette?.warning?.light,
-  success: theme?.palette?.success?.light,
-  info: theme?.palette?.info?.main,
-  error: theme?.palette?.error?.main,
+  default: theme.palette.grey[300],
+  warning: theme.palette.warning.light,
+  success: theme.palette.success.light,
+  info: theme.palette.info.main,
+  error: theme.palette.error.main,
 };
 
 /**
  * Main style configuration per phase name, containing font `color`, chip `background` color and the icon.
  */
-export const styleMapping = {
+export const styleMapping: Record<
+  string,
+  { color: string; background: string; icon: SvgIconComponent }
+> = {
   planned: {
     color: white,
     background: backgroundColors.success,

@@ -4,7 +4,7 @@ import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutoco
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
-import NotableCellPopover from "src/components/NotableCellPopover";
+import EcaprisOverridableCell from "src/views/projects/projectView/ProjectFunding/EcaprisOverridableCell";
 import SecondaryInformationChip from "src/components/SecondaryInformationChip";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -236,6 +236,8 @@ export const useColumns = ({
   logUserEvent,
   handleSnackbar,
   refetch,
+  shouldSyncEcaprisFunding,
+  projectECaprisSubprojectId,
 }) =>
   useMemo(() => {
     return [
@@ -246,9 +248,13 @@ export const useColumns = ({
         editable: true,
         renderCell: ({ row, value }) =>
           row.is_synced_from_ecapris ? (
-            <Stack direction="column" spacing={0.5} sx={{
-              alignItems: "flex-start"
-            }}>
+            <Stack
+              direction="column"
+              spacing={0.5}
+              sx={{
+                alignItems: "flex-start",
+              }}
+            >
               <span>{value?.fdu}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>
@@ -291,6 +297,14 @@ export const useColumns = ({
         width: 180,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
+        renderCell: ({ row, value }) => (
+          <EcaprisOverridableCell
+            row={row}
+            ecaprisValue={row.ecapris_funding?.funding_source_id}
+            currentValue={row.fund_source?.funding_source_id}
+            displayValue={value?.funding_source_name}
+          />
+        ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -305,7 +319,14 @@ export const useColumns = ({
         field: "fund_program",
         width: 180,
         editable: true,
-        valueFormatter: (value) => value?.funding_program_name,
+        renderCell: ({ row, value }) => (
+          <EcaprisOverridableCell
+            row={row}
+            ecaprisValue={row.ecapris_funding?.funding_program_id}
+            currentValue={row.fund_program?.funding_program_id}
+            displayValue={value?.funding_program_name}
+          />
+        ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -343,26 +364,16 @@ export const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
-        renderCell: ({ row, value }) => {
-          // Make sure not to give asterisk to empty cells
-          const hasValue = value !== null && value !== undefined;
-          const formattedValue = hasValue
-            ? currencyFormatter.format(value)
-            : "";
-          const showOverrideIndicator =
-            hasValue &&
-            !row.should_use_ecapris_amount &&
-            !row.is_manual &&
-            !row.is_synced_from_ecapris;
-
-          return (
-            <NotableCellPopover
-              value={formattedValue}
-              isEnabled={showOverrideIndicator}
-              popoverText="eCAPRIS override"
-            />
-          );
-        },
+        renderCell: ({ row, value }) => (
+          <EcaprisOverridableCell
+            row={row}
+            ecaprisValue={row.ecapris_funding?.app}
+            currentValue={row.funding_amount}
+            displayValue={
+              value === null ? null : currencyFormatter.format(value)
+            }
+          />
+        ),
         preProcessEditCellProps: (params) => {
           return {
             ...params.props,
@@ -427,8 +438,19 @@ export const useColumns = ({
         editable: false,
         width: 110,
         type: "actions",
-        renderCell: ({ id, row }) =>
-          row.is_manual ? (
+        renderCell: ({ id, row }) => {
+          const doesFDUBelongToCurrentSubproject =
+            row.ecapris_subproject_id === projectECaprisSubprojectId;
+          const wouldDeletingRowRestoreSyncedRow =
+            !row.is_synced_from_ecapris && doesFDUBelongToCurrentSubproject;
+          const deleteTooltipMessage =
+            wouldDeletingRowRestoreSyncedRow && shouldSyncEcaprisFunding
+              ? "Removing this row will restore the synced eCAPRIS FDU"
+              : row.is_synced_from_ecapris
+                ? "Switch off eCAPRIS sync to remove synced rows"
+                : null;
+
+          return row.is_manual ? (
             <DataGridActions
               id={id}
               rowModesModel={rowModesModel}
@@ -460,11 +482,7 @@ export const useColumns = ({
                 <AttachFileOutlinedIcon />
               </IconButton>
               <IconButtonWithTooltip
-                title={
-                  row.is_synced_from_ecapris
-                    ? "Switch off eCAPRIS sync to remove synced rows"
-                    : null
-                }
+                title={deleteTooltipMessage}
                 aria-label="delete"
                 iconButtonProps={{ sx: { color: "inherit", padding: "5px" } }}
                 disabled={!!row.is_synced_from_ecapris}
@@ -473,7 +491,8 @@ export const useColumns = ({
                 <DeleteOutlinedIcon />
               </IconButtonWithTooltip>
             </>
-          ),
+          );
+        },
       },
     ];
   }, [
@@ -490,4 +509,6 @@ export const useColumns = ({
     logUserEvent,
     refetch,
     handleSnackbar,
+    shouldSyncEcaprisFunding,
+    projectECaprisSubprojectId,
   ]);

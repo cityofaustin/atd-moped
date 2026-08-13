@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Popup } from "react-map-gl";
+import { Popup } from "react-map-gl/mapbox";
 import turfCenter from "@turf/center";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";

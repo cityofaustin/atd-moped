@@ -22,7 +22,7 @@ import {
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import CurrentPhaseDeleteModal from "src/views/projects/projectView/ProjectPhase/CurrentPhaseDeleteModal";
+import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
@@ -116,10 +116,12 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
         sortable: false,
         width: 100,
         renderCell: ({ row }) => {
+          const isCurrentPhase = row.is_current_phase;
+
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div style={{ display: "flex" }}>
+            <>
               <IconButton
                 aria-label="edit"
                 sx={{ color: "inherit" }}
@@ -127,19 +129,27 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
               >
                 <EditOutlinedIcon />
               </IconButton>
-              <IconButton
-                aria-label="delete"
-                sx={{ color: "inherit" }}
+              <IconButtonWithTooltip
+                title={
+                  isCurrentPhase
+                    ? "Mark another phase as current before removing this phase"
+                    : null
+                }
                 onClick={() =>
                   handleDeleteOpen({
                     project_phase_id: row.project_phase_id,
                     is_current_phase: row.is_current_phase,
                   })
                 }
+                disabled={isCurrentPhase}
+                iconButtonProps={{
+                  "aria-label": "delete",
+                  sx: { color: "inherit", padding: "5px" },
+                }}
               >
                 <DeleteOutlinedIcon />
-              </IconButton>
-            </div>
+              </IconButtonWithTooltip>
+            </>
           );
         },
       },
@@ -162,22 +172,13 @@ const ProjectPhases = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
-  const [isDeleteCurrentConfirmationOpen, setIsDeleteCurrentConfirmationOpen] =
-    useState(false);
   const [deletePhase, { loading: deleteInProgress }] =
     useMutation(DELETE_PROJECT_PHASE);
   const onClickAddPhase = () => setEditPhase({ project_id: projectId });
-  const handleDeleteOpen = useCallback(
-    ({ project_phase_id, is_current_phase }) => {
-      if (is_current_phase) {
-        setIsDeleteCurrentConfirmationOpen(true);
-      } else {
-        setIsDeleteConfirmationOpen(true);
-        setDeleteConfirmationId(project_phase_id);
-      }
-    },
-    []
-  );
+  const handleDeleteOpen = useCallback(({ project_phase_id }) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(project_phase_id);
+  }, []);
   const handleDeleteClick = useCallback(
     (id) => () => {
       deletePhase({
@@ -298,10 +299,6 @@ const ProjectPhases = ({
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
         mutationPending={deleteInProgress}
-      />
-      <CurrentPhaseDeleteModal
-        isOpen={isDeleteCurrentConfirmationOpen}
-        setIsOpen={setIsDeleteCurrentConfirmationOpen}
       />
     </>
   );

@@ -26,7 +26,9 @@
 
     /* Linting that we can tighten with more TypeScript coverage */
     "strict": false,
-    "noImplicitAny": false,
+    /* strictNullCheck is bundled in strict mode and can be removed with full TS coverage when strict is updated to true */
+    "strictNullChecks": true,
+    "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },

@@ -17,8 +17,9 @@ import { useUser } from "src/auth/user";
 import SimpleDialog from "src/components/SimpleDialog";
 import ExternalLink from "src/components/ExternalLink";
 
+// decoded vars {"field_398":"IT Support — Help with licenses, accounts, hardware, etc.","field_1130":["5d8938ed899f8d001156b66f"]}
 const serviceRequestLink =
-  "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22IT%20Support%20%E2%80%94%20Help%20with%20licenses%2C%20accounts%2C%20hardware%2C%20etc.%22%2C%22field_399%22%3A%22Moped%22%7D";
+  "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22IT%20Support%20%E2%80%94%20Help%20with%20licenses%2C%20accounts%2C%20hardware%2C%20etc.%22%2C%22field_1130%22%3A%5B%225d8938ed899f8d001156b66f%22%5D%7D";
 
 const LoginView = () => {
   const { login, loginSSO, isLoginLoading } = useUser();
