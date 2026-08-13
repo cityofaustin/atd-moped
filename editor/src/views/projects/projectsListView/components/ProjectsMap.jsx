@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MapGL, { Layer, NavigationControl, Source } from "react-map-gl";
+import MapGL, { Layer, NavigationControl, Source } from "react-map-gl/mapbox";
 import BasemapSpeedDial from "../../projectView/ProjectComponents/BasemapSpeedDial";
 import BaseMapSourceAndLayers from "../../projectView/ProjectComponents/BaseMapSourceAndLayers";
 import GeocoderControl from "src/components/Maps/GeocoderControl";

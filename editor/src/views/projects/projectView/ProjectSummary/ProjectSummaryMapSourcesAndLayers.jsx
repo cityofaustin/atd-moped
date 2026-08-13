@@ -1,4 +1,4 @@
-import { Source, Layer } from "react-map-gl";
+import { Source, Layer } from "react-map-gl/mapbox";
 import { MAP_STYLES } from "../ProjectComponents/mapStyleSettings";
 import { useFeatureTypes } from "../ProjectComponents/utils/map";
 

@@ -236,6 +236,8 @@ export const useColumns = ({
   logUserEvent,
   handleSnackbar,
   refetch,
+  shouldSyncEcaprisFunding,
+  projectECaprisSubprojectId,
 }) =>
   useMemo(() => {
     return [
@@ -436,8 +438,19 @@ export const useColumns = ({
         editable: false,
         width: 110,
         type: "actions",
-        renderCell: ({ id, row }) =>
-          row.is_manual ? (
+        renderCell: ({ id, row }) => {
+          const doesFDUBelongToCurrentSubproject =
+            row.ecapris_subproject_id === projectECaprisSubprojectId;
+          const wouldDeletingRowRestoreSyncedRow =
+            !row.is_synced_from_ecapris && doesFDUBelongToCurrentSubproject;
+          const deleteTooltipMessage =
+            wouldDeletingRowRestoreSyncedRow && shouldSyncEcaprisFunding
+              ? "Removing this row will restore the synced eCAPRIS FDU"
+              : row.is_synced_from_ecapris
+                ? "Switch off eCAPRIS sync to remove synced rows"
+                : null;
+
+          return row.is_manual ? (
             <DataGridActions
               id={id}
               rowModesModel={rowModesModel}
@@ -469,11 +482,7 @@ export const useColumns = ({
                 <AttachFileOutlinedIcon />
               </IconButton>
               <IconButtonWithTooltip
-                title={
-                  row.is_synced_from_ecapris
-                    ? "Switch off eCAPRIS sync to remove synced rows"
-                    : null
-                }
+                title={deleteTooltipMessage}
                 aria-label="delete"
                 iconButtonProps={{ sx: { color: "inherit", padding: "5px" } }}
                 disabled={!!row.is_synced_from_ecapris}
@@ -482,7 +491,8 @@ export const useColumns = ({
                 <DeleteOutlinedIcon />
               </IconButtonWithTooltip>
             </>
-          ),
+          );
+        },
       },
     ];
   }, [
@@ -499,4 +509,6 @@ export const useColumns = ({
     logUserEvent,
     refetch,
     handleSnackbar,
+    shouldSyncEcaprisFunding,
+    projectECaprisSubprojectId,
   ]);

@@ -420,6 +420,8 @@ const ProjectFundingTable = ({
     logUserEvent,
     refetch,
     handleSnackbar,
+    shouldSyncEcaprisFunding,
+    projectECaprisSubprojectId: eCaprisSubprojectId,
   });
 
   const handleECaprisSwitch = () => {

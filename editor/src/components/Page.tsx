@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
-import { Helmet } from "react-helmet";
-import Box from "@mui/material/Box";
-import { BoxProps } from "@mui/material";
+import Box, { BoxProps } from "@mui/material/Box";
+import { useDocumentTitle } from "src/utils/documentTitle";
 
 interface PageProps extends BoxProps {
   children: React.ReactNode;
@@ -10,11 +9,12 @@ interface PageProps extends BoxProps {
 
 const Page = forwardRef<HTMLDivElement, PageProps>(
   ({ children, title = "", ...rest }, ref) => {
+    useDocumentTitle(title);
+
     return (
       <Box className="page" ref={ref} {...rest}>
-        <Helmet>
-          <title>{title}</title>
-        </Helmet>
+        <title>{title}</title>
+
         {children}
       </Box>
     );

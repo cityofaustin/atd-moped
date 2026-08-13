@@ -259,7 +259,7 @@ const ProjectView = () => {
         If you need to restore a deleted project, please{" "}
         <Link
           href={
-            "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
+            "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_1130%22%3A%5B%225d8938ed899f8d001156b66f%22%5D%7D"
           }
           target="new"
         >
@@ -598,7 +598,7 @@ const ProjectView = () => {
                   If you need to restore a deleted project, please{" "}
                   <Link
                     href={
-                      "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
+                      "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_1130%22%3A%5B%225d8938ed899f8d001156b66f%22%5D%7D"
                     }
                     target="new"
                   >

@@ -1,4 +1,4 @@
-import { Source, Layer } from "react-map-gl";
+import { Source, Layer } from "react-map-gl/mapbox";
 import { basemaps } from "./mapSettings";
 import { COLORS } from "./mapStyleSettings";
 
