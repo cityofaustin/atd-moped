@@ -608,12 +608,12 @@ const ProjectFundingTable = ({
             projectId
           )}
           addFileMutation={
-            fileAttachmentParentRecord?.isSyncedFromECapris
+            fileAttachmentParentRecord?.is_synced_from_ecapris
               ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
               : CREATE_FILE_MOPED_FUNDING_ATTACHMENT
           }
           existingFileMutation={
-            fileAttachmentParentRecord?.isSyncedFromECapris
+            fileAttachmentParentRecord?.is_synced_from_ecapris
               ? ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING
               : ATTACH_EXISTING_FILE_TO_MOPED_FUNDING
           }
