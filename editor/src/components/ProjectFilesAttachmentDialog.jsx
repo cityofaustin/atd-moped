@@ -139,8 +139,8 @@ const ProjectFilesAttachmentDialog = ({
           file_id: existingFileIdToAttach,
           entity_id: fileConnectionData.entityId,
           is_deleted: false,
-          ...(fileConnectionData.projectId && {
-            project_id: fileConnectionData.projectId,
+          ...(fileConnectionData.project_id && {
+            project_id: fileConnectionData.project_id,
           }),
         },
       },
