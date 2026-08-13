@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Popup } from "react-map-gl";
+import { Popup } from "react-map-gl/mapbox";
 import turfCenter from "@turf/center";
 
 export default function ComponentPopup({

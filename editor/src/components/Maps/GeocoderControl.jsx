@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { useControl, Marker } from "react-map-gl";
+import { useControl, Marker } from "react-map-gl/mapbox";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { mapParameters } from "src/views/projects/projectView/ProjectComponents/mapSettings";
 
@@ -18,7 +18,14 @@ const austinFullPurposeJurisdictionFeatureCollection = {
 };
 
 // See https://github.com/visgl/react-map-gl/tree/7.0-release/examples/geocoder
-export default function GeocoderControl(props) {
+// defaultProps is deprecated in React 19, so we'll use default parameters
+export default function GeocoderControl({
+  onLoading = () => {},
+  onResults = () => {},
+  onResult = () => {},
+  onError = () => {},
+  ...props
+}) {
   const [marker, setMarker] = useState(null);
 
   const geocoder = useControl(
@@ -29,10 +36,10 @@ export default function GeocoderControl(props) {
         accessToken: mapParameters.mapboxAccessToken,
         bbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
       });
-      ctrl.on("loading", props.onLoading);
-      ctrl.on("results", props.onResults);
+      ctrl.on("loading", onLoading);
+      ctrl.on("results", onResults);
       ctrl.on("result", (evt) => {
-        props.onResult(evt);
+        onResult(evt);
 
         const { result } = evt;
         const location =
@@ -51,7 +58,7 @@ export default function GeocoderControl(props) {
           setMarker(null);
         }
       });
-      ctrl.on("error", props.onError);
+      ctrl.on("error", onError);
       return ctrl;
     },
     {
@@ -118,13 +125,3 @@ export default function GeocoderControl(props) {
   }
   return marker;
 }
-
-const noop = () => {};
-
-GeocoderControl.defaultProps = {
-  marker: true,
-  onLoading: noop,
-  onResults: noop,
-  onResult: noop,
-  onError: noop,
-};
