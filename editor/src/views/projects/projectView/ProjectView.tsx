@@ -62,7 +62,13 @@ import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
-function a11yProps(index) {
+interface DialogState {
+  title: React.ReactNode;
+  body: React.ReactNode;
+  actions: React.ReactNode;
+}
+
+function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
@@ -86,10 +92,8 @@ const TABS = [
 
 /**
  * Get the index of the currently active tab
- * @param {*} tabName - a `tab` name from the url search string
- * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
  */
-const useActiveTabIndex = (tabName) =>
+const useActiveTabIndex = (tabName: string) =>
   useMemo(() => {
     const activeTabIndex = TABS.findIndex((tab) => tab.param === tabName);
     return activeTabIndex > -1 ? activeTabIndex : 0;
@@ -97,14 +101,12 @@ const useActiveTabIndex = (tabName) =>
 
 /**
  * The project summary view
- * @return {JSX.Element}
- * @constructor
  */
 const ProjectView = () => {
   const { projectId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const activeTab = useActiveTabIndex(searchParams.get("tab"));
+  const activeTab = useActiveTabIndex(searchParams.get("tab") ?? "");
 
   /* Create link back to previous filters using queryString state passed with React Router */
   const locationState = location?.state;
@@ -116,23 +118,27 @@ const ProjectView = () => {
     : `/moped/projects${previousProjectListViewQueryString}`;
 
   /**
-   * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
-   * @constant {boolean} dialogOpen - When true, the dialog shows
-   * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
-   * @constant {JSX} anchorElement - The element our 'MoreHorizontal' menu anchors to.
-   * @constant {object} snackbarState - The current state of the snackbar's configuration
-   * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
+   * @constant isEditing - When true, it signals a child component we want to edit the project name
+   * @constant dialogOpen - When true, the dialog shows
+   * @constant dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
+   * @constant anchorElement - The element our 'MoreHorizontal' menu anchors to.
+   * @constant snackbarState - The current state of the snackbar's configuration
+   * @constant menuOpen - If true, it shows the menu component. Immutable.
    */
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogState, setDialogState] = useState(null);
-  const [anchorElement, setAnchorElement] = useState(null);
+  const [dialogState, setDialogState] = useState<DialogState | null>(null);
+  const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
 
   const menuOpen = Boolean(anchorElement);
 
   const queryContext = useContext(ProjectListViewQueryContext);
 
-  const userSessionData = useSessionDatabaseData();
+  const userSessionData = useSessionDatabaseData() as
+    | {
+        user_id: number;
+      }
+    | undefined;
   const userId = userSessionData?.user_id;
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
@@ -142,31 +148,33 @@ const ProjectView = () => {
    * The query to gather the project summary data
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
-    variables: { projectId, userId },
+    variables: { projectId: Number(projectId), userId },
     fetchPolicy: "network-only",
   });
 
-  const isFollowing = data?.moped_user_followed_projects.length > 0;
+  const isFollowing = (data?.moped_user_followed_projects?.length ?? 0) > 0;
+
+  /**
+   * Navigate to a tab by index, preserving location state
+   */
+  const navigateToTab = useCallback(
+    (tabIndex: number) => {
+      setSearchParams({ tab: TABS[tabIndex].param }, { state: locationState });
+      if (tabIndex === 0) refetch();
+    },
+    [refetch, setSearchParams, locationState]
+  );
 
   /**
    * Handles the click on a tab, which should trigger a change.
-   * @param {Object} event - The click event
-   * @param {int} newTab - The number of the tab
+   * @param event - The click event
+   * @param newTab - The number of the tab
    */
   const handleChange = useCallback(
-    (event, newTab) => {
-      // Preserve the queryString state when changing tabs
-      setSearchParams(
-        {
-          tab: TABS[newTab].param,
-        },
-        {
-          state: locationState, // Preserve the location state when changing tabs
-        }
-      );
-      if (newTab === 0) refetch();
+    (_event: React.SyntheticEvent, newTab: number) => {
+      navigateToTab(newTab);
     },
-    [refetch, setSearchParams, locationState]
+    [navigateToTab]
   );
 
   /**
@@ -183,11 +191,15 @@ const ProjectView = () => {
 
   /**
    * Changes the dialog contents
-   * @param {string|JSX} title - The title of the dialog
-   * @param {string|JSX} body - The body of the dialog
-   * @param {string|JSX} actions - The buttons area for the dialog at the bottom
+   * @param title - The title of the dialog
+   * @param body - The body of the dialog
+   * @param actions - The buttons area for the dialog at the bottom
    */
-  const setDialogContent = (title, body, actions) => {
+  const setDialogContent = (
+    title: React.ReactNode,
+    body: React.ReactNode,
+    actions: React.ReactNode
+  ) => {
     setDialogState({
       title: title,
       body: body,
@@ -212,9 +224,9 @@ const ProjectView = () => {
 
   /**
    * Handles mouse event to open the menu
-   * @param {Object} event - The mouse click event
+   * @param event - The mouse click event
    */
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElement(event.currentTarget);
   };
 
@@ -277,7 +289,7 @@ const ProjectView = () => {
     })
       .then(() => {
         // Do not close the dialog, redirect will take care
-        window.location = "/moped/projects";
+        window.location.href = "/moped/projects";
       })
       .catch((err) => {
         // If there is an error, show it in the dialog
@@ -295,14 +307,14 @@ const ProjectView = () => {
    */
   const currentPhase =
     data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
-  const isProjectDeleted = data?.moped_project[0]?.is_deleted;
+  const isProjectDeleted = data?.moped_project[0]?.is_deleted ?? false;
 
   /**
    * This function exists to enable closing the Map tab
    */
   const onCloseTab = useCallback(() => {
-    handleChange(null, 0);
-  }, [handleChange]);
+    navigateToTab(0);
+  }, [navigateToTab]);
 
   return (
     <>
@@ -396,8 +408,8 @@ const ProjectView = () => {
                         >
                           <Box>
                             <ProjectStatusBadge
-                              phaseKey={currentPhase?.phase_key}
-                              phaseName={currentPhase?.phase_name}
+                              phaseKey={currentPhase?.phase_key ?? ""}
+                              phaseName={currentPhase?.phase_name ?? ""}
                             />
                           </Box>
                           <Box>
@@ -526,6 +538,7 @@ const ProjectView = () => {
                               : null
                           }
                         >
+                          {/* @ts-expect-error - Adding types is captured in issue #29271 */}
                           <TabComponent
                             loading={loading}
                             data={data}
@@ -543,7 +556,7 @@ const ProjectView = () => {
                               data.moped_project[0].ecapris_subproject_id
                             }
                             onCloseTab={onCloseTab}
-                            listViewQuery={queryContext.listViewQuery}
+                            listViewQuery={queryContext?.listViewQuery}
                             handleSnackbar={handleSnackbar}
                           />
                         </TabPanel>
@@ -611,6 +624,7 @@ const ProjectView = () => {
           )}
         </Page>
       )}
+      {/* @ts-expect-error - FeedbackSnackbar needs to be converted to .tsx in issue #29270 */}
       <FeedbackSnackbar
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}

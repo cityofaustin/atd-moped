@@ -1,4 +1,9 @@
 import { createContext } from "react";
+import { DocumentNode } from "@apollo/client";
+
+interface ProjectListViewQueryContextType {
+  listViewQuery: DocumentNode | null;
+}
 
 /**
  * this context is used to preserve the most recent project list view `gql` so that it
@@ -8,6 +13,7 @@ import { createContext } from "react";
  * This issue seems related:
  * https://github.com/apollographql/apollo-client/issues/5419
  */
-const ProjectListViewQueryContext = createContext(null);
+const ProjectListViewQueryContext =
+  createContext<ProjectListViewQueryContextType | null>(null);
 
 export default ProjectListViewQueryContext;

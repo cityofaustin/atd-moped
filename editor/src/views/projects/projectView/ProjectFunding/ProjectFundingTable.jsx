@@ -263,17 +263,12 @@ const ProjectFundingTable = ({
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
       const deletedRow = rows.find((row) => row.id === id);
-      const {
-        proj_funding_id,
-        is_manual,
-        should_use_ecapris_amount,
-        is_synced_from_ecapris,
-      } = deletedRow;
+      const { proj_funding_id, is_manual, is_synced_from_ecapris } = deletedRow;
 
       // if the deleted row is in the db, delete from db
       if (!deletedRow.isNew) {
-        const isDeletingOverride =
-          !should_use_ecapris_amount && !is_manual && !is_synced_from_ecapris;
+        const isDeletingOverride = !is_manual && !is_synced_from_ecapris;
+
         const fileIds =
           deletedRow.moped_funding_files?.map(
             (file) => file.moped_project_file.project_file_id

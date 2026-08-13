@@ -45,6 +45,9 @@ export const COMBINED_FUNDING_QUERY = gql`
       }
       ecapris_funding {
         id
+        funding_source_id
+        funding_program_id
+        app
       }
     }
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
