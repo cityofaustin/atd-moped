@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
+-- Most recent migration: moped-database/migrations/default/1786737355022_fix_tz_bug/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
 WITH work_types AS (
@@ -315,15 +315,12 @@ LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = 
 LEFT JOIN LATERAL
     (
         SELECT
-            timezone(
-                'America/Chicago'::text,
-                get_project_development_status_date(
-                    lpmd.latest::timestamp with time zone,
-                    eaocpd.earliest,
-                    coalesce(mpc.completion_date, plv.substantial_completion_date),
-                    plv.substantial_completion_date_estimated,
-                    coalesce(mph.phase_name_simple, current_phase.phase_name_simple)
-                )
+            get_project_development_status_date(
+                lpmd.latest::timestamp with time zone,
+                eaocpd.earliest,
+                coalesce(mpc.completion_date, plv.substantial_completion_date),
+                plv.substantial_completion_date_estimated,
+                coalesce(mph.phase_name_simple, current_phase.phase_name_simple)
             ) AS result
     ) project_development_status_date
     ON true
