@@ -11,6 +11,7 @@ import {
   useGridApiRef,
   gridColumnFieldsSelector,
   GridRowId,
+  GridRowModesModel,
 } from "@mui/x-data-grid-pro";
 import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { v4 as uuidv4 } from "uuid";
@@ -48,6 +49,7 @@ import {
   useColumns,
   createFundingFileConnectionData,
   FundingRowForGrid,
+  DraftFundingRow,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
@@ -134,10 +136,11 @@ const ProjectFundingTable = ({
   const logUserEvent = useLogUserEvent();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
+  const [overrideFundingRecord, setOverrideFundingRecord] =
+    useState<FundingRowForGrid | null>(null);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState<FundingRowForGrid[]>([]);
-  const [rowModesModel, setRowModesModel] = useState({});
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState<
@@ -249,7 +252,7 @@ const ProjectFundingTable = ({
         proj_funding_id: id,
         is_manual: true,
         isNew: true,
-      } satisfies FundingRowForGrid,
+      } satisfies DraftFundingRow,
       ...oldRows,
     ]);
     setRowModesModel((oldModel) => ({

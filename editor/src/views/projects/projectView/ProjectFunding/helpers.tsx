@@ -1,6 +1,11 @@
-import { useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { Divider, Stack, IconButton } from "@mui/material";
-import { GridRenderCellParams } from "@mui/x-data-grid-pro";
+import {
+  GridCellParams,
+  GridColDef,
+  GridRowId,
+  GridRowModesModel,
+} from "@mui/x-data-grid-pro";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -22,7 +27,11 @@ import {
   DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
-import { GetCombinedProjectFundingQuery } from "src/gql/graphql";
+import {
+  GetCombinedProjectFundingQuery,
+  GetFundingLookupsQuery,
+} from "src/gql/graphql";
+import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 export type FundingRowsFromQuery =
   GetCombinedProjectFundingQuery["combined_project_funding_view"];
@@ -47,6 +56,8 @@ type DraftFundingRow = {
 };
 
 export type FundingRowForGrid = FundingRowFromQuery | DraftFundingRow;
+
+type FDUOption = GetFundingLookupsQuery["ecapris_subproject_funding"][number];
 
 /** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
  * @param fundingRecords - array of funding records from the database
@@ -144,23 +155,23 @@ const fduAutocompleteProps = {
 const fduAutocompleteDependentFields = [
   {
     fieldName: "unit_long_name",
-    setFieldValue: (newValue) => newValue?.unit_long_name,
+    setFieldValue: (newValue: FDUOption) => newValue.unit_long_name,
   },
   {
     fieldName: "moped_fund_source",
-    setFieldValue: (newValue) => newValue?.moped_fund_source,
+    setFieldValue: (newValue: FDUOption) => newValue.moped_fund_source,
   },
   {
     fieldName: "moped_fund_program",
-    setFieldValue: (newValue) => newValue?.moped_fund_program,
+    setFieldValue: (newValue: FDUOption) => newValue.moped_fund_program,
   },
   {
     fieldName: "funding_amount",
-    setFieldValue: (newValue) => newValue?.amount,
+    setFieldValue: (newValue: FDUOption) => newValue.amount,
   },
 ];
 
-export const isCellEditable = (params) => {
+export const isCellEditable = (params: GridCellParams) => {
   if (params.row.is_synced_from_ecapris) {
     return false;
   } else {
@@ -175,7 +186,12 @@ export const isCellEditable = (params) => {
 };
 
 // creates object needed in the file attachement mutation
-export const createFundingFileConnectionData = (fundingRecord, projectId) => {
+export const createFundingFileConnectionData = (
+  fundingRecord: FundingRowForGrid,
+  projectId: number
+) => {
+  if (fundingRecord.isNew) return; // Can't attach files to draft records
+
   const entityId = fundingRecord?.proj_funding_id;
   const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
   const addFileConnection = isSyncedFromECapris
@@ -201,6 +217,23 @@ export const createFundingFileConnectionData = (fundingRecord, projectId) => {
   };
 };
 
+type UseColumnsProps = {
+  dataLookups: GetFundingLookupsQuery | undefined;
+  rowModesModel: GridRowModesModel;
+  handleDeleteOpen: (id: GridRowId) => () => void;
+  handleSaveClick: (id: GridRowId) => () => void;
+  handleCancelClick: (id: GridRowId) => () => void;
+  handleEditClick: (id: GridRowId) => () => void;
+  handleFileAttachmentClick: (id: number) => () => void;
+  setOverrideFundingRecord: Dispatch<SetStateAction<FundingRowForGrid | null>>;
+  usingShiftKey: boolean;
+  logUserEvent: (event: string) => void;
+  refetch: () => void;
+  handleSnackbar: HandleSnackbar;
+  shouldSyncEcaprisFunding: boolean;
+  projectECaprisSubprojectId: string | null;
+};
+
 /** Hook that provides memoized column settings */
 export const useColumns = ({
   dataLookups,
@@ -217,16 +250,18 @@ export const useColumns = ({
   refetch,
   shouldSyncEcaprisFunding,
   projectECaprisSubprojectId,
-}) =>
-  useMemo(() => {
+}: UseColumnsProps): GridColDef<FundingRowForGrid>[] =>
+  useMemo((): GridColDef<FundingRowForGrid>[] => {
     return [
       {
         headerName: "FDU",
         field: "fdu",
         width: 140,
         editable: true,
-        renderCell: ({ row, value }) =>
-          row.is_synced_from_ecapris ? (
+        renderCell: ({ row, value }) => {
+          if (row.isNew) return;
+
+          return row.is_synced_from_ecapris ? (
             <Stack
               direction="column"
               spacing={0.5}
@@ -234,12 +269,13 @@ export const useColumns = ({
                 alignItems: "flex-start",
               }}
             >
-              <span>{value?.fdu}</span>
+              <span>{value.fdu}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>
           ) : (
-            value?.fdu
-          ),
+            value.fdu
+          );
+        },
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -248,7 +284,7 @@ export const useColumns = ({
             fullWidthPopper={true}
             autocompleteProps={{
               ...fduAutocompleteProps,
-              value: props?.row?.fdu,
+              value: props.row.fdu,
             }}
             dependentFieldsArray={fduAutocompleteDependentFields}
           />
@@ -275,15 +311,20 @@ export const useColumns = ({
         field: "moped_fund_source",
         width: 180,
         editable: true,
-        valueFormatter: (value) => value?.funding_source_name,
-        renderCell: ({ row, value }) => (
-          <EcaprisOverridableCell
-            row={row}
-            ecaprisValue={row.ecapris_funding?.funding_source_id}
-            currentValue={row.moped_fund_source?.funding_source_id}
-            displayValue={value?.funding_source_name}
-          />
-        ),
+        valueFormatter: (value: FundingRowFromQuery["moped_fund_source"]) =>
+          value?.funding_source_name,
+        renderCell: ({ row, value }) => {
+          if (row.isNew) return;
+
+          return (
+            <EcaprisOverridableCell
+              row={row}
+              ecaprisValue={row.ecapris_funding?.funding_source_id}
+              currentValue={row.moped_fund_source?.funding_source_id}
+              displayValue={value?.funding_source_name}
+            />
+          );
+        },
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -298,14 +339,18 @@ export const useColumns = ({
         field: "moped_fund_program",
         width: 180,
         editable: true,
-        renderCell: ({ row, value }) => (
-          <EcaprisOverridableCell
-            row={row}
-            ecaprisValue={row.ecapris_funding?.funding_program_id}
-            currentValue={row.moped_fund_program?.funding_program_id}
-            displayValue={value?.funding_program_name}
-          />
-        ),
+        renderCell: ({ row, value }) => {
+          if (row.isNew) return;
+
+          return (
+            <EcaprisOverridableCell
+              row={row}
+              ecaprisValue={row.ecapris_funding?.funding_program_id}
+              currentValue={row.moped_fund_program?.funding_program_id}
+              displayValue={value?.funding_program_name}
+            />
+          );
+        },
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -327,7 +372,8 @@ export const useColumns = ({
         field: "moped_fund_status",
         editable: true,
         width: 100,
-        valueFormatter: (value) => value?.funding_status_name,
+        valueFormatter: (value: FundingRowFromQuery["moped_fund_status"]) =>
+          value?.funding_status_name,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -343,16 +389,20 @@ export const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
-        renderCell: ({ row, value }) => (
-          <EcaprisOverridableCell
-            row={row}
-            ecaprisValue={row.ecapris_funding?.app}
-            currentValue={row.funding_amount}
-            displayValue={
-              value === null ? null : currencyFormatter.format(value)
-            }
-          />
-        ),
+        renderCell: ({ row, value }) => {
+          if (row.isNew) return;
+
+          return (
+            <EcaprisOverridableCell
+              row={row}
+              ecaprisValue={row.ecapris_funding?.app}
+              currentValue={row.funding_amount}
+              displayValue={
+                value === null ? null : currencyFormatter.format(value)
+              }
+            />
+          );
+        },
         preProcessEditCellProps: (params) => {
           return {
             ...params.props,
@@ -363,7 +413,6 @@ export const useColumns = ({
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
-        type: "currency",
       },
       {
         headerName: "Files",
@@ -373,6 +422,8 @@ export const useColumns = ({
         editable: false,
         sortable: false,
         renderCell: ({ row }) => {
+          if (row.isNew) return;
+
           const filesType = row.is_synced_from_ecapris
             ? "ecapris_funding_files"
             : "moped_funding_files";
@@ -417,7 +468,9 @@ export const useColumns = ({
         editable: false,
         width: 110,
         type: "actions",
-        renderCell: ({ id, row }: GridRenderCellParams) => {
+        renderCell: ({ id, row }) => {
+          if (row.isNew) return;
+
           const doesFDUBelongToCurrentSubproject =
             row.ecapris_subproject_id === projectECaprisSubprojectId;
           const wouldDeletingRowRestoreSyncedRow =
