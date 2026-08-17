@@ -23,8 +23,27 @@ import {
 } from "src/queries/project";
 import { GetCombinedProjectFundingQuery } from "src/gql/graphql";
 
-type FundingRowsFromQuery =
+export type FundingRowsFromQuery =
   GetCombinedProjectFundingQuery["combined_project_funding_view"];
+
+export type FundingRowFromQuery = FundingRowsFromQuery[number];
+
+type DraftFundingRow = {
+  id: string;
+  proj_funding_id: string; // UUID before save
+  moped_fund_source: null;
+  moped_fund_program: null;
+  moped_fund_status: null;
+  fdu: null;
+  unit_long_name: null;
+  ecapris_funding_id: null;
+  funding_amount: null;
+  funding_description: null;
+  is_manual: true;
+  isNew: true;
+};
+
+export type FundingRowForGrid = FundingRowFromQuery | DraftFundingRow;
 
 /** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
  * @param fundingRecords - array of funding records from the database
@@ -32,7 +51,7 @@ type FundingRowsFromQuery =
  */
 export const transformDatabaseToGrid = (
   fundingRecords: FundingRowsFromQuery
-) => {
+): FundingRowForGrid[] => {
   return fundingRecords.map((record) => {
     // const fduOption = record.fdu
     //   ? {
@@ -47,7 +66,6 @@ export const transformDatabaseToGrid = (
 
     return {
       ...record,
-      // fdu: fduOption,
     };
   });
 };

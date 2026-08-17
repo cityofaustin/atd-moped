@@ -44,7 +44,8 @@ import {
   isCellEditable,
   useColumns,
   createFundingFileConnectionData,
-  FundingGridRow,
+  FundingRowsForGrid,
+  FundingRowForGrid,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
@@ -133,7 +134,7 @@ const ProjectFundingTable = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
   // rows and rowModesModel used in DataGrid
-  const [rows, setRows] = useState<FundingGridRow | []>([]);
+  const [rows, setRows] = useState<FundingRowsForGrid>([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
@@ -197,8 +198,8 @@ const ProjectFundingTable = ({
 
           const columnFields = gridColumnFieldsSelector(apiRef).filter(
             (field) =>
-              apiRef.current.isCellEditable(
-                apiRef.current.getCellParams(params.id, field)
+              apiRef.current?.isCellEditable(
+                apiRef.current?.getCellParams(params.id, field)
               )
           );
 
@@ -209,14 +210,14 @@ const ProjectFundingTable = ({
           const index = columnFields.findIndex(
             (field) => field === params.field
           );
-          const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(
+          const rowIndex = apiRef.current?.getRowIndexRelativeToVisibleRows(
             params.id
           );
           const nextFieldToFocus =
             columnFields[event.shiftKey ? index - 1 : index + 1];
-          apiRef.current.setCellFocus(params.id, nextFieldToFocus);
+          apiRef.current?.setCellFocus(params.id, nextFieldToFocus);
           // if the column is not visible, bring it into view
-          apiRef.current.scrollToIndexes({ rowIndex, colIndex: index + 1 });
+          apiRef.current?.scrollToIndexes({ rowIndex, colIndex: index + 1 });
         }
       }
     },
@@ -231,17 +232,17 @@ const ProjectFundingTable = ({
     setRows((oldRows) => [
       {
         id,
-        fund_source: null,
-        fund_program: null,
-        fund_status: null,
+        moped_fund_source: null,
+        moped_fund_program: null,
+        moped_fund_status: null,
         funding_description: null,
         fdu: null,
         unit_long_name: null,
         ecapris_funding_id: null,
         funding_amount: null,
-        isNew: true,
         proj_funding_id: id,
         is_manual: true,
+        isNew: true,
       },
       ...oldRows,
     ]);
