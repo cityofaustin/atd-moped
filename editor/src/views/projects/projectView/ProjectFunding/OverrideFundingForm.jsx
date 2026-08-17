@@ -60,7 +60,7 @@ const OverrideFundingForm = ({
   setOverrideFundingRecord,
   handleSnackbar,
   handleClose,
-  dataProjectFunding,
+  dataLookups,
 }) => {
   const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
     variables: { fdu: fundingRecord.fdu.fdu },
@@ -102,7 +102,7 @@ const OverrideFundingForm = ({
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
     fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
-  const fundingSources = dataProjectFunding["moped_fund_sources"];
+  const fundingSources = dataLookups["moped_fund_sources"];
 
   const [mutate, mutationState] = useMutation(
     isNewOverride ? ADD_PROJECT_FUNDING_AND_REATTACH : UPDATE_PROJECT_FUNDING
@@ -200,7 +200,7 @@ const OverrideFundingForm = ({
               control={control}
               name="funding_program_id"
               label="Program"
-              options={dataProjectFunding["moped_fund_programs"]}
+              options={dataLookups["moped_fund_programs"]}
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_program_name || ""}
               onChangeHandler={(fund_source, field) => {
@@ -211,7 +211,7 @@ const OverrideFundingForm = ({
               }
               valueHandler={(value) =>
                 value
-                  ? dataProjectFunding["moped_fund_programs"].find(
+                  ? dataLookups["moped_fund_programs"].find(
                       (s) => s.funding_program_id === value
                     )
                   : null
@@ -220,7 +220,7 @@ const OverrideFundingForm = ({
             <FormHelperText>
               eCAPRIS program:{" "}
               {renderECaprisLabel(
-                dataProjectFunding["moped_fund_programs"],
+                dataLookups["moped_fund_programs"],
                 ecaprisProgramId,
                 "program"
               )}
@@ -246,7 +246,7 @@ const OverrideFundingForm = ({
               control={control}
               name="fund_status"
               label="Status"
-              options={dataProjectFunding["moped_fund_status"]}
+              options={dataLookups["moped_fund_status"]}
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_status_name || ""}
               onChangeHandler={(fund_status, field) => {
@@ -257,7 +257,7 @@ const OverrideFundingForm = ({
               }
               valueHandler={(value) =>
                 value
-                  ? dataProjectFunding["moped_fund_status"].find(
+                  ? dataLookups["moped_fund_status"].find(
                       (s) => s.funding_status_id === value
                     )
                   : null

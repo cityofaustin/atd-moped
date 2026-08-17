@@ -44,6 +44,7 @@ import {
   isCellEditable,
   useColumns,
   createFundingFileConnectionData,
+  FundingGridRow,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
@@ -70,13 +71,13 @@ const ProjectFundingTable = ({
     return eCaprisSubprojectId && shouldSyncEcaprisFunding
       ? {
           projectFundingConditions: {
-            project_id: { _eq: Number(projectId) },
+            project_id: { _eq: projectId },
           },
         }
       : {
           projectFundingConditions: {
             _and: [
-              { project_id: { _eq: Number(projectId) } },
+              { project_id: { _eq: projectId } },
               { is_synced_from_ecapris: { _eq: false } },
             ],
           },
@@ -93,15 +94,14 @@ const ProjectFundingTable = ({
   });
 
   const tableFundingRows = useMemo(() => {
-    const fundingRows = dataProjectFunding?.combined_project_funding_view;
+    if (!dataProjectFunding) return [];
 
-    if (!fundingRows || fundingRows.length === 0) return [];
+    const fundingRows = dataProjectFunding.combined_project_funding_view;
 
-    const fundingRowsWithRelatedLookups = transformDatabaseToGrid(
-      fundingRows,
-      dataProjectFunding
-    );
-    return fundingRowsWithRelatedLookups;
+    if (fundingRows.length === 0) return [];
+
+    const fundingGridRows = transformDatabaseToGrid(fundingRows);
+    return fundingGridRows;
   }, [dataProjectFunding]);
 
   const fdusArray = useMemo(() => {
@@ -133,7 +133,7 @@ const ProjectFundingTable = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
   // rows and rowModesModel used in DataGrid
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<FundingGridRow | []>([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
@@ -352,7 +352,7 @@ const ProjectFundingTable = ({
           variables: {
             fundingObjects: {
               ...mutationData,
-              project_id: Number(projectId),
+              project_id: projectId,
             },
           },
         })
@@ -416,7 +416,6 @@ const ProjectFundingTable = ({
   }, [refetch, refetchProjectSummary]);
 
   const dataGridColumns = useColumns({
-    dataProjectFunding,
     dataLookups,
     rowModesModel,
     handleDeleteOpen,
@@ -597,7 +596,7 @@ const ProjectFundingTable = ({
           setOverrideFundingRecord={setOverrideFundingRecord}
           handleClose={() => setOverrideFundingRecord(null)}
           handleSnackbar={handleSnackbar}
-          dataProjectFunding={dataProjectFunding}
+          dataLookups={dataLookups}
         />
       )}
       {isFileAttachmentDialogOpen && fileAttachmentParentRecord && (

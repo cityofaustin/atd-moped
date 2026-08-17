@@ -21,64 +21,33 @@ import {
   DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
+import { GetCombinedProjectFundingQuery } from "src/gql/graphql";
 
-/** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
- * @param {Array} fundingRecords - array of funding records from the database
- * @param {Object} lookupData - object containing lookup arrays from the database
- * @return {Array} - array of transformed funding records for data grid
+type FundingRowsFromQuery =
+  GetCombinedProjectFundingQuery["combined_project_funding_view"];
+
+/** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
+ * @param fundingRecords - array of funding records from the database
+ * @return transformed funding records for data grid
  */
-export const transformDatabaseToGrid = (fundingRecords, lookupData) => {
-  const {
-    moped_fund_sources,
-    moped_fund_programs,
-    moped_fund_status: moped_fund_statuses,
-  } = lookupData;
-
+export const transformDatabaseToGrid = (
+  fundingRecords: FundingRowsFromQuery
+) => {
   return fundingRecords.map((record) => {
-    // Reconstruct lookup objects for editing in autocomplete components
-    const fund_source = record.funding_source_id
-      ? moped_fund_sources.find(
-          (s) => s.funding_source_id === record.funding_source_id
-        )
-      : null;
-
-    const fund_program = record.funding_program_id
-      ? moped_fund_programs.find(
-          (p) => p.funding_program_id === record.funding_program_id
-        )
-      : null;
-
-    const fund_status = record.funding_status_id
-      ? moped_fund_statuses.find(
-          (s) => s.funding_status_id === record.funding_status_id
-        )
-      : null;
-
-    const fduOption = record.fdu
-      ? {
-          fdu: record.fdu,
-          ecapris_funding_id: record.ecapris_funding_id,
-          unit_long_name: record.unit_long_name,
-        }
-      : null;
+    // const fduOption = record.fdu
+    //   ? {
+    //       fdu: record.fdu,
+    //       ecapris_funding_id: record.ecapris_funding_id,
+    //       unit_long_name: record.unit_long_name,
+    //     }
+    //   : null;
 
     // Remove fields unneeded in the data grid row
-    const {
-      funding_source_id,
-      funding_status_id,
-      funding_program_id,
-      fdu,
-      ecapris_funding_id,
-      ...tableRecord
-    } = record;
+    // const { fdu, ecapris_funding_id, ...tableRecord } = record;
 
-    // Return new record with lookup objects for autocomplete components
     return {
-      ...tableRecord,
-      fund_source,
-      fund_program,
-      fund_status,
-      fdu: fduOption,
+      ...record,
+      // fdu: fduOption,
     };
   });
 };
@@ -167,11 +136,11 @@ const fduAutocompleteDependentFields = [
     setFieldValue: (newValue) => newValue?.unit_long_name,
   },
   {
-    fieldName: "fund_source",
+    fieldName: "moped_fund_source",
     setFieldValue: (newValue) => newValue?.moped_fund_source,
   },
   {
-    fieldName: "fund_program",
+    fieldName: "moped_fund_program",
     setFieldValue: (newValue) => newValue?.moped_fund_program,
   },
   {
@@ -223,7 +192,6 @@ export const createFundingFileConnectionData = (fundingRecord, projectId) => {
 
 /** Hook that provides memoized column settings */
 export const useColumns = ({
-  dataProjectFunding,
   dataLookups,
   rowModesModel,
   handleDeleteOpen,
@@ -287,13 +255,13 @@ export const useColumns = ({
             value={props.row.unit_long_name}
             usingShiftKey={usingShiftKey}
             previousColumnField="fdu"
-            nextColumnField="fund_source"
+            nextColumnField="moped_fund_source"
           />
         ),
       },
       {
         headerName: "Source",
-        field: "fund_source",
+        field: "moped_fund_source",
         width: 180,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
@@ -301,7 +269,7 @@ export const useColumns = ({
           <EcaprisOverridableCell
             row={row}
             ecaprisValue={row.ecapris_funding?.funding_source_id}
-            currentValue={row.fund_source?.funding_source_id}
+            currentValue={row.moped_fund_source?.funding_source_id}
             displayValue={value?.funding_source_name}
           />
         ),
@@ -309,21 +277,21 @@ export const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
-            options={dataProjectFunding?.moped_fund_sources ?? []}
+            options={dataLookups?.moped_fund_sources ?? []}
             fullWidthPopper={true}
           />
         ),
       },
       {
         headerName: "Program",
-        field: "fund_program",
+        field: "moped_fund_program",
         width: 180,
         editable: true,
         renderCell: ({ row, value }) => (
           <EcaprisOverridableCell
             row={row}
             ecaprisValue={row.ecapris_funding?.funding_program_id}
-            currentValue={row.fund_program?.funding_program_id}
+            currentValue={row.moped_fund_program?.funding_program_id}
             displayValue={value?.funding_program_name}
           />
         ),
@@ -331,7 +299,7 @@ export const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
-            options={dataProjectFunding?.moped_fund_programs ?? []}
+            options={dataLookups?.moped_fund_programs ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -345,7 +313,7 @@ export const useColumns = ({
       },
       {
         headerName: "Status",
-        field: "fund_status",
+        field: "moped_fund_status",
         editable: true,
         width: 100,
         valueFormatter: (value) => value?.funding_status_name,
@@ -354,7 +322,7 @@ export const useColumns = ({
             {...props}
             name={"funding_status"}
             defaultValue={1}
-            options={dataProjectFunding?.moped_fund_status ?? []}
+            options={dataLookups?.moped_fund_status ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -496,7 +464,6 @@ export const useColumns = ({
       },
     ];
   }, [
-    dataProjectFunding,
     dataLookups,
     rowModesModel,
     handleDeleteOpen,

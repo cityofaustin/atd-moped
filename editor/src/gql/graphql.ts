@@ -151,6 +151,9 @@ export type Combined_Project_Funding_View_Bool_Exp = {
   id?: String_Comparison_Exp | null | undefined;
   is_manual?: Boolean_Comparison_Exp | null | undefined;
   is_synced_from_ecapris?: Boolean_Comparison_Exp | null | undefined;
+  moped_fund_program?: Moped_Fund_Programs_Bool_Exp | null | undefined;
+  moped_fund_source?: Moped_Fund_Sources_Bool_Exp | null | undefined;
+  moped_fund_status?: Moped_Fund_Status_Bool_Exp | null | undefined;
   moped_funding_files?: Files_Project_Funding_Bool_Exp | null | undefined;
   moped_funding_files_aggregate?:
     Files_Project_Funding_Aggregate_Bool_Exp | null | undefined;
@@ -2367,6 +2370,16 @@ export type Moped_Fund_Sources_Update_Column =
   | "funding_source_name"
   /** column name */
   | "is_deleted";
+
+/** Boolean expression to filter rows from the table "moped_fund_status". All fields are combined with a logical 'AND'. */
+export type Moped_Fund_Status_Bool_Exp = {
+  _and?: Array<Moped_Fund_Status_Bool_Exp> | null | undefined;
+  _not?: Moped_Fund_Status_Bool_Exp | null | undefined;
+  _or?: Array<Moped_Fund_Status_Bool_Exp> | null | undefined;
+  funding_status_description?: String_Comparison_Exp | null | undefined;
+  funding_status_id?: Int_Comparison_Exp | null | undefined;
+  funding_status_name?: String_Comparison_Exp | null | undefined;
+};
 
 /** Boolean expression to filter rows from the table "moped_milestones". All fields are combined with a logical 'AND'. */
 export type Moped_Milestones_Bool_Exp = {
@@ -6604,11 +6617,8 @@ export type GetCombinedProjectFundingQuery = {
     id: string | null;
     fdu: string | null;
     program_name: string | null;
-    funding_program_id: number | null;
     source_name: string | null;
-    funding_source_id: number | null;
     status_name: string | null;
-    funding_status_id: number | null;
     is_synced_from_ecapris: boolean | null;
     is_manual: boolean | null;
     unit_long_name: string | null;
@@ -6642,31 +6652,28 @@ export type GetCombinedProjectFundingQuery = {
     }>;
     ecapris_funding: {
       __typename: "ecapris_subproject_funding";
-      id: number;
+      fdu: string;
+      fao_id: number;
+      unit_long_name: string;
       funding_source_id: number | null;
       funding_program_id: number | null;
       app: number;
     } | null;
-  }>;
-  moped_fund_sources: Array<{
-    __typename: "moped_fund_sources";
-    funding_source_id: number;
-    funding_source_name: string;
-  }>;
-  moped_fund_programs: Array<{
-    __typename: "moped_fund_programs";
-    funding_program_id: number;
-    funding_program_name: string;
-  }>;
-  moped_fund_status: Array<{
-    __typename: "moped_fund_status";
-    funding_status_id: number;
-    funding_status_name: string;
-  }>;
-  ecapris_subproject_funding: Array<{
-    __typename: "ecapris_subproject_funding";
-    ecapris_subproject_id: string;
-    subproject_name: string;
+    moped_fund_source: {
+      __typename: "moped_fund_sources";
+      funding_source_id: number;
+      funding_source_name: string;
+    } | null;
+    moped_fund_program: {
+      __typename: "moped_fund_programs";
+      funding_program_id: number;
+      funding_program_name: string;
+    } | null;
+    moped_fund_status: {
+      __typename: "moped_fund_status";
+      funding_status_id: number;
+      funding_status_name: string;
+    } | null;
   }>;
 };
 
@@ -6697,6 +6704,21 @@ export type GetFundingLookupsQuery = {
     __typename: "moped_file_types";
     id: number;
     name: string;
+  }>;
+  moped_fund_sources: Array<{
+    __typename: "moped_fund_sources";
+    funding_source_id: number;
+    funding_source_name: string;
+  }>;
+  moped_fund_programs: Array<{
+    __typename: "moped_fund_programs";
+    funding_program_id: number;
+    funding_program_name: string;
+  }>;
+  moped_fund_status: Array<{
+    __typename: "moped_fund_status";
+    funding_status_id: number;
+    funding_status_name: string;
   }>;
 };
 
@@ -11538,20 +11560,8 @@ export const GetCombinedProjectFundingDocument = {
                   kind: "Field",
                   name: { kind: "Name", value: "program_name" },
                 },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "funding_program_id" },
-                },
                 { kind: "Field", name: { kind: "Name", value: "source_name" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "funding_source_id" },
-                },
                 { kind: "Field", name: { kind: "Name", value: "status_name" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "funding_status_id" },
-                },
                 {
                   kind: "Field",
                   alias: { kind: "Name", value: "ecapris_funding_id" },
@@ -11700,7 +11710,15 @@ export const GetCombinedProjectFundingDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "fdu" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "fao_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "unit_long_name" },
+                      },
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "funding_source_id" },
@@ -11713,6 +11731,156 @@ export const GetCombinedProjectFundingDocument = {
                     ],
                   },
                 },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_source" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_name" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_program" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_name" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_status" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_status_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_status_name" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCombinedProjectFundingQuery,
+  GetCombinedProjectFundingQueryVariables
+>;
+export const GetFundingLookupsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetFundingLookups" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "ecapris_subproject_funding" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "ecapris_funding_id" },
+                  name: { kind: "Name", value: "fao_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_subproject_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "fdu" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "unit_long_name" },
+                },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "amount" },
+                  name: { kind: "Name", value: "app" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_source_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_source" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_name" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_program_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_program" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_name" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_file_types" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },
@@ -11839,129 +12007,6 @@ export const GetCombinedProjectFundingDocument = {
                   kind: "Field",
                   name: { kind: "Name", value: "funding_status_name" },
                 },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "ecapris_subproject_funding" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "distinct_on" },
-                value: { kind: "EnumValue", value: "ecapris_subproject_id" },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "ecapris_subproject_id" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "subproject_name" },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetCombinedProjectFundingQuery,
-  GetCombinedProjectFundingQueryVariables
->;
-export const GetFundingLookupsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "GetFundingLookups" },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "ecapris_subproject_funding" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  alias: { kind: "Name", value: "ecapris_funding_id" },
-                  name: { kind: "Name", value: "fao_id" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "ecapris_subproject_id" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "fdu" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "unit_long_name" },
-                },
-                {
-                  kind: "Field",
-                  alias: { kind: "Name", value: "amount" },
-                  name: { kind: "Name", value: "app" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "funding_source_id" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "moped_fund_source" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "funding_source_id" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "funding_source_name" },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "funding_program_id" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "moped_fund_program" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "funding_program_id" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "funding_program_name" },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "moped_file_types" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
               ],
             },
           },

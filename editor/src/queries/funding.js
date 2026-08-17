@@ -15,11 +15,8 @@ export const COMBINED_FUNDING_QUERY = graphql(`
       funding_amount: amount
       funding_description: description
       program_name
-      funding_program_id
       source_name
-      funding_source_id
       status_name
-      funding_status_id
       ecapris_funding_id: fao_id
       is_synced_from_ecapris
       is_manual
@@ -45,32 +42,30 @@ export const COMBINED_FUNDING_QUERY = graphql(`
         }
       }
       ecapris_funding {
-        id
+        fdu
+        fao_id
+        unit_long_name
         funding_source_id
         funding_program_id
         app
       }
-    }
-    moped_fund_sources(where: { is_deleted: { _eq: false } }) {
-      funding_source_id
-      funding_source_name
-    }
-    moped_fund_programs(where: { is_deleted: { _eq: false } }) {
-      funding_program_id
-      funding_program_name
-    }
-    moped_fund_status(where: { funding_status_id: { _neq: 0 } }) {
-      funding_status_id
-      funding_status_name
-    }
-    ecapris_subproject_funding(distinct_on: ecapris_subproject_id) {
-      ecapris_subproject_id
-      subproject_name
+      moped_fund_source {
+        funding_source_id
+        funding_source_name
+      }
+      moped_fund_program {
+        funding_program_id
+        funding_program_name
+      }
+      moped_fund_status {
+        funding_status_id
+        funding_status_name
+      }
     }
   }
 `);
 
-export const GET_FUNDING_LOOKUPS = gql`
+export const GET_FUNDING_LOOKUPS = graphql(`
   query GetFundingLookups {
     ecapris_subproject_funding {
       ecapris_funding_id: fao_id
@@ -93,8 +88,20 @@ export const GET_FUNDING_LOOKUPS = gql`
       id
       name
     }
+    moped_fund_sources(where: { is_deleted: { _eq: false } }) {
+      funding_source_id
+      funding_source_name
+    }
+    moped_fund_programs(where: { is_deleted: { _eq: false } }) {
+      funding_program_id
+      funding_program_name
+    }
+    moped_fund_status(where: { funding_status_id: { _neq: 0 } }) {
+      funding_status_id
+      funding_status_name
+    }
   }
-`;
+`);
 
 export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
   query EcaprisFdusSubproject($ecapris_subproject_id: String!) {
