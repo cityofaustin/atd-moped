@@ -259,38 +259,50 @@ const ProjectFundingTable = ({
   };
 
   const handleEditClick = useCallback(
-    (id) => () => {
+    (id: GridRowId) => () => {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     },
     [rowModesModel]
   );
 
   const handleSaveClick = useCallback(
-    (id) => () => {
+    (id: GridRowId) => () => {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     },
     [rowModesModel]
   );
 
-  // handles row delete
   const handleDeleteClick = useCallback(
-    (id: number) => () => {
+    (id: GridRowId) => () => {
       // remove row from rows in state
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
       const deletedRow = rows.find((row) => row.id === id);
+      if (!deletedRow) return;
+      if (deletedRow.isNew) return;
+      if (!deletedRow.proj_funding_id) return; // Combined funding rows from eCAPRIS don't have project_funding_id
+
       const { proj_funding_id, is_manual, is_synced_from_ecapris } = deletedRow;
+      const isDeletingOverride = !is_manual && !is_synced_from_ecapris;
 
-      // if the deleted row is in the db, delete from db
-      if (!deletedRow.isNew) {
-        const isDeletingOverride = !is_manual && !is_synced_from_ecapris;
-
+      if (isDeletingOverride) {
+        // Gather file attachments so they can be reattached to synced eCAPRIS FDU when override is deleted
         const fileIds =
           deletedRow.moped_funding_files?.map(
             (file) => file.moped_project_file.project_file_id
           ) ?? [];
-
         const entity_id = deletedRow.ecapris_funding?.id;
+
+        if (!entity_id) {
+          // Override rows are expected to have an ecapris_funding reference id
+          console.error("Cannot delete override; missing eCAPRIS reference", {
+            proj_funding_id: deletedRow.proj_funding_id,
+            projectId,
+            deletedRow,
+          });
+          return;
+        }
+
         const attachmentObjects = fileIds.map((fileId) => ({
           file_id: fileId,
           project_id: projectId,
@@ -298,20 +310,31 @@ const ProjectFundingTable = ({
           is_deleted: false,
         }));
 
-        const deleteMutation = isDeletingOverride
-          ? deleteProjectFundingAndReattach
-          : deleteProjectFunding;
-
-        const variables = isDeletingOverride
-          ? {
-              proj_funding_id,
-              attachmentObjects,
-            }
-          : { proj_funding_id };
-
-        deleteMutation({
-          variables,
+        deleteProjectFundingAndReattach({
+          variables: {
+            proj_funding_id,
+            attachmentObjects,
+          },
         })
+          .then(() => refetch())
+          .then(() => {
+            setIsDeleteConfirmationOpen(false);
+            handleSnackbar(
+              true,
+              "Funding source override deleted and eCAPRIS FDU restored",
+              "success"
+            );
+          })
+          .catch((error) => {
+            handleSnackbar(
+              true,
+              "Error deleting funding source",
+              "error",
+              error
+            );
+          });
+      } else {
+        deleteProjectFunding({ variables: { proj_funding_id } })
           .then(() => refetch())
           .then(() => {
             setIsDeleteConfirmationOpen(false);
@@ -587,7 +610,6 @@ const ProjectFundingTable = ({
       />
       {eCaprisSubprojectId && (
         <SubprojectFundingModal
-          loading={loadingLookups}
           isDialogOpen={isDialogOpen}
           handleDialogClose={handleSubprojectDialogClose}
           eCaprisID={eCaprisSubprojectId}

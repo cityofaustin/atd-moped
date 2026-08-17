@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Divider, Stack, IconButton } from "@mui/material";
+import { GridRenderCellParams } from "@mui/x-data-grid-pro";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -55,17 +56,6 @@ export const transformDatabaseToGrid = (
   fundingRecords: FundingRowsFromQuery
 ): FundingRowForGrid[] => {
   return fundingRecords.map((record) => {
-    // const fduOption = record.fdu
-    //   ? {
-    //       fdu: record.fdu,
-    //       ecapris_funding_id: record.ecapris_funding_id,
-    //       unit_long_name: record.unit_long_name,
-    //     }
-    //   : null;
-
-    // Remove fields unneeded in the data grid row
-    // const { fdu, ecapris_funding_id, ...tableRecord } = record;
-
     return {
       ...record,
       isNew: false,
@@ -427,7 +417,7 @@ export const useColumns = ({
         editable: false,
         width: 110,
         type: "actions",
-        renderCell: ({ id, row }) => {
+        renderCell: ({ id, row }: GridRenderCellParams) => {
           const doesFDUBelongToCurrentSubproject =
             row.ecapris_subproject_id === projectECaprisSubprojectId;
           const wouldDeletingRowRestoreSyncedRow =

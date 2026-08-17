@@ -6652,6 +6652,7 @@ export type GetCombinedProjectFundingQuery = {
     }>;
     ecapris_funding: {
       __typename: "ecapris_subproject_funding";
+      id: number;
       fdu: string;
       fao_id: number;
       unit_long_name: string;
@@ -11710,6 +11711,7 @@ export const GetCombinedProjectFundingDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "fdu" } },
                       {
                         kind: "Field",

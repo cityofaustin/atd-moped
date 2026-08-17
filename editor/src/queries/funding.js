@@ -42,6 +42,7 @@ export const COMBINED_FUNDING_QUERY = graphql(`
         }
       }
       ecapris_funding {
+        id
         fdu
         fao_id
         unit_long_name
@@ -163,7 +164,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
   }
 `;
 
-export const DELETE_PROJECT_FUNDING = gql`
+export const DELETE_PROJECT_FUNDING = graphql(`
   mutation DeleteProjectFunding($proj_funding_id: Int!) {
     update_moped_proj_funding(
       _set: { is_deleted: true }
@@ -178,11 +179,11 @@ export const DELETE_PROJECT_FUNDING = gql`
       affected_rows
     }
   }
-`;
+`);
 
 /* Delete funding record and also transfer file attachments back to
 synced eCAPRIS record that is restored. Executes in one transaction. */
-export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
+export const DELETE_PROJECT_FUNDING_AND_REATTACH = graphql(`
   mutation DeleteProjectFundingAndReattach(
     $proj_funding_id: Int!
     $attachmentObjects: [files_ecapris_funding_insert_input!]!
@@ -209,7 +210,7 @@ export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
       affected_rows
     }
   }
-`;
+`);
 
 export const ADD_PROJECT_FUNDING = gql`
   mutation AddProjectFunding(
