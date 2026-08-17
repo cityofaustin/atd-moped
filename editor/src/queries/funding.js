@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const COMBINED_FUNDING_QUERY = gql`
+export const COMBINED_FUNDING_QUERY = graphql(`
   query GetCombinedProjectFunding(
     $projectFundingConditions: combined_project_funding_view_bool_exp!
   ) {
@@ -67,7 +68,7 @@ export const COMBINED_FUNDING_QUERY = gql`
       subproject_name
     }
   }
-`;
+`);
 
 export const GET_FUNDING_LOOKUPS = gql`
   query GetFundingLookups {
@@ -96,7 +97,7 @@ export const GET_FUNDING_LOOKUPS = gql`
 `;
 
 export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
-  query EcaprisFduSubproject($ecapris_subproject_id: String!) {
+  query EcaprisFdusSubproject($ecapris_subproject_id: String!) {
     ecapris_subproject_funding(
       where: { ecapris_subproject_id: { _eq: $ecapris_subproject_id } }
     ) {
@@ -238,17 +239,6 @@ export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
   }
 `;
 
-export const UPDATE_FUNDING_TASK_ORDERS = gql`
-  mutation AddProjectFunding($projectId: Int!, $taskOrders: jsonb!) {
-    update_moped_project(
-      _set: { task_order: $taskOrders }
-      where: { project_id: { _eq: $projectId } }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const WORK_ACTIVITY_QUERY = gql`
   query ProjectWorkActivity($projectId: Int) {
     moped_proj_work_activity(
@@ -320,7 +310,7 @@ export const UPDATE_WORK_ACTIVITY = gql`
   mutation UpdateWorkActivity(
     $id: Int!
     $object: moped_proj_work_activity_set_input!
-    $fileObjects: [moped_project_files_insert_input]!
+    $fileObjects: [moped_project_files_insert_input!]!
   ) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }

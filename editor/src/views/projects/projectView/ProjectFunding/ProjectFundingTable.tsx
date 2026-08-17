@@ -46,6 +46,15 @@ import {
   createFundingFileConnectionData,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
+import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
+
+interface ProjectFundingTableProps {
+  projectId: number;
+  handleSnackbar: HandleSnackbar;
+  refetchProjectSummary: () => void;
+  eCaprisSubprojectId: string | null;
+  shouldSyncEcaprisFunding: boolean;
+}
 
 const ProjectFundingTable = ({
   projectId,
@@ -53,7 +62,7 @@ const ProjectFundingTable = ({
   refetchProjectSummary,
   eCaprisSubprojectId = null,
   shouldSyncEcaprisFunding,
-}) => {
+}: ProjectFundingTableProps) => {
   const apiRef = useGridApiRef();
 
   /* Query Moped and eCAPRIS funding with matching filters */
@@ -258,7 +267,7 @@ const ProjectFundingTable = ({
 
   // handles row delete
   const handleDeleteClick = useCallback(
-    (id) => () => {
+    (id: number) => () => {
       // remove row from rows in state
       setRows(rows.filter((row) => row.proj_funding_id !== id));
 
