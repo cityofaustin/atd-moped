@@ -26,7 +26,9 @@ import { GetCombinedProjectFundingQuery } from "src/gql/graphql";
 export type FundingRowsFromQuery =
   GetCombinedProjectFundingQuery["combined_project_funding_view"];
 
-export type FundingRowFromQuery = FundingRowsFromQuery[number];
+export type FundingRowFromQuery = FundingRowsFromQuery[number] & {
+  isNew: false;
+};
 
 type DraftFundingRow = {
   id: string;
@@ -66,6 +68,7 @@ export const transformDatabaseToGrid = (
 
     return {
       ...record,
+      isNew: false,
     };
   });
 };

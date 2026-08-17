@@ -6,8 +6,11 @@ import { Button, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   GridRowModes,
+  GridRowModel,
+  GridEventListener,
   useGridApiRef,
   gridColumnFieldsSelector,
+  GridRowId,
 } from "@mui/x-data-grid-pro";
 import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { v4 as uuidv4 } from "uuid";
@@ -44,7 +47,6 @@ import {
   isCellEditable,
   useColumns,
   createFundingFileConnectionData,
-  FundingRowsForGrid,
   FundingRowForGrid,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
@@ -134,21 +136,23 @@ const ProjectFundingTable = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [overrideFundingRecord, setOverrideFundingRecord] = useState(null);
   // rows and rowModesModel used in DataGrid
-  const [rows, setRows] = useState<FundingRowsForGrid>([]);
+  const [rows, setRows] = useState<FundingRowForGrid[]>([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
-  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState<
+    number | null
+  >(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
   const isEditMode = getIsEditMode(rowModesModel);
 
   /* File attachment state and handlers */
-  const [fileAttachmentId, setFileAttachmentId] = useState(null);
+  const [fileAttachmentId, setFileAttachmentId] = useState<number | null>(null);
   const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
     useState(false);
 
   const handleFileAttachmentClick = useCallback(
-    (id) => () => {
+    (id: number) => () => {
       setFileAttachmentId(id);
       setIsFileAttachmentDialogOpen(true);
     },
@@ -169,7 +173,7 @@ const ProjectFundingTable = ({
   };
 
   const handleDeleteOpen = useCallback(
-    (id) => () => {
+    (id: number) => () => {
       setIsDeleteConfirmationOpen(true);
       setDeleteConfirmationId(id);
     },
@@ -177,7 +181,9 @@ const ProjectFundingTable = ({
   );
 
   // Open funding override modal when double clicking in a cell of a record from ecapris
-  const doubleClickListener = (params) => {
+  const doubleClickListener: GridEventListener<"cellDoubleClick"> = (
+    params
+  ) => {
     if (!params.row.is_manual) {
       logUserEvent("funding_ecapris_override_form_load");
       setOverrideFundingRecord(params.row);
@@ -189,7 +195,7 @@ const ProjectFundingTable = ({
     setRows(tableFundingRows);
   }, [tableFundingRows]);
 
-  const handleTabKeyDown = React.useCallback(
+  const handleTabKeyDown: GridEventListener<"cellKeyDown"> = React.useCallback(
     (params, event) => {
       if (params.cellMode === GridRowModes.Edit) {
         if (event.key === "Tab") {
@@ -243,7 +249,7 @@ const ProjectFundingTable = ({
         proj_funding_id: id,
         is_manual: true,
         isNew: true,
-      },
+      } satisfies FundingRowForGrid,
       ...oldRows,
     ]);
     setRowModesModel((oldModel) => ({
@@ -332,19 +338,22 @@ const ProjectFundingTable = ({
   );
 
   // when a user cancels editing by clicking the X in the actions
-  const handleCancelClick = (id) => () => {
+  const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
     const editedRow = rows.find((row) => row.id === id);
-    if (editedRow.isNew) {
+    if (editedRow && editedRow.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
   };
 
   // saves row update, either editing an existing row or saving a new row
-  const processRowUpdate = (updatedRow, originalRow) => {
+  const processRowUpdate = (
+    updatedRow: GridRowModel,
+    originalRow: GridRowModel
+  ) => {
     const mutationData = transformGridToDatabase(updatedRow);
 
     if (updatedRow.isNew) {
