@@ -1,14 +1,22 @@
-import React from "react";
 import Grid from "@mui/material/Grid";
 import ProjectFundingTable from "src/views/projects/projectView/ProjectFunding/ProjectFundingTable";
 import ProjectWorkActivitiesTable from "src/views/projects/projectView/ProjectWorkActivity/ProjectWorkActivityTable";
 import { useParams } from "react-router-dom";
+import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
+import { ApolloQueryResult } from "@apollo/client";
+import { ProjectSummaryQuery } from "src/gql/graphql";
+
+interface ProjectFundingProps {
+  handleSnackbar: HandleSnackbar;
+  refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  data: ProjectSummaryQuery;
+}
 
 const ProjectFunding = ({
   handleSnackbar,
   refetch: refetchProjectSummary,
   data: projectData,
-}) => {
+}: ProjectFundingProps) => {
   const { projectId } = useParams();
   const eCaprisSubprojectId =
     projectData?.moped_project?.[0]?.ecapris_subproject_id ?? null;
@@ -28,6 +36,7 @@ const ProjectFunding = ({
       </Grid>
       <Grid size={12}>
         <ProjectWorkActivitiesTable
+          // @ts-expect-error - Migrating work activities table is captured in issue #
           projectId={projectId}
           handleSnackbar={handleSnackbar}
         />

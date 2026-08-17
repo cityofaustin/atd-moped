@@ -446,7 +446,7 @@ const ProjectView = () => {
                                 horizontal: "center",
                               }}
                               slots={{
-                                transition: Fade
+                                transition: Fade,
                               }}
                             >
                               <MenuItem
