@@ -6,7 +6,6 @@ import { Button, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   GridRowModes,
-  GridRowModel,
   GridEventListener,
   useGridApiRef,
   gridColumnFieldsSelector,
@@ -376,8 +375,8 @@ const ProjectFundingTable = ({
 
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (
-    updatedRow: GridRowModel,
-    originalRow: GridRowModel
+    updatedRow: FundingRowForGrid,
+    originalRow: FundingRowForGrid
   ) => {
     const mutationData = transformGridToDatabase(updatedRow);
 
@@ -410,9 +409,6 @@ const ProjectFundingTable = ({
           })
       );
     } else {
-      // Remove __typename and check if the row has changed
-      delete originalRow.__typename;
-      delete updatedRow.__typename;
       const hasRowChanged = !isEqual(updatedRow, originalRow);
 
       if (!hasRowChanged) {
@@ -493,14 +489,14 @@ const ProjectFundingTable = ({
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <MopedDataGridInlineEdit
+      <MopedDataGridInlineEdit<FundingRowForGrid>
         loading={loadingProjectFunding || loadingLookups || !dataProjectFunding}
         apiRef={apiRef}
         columns={dataGridColumns}
         rows={rows}
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
-        onRowEditStop={handleRowEditStop(rows, setRows)}
+        onRowEditStop={handleRowEditStop<FundingRowForGrid>(rows, setRows)}
         isCellEditable={isCellEditable}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}

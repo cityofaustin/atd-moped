@@ -36,7 +36,13 @@ import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 export type FundingRowsFromQuery =
   GetCombinedProjectFundingQuery["combined_project_funding_view"];
 
-export type FundingRowFromQuery = FundingRowsFromQuery[number] & {
+export type FundingRowFromQuery = FundingRowsFromQuery[number];
+
+/** Workaround for DB view id calculation being possibly null; source columns are not-nullable
+ * but Hasura codegen types id as: string | null. So, we need to override here to only be string type.
+ */
+export type SavedFundingRow = Omit<FundingRowFromQuery, "id" | "__typename"> & {
+  id: string;
   isNew: false;
 };
 
@@ -55,7 +61,7 @@ type DraftFundingRow = {
   isNew: true;
 };
 
-export type FundingRowForGrid = FundingRowFromQuery | DraftFundingRow;
+export type FundingRowForGrid = SavedFundingRow | DraftFundingRow;
 
 type FDUOption = GetFundingLookupsQuery["ecapris_subproject_funding"][number];
 
@@ -67,8 +73,11 @@ export const transformDatabaseToGrid = (
   fundingRecords: FundingRowsFromQuery
 ): FundingRowForGrid[] => {
   return fundingRecords.map((record) => {
+    const { id, __typename, ...rest } = record;
+
     return {
-      ...record,
+      ...rest,
+      id: id ?? "",
       isNew: false,
     };
   });
