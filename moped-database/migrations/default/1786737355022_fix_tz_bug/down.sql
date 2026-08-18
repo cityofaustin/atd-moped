@@ -1,4 +1,5 @@
--- Most recent migration: moped-database/migrations/default/1786737355022_fix_tz_bug/up.sql
+DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
 WITH work_types AS (
@@ -42,73 +43,75 @@ comp_geography AS (
             feature_union.length_feet
         )                                                                          AS length_feet_total,
         count(feature_union.id)                                                    AS feature_count
-    FROM (SELECT
-        feature_signals.id,
-        feature_signals.component_id,
-        feature_signals.geography::geometry AS geography,
-        st_exteriorring(
-            st_buffer(feature_signals.geography, 7::double precision)::geometry
-        )                                   AS line_geography,
-        feature_signals.signal_id,
-        null::integer                       AS length_feet
-    FROM feature_signals
-    WHERE feature_signals.is_deleted = false
-    UNION ALL
-    SELECT
-        feature_street_segments.id,
-        feature_street_segments.component_id,
-        feature_street_segments.geography::geometry AS geography,
-        feature_street_segments.geography::geometry AS line_geography,
-        null::integer                               AS signal_id,
-        feature_street_segments.length_feet
-    FROM feature_street_segments
-    WHERE feature_street_segments.is_deleted = false
-    UNION ALL
-    SELECT
-        feature_intersections.id,
-        feature_intersections.component_id,
-        feature_intersections.geography::geometry AS geography,
-        st_exteriorring(
-            st_buffer(feature_intersections.geography, 7::double precision)::geometry
-        )                                         AS line_geography,
-        null::integer                             AS signal_id,
-        null::integer                             AS length_feet
-    FROM feature_intersections
-    WHERE feature_intersections.is_deleted = false
-    UNION ALL
-    SELECT
-        feature_drawn_points.id,
-        feature_drawn_points.component_id,
-        feature_drawn_points.geography::geometry AS geography,
-        st_exteriorring(
-            st_buffer(feature_drawn_points.geography, 7::double precision)::geometry
-        )                                        AS line_geography,
-        null::integer                            AS signal_id,
-        null::integer                            AS length_feet
-    FROM feature_drawn_points
-    WHERE feature_drawn_points.is_deleted = false
-    UNION ALL
-    SELECT
-        feature_drawn_lines.id,
-        feature_drawn_lines.component_id,
-        feature_drawn_lines.geography::geometry AS geography,
-        feature_drawn_lines.geography::geometry AS line_geography,
-        null::integer                           AS signal_id,
-        feature_drawn_lines.length_feet
-    FROM feature_drawn_lines
-    WHERE feature_drawn_lines.is_deleted = false
-    UNION ALL
-    SELECT
-        feature_school_beacons.id,
-        feature_school_beacons.component_id,
-        feature_school_beacons.geography::geometry AS geography,
-        st_exteriorring(
-            st_buffer(feature_school_beacons.geography, 7::double precision)::geometry
-        )                                          AS line_geography,
-        null::integer                              AS signal_id,
-        null::integer                              AS length_feet
-    FROM feature_school_beacons
-    WHERE feature_school_beacons.is_deleted = false) feature_union
+    FROM (
+        SELECT
+            feature_signals.id,
+            feature_signals.component_id,
+            feature_signals.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_signals.geography, 7::double precision)::geometry
+            )                                   AS line_geography,
+            feature_signals.signal_id,
+            null::integer                       AS length_feet
+        FROM feature_signals
+        WHERE feature_signals.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_street_segments.id,
+            feature_street_segments.component_id,
+            feature_street_segments.geography::geometry AS geography,
+            feature_street_segments.geography::geometry AS line_geography,
+            null::integer                               AS signal_id,
+            feature_street_segments.length_feet
+        FROM feature_street_segments
+        WHERE feature_street_segments.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_intersections.id,
+            feature_intersections.component_id,
+            feature_intersections.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_intersections.geography, 7::double precision)::geometry
+            )                                         AS line_geography,
+            null::integer                             AS signal_id,
+            null::integer                             AS length_feet
+        FROM feature_intersections
+        WHERE feature_intersections.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_drawn_points.id,
+            feature_drawn_points.component_id,
+            feature_drawn_points.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_drawn_points.geography, 7::double precision)::geometry
+            )                                        AS line_geography,
+            null::integer                            AS signal_id,
+            null::integer                            AS length_feet
+        FROM feature_drawn_points
+        WHERE feature_drawn_points.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_drawn_lines.id,
+            feature_drawn_lines.component_id,
+            feature_drawn_lines.geography::geometry AS geography,
+            feature_drawn_lines.geography::geometry AS line_geography,
+            null::integer                           AS signal_id,
+            feature_drawn_lines.length_feet
+        FROM feature_drawn_lines
+        WHERE feature_drawn_lines.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_school_beacons.id,
+            feature_school_beacons.component_id,
+            feature_school_beacons.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_school_beacons.geography, 7::double precision)::geometry
+            )                                          AS line_geography,
+            null::integer                              AS signal_id,
+            null::integer                              AS length_feet
+        FROM feature_school_beacons
+        WHERE feature_school_beacons.is_deleted = false
+    ) feature_union
     GROUP BY feature_union.component_id
 ),
 
@@ -188,7 +191,8 @@ SELECT
     comp_geography.length_feet_total,
     round(
         comp_geography.length_feet_total::numeric / 5280::numeric, 2
-    )                                           AS length_miles_total,
+    )
+    AS length_miles_total,
     comp_geography.feature_count,
     mc.component_name,
     mc.component_subtype,
@@ -315,13 +319,30 @@ LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = 
 LEFT JOIN LATERAL
     (
         SELECT
-            get_project_development_status_date(
-                lpmd.latest::timestamp with time zone,
-                eaocpd.earliest,
-                coalesce(mpc.completion_date, plv.substantial_completion_date),
-                plv.substantial_completion_date_estimated,
-                coalesce(mph.phase_name_simple, current_phase.phase_name_simple)
+            timezone(
+                'America/Chicago'::text,
+                get_project_development_status_date(
+                    lpmd.latest::timestamp with time zone,
+                    eaocpd.earliest,
+                    coalesce(mpc.completion_date, plv.substantial_completion_date),
+                    plv.substantial_completion_date_estimated,
+                    coalesce(mph.phase_name_simple, current_phase.phase_name_simple)
+                )
             ) AS result
     ) project_development_status_date
     ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
+
+CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS
+SELECT
+    component_arcgis_online_view.project_id,
+    component_arcgis_online_view.project_component_id,
+    st_geometrytype(dump.geom)            AS geometry_type,
+    dump.path[1]                          AS point_index,
+    component_arcgis_online_view.geometry AS original_geometry,
+    st_asgeojson(dump.geom)               AS exploded_geometry,
+    component_arcgis_online_view.project_updated_at
+FROM component_arcgis_online_view
+,
+LATERAL st_dump (st_geomfromgeojson (component_arcgis_online_view.geometry)) dump (path, geom)
+WHERE st_geometrytype (st_geomfromgeojson (component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;
