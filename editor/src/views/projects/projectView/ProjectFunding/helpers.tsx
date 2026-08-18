@@ -233,7 +233,7 @@ type UseColumnsProps = {
   handleSaveClick: (id: GridRowId) => () => void;
   handleCancelClick: (id: GridRowId) => () => void;
   handleEditClick: (id: GridRowId) => () => void;
-  handleFileAttachmentClick: (id: number) => () => void;
+  handleFileAttachmentClick: (id: string) => () => void;
   setOverrideFundingRecord: Dispatch<SetStateAction<FundingRowForGrid | null>>;
   usingShiftKey: boolean;
   logUserEvent: (event: string) => void;

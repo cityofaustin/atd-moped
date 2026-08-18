@@ -148,12 +148,14 @@ const ProjectFundingTable = ({
   const isEditMode = getIsEditMode(rowModesModel);
 
   /* File attachment state and handlers */
-  const [fileAttachmentId, setFileAttachmentId] = useState<number | null>(null);
+  const [fileAttachmentId, setFileAttachmentId] = useState<GridRowId | null>(
+    null
+  );
   const [isFileAttachmentDialogOpen, setIsFileAttachmentDialogOpen] =
     useState(false);
 
   const handleFileAttachmentClick = useCallback(
-    (id: number) => () => {
+    (id: GridRowId) => () => {
       setFileAttachmentId(id);
       setIsFileAttachmentDialogOpen(true);
     },
@@ -586,7 +588,6 @@ const ProjectFundingTable = ({
                       label="Sync from eCAPRIS"
                       control={
                         <Switch
-                          variant="standard"
                           color="primary"
                           disabled={!eCaprisSubprojectId || isEditMode}
                           checked={shouldSyncEcaprisFunding}
@@ -648,16 +649,19 @@ const ProjectFundingTable = ({
             projectId
           )}
           addFileMutation={
+            !fileAttachmentParentRecord.isNew &&
             fileAttachmentParentRecord?.is_synced_from_ecapris
               ? CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT
               : CREATE_FILE_MOPED_FUNDING_ATTACHMENT
           }
           existingFileMutation={
+            !fileAttachmentParentRecord.isNew &&
             fileAttachmentParentRecord?.is_synced_from_ecapris
               ? ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING
               : ATTACH_EXISTING_FILE_TO_MOPED_FUNDING
           }
           filesType={
+            !fileAttachmentParentRecord.isNew &&
             fileAttachmentParentRecord?.is_synced_from_ecapris
               ? "ecapris_funding_files"
               : "moped_funding_files"
