@@ -22,7 +22,6 @@ import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 import Can from "src/auth/Can";
 import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
-// To do: replace manual scrolling functionality with <ScrollRestoration>
 /**
  * Scroll to a page element based on its key
  * @param {string} recordKey - The key representing the record type to scroll to
