@@ -406,6 +406,7 @@ const ProjectFundingTable = ({
           .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error adding funding source", "error", error);
+            return originalRow;
           })
       );
     } else {
@@ -435,6 +436,7 @@ const ProjectFundingTable = ({
                 "error",
                 error
               );
+              return originalRow;
             })
         );
       }
