@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, Link } from "@mui/material";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router";
 
 const getStyleSx = (style) => {
   const baseSx = {};

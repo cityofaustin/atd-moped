@@ -1,6 +1,6 @@
 import React from "react";
 import ProjectTeamTable from "src/views/projects/projectView/ProjectTeam/ProjectTeamTable";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import { Grid } from "@mui/material";
 
