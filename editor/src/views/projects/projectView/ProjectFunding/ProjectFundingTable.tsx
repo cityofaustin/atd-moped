@@ -141,9 +141,8 @@ const ProjectFundingTable = ({
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
-  const [deleteConfirmationId, setDeleteConfirmationId] = useState<
-    number | null
-  >(null);
+  const [deleteConfirmationId, setDeleteConfirmationId] =
+    useState<GridRowId | null>(null);
   const [usingShiftKey, setUsingShiftKey] = useState(false);
   const isEditMode = getIsEditMode(rowModesModel);
 
@@ -509,11 +508,13 @@ const ProjectFundingTable = ({
         onCellDoubleClick={doubleClickListener}
         localeText={{ noRowsLabel: "No funding sources" }}
         slots={{
+          // @ts-expect-error Replace DataGridToolbar with Toolbar and migrate; captured in issue #29887
           toolbar: DataGridToolbar,
         }}
         slotProps={{
           toolbar: {
             title: "Funding sources",
+            // @ts-expect-error Replace DataGridToolbar with Toolbar and migrate; captured in issue #29887
             primaryActionButton: (
               <Button
                 variant="contained"
@@ -555,13 +556,12 @@ const ProjectFundingTable = ({
                     md: 4,
                   }}
                 >
+                  {/* @ts-expect-error Migrating ProjectSummaryProjectECapris to TS captured in issue #29889 */}
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}
                     loading={loadingProjectFunding}
-                    options={
-                      dataProjectFunding?.ecapris_subproject_funding ?? []
-                    }
+                    options={dataLookups?.ecapris_subproject_funding ?? []}
                     refetch={refetchFundingData}
                     handleSnackbar={handleSnackbar}
                     disabled={isEditMode}
@@ -602,13 +602,16 @@ const ProjectFundingTable = ({
           },
         }}
       />
-      <DeleteConfirmationModal
-        type={"funding source"}
-        submitDelete={handleDeleteClick(deleteConfirmationId)}
-        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-        mutationPending={mutationPending || mutationPendingReattach}
-      />
+      {deleteConfirmationId !== null && (
+        // @ts-expect-error Migrating DeleteConfirmationModal to TS captured in issue #29890
+        <DeleteConfirmationModal
+          type={"funding source"}
+          submitDelete={handleDeleteClick(deleteConfirmationId)}
+          isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+          setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+          mutationPending={mutationPending || mutationPendingReattach}
+        />
+      )}
       {eCaprisSubprojectId && (
         <SubprojectFundingModal
           isDialogOpen={isDialogOpen}
@@ -633,6 +636,7 @@ const ProjectFundingTable = ({
         />
       )}
       {isFileAttachmentDialogOpen && fileAttachmentParentRecord && (
+        // @ts-expect-error Migrating ProjectFilesAttachmentDialog to TS captured in issue #29892
         <ProjectFilesAttachmentDialog
           projectId={projectId}
           isFileAttachmentDialogOpen={isFileAttachmentDialogOpen}

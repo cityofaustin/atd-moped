@@ -87,7 +87,7 @@ export const transformDatabaseToGrid = (
  * @param {Object} gridRecord - DataGrid row object
  * @return {Object} - transformed funding record for database mutation
  */
-export const transformGridToDatabase = (gridRecord) => {
+export const transformGridToDatabase = (gridRecord: FundingRowForGrid) => {
   // Extract the lookup ids from the selected lookup objects
   const funding_source_id = gridRecord.fund_source
     ? gridRecord.fund_source.funding_source_id
