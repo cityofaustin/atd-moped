@@ -30,6 +30,7 @@ import {
 import {
   GetCombinedProjectFundingQuery,
   GetFundingLookupsQuery,
+  Moped_Proj_Funding_Insert_Input,
 } from "src/gql/graphql";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
@@ -87,78 +88,56 @@ export const transformDatabaseToGrid = (
  * @param {Object} gridRecord - DataGrid row object
  * @return {Object} - transformed funding record for database mutation
  */
-export const transformGridToDatabase = (gridRecord: FundingRowForGrid) => {
-  // Extract the lookup ids from the selected lookup objects
-  const funding_source_id = gridRecord.fund_source
-    ? gridRecord.fund_source.funding_source_id
+/** Transforms DataGrid row to database funding record format for mutations
+ * @param gridRecord - DataGrid row object
+ * @returns transformed funding record for database mutation
+ */
+export const transformGridToDatabase = (
+  gridRecord: FundingRowForGrid
+): Moped_Proj_Funding_Insert_Input => {
+  // Use isNew to help TS determine SavedFundingRow or DraftFundingRow type
+  const isSaved = !gridRecord.isNew;
+
+  // Extract lookup IDs from lookup autocomplete objects
+  const funding_source_id =
+    gridRecord.moped_fund_source?.funding_source_id ?? null;
+  const funding_program_id =
+    gridRecord.moped_fund_program?.funding_program_id ?? null;
+  const funding_status_id =
+    gridRecord.moped_fund_status?.funding_status_id ?? 1; // default status for new rows
+
+  // FDU-related fields
+  const fdu = gridRecord.fdu ?? null;
+  const unit_long_name = gridRecord.unit_long_name ?? null;
+  const ecapris_funding_id = gridRecord.ecapris_funding_id ?? null;
+  const ecapris_subproject_id = isSaved
+    ? gridRecord.ecapris_subproject_id
     : null;
-  const funding_program_id = gridRecord.fund_program
-    ? gridRecord.fund_program.funding_program_id
-    : null;
-  const funding_status_id = gridRecord.fund_status
-    ? gridRecord.fund_status.funding_status_id
-    : null;
-  const fdu = gridRecord.fdu ? gridRecord.fdu.fdu : null;
-  const unit_long_name = gridRecord.fdu ? gridRecord.fdu.unit_long_name : null;
-  const ecapris_funding_id = gridRecord.fdu
-    ? gridRecord.fdu.ecapris_funding_id
+  const funding_amount = gridRecord.funding_amount ?? null;
+  const should_use_ecapris_amount = isSaved
+    ? gridRecord.should_use_ecapris_amount
     : null;
 
-  const ecapris_subproject_id = gridRecord.fdu
-    ? gridRecord.fdu.ecapris_subproject_id
-    : null;
-
-  const fdu_record_amount = gridRecord.fdu ? gridRecord.fdu.amount : null;
-  // if the amount on the fdu matches what we are saving, its not an override
-  const should_use_ecapris_amount =
-    fdu_record_amount === Number(gridRecord.funding_amount);
-
-  // the database expects the funding amount to be an Int or null. An empty string will result in an error, coerce to null
-  const funding_amount = gridRecord.funding_amount
-    ? gridRecord.funding_amount
-    : null;
-
-  const {
-    id,
-    __typename,
-    is_synced_from_ecapris,
-    status_name,
-    program_name,
-    source_name,
-    fund_program,
-    fund_source,
-    fund_status,
-    proj_funding_id,
-    isNew,
-    is_manual,
-    ecapris_funding_files,
-    moped_funding_files,
-    ecapris_funding,
-    ...databaseFields
-  } = gridRecord;
-
-  // Return the database fields along with the extracted lookup ids
   return {
-    ...databaseFields,
     funding_source_id,
     funding_program_id,
-    // If no new funding status is selected, the default should be used
-    funding_status_id: funding_status_id ? funding_status_id : 1,
+    funding_status_id,
     fdu,
     unit_long_name,
     ecapris_funding_id,
     ecapris_subproject_id,
     should_use_ecapris_amount,
     funding_amount,
+    funding_description: gridRecord.funding_description,
   };
 };
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
-  getOptionLabel: (option) =>
+  getOptionLabel: (option: FDUOption) =>
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value, option) =>
-    value?.ecapris_funding_id === option?.ecapris_funding_id,
+  isOptionEqualToValue: (value: FDUOption, option: FDUOption) =>
+    value.ecapris_funding_id === option.ecapris_funding_id,
 };
 
 const fduAutocompleteDependentFields = [

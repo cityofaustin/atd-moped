@@ -134,14 +134,14 @@ export const ECAPRIS_SUBPROJECT_FUNDING_QUERY = gql`
   }
 `;
 
-export const UPDATE_PROJECT_FUNDING = gql`
+export const UPDATE_PROJECT_FUNDING = graphql(`
   mutation UpdateProjectFunding(
     $proj_funding_id: Int!
     $funding_amount: Int
     $funding_description: String
     $funding_program_id: Int
     $funding_source_id: Int
-    $funding_status_id: Int!
+    $funding_status_id: Int
     $fdu: String
     $unit_long_name: String
     $should_use_ecapris_amount: Boolean
@@ -162,7 +162,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
       proj_funding_id
     }
   }
-`;
+`);
 
 export const DELETE_PROJECT_FUNDING = graphql(`
   mutation DeleteProjectFunding($proj_funding_id: Int!) {
@@ -212,7 +212,7 @@ export const DELETE_PROJECT_FUNDING_AND_REATTACH = graphql(`
   }
 `);
 
-export const ADD_PROJECT_FUNDING = gql`
+export const ADD_PROJECT_FUNDING = graphql(`
   mutation AddProjectFunding(
     $fundingObjects: [moped_proj_funding_insert_input!]!
   ) {
@@ -222,12 +222,12 @@ export const ADD_PROJECT_FUNDING = gql`
       }
     }
   }
-`;
+`);
 
 /* Add funding record and also transfer synced eCAPRIS row attachments to
 the new Moped funding record inserted as an override of eCAPRIS. Executes in 
 one transaction. */
-export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
+export const ADD_PROJECT_FUNDING_AND_REATTACH = graphql(`
   mutation AddProjectFundingAndReattach(
     $fundingObjects: [moped_proj_funding_insert_input!]!
     $entityId: Int!
@@ -245,7 +245,7 @@ export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
       affected_rows
     }
   }
-`;
+`);
 
 export const WORK_ACTIVITY_QUERY = gql`
   query ProjectWorkActivity($projectId: Int) {

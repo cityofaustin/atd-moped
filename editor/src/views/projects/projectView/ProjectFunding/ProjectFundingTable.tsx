@@ -394,9 +394,10 @@ const ProjectFundingTable = ({
           .then((response) => {
             // replace the temporary row id with the one proj funding id from the record creation
             const record_id =
-              response.data.insert_moped_proj_funding.returning[0]
+              response.data?.insert_moped_proj_funding?.returning[0]
                 .proj_funding_id;
-            updatedRow.proj_funding_id = record_id;
+
+            return { ...updatedRow, proj_funding_id: record_id };
           })
           .then(() => {
             refetch();
@@ -416,6 +417,8 @@ const ProjectFundingTable = ({
       if (!hasRowChanged) {
         return Promise.resolve(updatedRow);
       } else {
+        if (updatedRow.proj_funding_id === null) return updatedRow;
+
         return (
           updateProjectFunding({
             variables: {

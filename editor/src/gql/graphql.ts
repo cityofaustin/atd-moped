@@ -6763,7 +6763,7 @@ export type UpdateProjectFundingMutationVariables = Exact<{
   funding_description?: string | null | undefined;
   funding_program_id?: number | null | undefined;
   funding_source_id?: number | null | undefined;
-  funding_status_id: number;
+  funding_status_id?: number | null | undefined;
   fdu?: string | null | undefined;
   unit_long_name?: string | null | undefined;
   should_use_ecapris_amount?: boolean | null | undefined;
@@ -12267,10 +12267,7 @@ export const UpdateProjectFundingDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "funding_status_id" },
           },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
-          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
         },
         {
           kind: "VariableDefinition",
