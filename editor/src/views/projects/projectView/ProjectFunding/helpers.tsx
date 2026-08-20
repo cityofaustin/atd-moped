@@ -78,7 +78,6 @@ type DraftFundingRow = {
   funding_description: null;
   is_manual: true;
   isNew: true;
-  should_use_ecapris_amount: null;
 };
 
 export type FundingRowForGrid = SavedFundingRow | DraftFundingRow;
@@ -132,13 +131,12 @@ export const transformGridToInsertInput = (
     funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
     funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
     funding_status_id: row.moped_fund_status?.funding_status_id ?? 1,
-    should_use_ecapris_amount: row.should_use_ecapris_amount,
   };
 };
 
 /** Transforms grid row to update mutation payload */
 export const transformGridToUpdateInput = (
-  row: FundingRowForGrid
+  row: SavedFundingRow
 ): Omit<UpdateProjectFundingMutationVariables, "proj_funding_id"> => {
   return {
     fdu: row.fdu?.fdu ?? null,
@@ -147,7 +145,7 @@ export const transformGridToUpdateInput = (
     funding_description: row.funding_description,
     funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
     funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
-    funding_status_id: row.moped_fund_status?.funding_status_id ?? 1,
+    funding_status_id: row.moped_fund_status?.funding_status_id ?? 1, // Default status to 'Tentative'
     should_use_ecapris_amount: row.should_use_ecapris_amount,
   };
 };
@@ -232,7 +230,7 @@ type UseColumnsProps = {
   handleSaveClick: (id: GridRowId) => () => void;
   handleCancelClick: (id: GridRowId) => () => void;
   handleEditClick: (id: GridRowId) => () => void;
-  handleFileAttachmentClick: (id: string) => () => void;
+  handleFileAttachmentClick: (id: GridRowId) => () => void;
   setOverrideFundingRecord: Dispatch<SetStateAction<FundingRowForGrid | null>>;
   usingShiftKey: boolean;
   logUserEvent: (event: string) => void;
@@ -263,16 +261,14 @@ export const useColumns = ({
     return [
       {
         headerName: "FDU",
-        field: "ecapris_funding",
+        field: "fdu",
         width: 140,
         editable: true,
         renderCell: ({
           row,
           value,
         }: GridRenderCellParams<FundingRowForGrid, GridFDUShape | null>) => {
-          if (row.isNew) return;
-
-          return row.is_synced_from_ecapris ? (
+          return !row.isNew && row.is_synced_from_ecapris ? (
             <Stack
               direction="column"
               spacing={0.5}
@@ -288,6 +284,7 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"ecapris_funding"}
@@ -295,7 +292,6 @@ export const useColumns = ({
             fullWidthPopper={true}
             autocompleteProps={{
               ...fduAutocompleteProps,
-              value: props.row.fdu,
             }}
             dependentFieldsArray={fduAutocompleteDependentFields}
           />
@@ -308,6 +304,7 @@ export const useColumns = ({
         // during editing -- the input field is always disabled
         width: 175,
         renderEditCell: (props) => (
+          // @ts-expect-error ViewOnlyTextField to TS captured in #29928
           <ViewOnlyTextField
             {...props}
             value={props.row.unit_long_name}
@@ -337,6 +334,7 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
@@ -363,6 +361,7 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
@@ -386,6 +385,7 @@ export const useColumns = ({
         valueFormatter: (value: FundingRowFromQuery["moped_fund_status"]) =>
           value?.funding_status_name,
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_status"}
@@ -453,6 +453,7 @@ export const useColumns = ({
                 return (
                   <AttachedFile
                     key={file.project_file_id}
+                    // @ts-expect-error Migrating ProjectFilesAttachmentDialog to TS captured in issue #29892
                     fileRecordId={file_record.id}
                     file={file}
                     refetch={refetch}
@@ -482,6 +483,7 @@ export const useColumns = ({
         renderCell: ({ id, row }) => {
           if (row.isNew || row.is_manual) {
             return (
+              // @ts-expect-error Migrating IconButtonWithTooltip to TS captured in #29269
               <DataGridActions
                 id={id}
                 rowModesModel={rowModesModel}
@@ -526,6 +528,7 @@ export const useColumns = ({
               >
                 <AttachFileOutlinedIcon />
               </IconButton>
+              {/* @ts-expect-error Migrating IconButtonWithTooltip to TS captured in #29269 */}
               <IconButtonWithTooltip
                 title={deleteTooltipMessage}
                 aria-label="delete"

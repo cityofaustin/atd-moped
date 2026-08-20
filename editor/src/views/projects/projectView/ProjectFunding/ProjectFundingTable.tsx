@@ -252,7 +252,6 @@ const ProjectFundingTable = ({
         proj_funding_id: id,
         is_manual: true,
         isNew: true,
-        should_use_ecapris_amount: null,
       } satisfies FundingRowForGrid,
       ...oldRows,
     ]);
@@ -298,12 +297,10 @@ const ProjectFundingTable = ({
         const entity_id = deletedRow.ecapris_funding?.id;
 
         if (!entity_id) {
-          // Override rows are expected to have an ecapris_funding reference id
-          console.error("Cannot delete override; missing eCAPRIS reference", {
-            proj_funding_id: deletedRow.proj_funding_id,
-            projectId,
-            deletedRow,
-          });
+          console.error(
+            "Overrides must have an ecapris_subproject_funding primary key",
+            { projectId, deletedRow }
+          );
           return;
         }
 
@@ -505,7 +502,7 @@ const ProjectFundingTable = ({
         rows={rows}
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
-        onRowEditStop={handleRowEditStop<FundingRowForGrid>(rows, setRows)}
+        onRowEditStop={handleRowEditStop(rows, setRows)}
         isCellEditable={isCellEditable}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdate}
