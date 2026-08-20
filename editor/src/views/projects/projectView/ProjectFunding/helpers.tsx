@@ -32,6 +32,7 @@ import {
   GetCombinedProjectFundingQuery,
   GetFundingLookupsQuery,
   AddProjectFundingMutationVariables,
+  UpdateProjectFundingMutationVariables,
 } from "src/gql/graphql";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
@@ -135,7 +136,7 @@ export const transformGridToInsertInput = (
   };
 };
 
-/** Transforms grid row to update mutation payload (excludes proj_funding_id, added by caller) */
+/** Transforms grid row to update mutation payload */
 export const transformGridToUpdateInput = (
   row: FundingRowForGrid
 ): Omit<UpdateProjectFundingMutationVariables, "proj_funding_id"> => {
@@ -268,7 +269,7 @@ export const useColumns = ({
         renderCell: ({
           row,
           value,
-        }: GridRenderCellParams<FundingRowForGrid, FDUOption | null>) => {
+        }: GridRenderCellParams<FundingRowForGrid, GridFDUShape | null>) => {
           if (row.isNew) return;
 
           return row.is_synced_from_ecapris ? (
@@ -479,7 +480,21 @@ export const useColumns = ({
         width: 110,
         type: "actions",
         renderCell: ({ id, row }) => {
-          if (row.isNew) return;
+          if (row.isNew || row.is_manual) {
+            return (
+              <DataGridActions
+                id={id}
+                rowModesModel={rowModesModel}
+                handleCancelClick={handleCancelClick}
+                handleDeleteOpen={handleDeleteOpen}
+                handleSaveClick={handleSaveClick}
+                handleEditClick={handleEditClick}
+                handleFileAttachmentClick={handleFileAttachmentClick}
+                editDisabled={false}
+                deleteDisabled={false}
+              />
+            );
+          }
 
           const doesFDUBelongToCurrentSubproject =
             row.ecapris_subproject_id === projectECaprisSubprojectId;
@@ -492,19 +507,7 @@ export const useColumns = ({
                 ? "Switch off eCAPRIS sync to remove synced rows"
                 : null;
 
-          return row.is_manual ? (
-            <DataGridActions
-              id={id}
-              rowModesModel={rowModesModel}
-              handleCancelClick={handleCancelClick}
-              handleDeleteOpen={handleDeleteOpen}
-              handleSaveClick={handleSaveClick}
-              handleEditClick={handleEditClick}
-              handleFileAttachmentClick={handleFileAttachmentClick}
-              editDisabled={row.is_synced_from_ecapris}
-              deleteDisabled={row.is_synced_from_ecapris}
-            />
-          ) : (
+          return (
             <>
               <IconButton
                 aria-label="edit"

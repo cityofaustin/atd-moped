@@ -16,7 +16,6 @@ import {
   ECAPRIS_SUBPROJECT_FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
 } from "src/queries/funding";
-import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
 import * as yup from "yup";
 
@@ -51,6 +50,76 @@ const renderECaprisLabel = (lookup, recordId, recordType) => {
   return fundingRecord && fundingRecord[`funding_${recordType}_name`]
     ? fundingRecord[`funding_${recordType}_name`]
     : "-";
+};
+
+/** Transforms DataGrid row to database funding record format for mutations
+ * @param {Object} gridRecord - DataGrid row object
+ * @return {Object} - transformed funding record for database mutation
+ */
+const transformGridToDatabase = (gridRecord) => {
+  // Extract the lookup ids from the selected lookup objects
+  const funding_source_id = gridRecord.fund_source
+    ? gridRecord.fund_source.funding_source_id
+    : null;
+  const funding_program_id = gridRecord.fund_program
+    ? gridRecord.fund_program.funding_program_id
+    : null;
+  const funding_status_id = gridRecord.fund_status
+    ? gridRecord.fund_status.funding_status_id
+    : null;
+  const fdu = gridRecord.fdu ? gridRecord.fdu.fdu : null;
+  const unit_long_name = gridRecord.fdu ? gridRecord.fdu.unit_long_name : null;
+  const ecapris_funding_id = gridRecord.fdu
+    ? gridRecord.fdu.ecapris_funding_id
+    : null;
+
+  const ecapris_subproject_id = gridRecord.fdu
+    ? gridRecord.fdu.ecapris_subproject_id
+    : null;
+
+  const fdu_record_amount = gridRecord.fdu ? gridRecord.fdu.amount : null;
+  // if the amount on the fdu matches what we are saving, its not an override
+  const should_use_ecapris_amount =
+    fdu_record_amount === Number(gridRecord.funding_amount);
+
+  // the database expects the funding amount to be an Int or null. An empty string will result in an error, coerce to null
+  const funding_amount = gridRecord.funding_amount
+    ? gridRecord.funding_amount
+    : null;
+
+  const {
+    id,
+    __typename,
+    is_synced_from_ecapris,
+    status_name,
+    program_name,
+    source_name,
+    fund_program,
+    fund_source,
+    fund_status,
+    proj_funding_id,
+    isNew,
+    is_manual,
+    ecapris_funding_files,
+    moped_funding_files,
+    ecapris_funding,
+    ...databaseFields
+  } = gridRecord;
+
+  // Return the database fields along with the extracted lookup ids
+  return {
+    ...databaseFields,
+    funding_source_id,
+    funding_program_id,
+    // If no new funding status is selected, the default should be used
+    funding_status_id: funding_status_id ? funding_status_id : 1,
+    fdu,
+    unit_long_name,
+    ecapris_funding_id,
+    ecapris_subproject_id,
+    should_use_ecapris_amount,
+    funding_amount,
+  };
 };
 
 const OverrideFundingForm = ({

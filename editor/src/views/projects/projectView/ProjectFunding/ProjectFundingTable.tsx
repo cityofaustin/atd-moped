@@ -43,12 +43,12 @@ import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding
 import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
 import {
   transformDatabaseToGrid,
-  transformGridToDatabase,
+  transformGridToInsertInput,
+  transformGridToUpdateInput,
   isCellEditable,
   useColumns,
   createFundingFileConnectionData,
   FundingRowForGrid,
-  transformGridToInsertInput,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
@@ -381,8 +381,6 @@ const ProjectFundingTable = ({
     updatedRow: FundingRowForGrid,
     originalRow: FundingRowForGrid
   ) => {
-    const mutationData = transformGridToDatabase(updatedRow);
-
     if (updatedRow.isNew) {
       const insertMutationData = transformGridToInsertInput(updatedRow);
 
@@ -422,11 +420,12 @@ const ProjectFundingTable = ({
         return Promise.resolve(updatedRow);
       } else {
         if (updatedRow.proj_funding_id === null) return updatedRow;
+        const updateMutationData = transformGridToUpdateInput(updatedRow);
 
         return (
           updateProjectFunding({
             variables: {
-              ...mutationData,
+              ...updateMutationData,
               proj_funding_id: updatedRow.proj_funding_id,
             },
           })
