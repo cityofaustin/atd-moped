@@ -3,6 +3,7 @@ import { Divider, Stack, IconButton } from "@mui/material";
 import {
   GridCellParams,
   GridColDef,
+  GridRenderCellParams,
   GridRowId,
   GridRowModesModel,
 } from "@mui/x-data-grid-pro";
@@ -30,7 +31,7 @@ import {
 import {
   GetCombinedProjectFundingQuery,
   GetFundingLookupsQuery,
-  Moped_Proj_Funding_Insert_Input,
+  AddProjectFundingMutationVariables,
 } from "src/gql/graphql";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
@@ -39,11 +40,27 @@ export type FundingRowsFromQuery =
 
 export type FundingRowFromQuery = FundingRowsFromQuery[number];
 
+type GridFDUShape = {
+  fdu: string;
+  ecapris_funding_id: number | null;
+  ecapris_subproject_id: string | null;
+  unit_long_name: string | null;
+  amount: number | null;
+  funding_source_id: number | null;
+  funding_program_id: number | null;
+  moped_fund_source: FundingRowFromQuery["moped_fund_source"] | null;
+  moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
+};
+
 /** Workaround for DB view id calculation being possibly null; source columns are not-nullable
  * but Hasura codegen types id as: string | null. So, we need to override here to only be string type.
  */
-export type SavedFundingRow = Omit<FundingRowFromQuery, "id" | "__typename"> & {
+export type SavedFundingRow = Omit<
+  FundingRowFromQuery,
+  "id" | "__typename" | "fdu"
+> & {
   id: string;
+  fdu: GridFDUShape | null;
   isNew: false;
 };
 
@@ -60,11 +77,10 @@ type DraftFundingRow = {
   funding_description: null;
   is_manual: true;
   isNew: true;
+  should_use_ecapris_amount: null;
 };
 
 export type FundingRowForGrid = SavedFundingRow | DraftFundingRow;
-
-type FDUOption = GetFundingLookupsQuery["ecapris_subproject_funding"][number];
 
 /** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
  * @param fundingRecords - array of funding records from the database
@@ -74,88 +90,91 @@ export const transformDatabaseToGrid = (
   fundingRecords: FundingRowsFromQuery
 ): FundingRowForGrid[] => {
   return fundingRecords.map((record) => {
-    const { id, __typename, ...rest } = record;
+    const { id, __typename, fdu, ...rest } = record;
+
+    // Match what FDU autocomplete uses for options and to populate dependent fields
+    const fduAsOption: GridFDUShape | null = fdu
+      ? {
+          fdu,
+          ecapris_funding_id: rest.ecapris_funding_id,
+          ecapris_subproject_id: rest.ecapris_subproject_id,
+          unit_long_name: rest.unit_long_name,
+          amount: rest.funding_amount,
+          funding_source_id: rest.moped_fund_source?.funding_source_id ?? null,
+          funding_program_id:
+            rest.moped_fund_program?.funding_program_id ?? null,
+          moped_fund_source: rest.moped_fund_source,
+          moped_fund_program: rest.moped_fund_program,
+        }
+      : null;
 
     return {
       ...rest,
       id: id ?? "",
+      fdu: fduAsOption,
       isNew: false,
     };
   });
 };
 
-/** Transforms DataGrid row to database funding record format for mutations
- * @param {Object} gridRecord - DataGrid row object
- * @return {Object} - transformed funding record for database mutation
- */
-/** Transforms DataGrid row to database funding record format for mutations
- * @param gridRecord - DataGrid row object
- * @returns transformed funding record for database mutation
- */
-export const transformGridToDatabase = (
-  gridRecord: FundingRowForGrid
-): Moped_Proj_Funding_Insert_Input => {
-  // Use isNew to help TS determine SavedFundingRow or DraftFundingRow type
-  const isSaved = !gridRecord.isNew;
-
-  // Extract lookup IDs from lookup autocomplete objects
-  const funding_source_id =
-    gridRecord.moped_fund_source?.funding_source_id ?? null;
-  const funding_program_id =
-    gridRecord.moped_fund_program?.funding_program_id ?? null;
-  const funding_status_id =
-    gridRecord.moped_fund_status?.funding_status_id ?? 1; // default status for new rows
-
-  // FDU-related fields
-  const fdu = gridRecord.fdu ?? null;
-  const unit_long_name = gridRecord.unit_long_name ?? null;
-  const ecapris_funding_id = gridRecord.ecapris_funding_id ?? null;
-  const ecapris_subproject_id = isSaved
-    ? gridRecord.ecapris_subproject_id
-    : null;
-  const funding_amount = gridRecord.funding_amount ?? null;
-  const should_use_ecapris_amount = isSaved
-    ? gridRecord.should_use_ecapris_amount
-    : null;
-
+/** Transforms grid row to insert mutation payload */
+export const transformGridToInsertInput = (
+  row: FundingRowForGrid
+): AddProjectFundingMutationVariables["fundingObjects"] => {
   return {
-    funding_source_id,
-    funding_program_id,
-    funding_status_id,
-    fdu,
-    unit_long_name,
-    ecapris_funding_id,
-    ecapris_subproject_id,
-    should_use_ecapris_amount,
-    funding_amount,
-    funding_description: gridRecord.funding_description,
+    ecapris_funding_id: row.fdu?.ecapris_funding_id ?? null,
+    ecapris_subproject_id: row.fdu?.ecapris_subproject_id ?? null,
+    fdu: row.fdu?.fdu ?? null,
+    unit_long_name: row.fdu?.unit_long_name ?? null,
+    funding_amount: row.funding_amount || null,
+    funding_description: row.funding_description,
+    funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
+    funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
+    funding_status_id: row.moped_fund_status?.funding_status_id ?? 1,
+    should_use_ecapris_amount: row.should_use_ecapris_amount,
+  };
+};
+
+/** Transforms grid row to update mutation payload (excludes proj_funding_id, added by caller) */
+export const transformGridToUpdateInput = (
+  row: FundingRowForGrid
+): Omit<UpdateProjectFundingMutationVariables, "proj_funding_id"> => {
+  return {
+    fdu: row.fdu?.fdu ?? null,
+    unit_long_name: row.fdu?.unit_long_name ?? null,
+    funding_amount: row.funding_amount || null,
+    funding_description: row.funding_description,
+    funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
+    funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
+    funding_status_id: row.moped_fund_status?.funding_status_id ?? 1,
+    should_use_ecapris_amount: row.should_use_ecapris_amount,
   };
 };
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
-  getOptionLabel: (option: FDUOption) =>
+  getOptionLabel: (option: GridFDUShape) =>
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value: FDUOption, option: FDUOption) =>
+  isOptionEqualToValue: (value: GridFDUShape, option: GridFDUShape) =>
     value.ecapris_funding_id === option.ecapris_funding_id,
 };
 
 const fduAutocompleteDependentFields = [
   {
     fieldName: "unit_long_name",
-    setFieldValue: (newValue: FDUOption) => newValue.unit_long_name,
+    setFieldValue: (newValue: GridFDUShape) => newValue.unit_long_name,
   },
   {
     fieldName: "moped_fund_source",
-    setFieldValue: (newValue: FDUOption) => newValue.moped_fund_source,
+    setFieldValue: (newValue: GridFDUShape) => newValue.moped_fund_source,
   },
   {
     fieldName: "moped_fund_program",
-    setFieldValue: (newValue: FDUOption) => newValue.moped_fund_program,
+    setFieldValue: (newValue: GridFDUShape) => newValue.moped_fund_program,
   },
   {
     fieldName: "funding_amount",
-    setFieldValue: (newValue: FDUOption) => newValue.amount,
+    setFieldValue: (newValue: GridFDUShape) => newValue.amount,
   },
 ];
 
@@ -243,10 +262,13 @@ export const useColumns = ({
     return [
       {
         headerName: "FDU",
-        field: "fdu",
+        field: "ecapris_funding",
         width: 140,
         editable: true,
-        renderCell: ({ row, value }) => {
+        renderCell: ({
+          row,
+          value,
+        }: GridRenderCellParams<FundingRowForGrid, FDUOption | null>) => {
           if (row.isNew) return;
 
           return row.is_synced_from_ecapris ? (
@@ -257,11 +279,11 @@ export const useColumns = ({
                 alignItems: "flex-start",
               }}
             >
-              <span>{value.fdu}</span>
+              <span>{value?.fdu}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>
           ) : (
-            value.fdu
+            value?.fdu
           );
         },
         renderEditCell: (props) => (

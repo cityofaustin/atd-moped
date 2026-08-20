@@ -48,6 +48,7 @@ import {
   useColumns,
   createFundingFileConnectionData,
   FundingRowForGrid,
+  transformGridToInsertInput,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
@@ -251,6 +252,7 @@ const ProjectFundingTable = ({
         proj_funding_id: id,
         is_manual: true,
         isNew: true,
+        should_use_ecapris_amount: null,
       } satisfies FundingRowForGrid,
       ...oldRows,
     ]);
@@ -382,11 +384,13 @@ const ProjectFundingTable = ({
     const mutationData = transformGridToDatabase(updatedRow);
 
     if (updatedRow.isNew) {
+      const insertMutationData = transformGridToInsertInput(updatedRow);
+
       return (
         addProjectFunding({
           variables: {
             fundingObjects: {
-              ...mutationData,
+              ...insertMutationData,
               project_id: projectId,
             },
           },
