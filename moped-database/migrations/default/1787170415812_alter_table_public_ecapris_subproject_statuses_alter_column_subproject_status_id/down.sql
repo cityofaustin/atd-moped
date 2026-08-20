@@ -1,10 +1,13 @@
 CREATE TEMP TABLE ecapris_dependent_view_definitions ON COMMIT DROP AS
-SELECT view_name, pg_get_viewdef(to_regclass(format('public.%I', view_name)), true) AS definition
+SELECT view_name,
+pg_get_viewdef(to_regclass(format('public.%I',
+view_name)),
+true) AS definition
 FROM (VALUES
-	('combined_project_notes_view'),
-	('project_list_view'),
-	('component_arcgis_online_view'),
-	('exploded_component_arcgis_online_view')
+('combined_project_notes_view'),
+('project_list_view'),
+('component_arcgis_online_view'),
+('exploded_component_arcgis_online_view')
 ) AS dependent_views(view_name)
 WHERE to_regclass(format('public.%I', view_name)) IS NOT NULL;
 
