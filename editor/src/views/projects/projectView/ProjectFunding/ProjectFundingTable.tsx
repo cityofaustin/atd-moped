@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { ApolloQueryResult, useQuery, useMutation } from "@apollo/client";
+import { ProjectSummaryQuery } from "src/gql/graphql";
 import isEqual from "lodash.isequal";
 
 import { Button, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
@@ -38,7 +39,7 @@ import ProjectSummaryProjectECapris from "src/views/projects/projectView/Project
 import {
   getIsEditMode,
   handleRowEditStop,
-} from "src/components/DataGridPro/utils/helpers.js";
+} from "src/components/DataGridPro/utils/helpers";
 import OverrideFundingDialog from "src/views/projects/projectView/ProjectFunding/OverrideFundingDialog";
 import ProjectFilesAttachmentDialog from "src/components/ProjectFilesAttachmentDialog";
 import {
@@ -56,7 +57,7 @@ import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 interface ProjectFundingTableProps {
   projectId: number;
   handleSnackbar: HandleSnackbar;
-  refetchProjectSummary: () => void;
+  refetchProjectSummary: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
   eCaprisSubprojectId: string | null;
   shouldSyncEcaprisFunding: boolean;
 }

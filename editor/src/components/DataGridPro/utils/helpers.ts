@@ -64,4 +64,4 @@ export const handleRowEditStop =
  * @returns True if any row is in edit mode, false otherwise
  */
 export const getIsEditMode = (rowModesModel: GridRowModesModel) =>
-  Object.values(rowModesModel).some((m) => m?.mode === GridRowModes.Edit);
+  Object.values(rowModesModel).some((m) => m.mode === GridRowModes.Edit);

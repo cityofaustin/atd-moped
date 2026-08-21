@@ -7,15 +7,15 @@ import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";
 
 type MopedDataGridInlineEditProps<R extends GridValidRowModel> =
   DataGridProProps<R> & {
+    /** Optional boolean indicating whether the inline edit functionality is enabled */
     canEdit?: boolean;
+    /** Optional initial state of the data grid */
     initialState?: GridInitialState;
   };
 
 /**
  * MopedDataGrid wrapper with default props to ensure consistent styling and behavior of inline edit data grids
- * @param canEdit - whether the inline edit functionality is enabled, optional
- * @param initialState - initial state of the data grid, optional
- * @param props - other props to be passed to DataGridPro component
+ * Pass the row type as a generic to preserve type safety through DataGrid callbacks.
  */
 const MopedDataGridInlineEdit = <R extends GridValidRowModel>({
   canEdit = true,

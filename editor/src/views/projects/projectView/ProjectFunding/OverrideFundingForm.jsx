@@ -131,12 +131,6 @@ const OverrideFundingForm = ({
   handleClose,
   dataLookups,
 }) => {
-  console.log("dialog opened with fundingRecord:", fundingRecord);
-  console.log(
-    "should_use_ecapris_amount value:",
-    fundingRecord?.should_use_ecapris_amount
-  );
-
   const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
     variables: { fdu: fundingRecord.fdu.fdu },
   });
@@ -164,9 +158,9 @@ const OverrideFundingForm = ({
       funding_amount: fundingRecord.funding_amount,
       description: fundingRecord.funding_description ?? "",
       should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
-      funding_source_id: fundingRecord.fund_source?.funding_source_id,
-      funding_program_id: fundingRecord.fund_program?.funding_program_id,
-      fund_status: fundingRecord.fund_status?.funding_status_id,
+      funding_source_id: fundingRecord.moped_fund_source?.funding_source_id,
+      funding_program_id: fundingRecord.moped_fund_program?.funding_program_id,
+      fund_status: fundingRecord.moped_fund_status?.funding_status_id,
     },
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",

@@ -1,9 +1,11 @@
-import React from "react";
+import type { ReactNode } from "react";
 import Chip from "@mui/material/Chip";
-import { SxProps, Theme } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
 
 interface SecondaryInformationChipProps {
-  chipLabel: React.ReactNode;
+  /** Text or React node displayed inside the chip. */
+  chipLabel: ReactNode;
+  /** Optional style overrides for the chip. Merged with defaults. */
   chipStyles?: SxProps<Theme>;
 }
 

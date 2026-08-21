@@ -42,27 +42,18 @@ export type FundingRowsFromQuery =
 
 export type FundingRowFromQuery = FundingRowsFromQuery[number];
 
-type GridFDUShape = {
-  fdu: string;
-  ecapris_funding_id: number | null;
-  ecapris_subproject_id: string | null;
-  unit_long_name: string | null;
-  amount: number | null;
-  funding_source_id: number | null;
-  funding_program_id: number | null;
-  moped_fund_source: FundingRowFromQuery["moped_fund_source"] | null;
-  moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
-};
-
-/** Workaround for DB view id calculation being possibly null; source columns are not-nullable
- * but Hasura codegen types id as: string | null. So, we need to override here to only be string type.
+/** Override types for DataGrid rows to workaround combined DB view id calculation being possibly null
+ * and other field type overrides. See inline comments for each field for more details.
  */
-export type SavedFundingRow = Omit<
+type SavedFundingRow = Omit<
   FundingRowFromQuery,
   "id" | "__typename" | "fdu"
 > & {
+  /** Override id type since source columns are not-nullable but codegen types DB view id as string | null */
   id: string;
-  fdu: GridFDUShape | null;
+  /** Override fdu type to be object for autocomplete and dependent field population */
+  fdu: GridFDUOption | null;
+  /** Override isNew to be false for saved records since we use this to determine if a record is a draft or saved record */
   isNew: false;
 };
 
@@ -83,6 +74,18 @@ type DraftFundingRow = {
 
 export type FundingRowForGrid = SavedFundingRow | DraftFundingRow;
 
+type GridFDUOption = {
+  fdu: string;
+  ecapris_funding_id: number | null;
+  ecapris_subproject_id: string | null;
+  unit_long_name: string | null;
+  amount: number | null;
+  funding_source_id: number | null;
+  funding_program_id: number | null;
+  moped_fund_source: FundingRowFromQuery["moped_fund_source"] | null;
+  moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
+};
+
 /** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
  * @param fundingRecords - array of funding records from the database
  * @return transformed funding records for data grid
@@ -94,7 +97,7 @@ export const transformDatabaseToGrid = (
     const { id, __typename, fdu, ...rest } = record;
 
     // Match what FDU autocomplete uses for options and to populate dependent fields
-    const fduAsOption: GridFDUShape | null = fdu
+    const fduAsOption: GridFDUOption | null = fdu
       ? {
           fdu,
           ecapris_funding_id: rest.ecapris_funding_id,
@@ -122,15 +125,16 @@ export const transformDatabaseToGrid = (
 export const transformGridToInsertInput = (
   row: FundingRowForGrid
 ): AddProjectFundingMutationVariables["fundingObjects"] => {
-  // If user changed the autopopulated FDU amount from eCAPRIS, record starts as overridden
-  const shouldUseEcaprisAmount = row.funding_amount === row.fdu?.amount;
+  // If user changes the autopopulated FDU amount from eCAPRIS while drafting, record begins as override
+  const shouldUseEcaprisAmount =
+    row.fdu !== null && row.funding_amount === row.fdu.amount;
 
   return {
     ecapris_funding_id: row.fdu?.ecapris_funding_id ?? null,
     ecapris_subproject_id: row.fdu?.ecapris_subproject_id ?? null,
     fdu: row.fdu?.fdu ?? null,
     unit_long_name: row.fdu?.unit_long_name ?? null,
-    funding_amount: row.funding_amount || null,
+    funding_amount: row.funding_amount,
     funding_description: row.funding_description,
     funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
     funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
@@ -151,34 +155,34 @@ export const transformGridToUpdateInput = (
     funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
     funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
     funding_status_id: row.moped_fund_status?.funding_status_id ?? 1, // Default status to 'Tentative'
-    should_use_ecapris_amount: row.should_use_ecapris_amount,
+    should_use_ecapris_amount: row.should_use_ecapris_amount, // Set by override toggle
   };
 };
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
-  getOptionLabel: (option: GridFDUShape) =>
+  getOptionLabel: (option: GridFDUOption) =>
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value: GridFDUShape, option: GridFDUShape) =>
+  isOptionEqualToValue: (value: GridFDUOption, option: GridFDUOption) =>
     value.ecapris_funding_id === option.ecapris_funding_id,
 };
 
 const fduAutocompleteDependentFields = [
   {
     fieldName: "unit_long_name",
-    setFieldValue: (newValue: GridFDUShape) => newValue.unit_long_name,
+    setFieldValue: (newValue: GridFDUOption) => newValue.unit_long_name,
   },
   {
     fieldName: "moped_fund_source",
-    setFieldValue: (newValue: GridFDUShape) => newValue.moped_fund_source,
+    setFieldValue: (newValue: GridFDUOption) => newValue.moped_fund_source,
   },
   {
     fieldName: "moped_fund_program",
-    setFieldValue: (newValue: GridFDUShape) => newValue.moped_fund_program,
+    setFieldValue: (newValue: GridFDUOption) => newValue.moped_fund_program,
   },
   {
     fieldName: "funding_amount",
-    setFieldValue: (newValue: GridFDUShape) => newValue.amount,
+    setFieldValue: (newValue: GridFDUOption) => newValue.amount,
   },
 ];
 
@@ -271,7 +275,7 @@ export const useColumns = ({
         renderCell: ({
           row,
           value,
-        }: GridRenderCellParams<FundingRowForGrid, GridFDUShape | null>) => {
+        }: GridRenderCellParams<FundingRowForGrid, GridFDUOption | null>) => {
           return !row.isNew && row.is_synced_from_ecapris ? (
             <Stack
               direction="column"

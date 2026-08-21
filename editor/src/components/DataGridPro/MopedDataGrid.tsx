@@ -7,13 +7,13 @@ import type { SxProps, Theme } from "@mui/material";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
+  /** Optional style overrides merged with the default DataGrid style. */
   sx?: SxProps<Theme>;
 };
 
 /**
  * DataGridPro wrapper with default styles and props to ensure consistent styling and behavior of data grids
- * @param sx - additional style overrides to be applied on top of default styles, optional
- * @param props - other props to be passed to DataGridPro component
+ * Pass the row type as a generic to preserve type safety through DataGrid callbacks.
  */
 const MopedDataGrid = <R extends GridValidRowModel>({
   sx,
