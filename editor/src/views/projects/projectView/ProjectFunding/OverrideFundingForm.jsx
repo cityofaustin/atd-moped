@@ -131,6 +131,12 @@ const OverrideFundingForm = ({
   handleClose,
   dataLookups,
 }) => {
+  console.log("dialog opened with fundingRecord:", fundingRecord);
+  console.log(
+    "should_use_ecapris_amount value:",
+    fundingRecord?.should_use_ecapris_amount
+  );
+
   const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
     variables: { fdu: fundingRecord.fdu.fdu },
   });

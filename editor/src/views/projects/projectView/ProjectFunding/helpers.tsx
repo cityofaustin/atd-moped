@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useMemo } from "react";
+import { ApolloQueryResult } from "@apollo/client";
 import { Divider, Stack, IconButton } from "@mui/material";
 import {
   GridCellParams,
@@ -121,6 +122,9 @@ export const transformDatabaseToGrid = (
 export const transformGridToInsertInput = (
   row: FundingRowForGrid
 ): AddProjectFundingMutationVariables["fundingObjects"] => {
+  // If user changed the autopopulated FDU amount from eCAPRIS, record starts as overridden
+  const shouldUseEcaprisAmount = row.funding_amount === row.fdu?.amount;
+
   return {
     ecapris_funding_id: row.fdu?.ecapris_funding_id ?? null,
     ecapris_subproject_id: row.fdu?.ecapris_subproject_id ?? null,
@@ -131,6 +135,7 @@ export const transformGridToInsertInput = (
     funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
     funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
     funding_status_id: row.moped_fund_status?.funding_status_id ?? 1,
+    should_use_ecapris_amount: shouldUseEcaprisAmount,
   };
 };
 
@@ -234,13 +239,12 @@ type UseColumnsProps = {
   setOverrideFundingRecord: Dispatch<SetStateAction<FundingRowForGrid | null>>;
   usingShiftKey: boolean;
   logUserEvent: (event: string) => void;
-  refetch: () => void;
+  refetch: () => Promise<ApolloQueryResult<GetCombinedProjectFundingQuery>>;
   handleSnackbar: HandleSnackbar;
   shouldSyncEcaprisFunding: boolean;
   projectECaprisSubprojectId: string | null;
 };
 
-/** Hook that provides memoized column settings */
 export const useColumns = ({
   dataLookups,
   rowModesModel,
@@ -348,6 +352,8 @@ export const useColumns = ({
         field: "moped_fund_program",
         width: 180,
         editable: true,
+        valueFormatter: (value: FundingRowFromQuery["moped_fund_program"]) =>
+          value?.funding_program_name,
         renderCell: ({ row, value }) => {
           if (row.isNew) return;
 
@@ -401,7 +407,7 @@ export const useColumns = ({
         width: 100,
         editable: true,
         renderCell: ({ row, value }) => {
-          if (row.isNew) return;
+          if (row.isNew) return null;
 
           return (
             <EcaprisOverridableCell
@@ -433,13 +439,13 @@ export const useColumns = ({
         editable: false,
         sortable: false,
         renderCell: ({ row }) => {
-          if (row.isNew) return;
+          if (row.isNew) return null;
 
           const filesType = row.is_synced_from_ecapris
             ? "ecapris_funding_files"
             : "moped_funding_files";
-          if (!row?.[filesType]) {
-            return;
+          if (!row[filesType]) {
+            return null;
           }
           return (
             <Stack
