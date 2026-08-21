@@ -85,6 +85,12 @@ export const GET_FUNDING_LOOKUPS = graphql(`
         funding_program_name
       }
     }
+    ecapris_options: ecapris_subproject_funding(
+      distinct_on: ecapris_subproject_id
+    ) {
+      ecapris_subproject_id
+      subproject_name
+    }
     moped_file_types {
       id
       name

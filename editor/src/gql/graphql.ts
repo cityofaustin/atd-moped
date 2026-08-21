@@ -6701,6 +6701,11 @@ export type GetFundingLookupsQuery = {
       funding_program_name: string;
     } | null;
   }>;
+  ecapris_options: Array<{
+    __typename: "ecapris_subproject_funding";
+    ecapris_subproject_id: string;
+    subproject_name: string;
+  }>;
   moped_file_types: Array<{
     __typename: "moped_file_types";
     id: number;
@@ -11871,6 +11876,31 @@ export const GetFundingLookupsDocument = {
                       },
                     ],
                   },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "ecapris_options" },
+            name: { kind: "Name", value: "ecapris_subproject_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "distinct_on" },
+                value: { kind: "EnumValue", value: "ecapris_subproject_id" },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_subproject_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "subproject_name" },
                 },
               ],
             },
