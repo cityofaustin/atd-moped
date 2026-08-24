@@ -158,7 +158,7 @@ def file_download(path) -> redirect:
     :return redirect:
     """
     if not is_valid_user(current_cognito_jwt):
-        jsonify({"status": "error", "message": "Not authorized"}), 403
+        return jsonify({"status": "error", "message": "Not authorized"}), 403
 
     url = aws_s3_client.generate_presigned_url(
         ExpiresIn=60,  # seconds
