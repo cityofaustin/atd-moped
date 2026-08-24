@@ -1,5 +1,13 @@
-import React, { useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
+import { ApolloQueryResult } from "@apollo/client";
 import { Divider, Stack, IconButton } from "@mui/material";
+import {
+  GridCellParams,
+  GridColDef,
+  GridRenderCellParams,
+  GridRowId,
+  GridRowModesModel,
+} from "@mui/x-data-grid-pro";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -21,166 +29,164 @@ import {
   DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
+import {
+  GetCombinedProjectFundingQuery,
+  GetFundingLookupsQuery,
+  AddProjectFundingMutationVariables,
+  UpdateProjectFundingMutationVariables,
+} from "src/gql/graphql";
+import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
-/** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
- * @param {Array} fundingRecords - array of funding records from the database
- * @param {Object} lookupData - object containing lookup arrays from the database
- * @return {Array} - array of transformed funding records for data grid
+export type FundingRowsFromQuery =
+  GetCombinedProjectFundingQuery["combined_project_funding_view"];
+
+export type FundingRowFromQuery = FundingRowsFromQuery[number];
+
+/** Override types for DataGrid rows to workaround combined DB view id calculation being possibly null
+ * and other field type overrides. See inline comments for each field for more details.
  */
-export const transformDatabaseToGrid = (fundingRecords, lookupData) => {
-  const {
-    moped_fund_sources,
-    moped_fund_programs,
-    moped_fund_status: moped_fund_statuses,
-  } = lookupData;
+type SavedFundingRow = Omit<
+  FundingRowFromQuery,
+  "id" | "__typename" | "fdu"
+> & {
+  /** Override id type since source columns are not-nullable but codegen types DB view id as string | null */
+  id: string;
+  /** Override fdu type to be object for autocomplete and dependent field population */
+  fdu: GridFDUOption | null;
+  /** Override isNew to be false for saved records since we use this to determine if a record is a draft or saved record */
+  isNew: false;
+};
 
+type DraftFundingRow = {
+  id: string;
+  proj_funding_id: string; // UUID before save
+  moped_fund_source: null;
+  moped_fund_program: null;
+  moped_fund_status: null;
+  fdu: null;
+  unit_long_name: null;
+  ecapris_funding_id: null;
+  funding_amount: null;
+  funding_description: null;
+  is_manual: true;
+  isNew: true;
+};
+
+export type FundingRowForGrid = SavedFundingRow | DraftFundingRow;
+
+type GridFDUOption = {
+  fdu: string;
+  ecapris_funding_id: number | null;
+  ecapris_subproject_id: string | null;
+  unit_long_name: string | null;
+  amount: number | null;
+  funding_source_id: number | null;
+  funding_program_id: number | null;
+  moped_fund_source: FundingRowFromQuery["moped_fund_source"] | null;
+  moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
+};
+
+/** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
+ * @param fundingRecords - array of funding records from the database
+ * @return transformed funding records for data grid
+ */
+export const transformDatabaseToGrid = (
+  fundingRecords: FundingRowsFromQuery
+): FundingRowForGrid[] => {
   return fundingRecords.map((record) => {
-    // Reconstruct lookup objects for editing in autocomplete components
-    const fund_source = record.funding_source_id
-      ? moped_fund_sources.find(
-          (s) => s.funding_source_id === record.funding_source_id
-        )
-      : null;
+    const { id, __typename, fdu, ...rest } = record;
 
-    const fund_program = record.funding_program_id
-      ? moped_fund_programs.find(
-          (p) => p.funding_program_id === record.funding_program_id
-        )
-      : null;
-
-    const fund_status = record.funding_status_id
-      ? moped_fund_statuses.find(
-          (s) => s.funding_status_id === record.funding_status_id
-        )
-      : null;
-
-    const fduOption = record.fdu
+    // Match what FDU autocomplete uses for options and to populate dependent fields
+    const fduAsOption: GridFDUOption | null = fdu
       ? {
-          fdu: record.fdu,
-          ecapris_funding_id: record.ecapris_funding_id,
-          unit_long_name: record.unit_long_name,
+          fdu,
+          ecapris_funding_id: rest.ecapris_funding_id,
+          ecapris_subproject_id: rest.ecapris_subproject_id,
+          unit_long_name: rest.unit_long_name,
+          amount: rest.funding_amount,
+          funding_source_id: rest.moped_fund_source?.funding_source_id ?? null,
+          funding_program_id:
+            rest.moped_fund_program?.funding_program_id ?? null,
+          moped_fund_source: rest.moped_fund_source,
+          moped_fund_program: rest.moped_fund_program,
         }
       : null;
 
-    // Remove fields unneeded in the data grid row
-    const {
-      funding_source_id,
-      funding_status_id,
-      funding_program_id,
-      fdu,
-      ecapris_funding_id,
-      ...tableRecord
-    } = record;
-
-    // Return new record with lookup objects for autocomplete components
     return {
-      ...tableRecord,
-      fund_source,
-      fund_program,
-      fund_status,
-      fdu: fduOption,
+      ...rest,
+      id: id ?? "",
+      fdu: fduAsOption,
+      isNew: false,
     };
   });
 };
 
-/** Transforms DataGrid row to database funding record format for mutations
- * @param {Object} gridRecord - DataGrid row object
- * @return {Object} - transformed funding record for database mutation
- */
-export const transformGridToDatabase = (gridRecord) => {
-  // Extract the lookup ids from the selected lookup objects
-  const funding_source_id = gridRecord.fund_source
-    ? gridRecord.fund_source.funding_source_id
-    : null;
-  const funding_program_id = gridRecord.fund_program
-    ? gridRecord.fund_program.funding_program_id
-    : null;
-  const funding_status_id = gridRecord.fund_status
-    ? gridRecord.fund_status.funding_status_id
-    : null;
-  const fdu = gridRecord.fdu ? gridRecord.fdu.fdu : null;
-  const unit_long_name = gridRecord.fdu ? gridRecord.fdu.unit_long_name : null;
-  const ecapris_funding_id = gridRecord.fdu
-    ? gridRecord.fdu.ecapris_funding_id
-    : null;
+/** Transforms grid row to insert mutation payload */
+export const transformGridToInsertInput = (
+  row: FundingRowForGrid
+): AddProjectFundingMutationVariables["fundingObjects"] => {
+  // If user changes the autopopulated FDU amount from eCAPRIS while drafting, record begins as override
+  const shouldUseEcaprisAmount =
+    row.fdu !== null && row.funding_amount === row.fdu.amount;
 
-  const ecapris_subproject_id = gridRecord.fdu
-    ? gridRecord.fdu.ecapris_subproject_id
-    : null;
-
-  const fdu_record_amount = gridRecord.fdu ? gridRecord.fdu.amount : null;
-  // if the amount on the fdu matches what we are saving, its not an override
-  const should_use_ecapris_amount =
-    fdu_record_amount === Number(gridRecord.funding_amount);
-
-  // the database expects the funding amount to be an Int or null. An empty string will result in an error, coerce to null
-  const funding_amount = gridRecord.funding_amount
-    ? gridRecord.funding_amount
-    : null;
-
-  const {
-    id,
-    __typename,
-    is_synced_from_ecapris,
-    status_name,
-    program_name,
-    source_name,
-    fund_program,
-    fund_source,
-    fund_status,
-    proj_funding_id,
-    isNew,
-    is_manual,
-    ecapris_funding_files,
-    moped_funding_files,
-    ecapris_funding,
-    ...databaseFields
-  } = gridRecord;
-
-  // Return the database fields along with the extracted lookup ids
   return {
-    ...databaseFields,
-    funding_source_id,
-    funding_program_id,
-    // If no new funding status is selected, the default should be used
-    funding_status_id: funding_status_id ? funding_status_id : 1,
-    fdu,
-    unit_long_name,
-    ecapris_funding_id,
-    ecapris_subproject_id,
-    should_use_ecapris_amount,
-    funding_amount,
+    ecapris_funding_id: row.fdu?.ecapris_funding_id ?? null,
+    ecapris_subproject_id: row.fdu?.ecapris_subproject_id ?? null,
+    fdu: row.fdu?.fdu ?? null,
+    unit_long_name: row.fdu?.unit_long_name ?? null,
+    funding_amount: row.funding_amount,
+    funding_description: row.funding_description,
+    funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
+    funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
+    funding_status_id: row.moped_fund_status?.funding_status_id ?? 1,
+    should_use_ecapris_amount: shouldUseEcaprisAmount,
+  };
+};
+
+/** Transforms grid row to update mutation payload */
+export const transformGridToUpdateInput = (
+  row: SavedFundingRow
+): Omit<UpdateProjectFundingMutationVariables, "proj_funding_id"> => {
+  return {
+    fdu: row.fdu?.fdu ?? null,
+    unit_long_name: row.fdu?.unit_long_name ?? null,
+    funding_amount: row.funding_amount || null,
+    funding_description: row.funding_description,
+    funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
+    funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
+    funding_status_id: row.moped_fund_status?.funding_status_id ?? 1, // Default status to 'Tentative'
+    should_use_ecapris_amount: row.should_use_ecapris_amount, // Set by override toggle
   };
 };
 
 // object to pass to the Fund column's LookupAutocomplete component
 const fduAutocompleteProps = {
-  getOptionLabel: (option) =>
+  getOptionLabel: (option: GridFDUOption) =>
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value, option) =>
-    value?.ecapris_funding_id === option?.ecapris_funding_id,
+  isOptionEqualToValue: (value: GridFDUOption, option: GridFDUOption) =>
+    value.ecapris_funding_id === option.ecapris_funding_id,
 };
 
 const fduAutocompleteDependentFields = [
   {
     fieldName: "unit_long_name",
-    setFieldValue: (newValue) => newValue?.unit_long_name,
+    setFieldValue: (newValue: GridFDUOption) => newValue.unit_long_name,
   },
   {
-    fieldName: "fund_source",
-    setFieldValue: (newValue) => newValue?.moped_fund_source,
+    fieldName: "moped_fund_source",
+    setFieldValue: (newValue: GridFDUOption) => newValue.moped_fund_source,
   },
   {
-    fieldName: "fund_program",
-    setFieldValue: (newValue) => newValue?.moped_fund_program,
+    fieldName: "moped_fund_program",
+    setFieldValue: (newValue: GridFDUOption) => newValue.moped_fund_program,
   },
   {
     fieldName: "funding_amount",
-    setFieldValue: (newValue) => newValue?.amount,
+    setFieldValue: (newValue: GridFDUOption) => newValue.amount,
   },
 ];
 
-export const isCellEditable = (params) => {
+export const isCellEditable = (params: GridCellParams) => {
   if (params.row.is_synced_from_ecapris) {
     return false;
   } else {
@@ -195,7 +201,12 @@ export const isCellEditable = (params) => {
 };
 
 // creates object needed in the file attachement mutation
-export const createFundingFileConnectionData = (fundingRecord, projectId) => {
+export const createFundingFileConnectionData = (
+  fundingRecord: FundingRowForGrid,
+  projectId: number
+) => {
+  if (fundingRecord.isNew) return; // Can't attach files to draft records
+
   const entityId = fundingRecord?.proj_funding_id;
   const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
   const addFileConnection = isSyncedFromECapris
@@ -221,9 +232,24 @@ export const createFundingFileConnectionData = (fundingRecord, projectId) => {
   };
 };
 
-/** Hook that provides memoized column settings */
+type UseColumnsProps = {
+  dataLookups: GetFundingLookupsQuery | undefined;
+  rowModesModel: GridRowModesModel;
+  handleDeleteOpen: (id: GridRowId) => () => void;
+  handleSaveClick: (id: GridRowId) => () => void;
+  handleCancelClick: (id: GridRowId) => () => void;
+  handleEditClick: (id: GridRowId) => () => void;
+  handleFileAttachmentClick: (id: GridRowId) => () => void;
+  setOverrideFundingRecord: Dispatch<SetStateAction<FundingRowForGrid | null>>;
+  usingShiftKey: boolean;
+  logUserEvent: (event: string) => void;
+  refetch: () => Promise<ApolloQueryResult<GetCombinedProjectFundingQuery>>;
+  handleSnackbar: HandleSnackbar;
+  shouldSyncEcaprisFunding: boolean;
+  projectECaprisSubprojectId: string | null;
+};
+
 export const useColumns = ({
-  dataProjectFunding,
   dataLookups,
   rowModesModel,
   handleDeleteOpen,
@@ -238,16 +264,19 @@ export const useColumns = ({
   refetch,
   shouldSyncEcaprisFunding,
   projectECaprisSubprojectId,
-}) =>
-  useMemo(() => {
+}: UseColumnsProps): GridColDef<FundingRowForGrid>[] =>
+  useMemo((): GridColDef<FundingRowForGrid>[] => {
     return [
       {
         headerName: "FDU",
         field: "fdu",
         width: 140,
         editable: true,
-        renderCell: ({ row, value }) =>
-          row.is_synced_from_ecapris ? (
+        renderCell: ({
+          row,
+          value,
+        }: GridRenderCellParams<FundingRowForGrid, GridFDUOption | null>) => {
+          return !row.isNew && row.is_synced_from_ecapris ? (
             <Stack
               direction="column"
               spacing={0.5}
@@ -260,8 +289,10 @@ export const useColumns = ({
             </Stack>
           ) : (
             value?.fdu
-          ),
+          );
+        },
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"ecapris_funding"}
@@ -269,7 +300,6 @@ export const useColumns = ({
             fullWidthPopper={true}
             autocompleteProps={{
               ...fduAutocompleteProps,
-              value: props?.row?.fdu,
             }}
             dependentFieldsArray={fduAutocompleteDependentFields}
           />
@@ -282,56 +312,70 @@ export const useColumns = ({
         // during editing -- the input field is always disabled
         width: 175,
         renderEditCell: (props) => (
+          // @ts-expect-error ViewOnlyTextField to TS captured in #29928
           <ViewOnlyTextField
             {...props}
             value={props.row.unit_long_name}
             usingShiftKey={usingShiftKey}
             previousColumnField="fdu"
-            nextColumnField="fund_source"
+            nextColumnField="moped_fund_source"
           />
         ),
       },
       {
         headerName: "Source",
-        field: "fund_source",
+        field: "moped_fund_source",
         width: 180,
         editable: true,
-        valueFormatter: (value) => value?.funding_source_name,
-        renderCell: ({ row, value }) => (
-          <EcaprisOverridableCell
-            row={row}
-            ecaprisValue={row.ecapris_funding?.funding_source_id}
-            currentValue={row.fund_source?.funding_source_id}
-            displayValue={value?.funding_source_name}
-          />
-        ),
+        valueFormatter: (value: FundingRowFromQuery["moped_fund_source"]) =>
+          value?.funding_source_name,
+        renderCell: ({ row, value }) => {
+          if (row.isNew) return;
+
+          return (
+            <EcaprisOverridableCell
+              row={row}
+              ecaprisValue={row.ecapris_funding?.funding_source_id}
+              currentValue={row.moped_fund_source?.funding_source_id}
+              displayValue={value?.funding_source_name}
+            />
+          );
+        },
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
-            options={dataProjectFunding?.moped_fund_sources ?? []}
+            options={dataLookups?.moped_fund_sources ?? []}
             fullWidthPopper={true}
           />
         ),
       },
       {
         headerName: "Program",
-        field: "fund_program",
+        field: "moped_fund_program",
         width: 180,
         editable: true,
-        renderCell: ({ row, value }) => (
-          <EcaprisOverridableCell
-            row={row}
-            ecaprisValue={row.ecapris_funding?.funding_program_id}
-            currentValue={row.fund_program?.funding_program_id}
-            displayValue={value?.funding_program_name}
-          />
-        ),
+        valueFormatter: (value: FundingRowFromQuery["moped_fund_program"]) =>
+          value?.funding_program_name,
+        renderCell: ({ row, value }) => {
+          if (row.isNew) return;
+
+          return (
+            <EcaprisOverridableCell
+              row={row}
+              ecaprisValue={row.ecapris_funding?.funding_program_id}
+              currentValue={row.moped_fund_program?.funding_program_id}
+              displayValue={value?.funding_program_name}
+            />
+          );
+        },
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
-            options={dataProjectFunding?.moped_fund_programs ?? []}
+            options={dataLookups?.moped_fund_programs ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -345,16 +389,18 @@ export const useColumns = ({
       },
       {
         headerName: "Status",
-        field: "fund_status",
+        field: "moped_fund_status",
         editable: true,
         width: 100,
-        valueFormatter: (value) => value?.funding_status_name,
+        valueFormatter: (value: FundingRowFromQuery["moped_fund_status"]) =>
+          value?.funding_status_name,
         renderEditCell: (props) => (
+          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_status"}
             defaultValue={1}
-            options={dataProjectFunding?.moped_fund_status ?? []}
+            options={dataLookups?.moped_fund_status ?? []}
             fullWidthPopper={true}
           />
         ),
@@ -364,16 +410,20 @@ export const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
-        renderCell: ({ row, value }) => (
-          <EcaprisOverridableCell
-            row={row}
-            ecaprisValue={row.ecapris_funding?.app}
-            currentValue={row.funding_amount}
-            displayValue={
-              value === null ? null : currencyFormatter.format(value)
-            }
-          />
-        ),
+        renderCell: ({ row, value }) => {
+          if (row.isNew) return null;
+
+          return (
+            <EcaprisOverridableCell
+              row={row}
+              ecaprisValue={row.ecapris_funding?.app}
+              currentValue={row.funding_amount}
+              displayValue={
+                value === null ? null : currencyFormatter.format(value)
+              }
+            />
+          );
+        },
         preProcessEditCellProps: (params) => {
           return {
             ...params.props,
@@ -384,7 +434,6 @@ export const useColumns = ({
         valueFormatter: (value) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
-        type: "currency",
       },
       {
         headerName: "Files",
@@ -394,11 +443,13 @@ export const useColumns = ({
         editable: false,
         sortable: false,
         renderCell: ({ row }) => {
+          if (row.isNew) return null;
+
           const filesType = row.is_synced_from_ecapris
             ? "ecapris_funding_files"
             : "moped_funding_files";
-          if (!row?.[filesType]) {
-            return;
+          if (!row[filesType]) {
+            return null;
           }
           return (
             <Stack
@@ -412,6 +463,7 @@ export const useColumns = ({
                 return (
                   <AttachedFile
                     key={file.project_file_id}
+                    // @ts-expect-error Migrating ProjectFilesAttachmentDialog to TS captured in issue #29892
                     fileRecordId={file_record.id}
                     file={file}
                     refetch={refetch}
@@ -439,6 +491,23 @@ export const useColumns = ({
         width: 110,
         type: "actions",
         renderCell: ({ id, row }) => {
+          if (row.isNew || row.is_manual) {
+            return (
+              // @ts-expect-error Migrating IconButtonWithTooltip to TS captured in #29269
+              <DataGridActions
+                id={id}
+                rowModesModel={rowModesModel}
+                handleCancelClick={handleCancelClick}
+                handleDeleteOpen={handleDeleteOpen}
+                handleSaveClick={handleSaveClick}
+                handleEditClick={handleEditClick}
+                handleFileAttachmentClick={handleFileAttachmentClick}
+                editDisabled={false}
+                deleteDisabled={false}
+              />
+            );
+          }
+
           const doesFDUBelongToCurrentSubproject =
             row.ecapris_subproject_id === projectECaprisSubprojectId;
           const wouldDeletingRowRestoreSyncedRow =
@@ -450,19 +519,7 @@ export const useColumns = ({
                 ? "Switch off eCAPRIS sync to remove synced rows"
                 : null;
 
-          return row.is_manual ? (
-            <DataGridActions
-              id={id}
-              rowModesModel={rowModesModel}
-              handleCancelClick={handleCancelClick}
-              handleDeleteOpen={handleDeleteOpen}
-              handleSaveClick={handleSaveClick}
-              handleEditClick={handleEditClick}
-              handleFileAttachmentClick={handleFileAttachmentClick}
-              editDisabled={row.is_synced_from_ecapris}
-              deleteDisabled={row.is_synced_from_ecapris}
-            />
-          ) : (
+          return (
             <>
               <IconButton
                 aria-label="edit"
@@ -481,6 +538,7 @@ export const useColumns = ({
               >
                 <AttachFileOutlinedIcon />
               </IconButton>
+              {/* @ts-expect-error Migrating IconButtonWithTooltip to TS captured in #29269 */}
               <IconButtonWithTooltip
                 title={deleteTooltipMessage}
                 aria-label="delete"
@@ -496,7 +554,6 @@ export const useColumns = ({
       },
     ];
   }, [
-    dataProjectFunding,
     dataLookups,
     rowModesModel,
     handleDeleteOpen,

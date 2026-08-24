@@ -1,19 +1,27 @@
-import React from "react";
 import Grid from "@mui/material/Grid";
 import ProjectFundingTable from "src/views/projects/projectView/ProjectFunding/ProjectFundingTable";
 import ProjectWorkActivitiesTable from "src/views/projects/projectView/ProjectWorkActivity/ProjectWorkActivityTable";
-import { useParams } from "react-router-dom";
+import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
+import { ApolloQueryResult } from "@apollo/client";
+import { ProjectSummaryQuery } from "src/gql/graphql";
+
+interface ProjectFundingProps {
+  projectId: number;
+  handleSnackbar: HandleSnackbar;
+  refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  data: ProjectSummaryQuery;
+}
 
 const ProjectFunding = ({
+  projectId,
   handleSnackbar,
-  refetch: refetchProjectSummary,
+  refetch,
   data: projectData,
-}) => {
-  const { projectId } = useParams();
+}: ProjectFundingProps) => {
   const eCaprisSubprojectId =
-    projectData?.moped_project?.[0]?.ecapris_subproject_id ?? null;
+    projectData?.moped_project?.[0].ecapris_subproject_id ?? null;
   const shouldSyncEcaprisFunding =
-    projectData?.moped_project?.[0]?.should_sync_ecapris_funding ?? false;
+    projectData?.moped_project?.[0].should_sync_ecapris_funding ?? false;
 
   return (
     <Grid container spacing={4}>
@@ -21,13 +29,14 @@ const ProjectFunding = ({
         <ProjectFundingTable
           projectId={projectId}
           handleSnackbar={handleSnackbar}
-          refetchProjectSummary={refetchProjectSummary}
+          refetchProjectSummary={refetch}
           eCaprisSubprojectId={eCaprisSubprojectId}
           shouldSyncEcaprisFunding={shouldSyncEcaprisFunding}
         />
       </Grid>
       <Grid size={12}>
         <ProjectWorkActivitiesTable
+          // @ts-expect-error - Migrating work activities table is captured in issue #29951
           projectId={projectId}
           handleSnackbar={handleSnackbar}
         />

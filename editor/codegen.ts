@@ -8,7 +8,11 @@ const config: CodegenConfig = {
       },
     },
   },
-  documents: ["src/queries/project.js", "src/queries/components.js"],
+  documents: [
+    "src/queries/project.js",
+    "src/queries/components.js",
+    "src/queries/funding.js",
+  ],
   generates: {
     "./src/gql/": {
       preset: "client",
