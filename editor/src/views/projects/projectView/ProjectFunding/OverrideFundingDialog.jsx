@@ -8,7 +8,7 @@ const OverrideFundingDialog = ({
   setOverrideFundingRecord,
   handleSnackbar,
   projectId,
-  dataLookups,
+  dataProjectFunding,
 }) => {
   return (
     <FormDialog
@@ -23,7 +23,7 @@ const OverrideFundingDialog = ({
         setOverrideFundingRecord={setOverrideFundingRecord}
         projectId={projectId}
         handleClose={handleClose}
-        dataLookups={dataLookups}
+        dataProjectFunding={dataProjectFunding}
       />
     </FormDialog>
   );
