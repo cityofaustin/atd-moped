@@ -4,7 +4,6 @@ import { Divider, Stack, IconButton } from "@mui/material";
 import {
   GridCellParams,
   GridColDef,
-  GridRenderCellParams,
   GridRowId,
   GridRowModesModel,
 } from "@mui/x-data-grid-pro";
@@ -53,7 +52,7 @@ type SavedFundingRow = Omit<
   id: string;
   /** Override fdu type to be object for autocomplete and dependent field population */
   fdu: GridFDUOption | null;
-  /** Override isNew to be false for saved records since we use this to determine if a record is a draft or saved record */
+  /** Used to determine if a record is a draft (true) or saved record (false) */
   isNew: false;
 };
 
@@ -209,7 +208,7 @@ export const createFundingFileConnectionData = (
   fundingRecord: FundingRowForGrid,
   projectId: number
 ) => {
-  if (fundingRecord.isNew) return; // Can't attach files to draft records
+  if (fundingRecord.isNew) return null; // Can't attach files to draft records
 
   const entityId = fundingRecord?.proj_funding_id;
   const isSyncedFromECapris = fundingRecord?.is_synced_from_ecapris ?? false;
@@ -269,17 +268,16 @@ export const useColumns = ({
   shouldSyncEcaprisFunding,
   projectECaprisSubprojectId,
 }: UseColumnsProps): GridColDef<FundingRowForGrid>[] =>
-  useMemo((): GridColDef<FundingRowForGrid>[] => {
+  useMemo(() => {
     return [
       {
         headerName: "FDU",
         field: "fdu",
         width: 140,
         editable: true,
-        renderCell: ({
-          row,
-          value,
-        }: GridRenderCellParams<FundingRowForGrid, GridFDUOption | null>) => {
+        renderCell: ({ row }) => {
+          const fduValue = row.fdu?.fdu ?? null;
+
           return !row.isNew && row.is_synced_from_ecapris ? (
             <Stack
               direction="column"
@@ -288,11 +286,11 @@ export const useColumns = ({
                 alignItems: "flex-start",
               }}
             >
-              <span>{value?.fdu}</span>
+              <span>{fduValue}</span>
               <SecondaryInformationChip chipLabel="eCAPRIS" />
             </Stack>
           ) : (
-            value?.fdu
+            fduValue
           );
         },
         renderEditCell: (props) => (
@@ -333,15 +331,15 @@ export const useColumns = ({
         editable: true,
         valueFormatter: (value: FundingRowFromQuery["moped_fund_source"]) =>
           value?.funding_source_name,
-        renderCell: ({ row, value }) => {
-          if (row.isNew) return;
+        renderCell: ({ row }) => {
+          if (row.isNew) return null;
 
           return (
             <EcaprisOverridableCell
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_source_id}
               currentValue={row.moped_fund_source?.funding_source_id}
-              displayValue={value?.funding_source_name}
+              displayValue={row.moped_fund_source?.funding_source_name}
             />
           );
         },
@@ -362,15 +360,15 @@ export const useColumns = ({
         editable: true,
         valueFormatter: (value: FundingRowFromQuery["moped_fund_program"]) =>
           value?.funding_program_name,
-        renderCell: ({ row, value }) => {
-          if (row.isNew) return;
+        renderCell: ({ row }) => {
+          if (row.isNew) return null;
 
           return (
             <EcaprisOverridableCell
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_program_id}
               currentValue={row.moped_fund_program?.funding_program_id}
-              displayValue={value?.funding_program_name}
+              displayValue={row.moped_fund_program?.funding_program_name}
             />
           );
         },
@@ -414,8 +412,9 @@ export const useColumns = ({
         field: "funding_amount",
         width: 100,
         editable: true,
-        renderCell: ({ row, value }) => {
+        renderCell: ({ row }) => {
           if (row.isNew) return null;
+          const amount = row.funding_amount;
 
           return (
             <EcaprisOverridableCell
@@ -423,11 +422,12 @@ export const useColumns = ({
               ecaprisValue={row.ecapris_funding?.app}
               currentValue={row.funding_amount}
               displayValue={
-                value === null ? null : currencyFormatter.format(value)
+                amount === null ? null : currencyFormatter.format(amount)
               }
             />
           );
         },
+        // TODO: Extend preProcessEditCellProps with errorMessage when migrating DollarAmountIntegerField to TS captured in #30004
         preProcessEditCellProps: (params) => {
           return {
             ...params.props,
@@ -435,7 +435,7 @@ export const useColumns = ({
             errorMessage: outOfRangeErrorMessage,
           };
         },
-        valueFormatter: (value) =>
+        valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
       },

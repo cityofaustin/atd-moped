@@ -178,7 +178,7 @@ const ProjectFundingTable = ({
   };
 
   const handleDeleteOpen = useCallback(
-    (id: number) => () => {
+    (id: GridRowId) => () => {
       setIsDeleteConfirmationOpen(true);
       setDeleteConfirmationId(id);
     },
@@ -251,9 +251,9 @@ const ProjectFundingTable = ({
         unit_long_name: null,
         ecapris_funding_id: null,
         funding_amount: null,
+        isNew: true,
         proj_funding_id: id,
         is_manual: true,
-        isNew: true,
       } satisfies DraftFundingRow,
       ...oldRows,
     ]);
