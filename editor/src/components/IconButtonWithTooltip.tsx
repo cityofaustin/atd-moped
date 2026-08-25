@@ -14,11 +14,11 @@ interface IconButtonWithTooltipProps {
   /** aria-label for IconButton component */
   ariaLabel: string;
   /** children, expecting the icon to display in the IconButton */
-  children: ReactNode;
+  children?: ReactNode;
   /** if IconButton should be disabled, default is false */
-  disabled: boolean;
+  disabled?: boolean;
   /** IconButton size prop, defaults to small */
-  size: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large";
   /** additional props to be passed to Tooltip component (optional) */
   tooltipProps?: TooltipProps;
   /** additional props to be passed to IconButton component (optional)*/
