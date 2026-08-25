@@ -57,7 +57,7 @@ type SavedFundingRow = Omit<
   isNew: false;
 };
 
-type DraftFundingRow = {
+export type DraftFundingRow = {
   id: string;
   proj_funding_id: string; // UUID before save
   moped_fund_source: null;
@@ -167,22 +167,26 @@ const fduAutocompleteProps = {
     value.ecapris_funding_id === option.ecapris_funding_id,
 };
 
+// TODO: Update setFieldValue to accept generic or null when migrating LookupAutocompleteComponent to TS captured in #29927
 const fduAutocompleteDependentFields = [
   {
     fieldName: "unit_long_name",
-    setFieldValue: (newValue: GridFDUOption) => newValue.unit_long_name,
+    setFieldValue: (newValue: GridFDUOption | null) =>
+      newValue?.unit_long_name ?? null,
   },
   {
     fieldName: "moped_fund_source",
-    setFieldValue: (newValue: GridFDUOption) => newValue.moped_fund_source,
+    setFieldValue: (newValue: GridFDUOption | null) =>
+      newValue?.moped_fund_source ?? null,
   },
   {
     fieldName: "moped_fund_program",
-    setFieldValue: (newValue: GridFDUOption) => newValue.moped_fund_program,
+    setFieldValue: (newValue: GridFDUOption | null) =>
+      newValue?.moped_fund_program ?? null,
   },
   {
     fieldName: "funding_amount",
-    setFieldValue: (newValue: GridFDUOption) => newValue.amount,
+    setFieldValue: (newValue: GridFDUOption | null) => newValue?.amount ?? null,
   },
 ];
 

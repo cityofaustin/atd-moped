@@ -1,21 +1,25 @@
 import Grid from "@mui/material/Grid";
 import ProjectFundingTable from "src/views/projects/projectView/ProjectFunding/ProjectFundingTable";
 import ProjectWorkActivitiesTable from "src/views/projects/projectView/ProjectWorkActivity/ProjectWorkActivityTable";
-import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
-import { ApolloQueryResult } from "@apollo/client";
-import { ProjectSummaryQuery } from "src/gql/graphql";
+import type { ApolloQueryResult } from "@apollo/client";
+import type { ProjectSummaryQuery } from "src/gql/graphql";
+import type { HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 interface ProjectFundingProps {
+  /** The project ID for which funding information is being displayed. */
   projectId: number;
+  /** Function to handle snackbar notifications for user feedback. */
   handleSnackbar: HandleSnackbar;
+  /** Function to refetch the project summary data. */
   refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  /** The project summary data fetched. */
   data: ProjectSummaryQuery;
 }
 
 const ProjectFunding = ({
   projectId,
   handleSnackbar,
-  refetch,
+  refetch: refetchProjectSummary,
   data: projectData,
 }: ProjectFundingProps) => {
   const eCaprisSubprojectId =
@@ -29,7 +33,7 @@ const ProjectFunding = ({
         <ProjectFundingTable
           projectId={projectId}
           handleSnackbar={handleSnackbar}
-          refetchProjectSummary={refetch}
+          refetchProjectSummary={refetchProjectSummary}
           eCaprisSubprojectId={eCaprisSubprojectId}
           shouldSyncEcaprisFunding={shouldSyncEcaprisFunding}
         />

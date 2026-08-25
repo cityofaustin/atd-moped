@@ -14,6 +14,13 @@ type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
 /**
  * DataGridPro wrapper with default styles and props to ensure consistent styling and behavior of data grids
  * Pass the row type as a generic to preserve type safety through DataGrid callbacks.
+ *
+ * @example
+ * <MopedDataGrid<MyRowType>
+ *   rows={rows}
+ *   columns={columns}
+ *   getRowId={(row) => row.id}  // row is typed as MyRowType
+ * />
  */
 const MopedDataGrid = <R extends GridValidRowModel>({
   sx,

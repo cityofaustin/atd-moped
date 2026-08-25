@@ -4,6 +4,7 @@ import {
   type GridRowModesModel,
   type GridEventListener,
   type GridValidRowModel,
+  type GridRowEditStopParams,
 } from "@mui/x-data-grid-pro";
 import type { Dispatch, SetStateAction } from "react";
 
@@ -15,7 +16,7 @@ export const defaultEditColumnIconStyle = { fontSize: "24px" };
  * @param value - value of input
  * @returns True if the value is empty
  */
-export const isEmpty = (value: unknown) => {
+export const isEmpty = (value: unknown): boolean => {
   if (value === null || value === undefined) return true;
   // Strings
   if (typeof value === "string") return value.trim() === "";
@@ -41,7 +42,7 @@ export const handleRowEditStop =
     rows: R[],
     setRows: Dispatch<SetStateAction<R[]>>
   ): GridEventListener<"rowEditStop"> =>
-  (params, event) => {
+  (params: GridRowEditStopParams<R>, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
       return;

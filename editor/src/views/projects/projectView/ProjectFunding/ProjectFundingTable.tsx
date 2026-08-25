@@ -50,6 +50,7 @@ import {
   useColumns,
   createFundingFileConnectionData,
   FundingRowForGrid,
+  DraftFundingRow,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
@@ -253,7 +254,7 @@ const ProjectFundingTable = ({
         proj_funding_id: id,
         is_manual: true,
         isNew: true,
-      } satisfies FundingRowForGrid,
+      } satisfies DraftFundingRow,
       ...oldRows,
     ]);
     setRowModesModel((oldModel) => ({

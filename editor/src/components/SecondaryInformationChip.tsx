@@ -11,8 +11,6 @@ interface SecondaryInformationChipProps {
 
 /**
  * Shared component for secondary information
- * @param chipLabel - text displayed in chip
- * @param chipStyles - additional styles to apply to chip
  */
 const SecondaryInformationChip = ({
   chipLabel,
