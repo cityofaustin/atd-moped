@@ -16,7 +16,7 @@ interface IconButtonWithTooltipProps {
   /** children, expecting the icon to display in the IconButton */
   children?: ReactNode;
   /** if IconButton should be disabled, default is false */
-  disabled?: boolean;
+  disabled?: IconButtonOwnProps["disabled"];
   /** IconButton size prop, defaults to small */
   size?: IconButtonOwnProps["size"];
   /** additional props to be passed to Tooltip component (optional) */
