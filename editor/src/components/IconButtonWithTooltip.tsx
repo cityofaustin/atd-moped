@@ -10,7 +10,7 @@ interface IconButtonWithTooltipProps {
   /** text shown on the tooltip*/
   title: TooltipProps["title"];
   /** onClick function passed to IconButton */
-  onClick: () => void;
+  onClick: IconButtonProps["onClick"];
   /** aria-label for IconButton component */
   ariaLabel: string;
   /** children, expecting the icon to display in the IconButton */
