@@ -48,6 +48,7 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       getRowHeight={() => "auto"}
       hideFooter
       disableRowSelectionOnClick
+      // Show toolbar if a toolbar slot is provided
       showToolbar={!!props.slots?.toolbar}
       onProcessRowUpdateError={(error) => console.error(error)}
       {...props}

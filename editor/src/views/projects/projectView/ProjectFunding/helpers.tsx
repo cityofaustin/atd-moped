@@ -1,11 +1,11 @@
-import { Dispatch, SetStateAction, useMemo } from "react";
-import { ApolloQueryResult } from "@apollo/client";
+import { type Dispatch, type SetStateAction, useMemo } from "react";
+import { type ApolloQueryResult } from "@apollo/client";
 import { Divider, Stack, IconButton } from "@mui/material";
 import {
-  GridCellParams,
-  GridColDef,
-  GridRowId,
-  GridRowModesModel,
+  type GridCellParams,
+  type GridColDef,
+  type GridRowId,
+  type GridRowModesModel,
 } from "@mui/x-data-grid-pro";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -29,12 +29,12 @@ import {
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 import {
-  GetCombinedProjectFundingQuery,
-  GetFundingLookupsQuery,
-  AddProjectFundingMutationVariables,
-  UpdateProjectFundingMutationVariables,
+  type GetCombinedProjectFundingQuery,
+  type GetFundingLookupsQuery,
+  type AddProjectFundingMutationVariables,
+  type UpdateProjectFundingMutationVariables,
 } from "src/gql/graphql";
-import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
+import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 export type FundingRowsFromQuery =
   GetCombinedProjectFundingQuery["combined_project_funding_view"];
@@ -497,7 +497,7 @@ export const useColumns = ({
         renderCell: ({ id, row }) => {
           if (row.isNew || row.is_manual) {
             return (
-              // @ts-expect-error Migrating IconButtonWithTooltip to TS captured in #29269
+              // @ts-expect-error Migrating DataGridActions to TS captured in #30024
               <DataGridActions
                 id={id}
                 rowModesModel={rowModesModel}
@@ -542,7 +542,6 @@ export const useColumns = ({
               >
                 <AttachFileOutlinedIcon />
               </IconButton>
-              {/* @ts-expect-error Migrating IconButtonWithTooltip to TS captured in #29269 */}
               <IconButtonWithTooltip
                 title={deleteTooltipMessage}
                 ariaLabel="delete"

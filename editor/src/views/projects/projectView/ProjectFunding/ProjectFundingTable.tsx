@@ -1,17 +1,17 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { ApolloQueryResult, useQuery, useMutation } from "@apollo/client";
-import { ProjectSummaryQuery } from "src/gql/graphql";
+import { type ApolloQueryResult, useQuery, useMutation } from "@apollo/client";
+import { type ProjectSummaryQuery } from "src/gql/graphql";
 import isEqual from "lodash.isequal";
 
 import { Button, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   GridRowModes,
-  GridEventListener,
+  type GridEventListener,
   useGridApiRef,
   gridColumnFieldsSelector,
   GridRowId,
-  GridRowModesModel,
+  type GridRowModesModel,
 } from "@mui/x-data-grid-pro";
 import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
 import { v4 as uuidv4 } from "uuid";
@@ -49,17 +49,22 @@ import {
   isCellEditable,
   useColumns,
   createFundingFileConnectionData,
-  FundingRowForGrid,
-  DraftFundingRow,
+  type FundingRowForGrid,
+  type DraftFundingRow,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
-import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
+import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 interface ProjectFundingTableProps {
+  /** The project ID for which to display funding. */
   projectId: number;
+  /** Function to handle snackbar notifications for user feedback. */
   handleSnackbar: HandleSnackbar;
+  /** Function to refetch the project summary data. */
   refetchProjectSummary: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  /** The eCAPRIS subproject ID associated with the project, if any. */
   eCaprisSubprojectId: string | null;
+  /** Whether to sync eCAPRIS funding controlled on the project level. */
   shouldSyncEcaprisFunding: boolean;
 }
 
