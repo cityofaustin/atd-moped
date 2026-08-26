@@ -1,15 +1,14 @@
-
 import type { ReactNode } from "react";
 import {
   Tooltip,
-  TooltipProps,
   IconButton,
-  IconButtonOwnProps,
+  type TooltipProps,
+  type IconButtonOwnProps,
 } from "@mui/material";
 
 interface IconButtonWithTooltipProps {
   /** text shown on the tooltip*/
-  title: string;
+  title: TooltipProps["title"];
   /** onClick function passed to IconButton */
   onClick: () => void;
   /** aria-label for IconButton component */
@@ -19,7 +18,7 @@ interface IconButtonWithTooltipProps {
   /** if IconButton should be disabled, default is false */
   disabled?: boolean;
   /** IconButton size prop, defaults to small */
-  size?: "small" | "medium" | "large";
+  size?: IconButtonOwnProps["size"];
   /** additional props to be passed to Tooltip component (optional) */
   tooltipProps?: TooltipProps;
   /** additional props to be passed to IconButton component (optional)*/
