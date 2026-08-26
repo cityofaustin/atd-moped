@@ -3,7 +3,7 @@ import {
   Tooltip,
   IconButton,
   type TooltipProps,
-  type IconButtonOwnProps,
+  type IconButtonProps,
 } from "@mui/material";
 
 interface IconButtonWithTooltipProps {
@@ -16,13 +16,13 @@ interface IconButtonWithTooltipProps {
   /** children, expecting the icon to display in the IconButton */
   children?: ReactNode;
   /** if IconButton should be disabled, default is false */
-  disabled?: IconButtonOwnProps["disabled"];
+  disabled?: IconButtonProps["disabled"];
   /** IconButton size prop, defaults to small */
-  size?: IconButtonOwnProps["size"];
+  size?: IconButtonProps["size"];
   /** additional props to be passed to Tooltip component (optional) */
   tooltipProps?: TooltipProps;
   /** additional props to be passed to IconButton component (optional)*/
-  iconButtonProps?: IconButtonOwnProps;
+  iconButtonProps?: IconButtonProps;
 }
 
 const IconButtonWithTooltip = ({
