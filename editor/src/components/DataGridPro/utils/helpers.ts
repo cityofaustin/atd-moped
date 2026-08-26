@@ -38,7 +38,7 @@ export const isEmpty = (value: unknown): boolean => {
  * @param setRows - The rows state setter
  */
 export const handleRowEditStop =
-  <R extends GridValidRowModel & { id: string | number; isNew?: boolean }>(
+  <R extends GridValidRowModel & { id: string | number; isNew: boolean }>(
     rows: R[],
     setRows: Dispatch<SetStateAction<R[]>>
   ): GridEventListener<"rowEditStop"> =>
