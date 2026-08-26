@@ -545,7 +545,7 @@ export const useColumns = ({
               {/* @ts-expect-error Migrating IconButtonWithTooltip to TS captured in #29269 */}
               <IconButtonWithTooltip
                 title={deleteTooltipMessage}
-                aria-label="delete"
+                ariaLabel="delete"
                 iconButtonProps={{ sx: { color: "inherit", padding: "5px" } }}
                 disabled={!!row.is_synced_from_ecapris}
                 onClick={handleDeleteOpen(id)}
