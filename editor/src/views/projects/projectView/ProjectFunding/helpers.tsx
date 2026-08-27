@@ -125,15 +125,21 @@ export const transformGridToInsertInput = (
   row: FundingRowForGrid
 ): AddProjectFundingMutationVariables["fundingObjects"] => {
   // If user changes the autopopulated FDU amount from eCAPRIS while drafting, record begins as override
+  // TODO: Remove type coercion when DollarAmountIntegerField migrates to TS (#30004)
+  const rawAmount = row.funding_amount as number | string | null;
+  const fundingAmount =
+    rawAmount === null || rawAmount === "" ? null : Number(rawAmount);
   const shouldUseEcaprisAmount =
-    row.fdu !== null && row.funding_amount === row.fdu.amount;
+    row.fdu !== null &&
+    fundingAmount !== null &&
+    row.fdu.amount === fundingAmount;
 
   return {
     ecapris_funding_id: row.fdu?.ecapris_funding_id ?? null,
     ecapris_subproject_id: row.fdu?.ecapris_subproject_id ?? null,
     fdu: row.fdu?.fdu ?? null,
     unit_long_name: row.fdu?.unit_long_name ?? null,
-    funding_amount: row.funding_amount,
+    funding_amount: fundingAmount,
     funding_description: row.funding_description,
     funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
     funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
