@@ -384,7 +384,7 @@ const ProjectFundingTable = ({
   const processRowUpdate = (
     updatedRow: FundingRowForGrid,
     originalRow: FundingRowForGrid
-  ) => {
+  ): Promise<FundingRowForGrid> => {
     if (updatedRow.isNew) {
       const insertMutationData = transformGridToInsertInput(updatedRow);
 
@@ -403,15 +403,18 @@ const ProjectFundingTable = ({
               response.data?.insert_moped_proj_funding?.returning[0]
                 .proj_funding_id;
 
-            return { ...updatedRow, proj_funding_id: record_id };
-          })
-          .then(() => {
-            refetch();
-            handleSnackbar(true, "Funding source added", "success");
+            return {
+              ...updatedRow,
+              proj_funding_id: String(record_id),
+            };
           })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-          .then(() => updatedRow)
+          .then((row) => {
+            refetch();
+            handleSnackbar(true, "Funding source added", "success");
+            return row;
+          })
           .catch((error) => {
             handleSnackbar(true, "Error adding funding source", "error", error);
             return originalRow;
@@ -423,7 +426,8 @@ const ProjectFundingTable = ({
       if (!hasRowChanged) {
         return Promise.resolve(updatedRow);
       } else {
-        if (updatedRow.proj_funding_id === null) return updatedRow;
+        if (updatedRow.proj_funding_id === null)
+          return Promise.resolve(updatedRow);
         const updateMutationData = transformGridToUpdateInput(updatedRow);
 
         return (
