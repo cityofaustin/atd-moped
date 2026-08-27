@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { NavLink as RouterLink, useLocation } from "react-router-dom";
+import { NavLink as RouterLink, useLocation } from "react-router";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";

@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import ProjectSummaryMap from "src/views/projects/projectView/ProjectSummary/ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "src/views/projects/projectView/ProjectSummary/ProjectSummaryStatusUpdate";

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useMutation } from "@apollo/client";
 import FormDialog from "src/components/FormDialog";
 import SaveUserViewForm from "./SaveUserViewForm";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { ADD_USER_SAVED_VIEW } from "src/queries/userSavedViews";
 
 const SaveUserViewModal = ({

@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import Box, { BoxProps } from "@mui/material/Box";
+import Box, { type BoxProps } from "@mui/material/Box";
 import { useDocumentTitle } from "src/utils/documentTitle";
 
 interface PageProps extends BoxProps {

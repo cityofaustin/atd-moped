@@ -1,11 +1,11 @@
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { ApolloQueryResult, useMutation } from "@apollo/client";
+import { type ApolloQueryResult, useMutation } from "@apollo/client";
 import { useSessionDatabaseData } from "src/auth/user";
 import { PROJECT_FOLLOW, PROJECT_UNFOLLOW } from "src/queries/project";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
-import { ProjectSummaryQuery } from "src/gql/graphql";
-import { HandleSnackbar } from "src/components/useFeedbackSnackbar";
+import { type ProjectSummaryQuery } from "src/gql/graphql";
+import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 interface ProjectFollowButtonProps {
   /** The id of the current project to follow/unfollow */
@@ -72,7 +72,6 @@ const ProjectFollowButton = ({
   };
 
   return (
-    // @ts-expect-error - IconButtonWithTooltip needs to be converted to .tsx in issue #29269
     <IconButtonWithTooltip
       title={isFollowing ? "Unfollow" : "Follow"}
       onClick={() => handleFollowProject()}
