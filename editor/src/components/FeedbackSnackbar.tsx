@@ -1,18 +1,24 @@
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Snackbar, type SnackbarProps } from "@mui/material";
+import type {
+  HandleSnackbarClose,
+  SnackbarState,
+} from "src/components/useFeedbackSnackbar";
 
-/**
- * A feedback summary snackbar to show on success or error events
- * @param {Object} snackbarState - snackbar state object: { open, message, severity }
- * @param {function} handleSnackbarClose - Callback function on snackbar close
- * @param {Number} autoHideDuration - Duration in milliseconds (default: 5000 milliseconds--for five seconds)
- * @returns {JSX.Element}
- * @constructor
- */
+/** A feedback summary snackbar to show on success or error events */
+interface FeedbackSnackbarProps {
+  /** snackbar state object: { open, message, severity } */
+  snackbarState: SnackbarState;
+  /** Callback function on snackbar close */
+  handleSnackbarClose: HandleSnackbarClose;
+  /** Duration in milliseconds (default: 5000) */
+  autoHideDuration?: SnackbarProps["autoHideDuration"];
+}
+
 const FeedbackSnackbar = ({
   snackbarState,
   handleSnackbarClose,
   autoHideDuration = 5000,
-}) => {
+}: FeedbackSnackbarProps) => {
   return (
     <Snackbar
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -21,7 +27,10 @@ const FeedbackSnackbar = ({
       key={"datatable-snackbar"}
       autoHideDuration={autoHideDuration}
     >
-      <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+      <Alert
+        onClose={handleSnackbarClose}
+        severity={snackbarState.severity || undefined}
+      >
         {snackbarState.message}
       </Alert>
     </Snackbar>

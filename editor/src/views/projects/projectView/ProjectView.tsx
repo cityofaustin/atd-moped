@@ -624,7 +624,6 @@ const ProjectView = () => {
           )}
         </Page>
       )}
-      {/* @ts-expect-error - FeedbackSnackbar needs to be converted to .tsx in issue #29270 */}
       <FeedbackSnackbar
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}
