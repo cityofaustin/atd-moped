@@ -1,34 +1,48 @@
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import {
+  DataGridPro,
+  type DataGridProProps,
+  type GridValidRowModel,
+} from "@mui/x-data-grid-pro";
+import type { SxProps, Theme } from "@mui/material";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+
+type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
+  /** Optional style overrides merged with the default DataGrid style. */
+  sx?: SxProps<Theme>;
+};
 
 /**
  * DataGridPro wrapper with default styles and props to ensure consistent styling and behavior of data grids
- * @param {object} sx - additional style overrides to be applied on top of default styles, optional
- * @param {object} props - other props to be passed to DataGridPro component
- * @returns {JSX.Element}
+ * Pass the row type as a generic to preserve type safety through DataGrid callbacks.
+ *
+ * @example
+ * <MopedDataGrid<MyRowType>
+ *   rows={rows}
+ *   columns={columns}
+ *   getRowId={(row) => row.id}  // row is typed as MyRowType
+ * />
  */
-const MopedDataGrid = ({ sx, slotProps = {}, ...props }) => {
-  // TO DO: refactor the functions below before upgrading to MUI v9
-  const mergedRootSx = {
+const MopedDataGrid = <R extends GridValidRowModel>({
+  sx,
+  slotProps = {},
+  ...props
+}: MopedDataGridProps<R>) => {
+  const mergedSx = {
     ...dataGridProStyleOverrides,
     ...sx,
-    ...(slotProps.root?.sx || {}),
   };
 
   const mergedSlotProps = {
     ...slotProps,
     loadingOverlay: {
-      variant: "circular-progress",
-      noRowsVariant: "circular-progress",
-    },
-    root: {
-      ...(slotProps.root || {}),
-      sx: mergedRootSx,
+      variant: "circular-progress" as const,
+      noRowsVariant: "circular-progress" as const,
     },
   };
 
   return (
-    <DataGridPro
+    <DataGridPro<R>
+      sx={mergedSx}
       slotProps={mergedSlotProps}
       density="comfortable"
       getRowHeight={() => "auto"}
