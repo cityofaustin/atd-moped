@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useRoutes } from "react-router-dom";
+import { useRoutes } from "react-router";
 import { ThemeProvider } from "@mui/material";
 import { StyledEngineProvider } from '@mui/material/styles';
 import GlobalStyles from "@mui/material/GlobalStyles";

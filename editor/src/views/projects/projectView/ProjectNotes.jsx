@@ -16,7 +16,7 @@ import {
 
 import { useSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 

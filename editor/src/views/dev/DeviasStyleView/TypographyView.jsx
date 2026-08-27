@@ -1,6 +1,6 @@
 import React from "react";
 import { Paper, Typography, Box } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 const TypographyView = () => {
   return (
