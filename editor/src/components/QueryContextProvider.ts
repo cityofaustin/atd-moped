@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { DocumentNode } from "@apollo/client";
+import { type DocumentNode } from "@apollo/client";
 
 interface ProjectListViewQueryContextType {
   listViewQuery: DocumentNode | null;

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { AlertProps } from "@mui/material";
+import { type AlertProps } from "@mui/material";
 
 interface SnackbarState {
   /** Whether the snackbar is open */
