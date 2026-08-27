@@ -5,7 +5,7 @@ import {
   useParams,
   useSearchParams,
   useLocation,
-} from "react-router-dom";
+} from "react-router";
 import { ErrorBoundary } from "react-error-boundary";
 
 import {

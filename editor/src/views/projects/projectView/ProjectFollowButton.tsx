@@ -72,7 +72,6 @@ const ProjectFollowButton = ({
   };
 
   return (
-    // @ts-expect-error - IconButtonWithTooltip needs to be converted to .tsx in issue #29269
     <IconButtonWithTooltip
       title={isFollowing ? "Unfollow" : "Follow"}
       onClick={() => handleFollowProject()}
