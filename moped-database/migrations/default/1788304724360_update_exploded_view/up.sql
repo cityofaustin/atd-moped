@@ -352,5 +352,3 @@ LATERAL st_dump (st_geomfromgeojson (comp_geography.geometry)) dump (path, geom)
 WHERE mpc.is_deleted = false
 AND mp.is_deleted = false
 AND st_geometrytype (st_geomfromgeojson (comp_geography.geometry)) = 'ST_MultiPoint'::text;
-
-AND st_geometrytype (st_geomfromgeojson (comp_geography.geometry)) = 'ST_MultiPoint'::text;
