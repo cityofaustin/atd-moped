@@ -160,7 +160,7 @@ React app
 
 #### Dependencies (combined_project_funding_view)
 
-component_arcgis_online_view, exploded_component_arcgis_online_view
+None
 
 #### Summary (combined_project_funding_view)
 
