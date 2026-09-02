@@ -6581,6 +6581,7 @@ export type ProjectSummaryQuery = {
     } | null;
     moped_proj_phases: Array<{
       __typename: "moped_proj_phases";
+      project_phase_id: number;
       moped_phase: {
         __typename: "moped_phases";
         phase_id: number;
@@ -11419,6 +11420,10 @@ export const ProjectSummaryDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_phase_id" },
+                      },
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "moped_phase" },

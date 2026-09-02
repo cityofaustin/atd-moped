@@ -61,6 +61,7 @@ import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import ProjectTimelineLink from "src/components/ProjectTimelineLink";
 
 interface DialogState {
   title: React.ReactNode;
@@ -407,10 +408,12 @@ const ProjectView = () => {
                           }}
                         >
                           <Box>
-                            <ProjectStatusBadge
-                              phaseKey={currentPhase?.phase_key ?? ""}
-                              phaseName={currentPhase?.phase_name ?? ""}
-                            />
+                            <ProjectTimelineLink projectId={projectId} currentPhase={currentPhase} currentPhaseId={data?.moped_project?.[0]?.moped_proj_phases?.[0]?.project_phase_id}>
+                              <ProjectStatusBadge
+                                phaseKey={currentPhase?.phase_key ?? ""}
+                                phaseName={currentPhase?.phase_name ?? ""}
+                              />
+                            </ProjectTimelineLink>
                           </Box>
                           <Box>
                             <ProjectFollowButton
