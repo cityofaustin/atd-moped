@@ -23,7 +23,7 @@ React app, Power BI dataflow
 
 #### Dependencies
 
-current_phase_view, combined_project_funding_view
+current_phase_view, combined_project_funding_view, combined_project_notes_view
 
 #### Summary
 
