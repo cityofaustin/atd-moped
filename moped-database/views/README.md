@@ -23,11 +23,21 @@ React app, Power BI dataflow
 
 #### Dependencies
 
-current_phase_view
+current_phase_view, combined_project_funding_view, combined_project_notes_view
 
 #### Summary
 
 Lists projects with joined data needed to display the project list view in the Moped application.
+
+### component_geography_view
+
+#### Usage (component_geography_view)
+
+AGOL ETL via component_arcgis_online_view and exploded_component_arcgis_online_view. This view pulls the geography CTE needed by both AGOL DB views to prevent the exploded view from needing to hit the extra table scans in component_arcgis_online_view which bottlenecked the full replace of the AGOL dataset.
+
+#### Dependencies (component_geography_view)
+
+None
 
 ### component_arcgis_online_view
 
@@ -37,7 +47,7 @@ ArcGIS Online ETL to populate feature service, Power BI
 
 #### Dependencies (component_arcgis_online_view)
 
-project_list_view
+project_list_view, component_geography_view, current_phase_view
 
 #### Summary (component_arcgis_online_view)
 
@@ -51,7 +61,7 @@ AGOL ETL
 
 #### Dependencies (exploded_component_arcgis_online_view)
 
-project_list_view, component_arcgis_online_view
+component_geography_view
 
 #### Summary (exploded_component_arcgis_online_view)
 
@@ -150,7 +160,7 @@ React app
 
 #### Dependencies (combined_project_funding_view)
 
-project_list_view, component_arcgis_online_view, exploded_component_arcgis_online_view
+None
 
 #### Summary (combined_project_funding_view)
 
