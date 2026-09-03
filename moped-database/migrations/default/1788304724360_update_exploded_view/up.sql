@@ -89,8 +89,6 @@ FROM (
 ) feature_union
 GROUP BY feature_union.component_id;
 
--- Most recent migration: moped-database/migrations/default/1786737355022_fix_tz_bug/up.sql
-
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
 WITH work_types AS (
     SELECT

@@ -331,8 +331,6 @@ LEFT JOIN LATERAL
     ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
 
--- Most recent migration: moped-database/migrations/default/1786737355022_fix_tz_bug/up.sql
-
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS
 SELECT
     component_arcgis_online_view.project_id,
@@ -346,4 +344,3 @@ FROM component_arcgis_online_view
 ,
 LATERAL st_dump (st_geomfromgeojson (component_arcgis_online_view.geometry)) dump (path, geom)
 WHERE st_geometrytype (st_geomfromgeojson (component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;
-
