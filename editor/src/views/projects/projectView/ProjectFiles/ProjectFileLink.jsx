@@ -44,7 +44,7 @@ const ProjectFileLink = ({
         }}
         title={displayName}
       >
-        {fileName}
+        {fileName || displayName}
       </Link>
     );
   }
