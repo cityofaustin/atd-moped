@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
@@ -7,10 +7,11 @@ import { createBugReportLink } from "src/utils/urls";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { Box, Grid, Stack, Typography } from "@mui/material";
-import { useMutation } from "@apollo/client";
+import { useMutation, type ApolloQueryResult } from "@apollo/client";
 import { useUser } from "src/auth/user";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
+import { type ProjectSummaryQuery, type GetFundingLookupsQuery } from "src/gql/graphql";
 
 import {
   fieldBox,
@@ -25,30 +26,36 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 
+type SubprojectFundingOptionType = GetFundingLookupsQuery["ecapris_options"];
+
 interface ProjectSummaryECaprisProps {
   /** The id of the current project being viewed */
   projectId: number;
   /** The current eCAPRIS subproject ID */
-  eCaprisSubprojectId: string;
+  eCaprisSubprojectId: string | null;
   /**  The list of eCAPRIS subproject ID options */
-  options: any[];
+  options: SubprojectFundingOptionType[];
   /** True if project summary refetch is loading */
   loading: boolean;
   /** refetch function from Apollo */
-  refetch: any;
+  // refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  refetch: () => void | (() => Promise<ApolloQueryResult<ProjectSummaryQuery>>);
   /** The function to show the snackbar */
   handleSnackbar: HandleSnackbar;
   /** Whether the edit functionality should be disabled, optional */
   disabled?: boolean;
 }
 
+// todo: refetch in projectsummary is different than refetch in funding table
+
 // Find full option object by id
-const findOptionById = (options, id) => {
+const findOptionById = (options:SubprojectFundingOptionType[], id:string) => {
   return options?.find((option) => option?.ecapris_subproject_id === id);
 };
 
+
 // Get option label for autocomplete display
-const getOptionLabel = (option) => {
+const getOptionLabel = (option:SubprojectFundingOptionType) => {
   return option
     ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
     : "";
@@ -125,10 +132,14 @@ const ProjectSummaryProjectECapris = ({
     <Grid size={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
       <Box
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         {editMode && (
           <>
             <Autocomplete
@@ -163,6 +174,7 @@ const ProjectSummaryProjectECapris = ({
                 <Typography variant="body2">
                   eCAPRIS subproject ID not found.{" "}
                   {
+                    /* @ts-expect-error to do still */
                     <ExternalLink
                       url={createBugReportLink(
                         {
@@ -178,6 +190,7 @@ const ProjectSummaryProjectECapris = ({
               }
               disabled={disabled}
             />
+            {/* @ts-expect-error to do still */}
             <ProjectSummaryIconButtons
               handleSave={handleFieldSave}
               handleClose={handleFieldClose}
@@ -206,6 +219,7 @@ const ProjectSummaryProjectECapris = ({
               sxProp={disabled ? fieldLabelTextNoHover : fieldLabelText}
             />
             {eCaprisSubprojectId ? (
+              /* @ts-expect-error to do still */
               <CopyTextButton
                 textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCaprisSubprojectId}`}
                 copyButtonText="Copy eCAPRIS link"
