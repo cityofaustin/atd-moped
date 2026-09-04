@@ -10,6 +10,7 @@ import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { useUser } from "src/auth/user";
 import { filterOptions } from "src/utils/autocompleteHelpers";
+import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
 import {
   fieldBox,
@@ -24,6 +25,23 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 
+interface ProjectSummaryECaprisProps {
+  /** The id of the current project being viewed */
+  projectId: number;
+  /** The current eCAPRIS subproject ID */
+  eCaprisSubprojectId: string;
+  /**  The list of eCAPRIS subproject ID options */
+  options: any[];
+  /** True if project summary refetch is loading */
+  loading: boolean;
+  /** refetch function from Apollo */
+  refetch: any;
+  /** The function to show the snackbar */
+  handleSnackbar: HandleSnackbar;
+  /** Whether the edit functionality should be disabled, optional */
+  disabled?: boolean;
+}
+
 // Find full option object by id
 const findOptionById = (options, id) => {
   return options?.find((option) => option?.ecapris_subproject_id === id);
@@ -36,18 +54,6 @@ const getOptionLabel = (option) => {
     : "";
 };
 
-/**
- * ProjectSummaryProjectECapris Component
- * @param {Number} projectId - The id of the current project being viewed
- * @param {String} eCaprisSubprojectId - The current eCAPRIS subproject ID
- * @param {Array} options - The list of eCAPRIS subproject ID options
- * @param {boolean} loading - True if project summary refetch is loading
- * @param {function} refetch - The refetch function from apollo
- * @param {function} handleSnackbar - The function to show the snackbar
- * @param {boolean} disabled - Whether the edit functionality should be disabled, optional
- * @returns {JSX.Element}
- * @constructor
- */
 const ProjectSummaryProjectECapris = ({
   projectId,
   eCaprisSubprojectId,
@@ -56,7 +62,7 @@ const ProjectSummaryProjectECapris = ({
   refetch,
   handleSnackbar,
   disabled = false,
-}) => {
+}: ProjectSummaryECaprisProps) => {
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
@@ -189,6 +195,7 @@ const ProjectSummaryProjectECapris = ({
             spacing={1}
             sx={!eCaprisSubprojectId ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
+            {/* @ts-expect-error to do still */}
             <ProjectSummaryLabel
               text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => {
