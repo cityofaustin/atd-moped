@@ -38,7 +38,7 @@ interface ProjectSummaryECaprisProps {
   /** The current eCAPRIS subproject ID */
   eCaprisSubprojectId: string | null;
   /**  The list of eCAPRIS subproject ID options */
-  options: SubprojectFundingOptionType;
+  options: SubprojectFundingOptionArray;
   /** True if project summary refetch is loading */
   loading: boolean;
   /** refetch function from Apollo */
@@ -46,7 +46,7 @@ interface ProjectSummaryECaprisProps {
   refetch: () => void | (() => Promise<ApolloQueryResult<ProjectSummaryQuery>>);
   /** The function to show the snackbar */
   handleSnackbar: HandleSnackbar;
-  /** Whether the edit functionality should be disabled, optional */
+  /** Whether the edit functionality should be disabled, defaults to false */
   disabled?: boolean;
 }
 
@@ -84,7 +84,7 @@ const ProjectSummaryProjectECapris = ({
     : null;
 
   const [editMode, setEditMode] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValue, setSelectedValue] = useState<SubprojectFundingOption|null>(null);
   // Capture input value to include in service request if user encounters missing eCAPRIS subproject ID in options list
   const [inputValue, setInputValue] = useState("");
 
