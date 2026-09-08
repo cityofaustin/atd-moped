@@ -30,7 +30,7 @@ import {
 } from "src/queries/project";
 
 type SubprojectFundingOptionArray = GetFundingLookupsQuery["ecapris_options"];
-type SubprojectFundingOption = SubprojectFundingOptionArray[number]
+type SubprojectFundingOption = SubprojectFundingOptionArray[number];
 
 interface ProjectSummaryECaprisProps {
   /** The id of the current project being viewed */
@@ -73,18 +73,21 @@ const ProjectSummaryProjectECapris = ({
   handleSnackbar,
   disabled = false,
 }: ProjectSummaryECaprisProps) => {
-{/* @ts-expect-error TODO the user provider? */}
+  /* @ts-expect-error TODO the user provider? */
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
   const initialValue = eCaprisSubprojectId
     ? (findOptionById(options, eCaprisSubprojectId) ?? {
+        __typename: "ecapris_subproject_funding",
         ecapris_subproject_id: eCaprisSubprojectId,
+        subproject_name: "",
       })
     : null;
 
   const [editMode, setEditMode] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<SubprojectFundingOption|null>(null);
+  const [selectedValue, setSelectedValue] =
+    useState<SubprojectFundingOption | null>(null);
   // Capture input value to include in service request if user encounters missing eCAPRIS subproject ID in options list
   const [inputValue, setInputValue] = useState("");
 
