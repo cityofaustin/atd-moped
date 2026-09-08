@@ -11,7 +11,10 @@ import { useMutation, type ApolloQueryResult } from "@apollo/client";
 import { useUser } from "src/auth/user";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
-import { type ProjectSummaryQuery, type GetFundingLookupsQuery } from "src/gql/graphql";
+import {
+  type ProjectSummaryQuery,
+  type GetFundingLookupsQuery,
+} from "src/gql/graphql";
 
 import {
   fieldBox,
@@ -34,7 +37,7 @@ interface ProjectSummaryECaprisProps {
   /** The current eCAPRIS subproject ID */
   eCaprisSubprojectId: string | null;
   /**  The list of eCAPRIS subproject ID options */
-  options: SubprojectFundingOptionType[];
+  options: SubprojectFundingOptionType;
   /** True if project summary refetch is loading */
   loading: boolean;
   /** refetch function from Apollo */
@@ -49,13 +52,12 @@ interface ProjectSummaryECaprisProps {
 // todo: refetch in projectsummary is different than refetch in funding table
 
 // Find full option object by id
-const findOptionById = (options:SubprojectFundingOptionType[], id:string) => {
-  return options?.find((option) => option?.ecapris_subproject_id === id);
+const findOptionById = (options: SubprojectFundingOptionType, id: string) => {
+  return options.find((option) => option?.ecapris_subproject_id === id);
 };
 
-
 // Get option label for autocomplete display
-const getOptionLabel = (option:SubprojectFundingOptionType) => {
+const getOptionLabel = (option: SubprojectFundingOptionType) => {
   return option
     ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
     : "";
@@ -70,6 +72,7 @@ const ProjectSummaryProjectECapris = ({
   handleSnackbar,
   disabled = false,
 }: ProjectSummaryECaprisProps) => {
+{/* @ts-expect-error TODO the user provider? */}
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
@@ -190,7 +193,6 @@ const ProjectSummaryProjectECapris = ({
               }
               disabled={disabled}
             />
-            {/* @ts-expect-error to do still */}
             <ProjectSummaryIconButtons
               handleSave={handleFieldSave}
               handleClose={handleFieldClose}
