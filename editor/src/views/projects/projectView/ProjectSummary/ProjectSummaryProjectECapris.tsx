@@ -29,7 +29,8 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 
-type SubprojectFundingOptionType = GetFundingLookupsQuery["ecapris_options"];
+type SubprojectFundingOptionArray = GetFundingLookupsQuery["ecapris_options"];
+type SubprojectFundingOption = SubprojectFundingOptionArray[number]
 
 interface ProjectSummaryECaprisProps {
   /** The id of the current project being viewed */
@@ -52,12 +53,12 @@ interface ProjectSummaryECaprisProps {
 // todo: refetch in projectsummary is different than refetch in funding table
 
 // Find full option object by id
-const findOptionById = (options: SubprojectFundingOptionType, id: string) => {
+const findOptionById = (options: SubprojectFundingOptionArray, id: string) => {
   return options.find((option) => option?.ecapris_subproject_id === id);
 };
 
 // Get option label for autocomplete display
-const getOptionLabel = (option: SubprojectFundingOptionType) => {
+const getOptionLabel = (option: SubprojectFundingOption) => {
   return option
     ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
     : "";
