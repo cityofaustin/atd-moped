@@ -28,7 +28,7 @@ import {
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
 
-const FDU_ALREADY_PRESENT_MESSAGE = "FDU already present on project";
+export const FDU_ALREADY_PRESENT_MESSAGE = "FDU already present on project";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
