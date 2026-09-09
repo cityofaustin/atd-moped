@@ -165,33 +165,32 @@ export const transformGridToDatabase = (gridRecord) => {
  * @param {Set<string>} presentFduStrings - FDU strings already on the funding table
  * @param {string|null|undefined} currentFdu - FDU on the row being edited (kept selectable)
  */
-const getFduAutocompleteProps = (presentFduStrings, currentFdu) => ({
-  getOptionLabel: (option) =>
-    option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value, option) =>
-    value?.ecapris_funding_id === option?.ecapris_funding_id,
-  getOptionDisabled: (option) =>
+const getFduAutocompleteProps = (presentFduStrings, currentFdu) => {
+  const getFduOptionLabel = (option) =>
+    option?.fdu ? `${option.fdu} - ${option.unit_long_name}` : "";
+
+  const isFduAlreadyPresent = (option) =>
     Boolean(option?.fdu) &&
     presentFduStrings.has(option.fdu) &&
-    option.fdu !== currentFdu,
-  renderOption: (props, option) => {
-    const isAlreadyPresent =
-      Boolean(option?.fdu) &&
-      presentFduStrings.has(option.fdu) &&
-      option.fdu !== currentFdu;
+    option.fdu !== currentFdu;
 
-    return (
+  return {
+    getOptionLabel: getFduOptionLabel,
+    isOptionEqualToValue: (value, option) =>
+      value?.ecapris_funding_id === option?.ecapris_funding_id,
+    getOptionDisabled: isFduAlreadyPresent,
+    renderOption: (props, option) => (
       <ListItem {...props} key={option.ecapris_funding_id}>
         <ListItemText
-          primary={
-            option.fdu ? `${option.fdu} - ${option.unit_long_name}` : ""
+          primary={getFduOptionLabel(option)}
+          secondary={
+            isFduAlreadyPresent(option) ? FDU_ALREADY_PRESENT_MESSAGE : null
           }
-          secondary={isAlreadyPresent ? FDU_ALREADY_PRESENT_MESSAGE : null}
         />
       </ListItem>
-    );
-  },
-});
+    ),
+  };
+};
 
 const fduAutocompleteDependentFields = [
   {
