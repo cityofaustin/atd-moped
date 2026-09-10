@@ -408,7 +408,13 @@ const ProjectView = () => {
                           }}
                         >
                           <Box>
-                            <ProjectTimelineLink projectId={projectId} currentPhase={currentPhase} currentPhaseId={data?.moped_project?.[0]?.moped_proj_phases?.[0]?.project_phase_id}>
+                            <ProjectTimelineLink
+                              projectId={projectId}
+                              currentPhaseId={
+                                data?.moped_project?.[0]?.moped_proj_phases?.[0]
+                                  ?.project_phase_id
+                              }
+                            >
                               <ProjectStatusBadge
                                 phaseKey={currentPhase?.phase_key ?? ""}
                                 phaseName={currentPhase?.phase_name ?? ""}

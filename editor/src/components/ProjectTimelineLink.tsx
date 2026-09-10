@@ -1,11 +1,14 @@
 import React from "react";
 import Link, { LinkProps } from "@mui/material/Link";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { getProjectTimelinePath } from "src/utils/projectTimeline";
 
 interface ProjectTimelineLinkProps extends Omit<LinkProps, "href"> {
   projectId?: string | number;
-  currentPhase?: object;
   currentPhaseId?: string | number;
   children: React.ReactNode;
 }
@@ -15,12 +18,13 @@ interface ProjectTimelineLinkProps extends Omit<LinkProps, "href"> {
  */
 const ProjectTimelineLink = ({
   projectId,
-  currentPhase,
   currentPhaseId,
   children,
+  onClick,
   ...linkProps
 }: ProjectTimelineLinkProps) => {
   const { projectId: routeProjectId } = useParams<{ projectId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const targetProjectId = projectId ?? routeProjectId;
 
   if (targetProjectId === undefined) {
@@ -29,13 +33,29 @@ const ProjectTimelineLink = ({
     );
   }
 
-  console.log(currentPhaseId);
-
   return (
     <Link
       {...linkProps}
       component={RouterLink}
       to={getProjectTimelinePath(targetProjectId)}
+      onClick={(event) => {
+        onClick?.(event);
+        if (event.defaultPrevented) {
+          return;
+        }
+        event.preventDefault();
+
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.set("tab", "timeline");
+
+        if (currentPhaseId === undefined) {
+          nextSearchParams.delete("currentPhaseId");
+        } else {
+          nextSearchParams.set("currentPhaseId", String(currentPhaseId));
+        }
+
+        setSearchParams(nextSearchParams);
+      }}
     >
       {children}
     </Link>
