@@ -180,18 +180,15 @@ const ProjectSummaryProjectECapris = ({
               noOptionsText={
                 <Typography variant="body2">
                   eCAPRIS subproject ID not found.{" "}
-                  {
-                    /* @ts-expect-error to do still */
-                    <ExternalLink
-                      url={createBugReportLink(
-                        {
-                          message: `Missing eCAPRIS subproject ID ${inputValue ?? ""} for project ${projectId}`,
-                        },
-                        userEmail
-                      )}
-                      text={"Click here"}
-                    />
-                  }{" "}
+                  <ExternalLink
+                    url={createBugReportLink(
+                      {
+                        message: `Missing eCAPRIS subproject ID ${inputValue ?? ""} for project ${projectId}`,
+                      },
+                      userEmail
+                    )}
+                    text={"Click here"}
+                  />{" "}
                   to report.
                 </Typography>
               }

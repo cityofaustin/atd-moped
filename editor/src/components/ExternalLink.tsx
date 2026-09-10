@@ -5,13 +5,13 @@ import { getExternalLinkText } from "src/utils/urls";
 
 interface ExternalLinkProps {
   /** link url */
-  url: LinkProps["href"]
+  url: LinkProps["href"];
   /** link text, optional but prioritized over url-based text when both are available */
   text?: string | null;
   /**  whether to use friendly url text based on known url patterns, optional, defaults to false */
   useFriendlyUrl?: boolean;
   /** color of the link */
-  linkColor: LinkProps["color"];
+  linkColor?: LinkProps["color"];
   /** Props supported by MUI Link to override defaults or set other options */
   linkProps?: LinkProps;
   /** Stop propagation of the click event from link click event or not, defaults to false */
@@ -20,12 +20,6 @@ interface ExternalLinkProps {
   showExternalLinkIcon?: boolean;
 }
 
-/**
- * ExternalLink component
-
- * @returns {JSX.Element}
- * @constructor
- */
 const ExternalLink = ({
   url,
   text = null,
