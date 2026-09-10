@@ -1,13 +1,27 @@
-import React from "react";
-import { Box, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Tooltip,
+  Typography,
+  type BoxProps,
+  type TypographyProps,
+} from "@mui/material";
 import { fieldLabelText } from "src/styles/reusableStyles";
 
+interface ProjectSummaryLabelProps {
+  /** label text */
+  text: string;
+  /**  The function to call on edit click */
+  onClickEdit: () => void;
+  /** sx object determined by parent component */
+  sxProp?: TypographyProps["sx"];
+  /** sx object for span element determined by parent component */
+  spanSxProp?: BoxProps["sx"];
+  /** */
+  tooltipText?: string;
+}
 /**
  *
- * @param {String} text - Label text
- * @param {function} onClickEdit - The function to call on edit click
- * @param {Object} sxProp - sx object determined by parent component
- * @param {Object} spanSxProp - sx object for span element determined by parent component
+
  * @returns {JSX.Element}
  * @constructor
  */
@@ -17,7 +31,7 @@ const ProjectSummaryLabel = ({
   sxProp,
   spanSxProp,
   tooltipText,
-}) => {
+}: ProjectSummaryLabelProps) => {
   return (
     // the tooltip will not appear if the `title` is empty
     <Tooltip placement="bottom-start" title={tooltipText || ""}>

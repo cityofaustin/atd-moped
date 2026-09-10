@@ -211,7 +211,6 @@ const ProjectSummaryProjectECapris = ({
             spacing={1}
             sx={!eCaprisSubprojectId ? { flex: 1 } : {}} // Grow hoverable input to fill space if missing eCAPRIS id & copy button
           >
-            {/* @ts-expect-error to do still */}
             <ProjectSummaryLabel
               text={eCaprisSubprojectId ? eCaprisSubprojectId : ""}
               onClickEdit={() => {
