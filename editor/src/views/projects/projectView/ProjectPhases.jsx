@@ -229,6 +229,7 @@ const ProjectPhases = ({
         autoHeight
         columns={columns}
         getRowId={(row) => row.project_phase_id}
+        highlightRowParam="currentPhaseId"
         disableColumnMenu
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
