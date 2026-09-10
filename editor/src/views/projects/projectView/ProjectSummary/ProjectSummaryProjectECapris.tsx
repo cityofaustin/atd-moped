@@ -41,16 +41,13 @@ interface ProjectSummaryECaprisProps {
   options: SubprojectFundingOptionArray;
   /** True if project summary refetch is loading */
   loading: boolean;
-  /** refetch function from Apollo */
-  // refetch: () => Promise<ApolloQueryResult<ProjectSummaryQuery>>;
+  /** refetch function from Apollo or batch of apollo refetch functions wrapped in one */
   refetch: () => void | (() => Promise<ApolloQueryResult<ProjectSummaryQuery>>);
   /** The function to show the snackbar */
   handleSnackbar: HandleSnackbar;
   /** Whether the edit functionality should be disabled, defaults to false */
   disabled?: boolean;
 }
-
-// todo: refetch in projectsummary is different than refetch in funding table
 
 // Find full option object by id
 const findOptionById = (options: SubprojectFundingOptionArray, id: string) => {
@@ -73,7 +70,7 @@ const ProjectSummaryProjectECapris = ({
   handleSnackbar,
   disabled = false,
 }: ProjectSummaryECaprisProps) => {
-  /* @ts-expect-error TODO the user provider? */
+  /* @ts-expect-error address useUser and UserContext in issue 30204 */
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
