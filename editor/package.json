@@ -2,7 +2,7 @@
   "name": "moped-editor",
   "author": "TPW Data & Technology Services",
   "license": "CC0-1.0",
-  "version": "3.13.0",
+  "version": "3.14.0",
   "private": false,
   "repository": {
     "type": "git",
@@ -88,7 +88,7 @@
     "vite": "^8.0.16",
     "vite-plugin-checker": "^0.14.1",
     "vite-plugin-graphql-codegen": "^4.0.1",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "graphql": "^16.0.0"
