@@ -222,7 +222,6 @@ const ProjectSummaryProjectECapris = ({
               sxProp={disabled ? fieldLabelTextNoHover : fieldLabelText}
             />
             {eCaprisSubprojectId ? (
-              /* @ts-expect-error to do still */
               <CopyTextButton
                 textToCopy={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCaprisSubprojectId}`}
                 copyButtonText="Copy eCAPRIS link"

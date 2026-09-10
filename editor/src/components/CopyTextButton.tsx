@@ -10,15 +10,15 @@ interface CopyTextButtonProps {
   /** text to display on the button before copying */
   copyButtonText: string;
   /** text to display on the button after copying for feedback */
-  copiedButtonText: string;
+  copiedButtonText?: string;
   /**  MUI Button props */
   buttonProps: ButtonProps;
   /**  MUI Icon props */
   iconProps?: SvgIconProps;
   /**  duration in milliseconds before resetting copied state */
-  timeoutDuration: number;
+  timeoutDuration?: number;
   /** if true, renders an IconButton instead of a Button */
-  iconOnly: boolean;
+  iconOnly?: boolean;
 }
 
 /**
