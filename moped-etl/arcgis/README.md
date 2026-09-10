@@ -9,12 +9,12 @@ The script `components_to_agol.py` is used to publish component record data to A
 - Full refresh: This mode will delete all existing records in the AGOL feature layer and replace them with the current data from the Moped database.
 - Incremental refresh: This mode will only update records that have been modified since a given timestamp.
 
-The script is responsible for maintaining four layers in the AGOL in the [Moped Project Components](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2) feature service:
+The script is responsible for maintaining four layers in the AGOL in the [Staging Project Components](https://austin.maps.arcgis.com/home/item.html?id=9b024bcea3694f0699bb1183788e6ee8) and [Moped Project Components](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2) feature services:
 
 - [Moped Points](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=0): Components best represented as points, utilizing MultiPoint geometries
 - [Moped Lines](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=1): Components best represented as lines, using Line geometries
 - [MOPED CombinedGeometries](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=2) (SIC): All components, where points are transformed into a line ringing the location
-- [Moped Feature Points](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=3): Components best represented as points, but where MultiPoints are exploded into individual points. Note, the same component can be represented as multiple features, one for each point in the MultiPoint.
+- [Moped Feature Points](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=3): Components best represented as points, but where MultiPoints are exploded into individual points. Note, the same component can be represented as multiple features, one for each point in the MultiPoint. This layer exists to enable AGOL features only possible on single points like [labeling](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/text/labeling-basics.html).
 
 The data for the first three layers listed above is sourced from a view, `component_arcgis_online_view` which defines all columns which are available to be processed.
 
