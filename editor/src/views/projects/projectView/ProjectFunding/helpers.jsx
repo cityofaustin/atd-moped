@@ -1,5 +1,11 @@
 import React, { useMemo } from "react";
-import { Divider, Stack, IconButton } from "@mui/material";
+import {
+  Divider,
+  Stack,
+  IconButton,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
@@ -21,6 +27,8 @@ import {
   DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT,
   DETACH_FILE_MOPED_FUNDING_ATTACHMENT,
 } from "src/queries/project";
+
+export const FDU_ALREADY_PRESENT_MESSAGE = "FDU already present on project";
 
 /** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
  * @param {Array} fundingRecords - array of funding records from the database
@@ -153,12 +161,35 @@ export const transformGridToDatabase = (gridRecord) => {
   };
 };
 
-// object to pass to the Fund column's LookupAutocomplete component
-const fduAutocompleteProps = {
-  getOptionLabel: (option) =>
-    option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value, option) =>
-    value?.ecapris_funding_id === option?.ecapris_funding_id,
+/** Autocomplete props for the FDU column; disables FDUs already on the project
+ * @param {Set<string>} presentFduStrings - FDU strings already on the funding table
+ * @param {string|null|undefined} currentFdu - FDU on the row being edited (kept selectable)
+ */
+const getFduAutocompleteProps = (presentFduStrings, currentFdu) => {
+  const getFduOptionLabel = (option) =>
+    option?.fdu ? `${option.fdu} - ${option.unit_long_name}` : "";
+
+  const isFduAlreadyPresent = (option) =>
+    Boolean(option?.fdu) &&
+    presentFduStrings.has(option.fdu) &&
+    option.fdu !== currentFdu;
+
+  return {
+    getOptionLabel: getFduOptionLabel,
+    isOptionEqualToValue: (value, option) =>
+      value?.ecapris_funding_id === option?.ecapris_funding_id,
+    getOptionDisabled: isFduAlreadyPresent,
+    renderOption: (props, option) => (
+      <ListItem {...props} key={option.ecapris_funding_id}>
+        <ListItemText
+          primary={getFduOptionLabel(option)}
+          secondary={
+            isFduAlreadyPresent(option) ? FDU_ALREADY_PRESENT_MESSAGE : null
+          }
+        />
+      </ListItem>
+    ),
+  };
 };
 
 const fduAutocompleteDependentFields = [
@@ -225,6 +256,7 @@ export const createFundingFileConnectionData = (fundingRecord, projectId) => {
 export const useColumns = ({
   dataProjectFunding,
   dataLookups,
+  fdusArray,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -240,6 +272,10 @@ export const useColumns = ({
   projectECaprisSubprojectId,
 }) =>
   useMemo(() => {
+    const presentFduStrings = new Set(
+      (fdusArray ?? []).map((fdu) => fdu?.fdu).filter(Boolean)
+    );
+
     return [
       {
         headerName: "FDU",
@@ -268,7 +304,10 @@ export const useColumns = ({
             options={dataLookups?.ecapris_subproject_funding}
             fullWidthPopper={true}
             autocompleteProps={{
-              ...fduAutocompleteProps,
+              ...getFduAutocompleteProps(
+                presentFduStrings,
+                props?.row?.fdu?.fdu
+              ),
               value: props?.row?.fdu,
             }}
             dependentFieldsArray={fduAutocompleteDependentFields}
@@ -498,6 +537,7 @@ export const useColumns = ({
   }, [
     dataProjectFunding,
     dataLookups,
+    fdusArray,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
