@@ -1,0 +1,15 @@
+{
+  "name": "moped-agol-etl",
+  "version": "1.0.0",
+  "description": "Python script integration pushing Moped data to ESRI's ArcGIS Online (AGOL) platform",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No tests\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@varlock/1password-plugin": "^1.2.0",
+    "varlock": "^1.7.1"
+  }
+}
