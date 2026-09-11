@@ -1,4 +1,4 @@
--- Most recent migration: database/migrations/default/1788304724361_test_sql_bot/up.sql
+-- Most recent migration: database/migrations/default/1788304724360_update_exploded_view/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS
 SELECT
@@ -8,8 +8,7 @@ SELECT
     dump.path[1]               AS point_index,
     comp_geography.geometry    AS original_geometry,
     st_asgeojson(dump.geom)    AS exploded_geometry,
-    mp.updated_at              AS project_updated_at,
-    mp.date_added              AS project_created_at
+    mp.updated_at              AS project_updated_at
 FROM moped_proj_components mpc
 LEFT JOIN
     component_geography_view comp_geography
