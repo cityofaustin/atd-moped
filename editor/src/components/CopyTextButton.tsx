@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
+import Button, { type ButtonProps } from "@mui/material/Button";
 import { CheckCircleOutlined, ContentCopyOutlined } from "@mui/icons-material";
 import { type SvgIconProps, type IconButtonProps } from "@mui/material";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
@@ -12,7 +12,9 @@ interface CopyTextButtonProps {
   /** text to display on the button after copying for feedback */
   copiedButtonText?: string;
   /**  MUI Button props */
-  buttonProps: IconButtonProps;
+  buttonProps?: ButtonProps;
+  /** MUI IconButton props */
+  iconButtonProps?: IconButtonProps;
   /**  MUI Icon props */
   iconProps?: SvgIconProps;
   /**  duration in milliseconds before resetting copied state */
@@ -29,6 +31,7 @@ const CopyTextButton = ({
   copyButtonText = "Copy to clipboard",
   copiedButtonText = "Copied!",
   buttonProps,
+  iconButtonProps,
   iconProps,
   timeoutDuration = 2000,
   iconOnly = false,
@@ -67,7 +70,7 @@ const CopyTextButton = ({
         title={copied ? copiedButtonText : copyButtonText}
         onClick={handleCopyClick}
         ariaLabel={buttonText}
-        iconButtonProps={buttonProps}
+        iconButtonProps={iconButtonProps}
       >
         {startIcon}
       </IconButtonWithTooltip>

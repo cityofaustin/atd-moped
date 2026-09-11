@@ -246,7 +246,7 @@ export const useColumns = ({ hiddenColumns }) => {
                 copyButtonText="Copy eCAPRIS link"
                 iconOnly
                 iconProps={{ fontSize: "small" }}
-                buttonProps={{
+                iconButtonProps={{
                   sx: { top: "-5px" },
                 }}
               />
