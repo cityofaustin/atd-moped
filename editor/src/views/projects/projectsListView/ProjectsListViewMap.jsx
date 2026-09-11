@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { NavLink as RouterLink, useLocation } from "react-router-dom";
+import { NavLink as RouterLink, useLocation } from "react-router";
 import MapDrawer from "./components/MapDrawer";
 import ProjectsMap from "./components/ProjectsMap";
 import Alert from "@mui/material/Alert";

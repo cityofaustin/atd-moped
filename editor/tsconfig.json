@@ -30,7 +30,8 @@
     "strictNullChecks": true,
     "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "verbatimModuleSyntax": true,
   },
   "include": ["src"],
   "exclude": [

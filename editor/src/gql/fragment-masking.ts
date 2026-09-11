@@ -1,11 +1,11 @@
 /* eslint-disable */
-import {
+import type {
   ResultOf,
   DocumentTypeDecoration,
   TypedDocumentNode,
 } from "@graphql-typed-document-node/core";
-import { FragmentDefinitionNode } from "graphql";
-import { Incremental } from "./graphql";
+import type { FragmentDefinitionNode } from "graphql";
+import type { Incremental } from "./graphql";
 
 export type FragmentType<
   TDocumentType extends DocumentTypeDecoration<any, any>,
@@ -18,11 +18,6 @@ export type FragmentType<
       : never
     : never;
 
-// return partial if `fragmentType` is partial e.g. because of conditional directives
-export function useFragment<TType>(
-  _documentNode: DocumentTypeDecoration<TType, any>,
-  fragmentType: FragmentType<DocumentTypeDecoration<Partial<TType>, any>>
-): Partial<TType>;
 // return non-nullable if `fragmentType` is non-nullable
 export function useFragment<TType>(
   _documentNode: DocumentTypeDecoration<TType, any>,

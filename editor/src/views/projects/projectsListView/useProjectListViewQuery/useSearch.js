@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { getSearchValue } from "src/utils/gridTableHelpers";
 
 /* Name of simple search URL parameter */

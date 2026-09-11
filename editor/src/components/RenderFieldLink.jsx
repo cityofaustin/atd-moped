@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router";
 import theme from "src/theme/index";
 
 const RenderFieldLink = ({ projectId, value, tab }) => {

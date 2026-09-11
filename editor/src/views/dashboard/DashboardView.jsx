@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router";
 
 // Material
 import {

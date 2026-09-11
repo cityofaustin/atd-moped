@@ -1,6 +1,12 @@
-import { type Dispatch, type SetStateAction, useMemo } from "react";
+import React, { type Dispatch, type SetStateAction, useMemo } from "react";
 import { type ApolloQueryResult } from "@apollo/client";
-import { Divider, Stack, IconButton } from "@mui/material";
+import {
+  Divider,
+  Stack,
+  IconButton,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import {
   type GridCellParams,
   type GridColDef,
@@ -36,6 +42,8 @@ import {
 } from "src/gql/graphql";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
 
+export const FDU_ALREADY_PRESENT_MESSAGE = "FDU already present on project";
+
 export type FundingRowsFromQuery =
   GetCombinedProjectFundingQuery["combined_project_funding_view"];
 
@@ -43,6 +51,10 @@ export type FundingRowFromQuery = FundingRowsFromQuery[number];
 
 /** Override types for DataGrid rows to workaround combined DB view id calculation being possibly null
  * and other field type overrides. See inline comments for each field for more details.
+/** Transforms database funding records to DataGrid rows with lookup objects to populate autocomplete components
+ * @param {Array} fundingRecords - array of funding records from the database
+ * @param {Object} lookupData - object containing lookup arrays from the database
+ * @return {Array} - array of transformed funding records for data grid
  */
 type SavedFundingRow = Omit<
   FundingRowFromQuery,
@@ -164,12 +176,40 @@ export const transformGridToUpdateInput = (
   };
 };
 
-// object to pass to the Fund column's LookupAutocomplete component
-const fduAutocompleteProps = {
-  getOptionLabel: (option: GridFDUOption) =>
-    option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "",
-  isOptionEqualToValue: (value: GridFDUOption, option: GridFDUOption) =>
-    value.ecapris_funding_id === option.ecapris_funding_id,
+/** Autocomplete props for the FDU column; disables FDUs already on the project
+ * @param {Set<string>} presentFduStrings - FDU strings already on the funding table
+ * @param {string|null|undefined} currentFdu - FDU on the row being edited (kept selectable)
+ */
+const getFduAutocompleteProps = (
+  presentFduStrings: Set<string | undefined>,
+  currentFdu: string | null | undefined
+) => {
+  const getFduOptionLabel = (option: GridFDUOption) =>
+    option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "";
+  const isFduAlreadyPresent = (option: GridFDUOption) =>
+    Boolean(option?.fdu) &&
+    presentFduStrings.has(option.fdu) &&
+    option.fdu !== currentFdu;
+
+  return {
+    getOptionLabel: getFduOptionLabel,
+    isOptionEqualToValue: (value: GridFDUOption, option: GridFDUOption) =>
+      value?.ecapris_funding_id === option?.ecapris_funding_id,
+    getOptionDisabled: isFduAlreadyPresent,
+    renderOption: (
+      props: React.HTMLAttributes<HTMLLIElement>,
+      option: GridFDUOption
+    ) => (
+      <ListItem {...props} key={option.ecapris_funding_id}>
+        <ListItemText
+          primary={getFduOptionLabel(option)}
+          secondary={
+            isFduAlreadyPresent(option) ? FDU_ALREADY_PRESENT_MESSAGE : null
+          }
+        />
+      </ListItem>
+    ),
+  };
 };
 
 // TODO: Update setFieldValue to accept generic or null when migrating LookupAutocompleteComponent to TS captured in #29927
@@ -243,6 +283,7 @@ export const createFundingFileConnectionData = (
 
 type UseColumnsProps = {
   dataLookups: GetFundingLookupsQuery | undefined;
+  fdusArray: (GridFDUOption | null)[];
   rowModesModel: GridRowModesModel;
   handleDeleteOpen: (id: GridRowId) => () => void;
   handleSaveClick: (id: GridRowId) => () => void;
@@ -260,6 +301,7 @@ type UseColumnsProps = {
 
 export const useColumns = ({
   dataLookups,
+  fdusArray,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -275,6 +317,11 @@ export const useColumns = ({
   projectECaprisSubprojectId,
 }: UseColumnsProps): GridColDef<FundingRowForGrid>[] =>
   useMemo(() => {
+    const presentFduStrings = new Set(
+      (fdusArray ?? []).map((fdu) => fdu?.fdu).filter(Boolean)
+    );
+    console.log(presentFduStrings, typeof presentFduStrings);
+
     return [
       {
         headerName: "FDU",
@@ -307,7 +354,11 @@ export const useColumns = ({
             options={dataLookups?.ecapris_subproject_funding}
             fullWidthPopper={true}
             autocompleteProps={{
-              ...fduAutocompleteProps,
+              ...getFduAutocompleteProps(
+                presentFduStrings,
+                props?.row?.fdu?.fdu
+              ),
+              value: props?.row?.fdu,
             }}
             dependentFieldsArray={fduAutocompleteDependentFields}
           />
@@ -564,6 +615,7 @@ export const useColumns = ({
     ];
   }, [
     dataLookups,
+    fdusArray,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

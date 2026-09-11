@@ -7,6 +7,7 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import { useQuery } from "@apollo/client";
 import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
+import { FDU_ALREADY_PRESENT_MESSAGE } from "src/views/projects/projectView/ProjectFunding/helpers";
 
 const PAGE_SIZE = 10;
 
@@ -20,7 +21,7 @@ const CustomRow = (props) => {
 
   if (isDisabled) {
     return (
-      <Tooltip title="FDU already present on project" placement="top" arrow>
+      <Tooltip title={FDU_ALREADY_PRESENT_MESSAGE} placement="top" arrow>
         <div>
           <GridRow {...rowProps} />
         </div>

@@ -10,7 +10,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router";
 
 export const AddUserButton = () => (
   <Can
