@@ -9,7 +9,7 @@ import { fieldLabelText } from "src/styles/reusableStyles";
 
 interface ProjectSummaryLabelProps {
   /** label text */
-  text: string;
+  text: string | string[];
   /**  The function to call on edit click */
   onClickEdit: () => void;
   /** sx object determined by parent component */
@@ -19,12 +19,7 @@ interface ProjectSummaryLabelProps {
   /** */
   tooltipText?: string;
 }
-/**
- *
 
- * @returns {JSX.Element}
- * @constructor
- */
 const ProjectSummaryLabel = ({
   text,
   onClickEdit,
