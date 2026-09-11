@@ -1,6 +1,6 @@
 ### How to generate new seeds
 
-1. Navigate to `./moped-database`
+1. Navigate to `./database`
 2. Start the hasura cluster
 3. Add / edit whatever data
 4. ❗️Warning: adding subprojects creates a circular reference that will cause seeds to fail

@@ -55,7 +55,7 @@ function run_migration() {
 # Controls the migration process (main entry point for migrations job)
 #
 function run_migration_process() {
-  cd ./moped-database;
+  cd ./database;
   echo "Running migration process @ ${PWD}"
   download_hasura_settings;
   run_migration;
@@ -76,12 +76,12 @@ function determine_task_definition_file() {
   # Determine environment based on branch
   if [ "${BRANCH_NAME}" = "production" ]; then
     export ENVIRONMENT="production"
-    export TD_FILE="moped-database/ecs_task_definitions/production.graphql-engine.ecs-td.json"
+    export TD_FILE="database/ecs_task_definitions/production.graphql-engine.ecs-td.json"
     export FAMILY="atd-moped-production"
     export CLUSTER="atd-moped-cluster-production"
   else
     export ENVIRONMENT="staging"
-    export TD_FILE="moped-database/ecs_task_definitions/staging.graphql-engine.ecs-td.json"
+    export TD_FILE="database/ecs_task_definitions/staging.graphql-engine.ecs-td.json"
     export FAMILY="atd-moped-staging"
     export CLUSTER="atd-moped-cluster-staging"
   fi

@@ -6,7 +6,7 @@ on:
       - main
       - production
     paths:
-      - "moped-database/**"
+      - "database/**"
       - ".github/workflows/migrations-metadata-deployment.yml"
       - ".github/workflows/migrations-metadata-deployment-helper.sh"
 
