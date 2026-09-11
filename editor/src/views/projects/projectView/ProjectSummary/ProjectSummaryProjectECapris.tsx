@@ -76,7 +76,6 @@ const ProjectSummaryProjectECapris = ({
 
   const initialValue: SubprojectFundingOption | null = eCaprisSubprojectId
     ? (findOptionById(options, eCaprisSubprojectId) ?? {
-        __typename: "ecapris_subproject_funding",
         ecapris_subproject_id: eCaprisSubprojectId,
         subproject_name: "",
       })
