@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1788304724360_update_exploded_view/up.sql
+-- Most recent migration: database/migrations/default/1788304724360_update_exploded_view/up.sql
 
 CREATE OR REPLACE VIEW component_geography_view AS
 SELECT

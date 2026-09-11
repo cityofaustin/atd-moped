@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1778009019613_council_dist_reporting/up.sql
+-- Most recent migration: database/migrations/default/1778009019613_council_dist_reporting/up.sql
 
 CREATE OR REPLACE VIEW project_funding_view AS
 SELECT

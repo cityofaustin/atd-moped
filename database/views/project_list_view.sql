@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
+-- Most recent migration: database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS
 WITH project_person_list_lookup AS (
