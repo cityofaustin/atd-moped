@@ -1,20 +1,25 @@
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
+import Link, { type LinkProps } from "@mui/material/Link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { getExternalLinkText } from "src/utils/urls";
 
-/**
- * ExternalLink component
- * @param {string} url - link url
- * @param {string} text - link text, optional but prioritized over url-based text when both are available
- * @param {boolean} useFriendlyUrl - whether to use friendly url text based on known url patterns, optional
- * @param {string} linkColor - color of the link
- * @param {Object} linkProps - Props supported by MUI Link to override defaults or set other options
- * @param {Boolean} stopPropagation - stop propagation of the click event from link click event or not
- * @param {Boolean} showExternalLinkIcon - show external link icon or not
- * @returns {JSX.Element}
- * @constructor
- */
+interface ExternalLinkProps {
+  /** link url */
+  url: LinkProps["href"];
+  /** link text, optional but prioritized over url-based text when both are available */
+  text?: string | null;
+  /**  whether to use friendly url text based on known url patterns, optional, defaults to false */
+  useFriendlyUrl?: boolean;
+  /** color of the link */
+  linkColor?: LinkProps["color"];
+  /** Props supported by MUI Link to override defaults or set other options */
+  linkProps?: LinkProps;
+  /** Stop propagation of the click event from link click event or not, defaults to false */
+  stopPropagation?: boolean;
+  /** show external link icon or not, defaults to true*/
+  showExternalLinkIcon?: boolean;
+}
+
 const ExternalLink = ({
   url,
   text = null,
@@ -23,7 +28,7 @@ const ExternalLink = ({
   linkProps,
   stopPropagation = false,
   showExternalLinkIcon = true,
-}) => {
+}: ExternalLinkProps) => {
   /* Prefer friendly text if useFriendlyUrl is true, then fallback to the text prop, and finally to the URL */
   const friendlyText = useFriendlyUrl ? getExternalLinkText(url) : null;
   const displayText = friendlyText || text || url;

@@ -570,7 +570,6 @@ const ProjectFundingTable = ({
                     md: 4,
                   }}
                 >
-                  {/* @ts-expect-error Migrating ProjectSummaryProjectECapris to TS captured in issue #29889 */}
                   <ProjectSummaryProjectECapris
                     projectId={projectId}
                     eCaprisSubprojectId={eCaprisSubprojectId}
