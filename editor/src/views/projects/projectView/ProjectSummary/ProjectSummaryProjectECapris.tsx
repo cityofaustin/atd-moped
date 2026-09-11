@@ -74,7 +74,7 @@ const ProjectSummaryProjectECapris = ({
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
-  const initialValue = eCaprisSubprojectId
+  const initialValue: SubprojectFundingOption | null = eCaprisSubprojectId
     ? (findOptionById(options, eCaprisSubprojectId) ?? {
         __typename: "ecapris_subproject_funding",
         ecapris_subproject_id: eCaprisSubprojectId,
