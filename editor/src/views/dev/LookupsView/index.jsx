@@ -1,7 +1,7 @@
 import React, { createRef, useMemo, useEffect } from "react";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useQuery } from "@apollo/client";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router";
 import { createBrowserHistory } from "history";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";

@@ -409,6 +409,7 @@ const ProjectFundingTable = ({
   const dataGridColumns = useColumns({
     dataProjectFunding,
     dataLookups,
+    fdusArray,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

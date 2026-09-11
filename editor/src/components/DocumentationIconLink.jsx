@@ -1,4 +1,4 @@
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router";
 import { Tooltip } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";

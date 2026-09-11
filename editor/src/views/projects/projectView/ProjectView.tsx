@@ -5,7 +5,7 @@ import {
   useParams,
   useSearchParams,
   useLocation,
-} from "react-router-dom";
+} from "react-router";
 import { ErrorBoundary } from "react-error-boundary";
 
 import {
@@ -624,7 +624,6 @@ const ProjectView = () => {
           )}
         </Page>
       )}
-      {/* @ts-expect-error - FeedbackSnackbar needs to be converted to .tsx in issue #29270 */}
       <FeedbackSnackbar
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}

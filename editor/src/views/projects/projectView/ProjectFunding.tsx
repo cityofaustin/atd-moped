@@ -2,7 +2,7 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import ProjectFundingTable from "src/views/projects/projectView/ProjectFunding/ProjectFundingTable";
 import ProjectWorkActivitiesTable from "src/views/projects/projectView/ProjectWorkActivity/ProjectWorkActivityTable";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 const ProjectFunding = ({
   handleSnackbar,
