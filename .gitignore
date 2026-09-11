@@ -31,11 +31,11 @@ package/
 
 
 # Database Hasura YAML or ENV files
-!moped-database/config/hasura.local.yaml
-!moped-database/config/hasura.cognito.staging.env
-moped-database/hasura.current_environment.yaml
-moped-database/docker-compose-*.yaml
-moped-database/snapshots/
+!database/config/hasura.local.yaml
+!database/config/hasura.cognito.staging.env
+database/hasura.current_environment.yaml
+database/docker-compose-*.yaml
+database/snapshots/
 hasura_cluster.json
 hasura_cluster_template.json
 

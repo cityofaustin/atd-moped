@@ -50,7 +50,7 @@ https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html
 
 #### 3. The Hasura Cluster Helper
 
-There is a tool we've created that has a few shortcuts available, it's called [hasura-cluster](https://github.com/cityofaustin/atd-moped/blob/main/moped-database/hasura-cluster).
+There is a tool we've created that has a few shortcuts available, it's called [hasura-cluster](https://github.com/cityofaustin/atd-moped/blob/main/database/hasura-cluster).
 It is a bash script that runs a few `docker compose` commands.
 
 Syntax:
@@ -180,7 +180,7 @@ We use [sqruff](https://github.com/quarylabs/sqruff) to lint and format SQL code
 
 VSCode users: install the [sqruff extension](https://marketplace.visualstudio.com/items?itemName=Quary.sqruff), which depends on the CLI being installed.
 
-Users of other editors can adapt the following commands to best suit their needs. These are being run from the `atd-moped/moped-database/views` folder, using the `.sqruff` config file at the repo root. From the database folder:
+Users of other editors can adapt the following commands to best suit their needs. These are being run from the `atd-moped/database/views` folder, using the `.sqruff` config file at the repo root. From the database folder:
 
 #### Lint (ie, tell me what i'm doing wrong)
 

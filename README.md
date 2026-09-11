@@ -44,10 +44,10 @@ Before you begin, make sure you have the following installed on your system:
    - Ensure it installs version `2.42.0` or later.
 
 2. **Start the Hasura Cluster**
-   - Navigate to the `moped-database` directory:
+   - Navigate to the `database` directory:
 
      ```bash
-     cd moped-database
+     cd database
 
      ```
 
@@ -97,7 +97,7 @@ Before you begin, make sure you have the following installed on your system:
 
 ## Learn more
 
-- [Database](./moped-database/README.md) - the database that powers the Mobility Project Database suite
+- [Database](./database/README.md) - the database that powers the Mobility Project Database suite
 - [Editor](./editor/README.md) - web application which enables City staff to browse and edit mobility project data
 - [API](./api/README.md) - serverless Flask API, handling data operations and API requests
 - [Auth](./auth/README.md) - manages authentication using AWS Cognito, including JWT token generation and validation for secure access control

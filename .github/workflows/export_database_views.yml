@@ -3,7 +3,7 @@ name: Export Moped Views to SQL
 on:
   push:
     paths:
-      - moped-database/migrations/default/**
+      - database/migrations/default/**
       - .github/workflows/export_database_views.yml
       - .github/workflows/export_database_views.sh
       - .sqruff
@@ -45,11 +45,11 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          docker compose -f moped-database/docker-compose.yml up -d moped-pgsql;
+          docker compose -f database/docker-compose.yml up -d moped-pgsql;
           sleep 10;
-          docker compose -f moped-database/docker-compose.yml up -d hasura;
+          docker compose -f database/docker-compose.yml up -d hasura;
           sleep 10;
-          cd moped-database;
+          cd database;
           hasura --skip-update-check --database-name default migrate apply;
           hasura metadata apply --skip-update-check;
 
@@ -61,7 +61,7 @@ jobs:
         uses: quarylabs/install-sqruff-cli-action@7805329baf7cf340e849e254cddc782f08f2d36c
       - name: Format SQL with sqruff
         run: |
-          sqruff fix --format human moped-database/views
+          sqruff fix --format human database/views
         continue-on-error: true
 
 
@@ -73,6 +73,6 @@ jobs:
       - name: Commit and push changes
         run: |
           export BRANCH_NAME="${GITHUB_REF_NAME}"
-          git add moped-database/views
+          git add database/views
           git commit -m "🤖 Export database views for $BRANCH_NAME" || echo "No changes to commit"
           git push origin HEAD || echo "No changes to push"
