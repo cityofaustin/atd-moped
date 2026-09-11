@@ -7,14 +7,11 @@ import { createBugReportLink } from "src/utils/urls";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { Box, Grid, Stack, Typography } from "@mui/material";
-import { useMutation, type ApolloQueryResult } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useUser } from "src/auth/user";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
-import {
-  type ProjectSummaryQuery,
-  type GetFundingLookupsQuery,
-} from "src/gql/graphql";
+import { type GetFundingLookupsQuery } from "src/gql/graphql";
 
 import {
   fieldBox,
@@ -42,7 +39,7 @@ interface ProjectSummaryECaprisProps {
   /** True if project summary refetch is loading */
   loading: boolean;
   /** refetch function from Apollo or batch of apollo refetch functions wrapped in one */
-  refetch: () => void | (() => Promise<ApolloQueryResult<ProjectSummaryQuery>>);
+  refetch: () => void;
   /** The function to show the snackbar */
   handleSnackbar: HandleSnackbar;
   /** Whether the edit functionality should be disabled, defaults to false */
