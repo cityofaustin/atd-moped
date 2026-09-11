@@ -320,7 +320,6 @@ export const useColumns = ({
     const presentFduStrings = new Set(
       (fdusArray ?? []).map((fdu) => fdu?.fdu).filter(Boolean)
     );
-    console.log(presentFduStrings, typeof presentFduStrings);
 
     return [
       {
