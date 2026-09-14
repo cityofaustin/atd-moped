@@ -10,6 +10,7 @@ import {
 import {
   type GridCellParams,
   type GridColDef,
+  type GridPreProcessEditCellProps,
   type GridRowId,
   type GridRowModesModel,
 } from "@mui/x-data-grid-pro";
@@ -483,14 +484,16 @@ export const useColumns = ({
             />
           );
         },
-        // TODO: Extend preProcessEditCellProps with errorMessage when migrating DollarAmountIntegerField to TS captured in #30004
-        preProcessEditCellProps: (params) => {
-          return {
-            ...params.props,
-            error: isAmountOutOfRange(params.props.value),
-            errorMessage: outOfRangeErrorMessage,
-          };
-        },
+        preProcessEditCellProps: (
+          params: GridPreProcessEditCellProps<
+            FundingRowFromQuery["funding_amount"],
+            FundingRowFromQuery
+          >
+        ) => ({
+          ...params.props,
+          error: isAmountOutOfRange(params.props.value),
+          errorMessage: outOfRangeErrorMessage,
+        }),
         valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,

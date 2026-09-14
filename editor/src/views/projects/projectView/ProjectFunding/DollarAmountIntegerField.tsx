@@ -4,37 +4,44 @@ import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
 } from "src/utils/numberFormatters";
-import { useGridApiContext } from "@mui/x-data-grid-pro";
+import {
+  useGridApiContext,
+  type GridRenderEditCellParams,
+  type GridValidRowModel,
+} from "@mui/x-data-grid-pro";
+
+interface DollarAmountIntegerFieldProps extends GridRenderEditCellParams<
+  GridValidRowModel,
+  string | number | null
+> {
+  /* If the input validation failed - injected by preProcessEditCellProps */
+  error?: boolean;
+  /* Error message text from input validation - injected by preProcessEditCellProps */
+  errorMessage?: string | null;
+}
 
 /**
  * MUI TextField wrapper that limits input to 0-9 for project funding amount
  * and handles editors pasting a number with a decimal Ex. $86,753.09 -> 86753
- * @param {Integer} id - Data Grid row id
- * @param {String} value - field value
- * @param {String} field - name of field
- * @param {Boolean} hasFocus - if field hasFocus
- * @param {Boolean} error - if input validation failed
- * @param {String} errorMessage - error message text from input validation
- * @return {JSX.Element}
  */
 const DollarAmountIntegerField = ({
   id,
   value,
   field,
   hasFocus,
-  error,
-  errorMessage,
-}) => {
+  error = false,
+  errorMessage = null,
+}: DollarAmountIntegerFieldProps) => {
   const apiRef = useGridApiContext();
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (hasFocus) {
-      ref.current.focus();
+      ref.current?.focus();
     }
   }, [hasFocus]);
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = event.target;
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
     const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(inputValue);
@@ -53,7 +60,7 @@ const DollarAmountIntegerField = ({
     <TextField
       variant="standard"
       style={{ minWidth: "80px" }}
-      id="funding_amount"
+      id={field}
       inputRef={ref}
       name="funding_amount"
       type="text"
