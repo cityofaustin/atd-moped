@@ -44,10 +44,7 @@ export type FundingRowFromQuery = FundingRowsFromQuery[number];
 /** Override types for DataGrid rows to workaround combined DB view id calculation being possibly null
  * and other field type overrides. See inline comments for each field for more details.
  */
-type SavedFundingRow = Omit<
-  FundingRowFromQuery,
-  "id" | "__typename" | "fdu"
-> & {
+type SavedFundingRow = Omit<FundingRowFromQuery, "id" | "fdu"> & {
   /** Override id type since source columns are not-nullable but codegen types DB view id as string | null */
   id: string;
   /** Override fdu type to be object for autocomplete and dependent field population */
@@ -93,7 +90,7 @@ export const transformDatabaseToGrid = (
   fundingRecords: FundingRowsFromQuery
 ): FundingRowForGrid[] => {
   return fundingRecords.map((record) => {
-    const { id, __typename, fdu, ...rest } = record;
+    const { id, fdu, ...rest } = record;
 
     // Match what FDU autocomplete uses for options and to populate dependent fields
     const fduAsOption: GridFDUOption | null = fdu

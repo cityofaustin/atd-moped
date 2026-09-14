@@ -1,28 +1,41 @@
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
+import Button, { type ButtonProps } from "@mui/material/Button";
 import { CheckCircleOutlined, ContentCopyOutlined } from "@mui/icons-material";
+import { type SvgIconProps, type IconButtonProps } from "@mui/material";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
+
+interface CopyTextButtonProps {
+  /** the text to be copied to clipboard */
+  textToCopy: string;
+  /** text to display on the button before copying */
+  copyButtonText?: string;
+  /** text to display on the button after copying for feedback */
+  copiedButtonText?: string;
+  /**  MUI Button props */
+  buttonProps?: ButtonProps;
+  /** MUI IconButton props */
+  iconButtonProps?: IconButtonProps;
+  /**  MUI Icon props */
+  iconProps?: SvgIconProps;
+  /**  duration in milliseconds before resetting copied state */
+  timeoutDuration?: number;
+  /** if true, renders an IconButton instead of a Button */
+  iconOnly?: boolean;
+}
 
 /**
  * Button component which copies text to clipboard
- * @param {string} textToCopy - the text to be copied to clipboard
- * @param {string} copyButtonText - text to display on the button before copying
- * @param {string} copiedButtonText - text to display on the button after copying for feedback
- * @param {object} buttonProps - MUI Button props
- * @param {object} iconProps - MUI Icon props
- * @param {number} timeoutDuration - duration in milliseconds before resetting copied state
- * @param {boolean} iconOnly - if true, renders an IconButton instead of a Button
- * @returns {JSX.Element}
  */
 const CopyTextButton = ({
   textToCopy,
   copyButtonText = "Copy to clipboard",
   copiedButtonText = "Copied!",
   buttonProps,
+  iconButtonProps,
   iconProps,
   timeoutDuration = 2000,
   iconOnly = false,
-}) => {
+}: CopyTextButtonProps) => {
   const [copied, setCopied] = useState(false);
   const buttonText = copied ? copiedButtonText : copyButtonText;
   const startIcon = copied ? (
@@ -57,7 +70,7 @@ const CopyTextButton = ({
         title={copied ? copiedButtonText : copyButtonText}
         onClick={handleCopyClick}
         ariaLabel={buttonText}
-        iconButtonProps={buttonProps}
+        iconButtonProps={iconButtonProps}
       >
         {startIcon}
       </IconButtonWithTooltip>

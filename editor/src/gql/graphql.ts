@@ -6224,46 +6224,29 @@ export type GetComponentsFormOptionsQueryVariables = Exact<{
 
 export type GetComponentsFormOptionsQuery = {
   moped_components: Array<{
-    __typename: "moped_components";
     component_id: number;
     component_name: string;
     component_subtype: string | null;
     line_representation: boolean;
-    feature_layer: { __typename: "feature_layers"; internal_table: string };
-    asset_feature_layer: {
-      __typename: "feature_layers";
-      internal_table: string;
-    } | null;
+    feature_layer: { internal_table: string };
+    asset_feature_layer: { internal_table: string } | null;
     moped_components_subcomponents: Array<{
-      __typename: "moped_components_subcomponents";
       moped_subcomponent: {
-        __typename: "moped_subcomponents";
         subcomponent_id: number;
         subcomponent_name: string;
       };
     }>;
     moped_component_work_types: Array<{
-      __typename: "moped_component_work_types";
-      moped_work_type: {
-        __typename: "moped_work_types";
-        id: number;
-        name: string;
-      };
+      moped_work_type: { id: number; name: string };
     }>;
   }>;
   moped_phases: Array<{
-    __typename: "moped_phases";
     phase_name: string;
     phase_id: number;
     phase_name_simple: string;
-    moped_subphases: Array<{
-      __typename: "moped_subphases";
-      subphase_id: number;
-      subphase_name: string;
-    }>;
+    moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
   }>;
   moped_component_tags: Array<{
-    __typename: "moped_component_tags";
     slug: string;
     id: number;
     full_name: string | null;
@@ -6275,14 +6258,10 @@ export type AddProjectComponentMutationVariables = Exact<{
 }>;
 
 export type AddProjectComponentMutation = {
-  insert_moped_proj_components_one: {
-    __typename: "moped_proj_components";
-    component_id: number;
-  } | null;
+  insert_moped_proj_components_one: { component_id: number } | null;
 };
 
 export type ProjectComponentFieldsFragment = {
-  __typename: "moped_proj_components";
   project_component_id: number;
   component_id: number;
   description: string | null;
@@ -6293,60 +6272,33 @@ export type ProjectComponentFieldsFragment = {
   srts_id: string | null;
   location_description: string | null;
   moped_components: {
-    __typename: "moped_components";
     component_id: number;
     component_name: string;
     component_subtype: string | null;
     line_representation: boolean;
-    feature_layer: { __typename: "feature_layers"; internal_table: string };
-    asset_feature_layer: {
-      __typename: "feature_layers";
-      internal_table: string;
-    } | null;
+    feature_layer: { internal_table: string };
+    asset_feature_layer: { internal_table: string } | null;
   };
   moped_proj_components_subcomponents: Array<{
-    __typename: "moped_proj_components_subcomponents";
     subcomponent_id: number;
-    moped_subcomponent: {
-      __typename: "moped_subcomponents";
-      subcomponent_name: string;
-    };
+    moped_subcomponent: { subcomponent_name: string };
   }>;
   moped_proj_component_work_types: Array<{
-    __typename: "moped_proj_component_work_types";
-    moped_work_type: {
-      __typename: "moped_work_types";
-      id: number;
-      name: string;
-    };
+    moped_work_type: { id: number; name: string };
   }>;
   moped_proj_component_tags: Array<{
-    __typename: "moped_proj_component_tags";
     component_tag_id: number;
-    moped_component_tag: {
-      __typename: "moped_component_tags";
-      full_name: string | null;
-    };
+    moped_component_tag: { full_name: string | null };
   }>;
   moped_phase: {
-    __typename: "moped_phases";
     phase_id: number;
     phase_name: string;
     phase_name_simple: string;
     phase_key: string;
-    moped_subphases: Array<{
-      __typename: "moped_subphases";
-      subphase_id: number;
-      subphase_name: string;
-    }>;
+    moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
   } | null;
-  moped_subphase: {
-    __typename: "moped_subphases";
-    subphase_id: number;
-    subphase_name: string;
-  } | null;
+  moped_subphase: { subphase_id: number; subphase_name: string } | null;
   feature_street_segments: Array<{
-    __typename: "feature_street_segments";
     id: number;
     source_layer: string;
     ctn_segment_id: number;
@@ -6354,7 +6306,6 @@ export type ProjectComponentFieldsFragment = {
     geometry: unknown;
   }>;
   feature_intersections: Array<{
-    __typename: "feature_intersections";
     id: number;
     source_layer: string;
     intersection_id: number;
@@ -6362,7 +6313,6 @@ export type ProjectComponentFieldsFragment = {
     geometry: unknown;
   }>;
   feature_signals: Array<{
-    __typename: "feature_signals";
     id: number;
     component_id: number;
     location_name: string;
@@ -6372,21 +6322,18 @@ export type ProjectComponentFieldsFragment = {
     geometry: unknown;
   }>;
   feature_drawn_lines: Array<{
-    __typename: "feature_drawn_lines";
     id: number;
     source_layer: string;
     component_id: number;
     geometry: unknown;
   }>;
   feature_drawn_points: Array<{
-    __typename: "feature_drawn_points";
     id: number;
     source_layer: string;
     component_id: number;
     geometry: unknown;
   }>;
   feature_school_beacons: Array<{
-    __typename: "feature_school_beacons";
     id: number;
     component_id: number;
     knack_id: string;
@@ -6405,47 +6352,36 @@ export type GetProjectComponentsQueryVariables = Exact<{
 }>;
 
 export type GetProjectComponentsQuery = {
-  moped_proj_components: Array<
-    { __typename: "moped_proj_components" } & {
-      " $fragmentRefs"?: {
-        ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-      };
-    }
-  >;
+  moped_proj_components: Array<{
+    " $fragmentRefs"?: {
+      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    };
+  }>;
   project_geography: Array<{
-    __typename: "project_geography";
     component_id: number | null;
     attributes: unknown;
     council_districts: Array<number> | null;
     length_feet: number | null;
     geometry: unknown;
   }>;
-  parentProjectComponents: Array<
-    { __typename: "moped_proj_components" } & {
+  parentProjectComponents: Array<{
+    " $fragmentRefs"?: {
+      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    };
+  }>;
+  siblingProjects: Array<{
+    moped_proj_components: Array<{
       " $fragmentRefs"?: {
         ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
       };
-    }
-  >;
-  siblingProjects: Array<{
-    __typename: "moped_project";
-    moped_proj_components: Array<
-      { __typename: "moped_proj_components" } & {
-        " $fragmentRefs"?: {
-          ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-        };
-      }
-    >;
+    }>;
   }>;
   childProjects: Array<{
-    __typename: "moped_project";
-    moped_proj_components: Array<
-      { __typename: "moped_proj_components" } & {
-        " $fragmentRefs"?: {
-          ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-        };
-      }
-    >;
+    moped_proj_components: Array<{
+      " $fragmentRefs"?: {
+        ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+      };
+    }>;
   }>;
 };
 
@@ -6476,46 +6412,16 @@ export type UpdateProjectComponentMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectComponentMutation = {
-  update_moped_proj_components_subcomponents: {
-    __typename: "moped_proj_components_subcomponents_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_component_work_types: {
-    __typename: "moped_proj_component_work_types_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_component_tags: {
-    __typename: "moped_proj_component_tags_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_components_by_pk: {
-    __typename: "moped_proj_components";
-    project_component_id: number;
-  } | null;
-  insert_moped_proj_components_subcomponents: {
-    __typename: "moped_proj_components_subcomponents_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_moped_proj_component_work_types: {
-    __typename: "moped_proj_component_work_types_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_signals: {
-    __typename: "feature_signals_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_moped_proj_component_tags: {
-    __typename: "moped_proj_component_tags_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_school_beacons: {
-    __typename: "feature_school_beacons_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_features: {
-    __typename: "features_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_components_subcomponents: { affected_rows: number } | null;
+  update_moped_proj_component_work_types: { affected_rows: number } | null;
+  update_moped_proj_component_tags: { affected_rows: number } | null;
+  update_moped_proj_components_by_pk: { project_component_id: number } | null;
+  insert_moped_proj_components_subcomponents: { affected_rows: number } | null;
+  insert_moped_proj_component_work_types: { affected_rows: number } | null;
+  insert_feature_signals: { affected_rows: number } | null;
+  insert_moped_proj_component_tags: { affected_rows: number } | null;
+  insert_feature_school_beacons: { affected_rows: number } | null;
+  update_features: { affected_rows: number } | null;
 };
 
 export type UpdateComponentFeaturesMutationVariables = Exact<{
@@ -6542,42 +6448,19 @@ export type UpdateComponentFeaturesMutationVariables = Exact<{
 }>;
 
 export type UpdateComponentFeaturesMutation = {
-  insert_feature_street_segments: {
-    __typename: "feature_street_segments_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_intersections: {
-    __typename: "feature_intersections_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_signals: {
-    __typename: "feature_signals_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_drawn_lines: {
-    __typename: "feature_drawn_lines_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_drawn_points: {
-    __typename: "feature_drawn_points_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_features_many: Array<{
-    __typename: "features_mutation_response";
-    affected_rows: number;
-  } | null> | null;
+  insert_feature_street_segments: { affected_rows: number } | null;
+  insert_feature_intersections: { affected_rows: number } | null;
+  insert_feature_signals: { affected_rows: number } | null;
+  insert_feature_drawn_lines: { affected_rows: number } | null;
+  insert_feature_drawn_points: { affected_rows: number } | null;
+  update_features_many: Array<{ affected_rows: number } | null> | null;
   update_feature_drawn_lines_many: Array<{
-    __typename: "feature_drawn_lines_mutation_response";
     affected_rows: number;
   } | null> | null;
   update_feature_drawn_points_many: Array<{
-    __typename: "feature_drawn_points_mutation_response";
     affected_rows: number;
   } | null> | null;
-  insert_feature_school_beacons: {
-    __typename: "feature_school_beacons_mutation_response";
-    affected_rows: number;
-  } | null;
+  insert_feature_school_beacons: { affected_rows: number } | null;
 };
 
 export type DeleteMopedComponentMutationVariables = Exact<{
@@ -6585,14 +6468,8 @@ export type DeleteMopedComponentMutationVariables = Exact<{
 }>;
 
 export type DeleteMopedComponentMutation = {
-  update_moped_proj_components_by_pk: {
-    __typename: "moped_proj_components";
-    project_component_id: number;
-  } | null;
-  update_moped_proj_components_subcomponents: {
-    __typename: "moped_proj_components_subcomponents_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_components_by_pk: { project_component_id: number } | null;
+  update_moped_proj_components_subcomponents: { affected_rows: number } | null;
 };
 
 export type UpdateComponentAttributesMutationVariables = Exact<{
@@ -6601,10 +6478,7 @@ export type UpdateComponentAttributesMutationVariables = Exact<{
 }>;
 
 export type UpdateComponentAttributesMutation = {
-  update_moped_proj_components_by_pk: {
-    __typename: "moped_proj_components";
-    project_component_id: number;
-  } | null;
+  update_moped_proj_components_by_pk: { project_component_id: number } | null;
 };
 
 export type GetCombinedProjectFundingQueryVariables = Exact<{
@@ -6613,7 +6487,6 @@ export type GetCombinedProjectFundingQueryVariables = Exact<{
 
 export type GetCombinedProjectFundingQuery = {
   combined_project_funding_view: Array<{
-    __typename: "combined_project_funding_view";
     id: string | null;
     fdu: string | null;
     program_name: string | null;
@@ -6629,10 +6502,8 @@ export type GetCombinedProjectFundingQuery = {
     funding_description: string | null;
     ecapris_funding_id: number | null;
     ecapris_funding_files: Array<{
-      __typename: "files_ecapris_funding";
       id: number;
       moped_project_file: {
-        __typename: "moped_project_files";
         project_file_id: number;
         file_url: string | null;
         file_key: string | null;
@@ -6640,10 +6511,8 @@ export type GetCombinedProjectFundingQuery = {
       };
     }>;
     moped_funding_files: Array<{
-      __typename: "files_project_funding";
       id: number;
       moped_project_file: {
-        __typename: "moped_project_files";
         project_file_id: number;
         file_url: string | null;
         file_key: string | null;
@@ -6651,7 +6520,6 @@ export type GetCombinedProjectFundingQuery = {
       };
     }>;
     ecapris_funding: {
-      __typename: "ecapris_subproject_funding";
       id: number;
       fdu: string;
       fao_id: number;
@@ -6661,17 +6529,14 @@ export type GetCombinedProjectFundingQuery = {
       app: number;
     } | null;
     moped_fund_source: {
-      __typename: "moped_fund_sources";
       funding_source_id: number;
       funding_source_name: string;
     } | null;
     moped_fund_program: {
-      __typename: "moped_fund_programs";
       funding_program_id: number;
       funding_program_name: string;
     } | null;
     moped_fund_status: {
-      __typename: "moped_fund_status";
       funding_status_id: number;
       funding_status_name: string;
     } | null;
@@ -6682,7 +6547,6 @@ export type GetFundingLookupsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetFundingLookupsQuery = {
   ecapris_subproject_funding: Array<{
-    __typename: "ecapris_subproject_funding";
     ecapris_subproject_id: string;
     fdu: string;
     unit_long_name: string;
@@ -6691,38 +6555,28 @@ export type GetFundingLookupsQuery = {
     ecapris_funding_id: number;
     amount: number;
     moped_fund_source: {
-      __typename: "moped_fund_sources";
       funding_source_id: number;
       funding_source_name: string;
     } | null;
     moped_fund_program: {
-      __typename: "moped_fund_programs";
       funding_program_id: number;
       funding_program_name: string;
     } | null;
   }>;
   ecapris_options: Array<{
-    __typename: "ecapris_subproject_funding";
     ecapris_subproject_id: string;
     subproject_name: string;
   }>;
-  moped_file_types: Array<{
-    __typename: "moped_file_types";
-    id: number;
-    name: string;
-  }>;
+  moped_file_types: Array<{ id: number; name: string }>;
   moped_fund_sources: Array<{
-    __typename: "moped_fund_sources";
     funding_source_id: number;
     funding_source_name: string;
   }>;
   moped_fund_programs: Array<{
-    __typename: "moped_fund_programs";
     funding_program_id: number;
     funding_program_name: string;
   }>;
   moped_fund_status: Array<{
-    __typename: "moped_fund_status";
     funding_status_id: number;
     funding_status_name: string;
   }>;
@@ -6734,7 +6588,6 @@ export type EcaprisFdusSubprojectQueryVariables = Exact<{
 
 export type EcaprisFdusSubprojectQuery = {
   ecapris_subproject_funding: Array<{
-    __typename: "ecapris_subproject_funding";
     fdu: string;
     unit_long_name: string;
     fdu_status: string | null;
@@ -6751,7 +6604,6 @@ export type EcaprisFduSubprojectQueryVariables = Exact<{
 
 export type EcaprisFduSubprojectQuery = {
   ecapris_subproject_funding: Array<{
-    __typename: "ecapris_subproject_funding";
     fdu: string;
     unit_long_name: string;
     fdu_status: string | null;
@@ -6775,10 +6627,7 @@ export type UpdateProjectFundingMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectFundingMutation = {
-  update_moped_proj_funding_by_pk: {
-    __typename: "moped_proj_funding";
-    proj_funding_id: number;
-  } | null;
+  update_moped_proj_funding_by_pk: { proj_funding_id: number } | null;
 };
 
 export type DeleteProjectFundingMutationVariables = Exact<{
@@ -6786,14 +6635,8 @@ export type DeleteProjectFundingMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectFundingMutation = {
-  update_moped_proj_funding: {
-    __typename: "moped_proj_funding_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_project_funding: {
-    __typename: "files_project_funding_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_funding: { affected_rows: number } | null;
+  update_files_project_funding: { affected_rows: number } | null;
 };
 
 export type DeleteProjectFundingAndReattachMutationVariables = Exact<{
@@ -6804,18 +6647,9 @@ export type DeleteProjectFundingAndReattachMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectFundingAndReattachMutation = {
-  update_moped_proj_funding: {
-    __typename: "moped_proj_funding_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_project_funding: {
-    __typename: "files_project_funding_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_files_ecapris_funding: {
-    __typename: "files_ecapris_funding_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_funding: { affected_rows: number } | null;
+  update_files_project_funding: { affected_rows: number } | null;
+  insert_files_ecapris_funding: { affected_rows: number } | null;
 };
 
 export type AddProjectFundingMutationVariables = Exact<{
@@ -6825,11 +6659,7 @@ export type AddProjectFundingMutationVariables = Exact<{
 
 export type AddProjectFundingMutation = {
   insert_moped_proj_funding: {
-    __typename: "moped_proj_funding_mutation_response";
-    returning: Array<{
-      __typename: "moped_proj_funding";
-      proj_funding_id: number;
-    }>;
+    returning: Array<{ proj_funding_id: number }>;
   } | null;
 };
 
@@ -6842,16 +6672,9 @@ export type AddProjectFundingAndReattachMutationVariables = Exact<{
 
 export type AddProjectFundingAndReattachMutation = {
   insert_moped_proj_funding: {
-    __typename: "moped_proj_funding_mutation_response";
-    returning: Array<{
-      __typename: "moped_proj_funding";
-      proj_funding_id: number;
-    }>;
+    returning: Array<{ proj_funding_id: number }>;
   } | null;
-  update_files_ecapris_funding: {
-    __typename: "files_ecapris_funding_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_files_ecapris_funding: { affected_rows: number } | null;
 };
 
 export type ProjectWorkActivityQueryVariables = Exact<{
@@ -6860,7 +6683,6 @@ export type ProjectWorkActivityQueryVariables = Exact<{
 
 export type ProjectWorkActivityQuery = {
   moped_proj_work_activity: Array<{
-    __typename: "moped_proj_work_activity";
     workgroup_contractor: string | null;
     id: number;
     project_id: number;
@@ -6874,34 +6696,20 @@ export type ProjectWorkActivityQuery = {
     task_orders: unknown;
     created_at: string;
     updated_at: string;
-    moped_work_activity_status: {
-      __typename: "moped_proj_work_activity_status";
-      id: number;
-      name: string | null;
-    };
+    moped_work_activity_status: { id: number; name: string | null };
     created_by_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
-      moped_workgroup: {
-        __typename: "moped_workgroup";
-        workgroup_name: string;
-      } | null;
+      moped_workgroup: { workgroup_name: string } | null;
     } | null;
     updated_by_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
-      moped_workgroup: {
-        __typename: "moped_workgroup";
-        workgroup_name: string;
-      } | null;
+      moped_workgroup: { workgroup_name: string } | null;
     } | null;
     work_activity_files: Array<{
-      __typename: "files_project_work_activities";
       id: number;
       moped_project_file: {
-        __typename: "moped_project_files";
         project_file_id: number;
         file_url: string | null;
         file_key: string | null;
@@ -6917,7 +6725,6 @@ export type WorkActivityStatusOptionsQueryVariables = Exact<{
 
 export type WorkActivityStatusOptionsQuery = {
   moped_proj_work_activity_status: Array<{
-    __typename: "moped_proj_work_activity_status";
     value: number;
     label: string | null;
   }>;
@@ -6928,10 +6735,7 @@ export type AddWorkActivityMutationVariables = Exact<{
 }>;
 
 export type AddWorkActivityMutation = {
-  insert_moped_proj_work_activity_one: {
-    __typename: "moped_proj_work_activity";
-    id: number;
-  } | null;
+  insert_moped_proj_work_activity_one: { id: number } | null;
 };
 
 export type UpdateWorkActivityMutationVariables = Exact<{
@@ -6942,14 +6746,8 @@ export type UpdateWorkActivityMutationVariables = Exact<{
 }>;
 
 export type UpdateWorkActivityMutation = {
-  update_moped_proj_work_activity_by_pk: {
-    __typename: "moped_proj_work_activity";
-    id: number;
-  } | null;
-  insert_moped_project_files: {
-    __typename: "moped_project_files_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_work_activity_by_pk: { id: number } | null;
+  insert_moped_project_files: { affected_rows: number } | null;
 };
 
 export type DeleteWorkActivityMutationVariables = Exact<{
@@ -6957,14 +6755,8 @@ export type DeleteWorkActivityMutationVariables = Exact<{
 }>;
 
 export type DeleteWorkActivityMutation = {
-  update_moped_proj_work_activity_by_pk: {
-    __typename: "moped_proj_work_activity";
-    id: number;
-  } | null;
-  update_files_project_work_activities: {
-    __typename: "files_project_work_activities_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_work_activity_by_pk: { id: number } | null;
+  update_files_project_work_activities: { affected_rows: number } | null;
 };
 
 export type AddProjectMutationVariables = Exact<{
@@ -6973,14 +6765,12 @@ export type AddProjectMutationVariables = Exact<{
 
 export type AddProjectMutation = {
   insert_moped_project_one: {
-    __typename: "moped_project";
     added_by: number | null;
     project_id: number;
     project_name: string;
     project_description: string;
     ecapris_subproject_id: string | null;
     moped_proj_phases: Array<{
-      __typename: "moped_proj_phases";
       phase_id: number;
       is_current_phase: boolean | null;
     }>;
@@ -6994,7 +6784,6 @@ export type ProjectSummaryQueryVariables = Exact<{
 
 export type ProjectSummaryQuery = {
   moped_project: Array<{
-    __typename: "moped_project";
     project_id: number;
     project_name: string;
     project_name_secondary: string | null;
@@ -7011,45 +6800,23 @@ export type ProjectSummaryQuery = {
     should_sync_ecapris_statuses: boolean;
     should_sync_ecapris_funding: boolean;
     moped_project: {
-      __typename: "moped_project";
       project_name: string;
       project_name_full: string | null;
     } | null;
     moped_proj_components: Array<{
-      __typename: "moped_proj_components";
       feature_signals: Array<{
-        __typename: "feature_signals";
         signal_id: number;
         knack_id: string;
         id: number;
       }>;
     }>;
-    moped_entity: {
-      __typename: "moped_entity";
-      entity_name: string;
-      entity_id: number;
-    } | null;
-    moped_project_lead: {
-      __typename: "moped_entity";
-      entity_name: string;
-      entity_id: number;
-    } | null;
+    moped_entity: { entity_name: string; entity_id: number } | null;
+    moped_project_lead: { entity_name: string; entity_id: number } | null;
     moped_proj_phases: Array<{
-      __typename: "moped_proj_phases";
-      moped_phase: {
-        __typename: "moped_phases";
-        phase_id: number;
-        phase_name: string;
-        phase_key: string;
-      };
+      moped_phase: { phase_id: number; phase_name: string; phase_key: string };
     }>;
-    moped_public_process_statuses: {
-      __typename: "moped_public_process_statuses";
-      id: number;
-      name: string;
-    } | null;
+    moped_public_process_statuses: { id: number; name: string } | null;
     project_list_view: {
-      __typename: "project_list_view";
       project_id: number | null;
       project_status_update: string | null;
       project_status_update_date_created: string | null;
@@ -7057,73 +6824,44 @@ export type ProjectSummaryQuery = {
     } | null;
   }>;
   moped_proj_partners: Array<{
-    __typename: "moped_proj_partners";
     proj_partner_id: number;
     project_id: number;
     entity_id: number;
-    moped_entity: {
-      __typename: "moped_entity";
-      entity_name: string;
-      entity_id: number;
-    };
+    moped_entity: { entity_name: string; entity_id: number };
   }>;
   moped_phases: Array<{
-    __typename: "moped_phases";
     phase_id: number;
     phase_name: string;
     phase_order: number | null;
   }>;
-  moped_entity: Array<{
-    __typename: "moped_entity";
-    entity_id: number;
-    entity_name: string;
-  }>;
+  moped_entity: Array<{ entity_id: number; entity_name: string }>;
   moped_note_types: Array<{
-    __typename: "moped_note_types";
     id: number;
     name: string;
     slug: string;
     source: string;
   }>;
-  moped_public_process_statuses: Array<{
-    __typename: "moped_public_process_statuses";
-    id: number;
-    name: string;
-  }>;
-  moped_user_followed_projects: Array<{
-    __typename: "moped_user_followed_projects";
-    project_id: number;
-    user_id: number;
-  }>;
+  moped_public_process_statuses: Array<{ id: number; name: string }>;
+  moped_user_followed_projects: Array<{ project_id: number; user_id: number }>;
   project_geography: Array<{
-    __typename: "project_geography";
     attributes: unknown;
     council_districts: Array<number> | null;
     geometry: unknown;
   }>;
-  moped_proj_components: Array<
-    { __typename: "moped_proj_components" } & {
+  moped_proj_components: Array<{
+    " $fragmentRefs"?: {
+      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    };
+  }>;
+  childProjects: Array<{
+    project_geography: Array<{ council_districts: Array<number> | null }>;
+    moped_proj_components: Array<{
       " $fragmentRefs"?: {
         ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
       };
-    }
-  >;
-  childProjects: Array<{
-    __typename: "moped_project";
-    project_geography: Array<{
-      __typename: "project_geography";
-      council_districts: Array<number> | null;
     }>;
-    moped_proj_components: Array<
-      { __typename: "moped_proj_components" } & {
-        " $fragmentRefs"?: {
-          ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-        };
-      }
-    >;
   }>;
   ecapris_subproject_funding: Array<{
-    __typename: "ecapris_subproject_funding";
     ecapris_subproject_id: string;
     subproject_name: string;
   }>;
@@ -7135,35 +6873,29 @@ export type TeamQueryQueryVariables = Exact<{
 
 export type TeamQueryQuery = {
   moped_project_by_pk: {
-    __typename: "moped_project";
     project_id: number;
     moped_proj_personnel: Array<{
-      __typename: "moped_proj_personnel";
       notes: string | null;
       project_personnel_id: number;
       created_at: string;
       created_by_user_id: number | null;
       is_deleted: boolean;
       moped_user: {
-        __typename: "moped_users";
         first_name: string;
         last_name: string;
         user_id: number;
         is_deleted: boolean;
         email: unknown;
         moped_workgroup: {
-          __typename: "moped_workgroup";
           workgroup_id: number;
           workgroup_name: string;
         } | null;
       };
       moped_proj_personnel_roles: Array<{
-        __typename: "moped_proj_personnel_roles";
         id: number;
         project_personnel_id: number;
         project_role_id: number;
         moped_project_role: {
-          __typename: "moped_project_roles";
           project_role_id: number;
           project_role_name: string;
           project_role_description: string | null;
@@ -7172,13 +6904,11 @@ export type TeamQueryQuery = {
     }>;
   } | null;
   moped_project_roles: Array<{
-    __typename: "moped_project_roles";
     project_role_id: number;
     project_role_name: string;
     project_role_description: string | null;
   }>;
   moped_users: Array<{
-    __typename: "moped_users";
     first_name: string;
     last_name: string;
     workgroup_id: number | null;
@@ -7186,11 +6916,7 @@ export type TeamQueryQuery = {
     is_deleted: boolean;
     email: unknown;
   }>;
-  moped_workgroup: Array<{
-    __typename: "moped_workgroup";
-    workgroup_id: number;
-    workgroup_name: string;
-  }>;
+  moped_workgroup: Array<{ workgroup_id: number; workgroup_name: string }>;
 };
 
 export type InserProjectPersonnelMutationVariables = Exact<{
@@ -7198,10 +6924,7 @@ export type InserProjectPersonnelMutationVariables = Exact<{
 }>;
 
 export type InserProjectPersonnelMutation = {
-  insert_moped_proj_personnel_one: {
-    __typename: "moped_proj_personnel";
-    project_personnel_id: number;
-  } | null;
+  insert_moped_proj_personnel_one: { project_personnel_id: number } | null;
 };
 
 export type UpdateProjectPersonnelMutationVariables = Exact<{
@@ -7214,18 +6937,9 @@ export type UpdateProjectPersonnelMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectPersonnelMutation = {
-  update_moped_proj_personnel_by_pk: {
-    __typename: "moped_proj_personnel";
-    project_personnel_id: number;
-  } | null;
-  update_moped_proj_personnel_roles: {
-    __typename: "moped_proj_personnel_roles_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_moped_proj_personnel_roles: {
-    __typename: "moped_proj_personnel_roles_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_personnel_by_pk: { project_personnel_id: number } | null;
+  update_moped_proj_personnel_roles: { affected_rows: number } | null;
+  insert_moped_proj_personnel_roles: { affected_rows: number } | null;
 };
 
 export type DeleteProjectPersonnelMutationVariables = Exact<{
@@ -7234,7 +6948,6 @@ export type DeleteProjectPersonnelMutationVariables = Exact<{
 
 export type DeleteProjectPersonnelMutation = {
   update_moped_proj_personnel_by_pk: {
-    __typename: "moped_proj_personnel";
     is_deleted: boolean;
     project_personnel_id: number;
   } | null;
@@ -7246,23 +6959,13 @@ export type TeamTimelineQueryVariables = Exact<{
 
 export type TeamTimelineQuery = {
   moped_phases: Array<{
-    __typename: "moped_phases";
     phase_id: number;
     phase_name: string;
     phase_order: number | null;
-    moped_subphases: Array<{
-      __typename: "moped_subphases";
-      subphase_name: string;
-      subphase_id: number;
-    }>;
+    moped_subphases: Array<{ subphase_name: string; subphase_id: number }>;
   }>;
-  moped_subphases: Array<{
-    __typename: "moped_subphases";
-    subphase_name: string;
-    subphase_id: number;
-  }>;
+  moped_subphases: Array<{ subphase_name: string; subphase_id: number }>;
   moped_proj_phases: Array<{
-    __typename: "moped_proj_phases";
     project_phase_id: number;
     is_current_phase: boolean | null;
     project_id: number;
@@ -7273,25 +6976,15 @@ export type TeamTimelineQuery = {
     is_phase_start_confirmed: boolean;
     is_phase_end_confirmed: boolean;
     phase_description: string | null;
-    moped_subphase: {
-      __typename: "moped_subphases";
-      subphase_id: number;
-      subphase_name: string;
-    } | null;
-    moped_phase: {
-      __typename: "moped_phases";
-      phase_id: number;
-      phase_name: string;
-    };
+    moped_subphase: { subphase_id: number; subphase_name: string } | null;
+    moped_phase: { phase_id: number; phase_name: string };
   }>;
   moped_milestones: Array<{
-    __typename: "moped_milestones";
     milestone_id: number;
     milestone_name: string;
     related_phase_id: number | null;
   }>;
   moped_proj_milestones: Array<{
-    __typename: "moped_proj_milestones";
     milestone_id: number;
     description: string | null;
     date_estimate: unknown;
@@ -7300,23 +6993,16 @@ export type TeamTimelineQuery = {
     project_milestone_id: number;
     project_id: number;
     moped_milestone: {
-      __typename: "moped_milestones";
       milestone_id: number;
       milestone_name: string;
       related_phase_id: number | null;
     };
   }>;
   project_list_view: Array<{
-    __typename: "project_list_view";
     substantial_completion_date: string | null;
     project_id: number | null;
   }>;
-  moped_note_types: Array<{
-    __typename: "moped_note_types";
-    id: number;
-    name: string;
-    slug: string;
-  }>;
+  moped_note_types: Array<{ id: number; name: string; slug: string }>;
 };
 
 export type AddProjectPhaseMutationVariables = Exact<{
@@ -7326,14 +7012,9 @@ export type AddProjectPhaseMutationVariables = Exact<{
 }>;
 
 export type AddProjectPhaseMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
   insert_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
     returning: Array<{
-      __typename: "moped_proj_phases";
       phase_id: number;
       phase_description: string | null;
       phase_start: string | null;
@@ -7354,14 +7035,9 @@ export type AddProjectPhaseWithStatusUpdateMutationVariables = Exact<{
 }>;
 
 export type AddProjectPhaseWithStatusUpdateMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
   insert_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
     returning: Array<{
-      __typename: "moped_proj_phases";
       phase_id: number;
       phase_description: string | null;
       phase_start: string | null;
@@ -7372,12 +7048,7 @@ export type AddProjectPhaseWithStatusUpdateMutation = {
     }>;
   } | null;
   insert_moped_proj_notes: {
-    __typename: "moped_proj_notes_mutation_response";
-    returning: Array<{
-      __typename: "moped_proj_notes";
-      project_id: number;
-      project_note: string;
-    }>;
+    returning: Array<{ project_id: number; project_note: string }>;
   } | null;
 };
 
@@ -7390,12 +7061,8 @@ export type ProjectPhasesMutationMutationVariables = Exact<{
 }>;
 
 export type ProjectPhasesMutationMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
   update_moped_proj_phases_by_pk: {
-    __typename: "moped_proj_phases";
     project_id: number;
     project_phase_id: number;
     phase_id: number;
@@ -7406,12 +7073,7 @@ export type ProjectPhasesMutationMutation = {
     phase_description: string | null;
   } | null;
   insert_moped_proj_notes: {
-    __typename: "moped_proj_notes_mutation_response";
-    returning: Array<{
-      __typename: "moped_proj_notes";
-      project_id: number;
-      project_note: string;
-    }>;
+    returning: Array<{ project_id: number; project_note: string }>;
   } | null;
 };
 
@@ -7420,10 +7082,7 @@ export type DeleteProjectPhaseMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectPhaseMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
 };
 
 export type ProjectMilestonesMutationMutationVariables = Exact<{
@@ -7437,7 +7096,6 @@ export type ProjectMilestonesMutationMutationVariables = Exact<{
 
 export type ProjectMilestonesMutationMutation = {
   update_moped_proj_milestones_by_pk: {
-    __typename: "moped_proj_milestones";
     project_id: number;
     project_milestone_id: number;
     date_estimate: unknown;
@@ -7452,10 +7110,7 @@ export type DeleteProjectMilestoneMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectMilestoneMutation = {
-  update_moped_proj_milestones: {
-    __typename: "moped_proj_milestones_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_milestones: { affected_rows: number } | null;
 };
 
 export type AddProjectMilestoneMutationVariables = Exact<{
@@ -7466,9 +7121,7 @@ export type AddProjectMilestoneMutationVariables = Exact<{
 
 export type AddProjectMilestoneMutation = {
   insert_moped_proj_milestones: {
-    __typename: "moped_proj_milestones_mutation_response";
     returning: Array<{
-      __typename: "moped_proj_milestones";
       milestone_id: number;
       description: string | null;
       date_estimate: unknown;
@@ -7486,7 +7139,6 @@ export type FollowProjectMutationVariables = Exact<{
 
 export type FollowProjectMutation = {
   insert_moped_user_followed_projects_one: {
-    __typename: "moped_user_followed_projects";
     project_id: number;
     user_id: number;
   } | null;
@@ -7498,10 +7150,7 @@ export type UnfollowProjectMutationVariables = Exact<{
 }>;
 
 export type UnfollowProjectMutation = {
-  delete_moped_user_followed_projects: {
-    __typename: "moped_user_followed_projects_mutation_response";
-    affected_rows: number;
-  } | null;
+  delete_moped_user_followed_projects: { affected_rows: number } | null;
 };
 
 export type GetMopedProjectChangesQueryVariables = Exact<{
@@ -7510,7 +7159,6 @@ export type GetMopedProjectChangesQueryVariables = Exact<{
 
 export type GetMopedProjectChangesQuery = {
   moped_activity_log: Array<{
-    __typename: "moped_activity_log";
     activity_id: unknown;
     created_at: string | null;
     record_project_id: number | null;
@@ -7519,7 +7167,6 @@ export type GetMopedProjectChangesQuery = {
     operation_type: string | null;
     record_data: unknown;
     updated_by_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
       picture: string | null;
@@ -7528,68 +7175,36 @@ export type GetMopedProjectChangesQuery = {
     } | null;
   }>;
   moped_users: Array<{
-    __typename: "moped_users";
     first_name: string;
     last_name: string;
     user_id: number;
     email: unknown;
   }>;
-  moped_phases: Array<{
-    __typename: "moped_phases";
-    phase_id: number;
-    phase_name: string;
-  }>;
-  moped_subphases: Array<{
-    __typename: "moped_subphases";
-    subphase_id: number;
-    subphase_name: string;
-  }>;
-  moped_milestones: Array<{
-    __typename: "moped_milestones";
-    milestone_id: number;
-    milestone_name: string;
-  }>;
-  moped_tags: Array<{ __typename: "moped_tags"; name: string; id: number }>;
-  moped_entity: Array<{
-    __typename: "moped_entity";
-    entity_id: number;
-    entity_name: string;
-  }>;
+  moped_phases: Array<{ phase_id: number; phase_name: string }>;
+  moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+  moped_milestones: Array<{ milestone_id: number; milestone_name: string }>;
+  moped_tags: Array<{ name: string; id: number }>;
+  moped_entity: Array<{ entity_id: number; entity_name: string }>;
   moped_fund_sources: Array<{
-    __typename: "moped_fund_sources";
     funding_source_id: number;
     funding_source_name: string;
   }>;
   moped_fund_programs: Array<{
-    __typename: "moped_fund_programs";
     funding_program_id: number;
     funding_program_name: string;
   }>;
   moped_fund_status: Array<{
-    __typename: "moped_fund_status";
     funding_status_id: number;
     funding_status_name: string;
   }>;
-  moped_public_process_statuses: Array<{
-    __typename: "moped_public_process_statuses";
-    id: number;
-    name: string;
-  }>;
+  moped_public_process_statuses: Array<{ id: number; name: string }>;
   moped_components: Array<{
-    __typename: "moped_components";
     component_id: number;
     component_name: string;
     component_subtype: string | null;
   }>;
-  deprecated_moped_types: Array<{
-    __typename: "deprecated_moped_types";
-    type_id: number;
-    type_name: string;
-  }>;
-  activity_log_lookup_tables: Array<{
-    __typename: "moped_activity_log";
-    record_type: string;
-  }>;
+  deprecated_moped_types: Array<{ type_id: number; type_name: string }>;
+  activity_log_lookup_tables: Array<{ record_type: string }>;
 };
 
 export type GetMopedProjectChangeDetailsQueryVariables = Exact<{
@@ -7598,7 +7213,6 @@ export type GetMopedProjectChangeDetailsQueryVariables = Exact<{
 
 export type GetMopedProjectChangeDetailsQuery = {
   moped_activity_log: Array<{
-    __typename: "moped_activity_log";
     activity_id: unknown;
     created_at: string | null;
     record_project_id: number | null;
@@ -7607,13 +7221,11 @@ export type GetMopedProjectChangeDetailsQuery = {
     description: unknown;
     operation_type: string | null;
     moped_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
       user_id: number;
     } | null;
     updated_by_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
       picture: string | null;
@@ -7621,10 +7233,7 @@ export type GetMopedProjectChangeDetailsQuery = {
       user_id: number;
     } | null;
   }>;
-  activity_log_lookup_tables: Array<{
-    __typename: "moped_activity_log";
-    record_type: string;
-  }>;
+  activity_log_lookup_tables: Array<{ record_type: string }>;
 };
 
 export type MopedProjectFilesQueryVariables = Exact<{
@@ -7633,7 +7242,6 @@ export type MopedProjectFilesQueryVariables = Exact<{
 
 export type MopedProjectFilesQuery = {
   moped_project_files: Array<{
-    __typename: "moped_project_files";
     project_file_id: number;
     project_id: number;
     file_key: string | null;
@@ -7645,18 +7253,9 @@ export type MopedProjectFilesQuery = {
     created_at: string;
     created_by_user_id: number;
     file_url: string | null;
-    moped_user: {
-      __typename: "moped_users";
-      user_id: number;
-      first_name: string;
-      last_name: string;
-    };
+    moped_user: { user_id: number; first_name: string; last_name: string };
   }>;
-  moped_file_types: Array<{
-    __typename: "moped_file_types";
-    id: number;
-    name: string;
-  }>;
+  moped_file_types: Array<{ id: number; name: string }>;
 };
 
 export type UpdateProjectFileAttachmentMutationVariables = Exact<{
@@ -7668,10 +7267,7 @@ export type UpdateProjectFileAttachmentMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectFileAttachmentMutation = {
-  update_moped_project_files: {
-    __typename: "moped_project_files_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project_files: { affected_rows: number } | null;
 };
 
 export type DeleteProjectFileAttachmentMutationVariables = Exact<{
@@ -7679,22 +7275,10 @@ export type DeleteProjectFileAttachmentMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectFileAttachmentMutation = {
-  update_moped_project_files: {
-    __typename: "moped_project_files_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_ecapris_funding: {
-    __typename: "files_ecapris_funding_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_project_funding: {
-    __typename: "files_project_funding_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_project_work_activities: {
-    __typename: "files_project_work_activities_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project_files: { affected_rows: number } | null;
+  update_files_ecapris_funding: { affected_rows: number } | null;
+  update_files_project_funding: { affected_rows: number } | null;
+  update_files_project_work_activities: { affected_rows: number } | null;
 };
 
 export type Insert_Single_ArticleMutationVariables = Exact<{
@@ -7702,10 +7286,7 @@ export type Insert_Single_ArticleMutationVariables = Exact<{
 }>;
 
 export type Insert_Single_ArticleMutation = {
-  insert_moped_project_files: {
-    __typename: "moped_project_files_mutation_response";
-    affected_rows: number;
-  } | null;
+  insert_moped_project_files: { affected_rows: number } | null;
 };
 
 export type InsertFileWithEcaprisConnectionMutationVariables = Exact<{
@@ -7714,12 +7295,8 @@ export type InsertFileWithEcaprisConnectionMutationVariables = Exact<{
 
 export type InsertFileWithEcaprisConnectionMutation = {
   insert_moped_project_files_one: {
-    __typename: "moped_project_files";
     project_file_id: number;
-    files_ecapris_fundings: Array<{
-      __typename: "files_ecapris_funding";
-      id: number;
-    }>;
+    files_ecapris_fundings: Array<{ id: number }>;
   } | null;
 };
 
@@ -7728,10 +7305,7 @@ export type DetachFileEcaprisFundingMutationVariables = Exact<{
 }>;
 
 export type DetachFileEcaprisFundingMutation = {
-  update_files_ecapris_funding_by_pk: {
-    __typename: "files_ecapris_funding";
-    id: number;
-  } | null;
+  update_files_ecapris_funding_by_pk: { id: number } | null;
 };
 
 export type InsertFileWithMopedFundingConnectionMutationVariables = Exact<{
@@ -7740,12 +7314,8 @@ export type InsertFileWithMopedFundingConnectionMutationVariables = Exact<{
 
 export type InsertFileWithMopedFundingConnectionMutation = {
   insert_moped_project_files_one: {
-    __typename: "moped_project_files";
     project_file_id: number;
-    files_project_fundings: Array<{
-      __typename: "files_project_funding";
-      id: number;
-    }>;
+    files_project_fundings: Array<{ id: number }>;
   } | null;
 };
 
@@ -7754,10 +7324,7 @@ export type DetachFileMopedFundingMutationVariables = Exact<{
 }>;
 
 export type DetachFileMopedFundingMutation = {
-  update_files_project_funding_by_pk: {
-    __typename: "files_project_funding";
-    id: number;
-  } | null;
+  update_files_project_funding_by_pk: { id: number } | null;
 };
 
 export type AttachExistingFileToEcaprisFundingMutationVariables = Exact<{
@@ -7765,10 +7332,7 @@ export type AttachExistingFileToEcaprisFundingMutationVariables = Exact<{
 }>;
 
 export type AttachExistingFileToEcaprisFundingMutation = {
-  insert_files_ecapris_funding_one: {
-    __typename: "files_ecapris_funding";
-    id: number;
-  } | null;
+  insert_files_ecapris_funding_one: { id: number } | null;
 };
 
 export type AttachExistingFileToMopedFundingMutationVariables = Exact<{
@@ -7776,10 +7340,7 @@ export type AttachExistingFileToMopedFundingMutationVariables = Exact<{
 }>;
 
 export type AttachExistingFileToMopedFundingMutation = {
-  insert_files_project_funding_one: {
-    __typename: "files_project_funding";
-    id: number;
-  } | null;
+  insert_files_project_funding_one: { id: number } | null;
 };
 
 export type InsertFileWithWorkActivityConnectionMutationVariables = Exact<{
@@ -7788,12 +7349,8 @@ export type InsertFileWithWorkActivityConnectionMutationVariables = Exact<{
 
 export type InsertFileWithWorkActivityConnectionMutation = {
   insert_moped_project_files_one: {
-    __typename: "moped_project_files";
     project_file_id: number;
-    files_project_work_activities: Array<{
-      __typename: "files_project_work_activities";
-      id: number;
-    }>;
+    files_project_work_activities: Array<{ id: number }>;
   } | null;
 };
 
@@ -7802,10 +7359,7 @@ export type AttachExistingFileToWorkActivityMutationVariables = Exact<{
 }>;
 
 export type AttachExistingFileToWorkActivityMutation = {
-  insert_files_project_work_activities_one: {
-    __typename: "files_project_work_activities";
-    id: number;
-  } | null;
+  insert_files_project_work_activities_one: { id: number } | null;
 };
 
 export type DetachFileWorkActivityMutationVariables = Exact<{
@@ -7813,20 +7367,13 @@ export type DetachFileWorkActivityMutationVariables = Exact<{
 }>;
 
 export type DetachFileWorkActivityMutation = {
-  update_files_project_work_activities_by_pk: {
-    __typename: "files_project_work_activities";
-    id: number;
-  } | null;
+  update_files_project_work_activities_by_pk: { id: number } | null;
 };
 
 export type FileTypesLookupQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FileTypesLookupQuery = {
-  moped_file_types: Array<{
-    __typename: "moped_file_types";
-    id: number;
-    name: string;
-  }>;
+  moped_file_types: Array<{ id: number; name: string }>;
 };
 
 export type ArchiveMopedProjectMutationVariables = Exact<{
@@ -7834,21 +7381,14 @@ export type ArchiveMopedProjectMutationVariables = Exact<{
 }>;
 
 export type ArchiveMopedProjectMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
-  clear_parent_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
+  clear_parent_project: { affected_rows: number } | null;
 };
 
 export type GetSignalComponentsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetSignalComponentsQuery = {
   moped_components: Array<{
-    __typename: "moped_components";
     component_name: string;
     component_subtype: string | null;
     component_id: number;
@@ -7874,10 +7414,7 @@ export type ProjectUpdateSponsorMutationVariables = Exact<{
 }>;
 
 export type ProjectUpdateSponsorMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    project_sponsor: number | null;
-  } | null;
+  update_moped_project_by_pk: { project_sponsor: number | null } | null;
 };
 
 export type ProjectUpdateLeadMutationVariables = Exact<{
@@ -7886,10 +7423,7 @@ export type ProjectUpdateLeadMutationVariables = Exact<{
 }>;
 
 export type ProjectUpdateLeadMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    project_lead_id: number | null;
-  } | null;
+  update_moped_project_by_pk: { project_lead_id: number | null } | null;
 };
 
 export type ProjectUpdatePublicProcessMutationVariables = Exact<{
@@ -7899,7 +7433,6 @@ export type ProjectUpdatePublicProcessMutationVariables = Exact<{
 
 export type ProjectUpdatePublicProcessMutation = {
   update_moped_project_by_pk: {
-    __typename: "moped_project";
     public_process_status_id: number | null;
   } | null;
 };
@@ -7911,14 +7444,8 @@ export type UpdateMopedProjectPartnersMutationVariables = Exact<{
 }>;
 
 export type UpdateMopedProjectPartnersMutation = {
-  insert_moped_proj_partners: {
-    __typename: "moped_proj_partners_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_partners: {
-    __typename: "moped_proj_partners_mutation_response";
-    affected_rows: number;
-  } | null;
+  insert_moped_proj_partners: { affected_rows: number } | null;
+  update_moped_proj_partners: { affected_rows: number } | null;
 };
 
 export type UpdateProjectWebsiteMutationVariables = Exact<{
@@ -7927,10 +7454,7 @@ export type UpdateProjectWebsiteMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectWebsiteMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectDescriptionMutationVariables = Exact<{
@@ -7939,10 +7463,7 @@ export type UpdateProjectDescriptionMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectDescriptionMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectECaprisMutationVariables = Exact<{
@@ -7951,10 +7472,7 @@ export type UpdateProjectECaprisMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectECaprisClearMutationVariables = Exact<{
@@ -7962,10 +7480,7 @@ export type UpdateProjectECaprisClearMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisClearMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectInterimIdMutationVariables = Exact<{
@@ -7974,10 +7489,7 @@ export type UpdateProjectInterimIdMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectInterimIdMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    interim_project_id: number | null;
-  } | null;
+  update_moped_project_by_pk: { interim_project_id: number | null } | null;
 };
 
 export type ClearProjectInterimIdMutationVariables = Exact<{
@@ -7985,10 +7497,7 @@ export type ClearProjectInterimIdMutationVariables = Exact<{
 }>;
 
 export type ClearProjectInterimIdMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    interim_project_id: number | null;
-  } | null;
+  update_moped_project_by_pk: { interim_project_id: number | null } | null;
 };
 
 export type UpdateProjectECaprisSyncMutationVariables = Exact<{
@@ -7997,10 +7506,7 @@ export type UpdateProjectECaprisSyncMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisSyncMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectECaprisFundingSyncMutationVariables = Exact<{
@@ -8009,10 +7515,7 @@ export type UpdateProjectECaprisFundingSyncMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisFundingSyncMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectNameMutationVariables = Exact<{
@@ -8023,7 +7526,6 @@ export type UpdateProjectNameMutationVariables = Exact<{
 
 export type UpdateProjectNameMutation = {
   update_moped_project_by_pk: {
-    __typename: "moped_project";
     project_name: string;
     project_name_secondary: string | null;
   } | null;
@@ -8033,52 +7535,28 @@ export type ProjectLookupsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProjectLookupsQuery = {
   moped_fund_sources: Array<{
-    __typename: "moped_fund_sources";
     funding_source_id: number;
     funding_source_name: string;
   }>;
   moped_fund_programs: Array<{
-    __typename: "moped_fund_programs";
     funding_program_id: number;
     funding_program_name: string;
   }>;
-  moped_entity: Array<{
-    __typename: "moped_entity";
-    entity_id: number;
-    entity_name: string;
-  }>;
-  moped_tags: Array<{ __typename: "moped_tags"; name: string; id: number }>;
-  moped_public_process_statuses: Array<{
-    __typename: "moped_public_process_statuses";
-    name: string;
-    id: number;
-  }>;
+  moped_entity: Array<{ entity_id: number; entity_name: string }>;
+  moped_tags: Array<{ name: string; id: number }>;
+  moped_public_process_statuses: Array<{ name: string; id: number }>;
   moped_users: Array<{
-    __typename: "moped_users";
     first_name: string;
     last_name: string;
     user_id: number;
   }>;
-  moped_phases: Array<{
-    __typename: "moped_phases";
-    phase_id: number;
-    phase_name: string;
-  }>;
+  moped_phases: Array<{ phase_id: number; phase_name: string }>;
   moped_components: Array<{
-    __typename: "moped_components";
     component_id: number;
     component_name_full: string | null;
   }>;
-  layer_council_district: Array<{
-    __typename: "layer_council_district";
-    id: number;
-    council_district: number;
-  }>;
-  moped_work_types: Array<{
-    __typename: "moped_work_types";
-    id: number;
-    name: string;
-  }>;
+  layer_council_district: Array<{ id: number; council_district: number }>;
+  moped_work_types: Array<{ id: number; name: string }>;
 };
 
 export type ProjectOptionsQueryVariables = Exact<{
@@ -8087,7 +7565,6 @@ export type ProjectOptionsQueryVariables = Exact<{
 
 export type ProjectOptionsQuery = {
   moped_project: Array<{
-    __typename: "moped_project";
     project_id: number;
     project_name_full: string | null;
   }>;
@@ -8099,7 +7576,6 @@ export type GetProjectsComponentsQueryVariables = Exact<{
 
 export type GetProjectsComponentsQuery = {
   project_geography: Array<{
-    __typename: "project_geography";
     project_id: number | null;
     project_name: string | null;
     component_id: number | null;
