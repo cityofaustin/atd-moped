@@ -396,7 +396,7 @@ export const useColumns = ({
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_source_id}
               currentValue={row.moped_fund_source?.funding_source_id}
-              displayValue={row.moped_fund_source?.funding_source_name}
+              displayValue={row.moped_fund_source?.funding_source_name ?? null}
             />
           );
         },
@@ -425,7 +425,9 @@ export const useColumns = ({
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_program_id}
               currentValue={row.moped_fund_program?.funding_program_id}
-              displayValue={row.moped_fund_program?.funding_program_name}
+              displayValue={
+                row.moped_fund_program?.funding_program_name ?? null
+              }
             />
           );
         },
@@ -491,7 +493,7 @@ export const useColumns = ({
           >
         ) => ({
           ...params.props,
-          error: isAmountOutOfRange(params.props.value),
+          error: isAmountOutOfRange(params.props.value ?? null),
           errorMessage: outOfRangeErrorMessage,
         }),
         valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>

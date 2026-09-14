@@ -5,8 +5,13 @@ interface EcaprisOverridableCellProps {
   row: SavedFundingRow;
   ecaprisValue?: number | null;
   currentValue?: number | null;
-  displayValue?: string | number | null;
+  displayValue: string | number | null;
 }
+
+type GetShowOverrideIndicatorProps = Omit<
+  EcaprisOverridableCellProps,
+  "displayValue"
+>;
 
 /**
  * Helper to determine if the eCAPRIS override indicator should be shown for a cell
@@ -15,7 +20,7 @@ const getShowOverrideIndicator = ({
   row,
   ecaprisValue,
   currentValue,
-}: EcaprisOverridableCellProps) => {
+}: GetShowOverrideIndicatorProps) => {
   const hasValue = currentValue !== null && currentValue !== undefined;
   const isOverridden = ecaprisValue !== currentValue;
   return (
