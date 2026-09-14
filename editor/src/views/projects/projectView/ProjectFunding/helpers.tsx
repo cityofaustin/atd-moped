@@ -10,6 +10,7 @@ import {
 import {
   type GridCellParams,
   type GridColDef,
+  type GridPreProcessEditCellProps,
   type GridRowId,
   type GridRowModesModel,
 } from "@mui/x-data-grid-pro";
@@ -56,7 +57,7 @@ export type FundingRowFromQuery = FundingRowsFromQuery[number];
  * @param {Object} lookupData - object containing lookup arrays from the database
  * @return {Array} - array of transformed funding records for data grid
  */
-type SavedFundingRow = Omit<
+export type SavedFundingRow = Omit<
   FundingRowFromQuery,
   "id" | "__typename" | "fdu"
 > & {
@@ -137,10 +138,8 @@ export const transformGridToInsertInput = (
   row: FundingRowForGrid
 ): AddProjectFundingMutationVariables["fundingObjects"] => {
   // If user changes the autopopulated FDU amount from eCAPRIS while drafting, record begins as override
-  // TODO: Remove type coercion when DollarAmountIntegerField migrates to TS (#30004)
-  const rawAmount = row.funding_amount as number | string | null;
-  const fundingAmount =
-    rawAmount === null || rawAmount === "" ? null : Number(rawAmount);
+  const rawAmount = row.funding_amount;
+  const fundingAmount = rawAmount === null ? null : Number(rawAmount);
   const shouldUseEcaprisAmount =
     row.fdu !== null &&
     fundingAmount !== null &&
@@ -395,7 +394,7 @@ export const useColumns = ({
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_source_id}
               currentValue={row.moped_fund_source?.funding_source_id}
-              displayValue={row.moped_fund_source?.funding_source_name}
+              displayValue={row.moped_fund_source?.funding_source_name ?? null}
             />
           );
         },
@@ -424,7 +423,9 @@ export const useColumns = ({
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_program_id}
               currentValue={row.moped_fund_program?.funding_program_id}
-              displayValue={row.moped_fund_program?.funding_program_name}
+              displayValue={
+                row.moped_fund_program?.funding_program_name ?? null
+              }
             />
           );
         },
@@ -483,14 +484,16 @@ export const useColumns = ({
             />
           );
         },
-        // TODO: Extend preProcessEditCellProps with errorMessage when migrating DollarAmountIntegerField to TS captured in #30004
-        preProcessEditCellProps: (params) => {
-          return {
-            ...params.props,
-            error: isAmountOutOfRange(params.props.value),
-            errorMessage: outOfRangeErrorMessage,
-          };
-        },
+        preProcessEditCellProps: (
+          params: GridPreProcessEditCellProps<
+            FundingRowFromQuery["funding_amount"],
+            FundingRowFromQuery
+          >
+        ) => ({
+          ...params.props,
+          error: isAmountOutOfRange(params.props.value ?? null),
+          errorMessage: outOfRangeErrorMessage,
+        }),
         valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
