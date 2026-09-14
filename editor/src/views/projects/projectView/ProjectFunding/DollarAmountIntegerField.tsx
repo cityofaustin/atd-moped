@@ -46,13 +46,15 @@ const DollarAmountIntegerField = ({
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
     const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(inputValue);
 
-    // Then, remove all non-integers
+    // Then, remove all non-integers and coerce string to number
     const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
+    const numericValue =
+      valueWithIntegersOnly === "" ? null : Number(valueWithIntegersOnly);
 
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: valueWithIntegersOnly,
+      value: numericValue,
     });
   };
 
