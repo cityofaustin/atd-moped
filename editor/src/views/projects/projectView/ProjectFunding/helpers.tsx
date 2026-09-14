@@ -57,7 +57,7 @@ export type FundingRowFromQuery = FundingRowsFromQuery[number];
  * @param {Object} lookupData - object containing lookup arrays from the database
  * @return {Array} - array of transformed funding records for data grid
  */
-type SavedFundingRow = Omit<
+export type SavedFundingRow = Omit<
   FundingRowFromQuery,
   "id" | "__typename" | "fdu"
 > & {
