@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect, type RefObject } from "react";
 import {
   type GridApi,
   type DataGridProProps,
+  type GridRowId,
   type GridRowClassNameParams,
   type GridRowIdGetter,
   type GridValidRowModel,
@@ -26,7 +27,7 @@ type RowEditStartHandler<R extends GridValidRowModel> = NonNullable<
 >;
 
 type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
-  apiRef: React.RefObject<GridApi | null>;
+  apiRef: RefObject<GridApi | null>;
   eventHandlers: HighlightEventHandlers<R>;
   getRowClassName?: (params: GridRowClassNameParams<R>) => string;
   getRowId?: GridRowIdGetter<R>;
@@ -48,7 +49,11 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     : null;
 
   useEffect(() => {
-    if (highlightedRowId === null || rows.length === 0 || apiRef.current === null) {
+    if (
+      highlightedRowId === null ||
+      rows.length === 0 ||
+      apiRef.current === null
+    ) {
       return;
     }
 
@@ -88,7 +93,7 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
       .join(" ");
   };
 
-  const clearHighlightForRow = (rowId: string | number) => {
+  const clearHighlightForRow = (rowId: GridRowId) => {
     if (
       highlightRowParam &&
       highlightedRowId !== null &&
