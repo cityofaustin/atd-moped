@@ -31,7 +31,7 @@ Amplify.configure({
         "phone",
         "profile",
       ],
-      redirectSignIn: config.cognito.REDIRECT_SIGN_OUT,
+      redirectSignIn: config.cognito.REDIRECT_SIGN_IN,
       redirectSignOut: config.cognito.REDIRECT_SIGN_OUT,
       responseType: "code",
     },

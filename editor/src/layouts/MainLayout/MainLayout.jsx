@@ -33,9 +33,7 @@ const MainLayout = () => {
     return <Navigate to="/moped" replace />;
   }
 
-  return user ? (
-    <Navigate to="/moped" />
-  ) : (
+  return (
     <Box
       sx={(theme) => ({
         backgroundColor: theme.palette.background.default,

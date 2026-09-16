@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useRoutes } from "react-router";
 import { ThemeProvider } from "@mui/material";
-import { StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import theme, { globalStyles } from "src/theme";
 import { restrictedRoutes } from "src/routes";
@@ -43,6 +43,9 @@ const useApolloClient = () => {
 
     const authLink = setContext(async (_, { headers }) => {
       const session = await getCognitoSession();
+
+      // If unauthenticated, send the request without auth headers for Hasura to reject
+      if (!session) return { headers };
       const token = getCognitoIdJwt(session);
       const role = getHighestRole(session);
 

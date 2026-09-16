@@ -123,7 +123,7 @@ export const initializeUserDBObject = async (session) => {
 export const useUser = () => {
   const context = useContext(UserContext);
 
-  if (context === undefined) {
+  if (!context) {
     throw new Error(
       "`useUser` hook must be used within a `UserProvider` component"
     );
@@ -131,13 +131,13 @@ export const useUser = () => {
   return context;
 };
 
-/** Retrieves the Hasura claims from the Cognito user session.
- * @param {Object} user - The id token payload containing ID token and claims.
+/** Retrieves the Hasura claims from the Cognito session.
+ * @param {Object} session - The Cognito session
  * @returns {Object|null} The Hasura claims or null if not found.
  */
-export const getHasuraClaims = (user) => {
+export const getHasuraClaims = (session) => {
   try {
-    return JSON.parse(user.idToken.payload["https://hasura.io/jwt/claims"]);
+    return JSON.parse(session.idToken.payload["https://hasura.io/jwt/claims"]);
   } catch {
     return null;
   }
@@ -158,38 +158,31 @@ export const getDatabaseId = (user) => {
   }
 };
 
+export const ROLE_ORDER = [
+  "moped-admin",
+  "moped-editor",
+  "moped-viewer",
+  nonLoginUserRole,
+];
+
 /**
  * Find the highest role in user roles for UI permissions
- * @param {array} roles - Array of user roles
- * @return {string} Highest user role
+ * @param {array|null} roles - Array of user roles
+ * @return {string|null} Highest user role
  */
 export const findHighestRole = (roles) => {
-  if (roles === null) return null;
-
-  const findRole = (role) => roles.includes(role) && roles;
-
-  switch (roles) {
-    case findRole("moped-admin"):
-      return "moped-admin";
-    case findRole("moped-editor"):
-      return "moped-editor";
-    case findRole("moped-viewer"):
-      return "moped-viewer";
-    case findRole(nonLoginUserRole):
-      return nonLoginUserRole;
-    default:
-  }
+  if (!roles) return null;
+  return ROLE_ORDER.find((role) => roles.includes(role)) ?? null;
 };
 
 /**
- * Get the role with the highest permissions level from Cognito user session.
- * @param {object} user - Cognito User session containing roles in the token
- * @return {string} Highest user role
+ * Get the role with the highest permissions level from Cognito session.
+ * @param {object} session - Cognito session containing roles in the token
+ * @return {string|null} Highest user role
  */
-export const getHighestRole = (user) => {
-  const claims = user.idToken.payload["https://hasura.io/jwt/claims"];
+export const getHighestRole = (session) => {
+  const claims = getHasuraClaims(session);
+  if (!claims) return null;
 
-  const allowedRoles = JSON.parse(claims)["x-hasura-allowed-roles"];
-
-  return findHighestRole(allowedRoles);
+  return findHighestRole(claims["x-hasura-allowed-roles"]);
 };
