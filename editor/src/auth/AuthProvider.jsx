@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
   const [state, setState] = useState({ status: "initializing" });
 
   /**
-   * Resolve the current session into auth state. Safe to call repeatedly.
+   * Resolve the current session into auth state
    */
   const resolveSession = useCallback(async () => {
     const session = await getCognitoSession();
@@ -41,7 +41,7 @@ const AuthProvider = ({ children }) => {
       ? findHighestRole(claims["x-hasura-allowed-roles"])
       : null;
 
-    // A session we can't derive a Hasura role from is unusable, so sign out
+    // A session we can't retrieve a Hasura role from is unusable, so sign out
     // rather than leaving the user on a page where every query will fail.
     if (!role) {
       console.error("No Hasura role found in Cognito session");
@@ -50,7 +50,8 @@ const AuthProvider = ({ children }) => {
     }
 
     try {
-      // TODO: Remove localStorage cache and rely solely on context for mopedUser.
+      // TODO: Remove localStorage cache and fetch user data when needed for a view
+      // to prevent de-synchronization between the local cache and the database
       const mopedUser = await initializeUserDBObject(session);
       setSessionDatabaseData(mopedUser);
 
@@ -63,8 +64,8 @@ const AuthProvider = ({ children }) => {
 
   /**
    * Check for an existing session on mount and subscribe to auth events.
-   * Hub is the only other writer of auth state, which is what makes the
-   * password and SSO paths identical from here on.
+   * Hub is the only other writer of auth state and is the source of truth
+   * for auth changes.
    */
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- resolveSession is async; the first setState happens after awaiting Amplify
@@ -106,9 +107,8 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   /**
-   * Sign in with Azure AD. Redirects away from the app, so nothing after this
-   * call runs — state is set when the browser returns and the effect above
-   * resolves the session.
+   * Sign in with Azure AD. Redirects away from the app. State is set when
+   * the browser returns and the useEffect resolves the session.
    */
   const loginSSO = useCallback(
     () => Auth.federatedSignIn({ provider: "AzureAD" }),
