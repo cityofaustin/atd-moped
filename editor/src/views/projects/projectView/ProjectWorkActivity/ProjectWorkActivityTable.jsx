@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useQuery, useMutation } from "@apollo/client";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Button, Divider, Stack, IconButton } from "@mui/material";

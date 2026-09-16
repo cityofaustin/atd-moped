@@ -1,10 +1,10 @@
 import React from "react";
-import Link, { LinkProps } from "@mui/material/Link";
+import Link, { type LinkProps } from "@mui/material/Link";
 import {
   Link as RouterLink,
   useParams,
   useSearchParams,
-} from "react-router-dom";
+} from "react-router";
 import { getProjectTimelinePath } from "src/utils/projectTimeline";
 
 interface ProjectTimelineLinkProps extends Omit<LinkProps, "href"> {

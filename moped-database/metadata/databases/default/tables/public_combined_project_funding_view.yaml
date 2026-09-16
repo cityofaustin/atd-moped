@@ -11,6 +11,33 @@ object_relationships:
         remote_table:
           name: ecapris_subproject_funding
           schema: public
+  - name: moped_fund_program
+    using:
+      manual_configuration:
+        column_mapping:
+          funding_program_id: funding_program_id
+        insertion_order: null
+        remote_table:
+          name: moped_fund_programs
+          schema: public
+  - name: moped_fund_source
+    using:
+      manual_configuration:
+        column_mapping:
+          funding_source_id: funding_source_id
+        insertion_order: null
+        remote_table:
+          name: moped_fund_sources
+          schema: public
+  - name: moped_fund_status
+    using:
+      manual_configuration:
+        column_mapping:
+          funding_status_id: funding_status_id
+        insertion_order: null
+        remote_table:
+          name: moped_fund_status
+          schema: public
 array_relationships:
   - name: ecapris_funding_files
     using:

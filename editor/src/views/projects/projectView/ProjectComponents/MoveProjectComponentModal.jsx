@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client";
 import MoveComponentForm from "./MoveComponentForm";
 import { Typography } from "@mui/material";
 import FormDialog from "src/components/FormDialog";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router";
 import { UPDATE_COMPONENT_PROJECT_ID } from "src/queries/components";
 import theme from "src/theme/index";
 

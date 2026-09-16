@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { Outlet, Navigate, useLocation } from "react-router";
 import { useUser } from "src/auth/user";
 import Box from "@mui/material/Box";
 
@@ -24,6 +24,9 @@ const MainLayout = () => {
       // Reconstruct the full URL with pathname, search, and hash
       const redirectTo =
         from.pathname + (from.search || "") + (from.hash || "");
+      if (redirectTo === "/moped/logout") {
+        return <Navigate to="/moped" replace />;
+      }
       return <Navigate to={redirectTo} replace />;
     }
     // Default redirect if no preserved route

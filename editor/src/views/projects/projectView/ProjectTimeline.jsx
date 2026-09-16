@@ -6,7 +6,7 @@ import { Grid } from "@mui/material";
 // Query
 import { TIMELINE_QUERY } from "src/queries/project";
 import { useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import ProjectPhases from "src/views/projects/projectView/ProjectPhases";
 import ProjectMilestones from "src/views/projects/projectView/ProjectMilestones";

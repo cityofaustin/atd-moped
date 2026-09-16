@@ -5,7 +5,7 @@ import {
   useParams,
   useSearchParams,
   useLocation,
-} from "react-router-dom";
+} from "react-router";
 import { ErrorBoundary } from "react-error-boundary";
 
 import {
@@ -455,7 +455,7 @@ const ProjectView = () => {
                                 horizontal: "center",
                               }}
                               slots={{
-                                transition: Fade
+                                transition: Fade,
                               }}
                             >
                               <MenuItem
@@ -533,6 +533,8 @@ const ProjectView = () => {
                     </AppBar>
                     {TABS.map((tab, i) => {
                       const TabComponent = tab.Component;
+                      const projectId = data.moped_project[0].project_id;
+
                       return (
                         <TabPanel
                           data-name={"moped-project-view-tabpanel"}
@@ -550,6 +552,7 @@ const ProjectView = () => {
                           {/* @ts-expect-error - Adding types is captured in issue #29271 */}
                           <TabComponent
                             loading={loading}
+                            projectId={projectId}
                             data={data}
                             error={error}
                             refetch={refetch}
@@ -633,7 +636,6 @@ const ProjectView = () => {
           )}
         </Page>
       )}
-      {/* @ts-expect-error - FeedbackSnackbar needs to be converted to .tsx in issue #29270 */}
       <FeedbackSnackbar
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}
