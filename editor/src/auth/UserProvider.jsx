@@ -6,6 +6,7 @@ import {
   deleteSessionDatabaseData,
   UserContext,
 } from "src/auth/user";
+import { getCognitoSession } from "src/auth/session";
 
 // Create a "controller" component that will calculate all the data that we need to give to our
 // components below via the `UserContext.Provider` component. This is where the Amplify will be
@@ -84,25 +85,6 @@ const UserProvider = ({ children }) => {
   }, []);
 
   /**
-   * Returns a valid Cognito session to provide roles and id token to
-   * Apollo Client GraphQL requests and Moped API requests.
-   */
-  const getCognitoSession = useCallback(async () => {
-    try {
-      const session = await Auth.currentSession();
-
-      return session;
-    } catch (err) {
-      // Log out user if a Cognito session cannot be retrieved to force a fresh login.
-      // This can happen when a refresh token is expired or invalid for example.
-      await logout();
-      console.error("Error getting Cognito session: ", err);
-
-      return null;
-    }
-  }, [logout]);
-
-  /**
    * This effect runs when the component mounts and checks if Cognito has a valid session.
    * If there is no user state, it retrieves the current session and sets it to prevent logout
    * when browser is refreshed. If there is no current session, getCognitoSession will return null.
@@ -135,7 +117,7 @@ const UserProvider = ({ children }) => {
           setIsLoginLoading(false);
         });
     }
-  }, [user, getCognitoSession]);
+  }, [user]);
 
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimization that is mostly needed in cases
@@ -152,7 +134,7 @@ const UserProvider = ({ children }) => {
       isLoginLoading,
       getCognitoSession,
     }),
-    [user, isLoginLoading, getCognitoSession, login, loginSSO, logout]
+    [user, isLoginLoading, login, loginSSO, logout]
   );
 
   // Finally, return the interface that we want to expose to our other components

@@ -5,8 +5,7 @@ import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import theme, { globalStyles } from "src/theme";
 import { restrictedRoutes } from "src/routes";
-import { getHighestRole } from "./auth/user";
-import { useUser, getCognitoIdJwt } from "src/auth/user";
+import { getRequestAuth } from "src/auth/session";
 import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -35,26 +34,22 @@ console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
 const useApolloClient = () => {
   const [error, setError] = useState(null);
-  const { getCognitoSession } = useUser();
 
   const apolloClient = useMemo(() => {
     // see: https://www.apollographql.com/docs/react/networking/authentication/#header
     const httpLink = createHttpLink({ uri: HASURA_ENDPOINT });
 
     const authLink = setContext(async (_, { headers }) => {
-      const session = await getCognitoSession();
+      const auth = await getRequestAuth();
 
-      // If unauthenticated, send the request without auth headers for Hasura to reject
-      if (!session) return { headers };
-      const token = getCognitoIdJwt(session);
-      const role = getHighestRole(session);
+      // Unauthenticated: send without auth headers for Hasura to reject
+      if (!auth) return { headers };
 
-      // Return the headers and role to the context so httpLink can read them
       return {
         headers: {
           ...headers,
-          authorization: token ? `Bearer ${token}` : "",
-          "x-hasura-role": role ? role : "",
+          authorization: `Bearer ${auth.token}`,
+          "x-hasura-role": auth.role,
         },
       };
     });
@@ -96,7 +91,7 @@ const useApolloClient = () => {
         },
       }),
     });
-  }, [getCognitoSession]);
+  }, []);
 
   return { apolloClient, error, setError };
 };
