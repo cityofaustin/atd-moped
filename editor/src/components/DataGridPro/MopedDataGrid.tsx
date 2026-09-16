@@ -38,14 +38,18 @@ const MopedDataGrid = <R extends GridValidRowModel>({
 }: MopedDataGridProps<R>) => {
   const internalApiRef = useGridApiRef();
   const gridApiRef = apiRef ?? internalApiRef;
-  const { getRowClassNameWithHighlight, highlightedRowId } =
-    useDataGridRowHighlight({
-      apiRef: gridApiRef,
-      getRowClassName,
-      getRowId,
-      highlightRowParam,
-      rows,
-    });
+  const {
+    eventHandlers,
+    getRowClassNameWithHighlight,
+    highlightedRowId,
+  } = useDataGridRowHighlight({
+    apiRef: gridApiRef,
+    eventHandlers: props,
+    getRowClassName,
+    getRowId,
+    highlightRowParam,
+    rows,
+  });
   return (
     <DataGridPro<R>
       sx={{
@@ -76,6 +80,7 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       apiRef={gridApiRef}
       rows={rows}
       {...props}
+      {...eventHandlers}
     />
   );
 };
