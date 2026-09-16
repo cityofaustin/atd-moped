@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useUser, getCognitoIdJwt } from "src/auth/user";
+import { useUser } from "src/auth/user";
+import { getCognitoIdJwt } from "src/auth/claims";
 import axios from "axios";
 
 /**

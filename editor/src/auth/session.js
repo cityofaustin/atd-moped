@@ -1,5 +1,5 @@
 import { Auth } from "aws-amplify";
-import { getCognitoIdJwt, getHighestRole } from "src/auth/user";
+import { getCognitoIdJwt, getHighestRole } from "src/auth/claims";
 
 /**
  * Returns a valid Cognito session to provide roles and id token to

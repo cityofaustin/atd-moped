@@ -13,7 +13,8 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { Alert, Grid } from "@mui/material";
-import { useUser, getCognitoIdJwt } from "src/auth/user";
+import { useUser } from "src/auth/user";
+import { getCognitoIdJwt } from "src/auth/claims";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,

@@ -1,4 +1,5 @@
-import { getHighestRole, useUser } from "../auth/user";
+import { useUser } from "src/auth/user";
+import { getHighestRole } from "src/auth/claims";
 import rules from "./rolesBasedRules";
 
 const check = (rules, role, action) => {

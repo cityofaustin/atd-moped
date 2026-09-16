@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Auth, Amplify } from "aws-amplify";
+import { UserContext } from "src/auth/user";
 import {
   initializeUserDBObject,
   setSessionDatabaseData,
   deleteSessionDatabaseData,
-  UserContext,
-} from "src/auth/user";
+} from "src/auth/mopedUser";
 import { getCognitoSession } from "src/auth/session";
 
 // Create a "controller" component that will calculate all the data that we need to give to our
