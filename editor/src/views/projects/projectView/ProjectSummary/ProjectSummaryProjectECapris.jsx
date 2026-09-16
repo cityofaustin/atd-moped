@@ -8,7 +8,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { useUser } from "src/auth/user";
+import { useAuth } from "src/auth/auth";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
 import {
@@ -57,8 +57,8 @@ const ProjectSummaryProjectECapris = ({
   handleSnackbar,
   disabled = false,
 }) => {
-  const { user } = useUser();
-  const userEmail = user?.idToken?.payload?.email;
+  const { claims } = useAuth();
+  const userEmail = claims?.email;
 
   const initialValue = eCaprisSubprojectId
     ? (findOptionById(options, eCaprisSubprojectId) ?? {
@@ -119,10 +119,14 @@ const ProjectSummaryProjectECapris = ({
     <Grid size={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
       <Box
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         {editMode && (
           <>
             <Autocomplete

@@ -1,9 +1,9 @@
 import React from "react";
-import { useUser } from "../../auth/user";
+import { useAuth } from "src/auth/auth";
 import { Navigate } from "react-router";
 
 const Logout = () => {
-  const { logout } = useUser();
+  const { logout } = useAuth();
 
   const logoutAndRedirect = () => {
     logout();

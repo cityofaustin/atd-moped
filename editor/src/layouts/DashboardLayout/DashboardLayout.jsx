@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Outlet, Navigate, useLocation } from "react-router";
 import Box from "@mui/material/Box";
 import TopBar from "src/layouts/DashboardLayout/TopBar";
-import { useUser } from "src/auth/user";
+import { useAuth } from "src/auth/auth";
 import Footer from "src/layouts/DashboardLayout/Footer";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useApolloErrorContext } from "src/utils/errorHandling";
@@ -12,7 +14,7 @@ import { useApolloErrorContext } from "src/utils/errorHandling";
  * @returns {JSX.Element}
  */
 const DashboardLayout = () => {
-  const { user } = useUser();
+  const { status } = useAuth();
   const location = useLocation();
   const { apolloError, setApolloError } = useApolloErrorContext();
 
@@ -21,12 +23,28 @@ const DashboardLayout = () => {
     setApolloError(null);
   }, [location.pathname, setApolloError]);
 
-  /* If user is not authenticated, redirect to sign-in page
-   * and preserve the current location so they can be redirected back
-   * after successful login or if a browser refresh occurs. See MainLayout.js
-   * for how this is handled.
+  if (status === "initializing") {
+    return (
+      <Backdrop
+        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+        open={true}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
+
+  /* If not authenticated, redirect to sign-in page and preserve the current
+   * location so they can be redirected back after successful login or if a
+   * browser refresh occurs. See MainLayout.js for how this is handled.
    */
-  return user ? (
+  if (status === "unauthenticated") {
+    return (
+      <Navigate to="/moped/session/signin" state={{ from: location }} replace />
+    );
+  }
+
+  return (
     <Box
       sx={{
         display: "flex",
@@ -53,8 +71,6 @@ const DashboardLayout = () => {
         <Footer />
       </Box>
     </Box>
-  ) : (
-    <Navigate to="/moped/session/signin" state={{ from: location }} replace />
   );
 };
 

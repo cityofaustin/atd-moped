@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Page from "src/components/Page";
-import { useUser } from "src/auth/user";
+import { useAuth } from "src/auth/auth";
 import SimpleDialog from "src/components/SimpleDialog";
 import ExternalLink from "src/components/ExternalLink";
 
@@ -22,20 +22,32 @@ const serviceRequestLink =
   "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22IT%20Support%20%E2%80%94%20Help%20with%20licenses%2C%20accounts%2C%20hardware%2C%20etc.%22%2C%22field_1130%22%3A%5B%225d8938ed899f8d001156b66f%22%5D%7D";
 
 const LoginView = () => {
-  const { login, loginSSO, isLoginLoading } = useUser();
+  const { loginWithPassword, loginSSO } = useAuth();
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const handleSSOLogin = async () => {
+    setIsRedirecting(true);
+    try {
+      await loginSSO();
+    } catch (error) {
+      console.error("Error during SSO sign-in: ", error);
+      setIsRedirecting(false);
+    }
+  };
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
       // wait to see if login was successful (we don't care about the return
       // value here)
-      await login(values.email, values.password);
+      await loginWithPassword(values.email, values.password);
 
       // mark the form as non-submitting
       setSubmitting(false);
     } catch (err) {
       // If an error occured, showcase the proper message (we customised the
-      // message ourselves in `UserProvider`'s code)
+      // message ourselves in `AuthProvider`'s code)
       setErrors({ password: err.message });
       setSubmitting(false);
     }
@@ -152,7 +164,7 @@ const LoginView = () => {
             zIndex: theme.zIndex.modal + 1,
             color: theme.palette.background.default,
           })}
-          open={isLoginLoading}
+          open={isRedirecting}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
@@ -197,7 +209,7 @@ const LoginView = () => {
               color="primary"
               fullWidth
               startIcon={<AccountCircleIcon />}
-              onClick={loginSSO}
+              onClick={handleSSOLogin}
               size="large"
               variant="contained"
               disabled={

@@ -1,6 +1,8 @@
 import React from "react";
 import { Outlet, Navigate, useLocation } from "react-router";
-import { useUser } from "src/auth/user";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useAuth } from "src/auth/auth";
 import Box from "@mui/material/Box";
 
 /**
@@ -9,14 +11,25 @@ import Box from "@mui/material/Box";
  */
 const MainLayout = () => {
   const location = useLocation();
-  const { user } = useUser();
+  const { status } = useAuth();
+
+  if (status === "initializing") {
+    return (
+      <Backdrop
+        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+        open={true}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
 
   /* If user is authenticated, redirect to the intended route
    * after login or if a browser refresh occurs.
    * If no intended route is preserved, redirect to the default route.
    * See DashboardLayout.js for how the React Router state is passed.
    */
-  if (user) {
+  if (status === "authenticated") {
     // Get the intended route from location state
     const from = location.state?.from;
 

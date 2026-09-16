@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
-import UserProvider from "src/auth/UserProvider";
+import AuthProvider from "src/auth/AuthProvider";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 
@@ -51,9 +51,9 @@ Amplify.configure({
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <UmamiAnalytics />
-    <UserProvider>
+    <AuthProvider>
       <App />
-    </UserProvider>
+    </AuthProvider>
   </BrowserRouter>
 );
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useUser } from "src/auth/user";
 import { getCognitoIdJwt } from "src/auth/claims";
+import { getCognitoSession } from "src/auth/session";
 import axios from "axios";
 
 /**
@@ -16,7 +16,6 @@ export function useUserApi() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { getCognitoSession } = useUser();
 
   /**
    * Call the User route of the Moped API
