@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Hub } from "aws-amplify";
+import { Hub } from "aws-amplify/utils";
 import { signIn, signInWithRedirect, signOut } from "aws-amplify/auth";
 import { AuthContext } from "src/auth/auth";
 import { getHighestRole } from "src/auth/claims";
@@ -70,6 +70,7 @@ const AuthProvider = ({ children }) => {
     resolveSession();
 
     const listener = ({ payload }) => {
+      console.log(payload);
       switch (payload.event) {
         case "signIn":
           resolveSession();
@@ -83,9 +84,9 @@ const AuthProvider = ({ children }) => {
       }
     };
 
-    Hub.listen("auth", listener);
+    const hubListenerCancel = Hub.listen("auth", listener);
 
-    return () => Hub.remove("auth", listener);
+    return () => hubListenerCancel();
   }, [resolveSession]);
 
   /**
