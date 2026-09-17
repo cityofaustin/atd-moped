@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 import { Outlet, Navigate, useLocation } from "react-router";
 import Box from "@mui/material/Box";
 import TopBar from "src/layouts/DashboardLayout/TopBar";
 import { useAuth } from "src/auth/auth";
 import Footer from "src/layouts/DashboardLayout/Footer";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
 import { useApolloErrorContext } from "src/utils/errorHandling";
 
 /**
@@ -24,14 +23,7 @@ const DashboardLayout = () => {
   }, [location.pathname, setApolloError]);
 
   if (status === "initializing") {
-    return (
-      <Backdrop
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={true}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
+    return <AuthLoadingBackdrop open={true} />;
   }
 
   /* If not authenticated, redirect to sign-in page and preserve the current

@@ -1,7 +1,6 @@
 import React from "react";
 import { Outlet, Navigate, useLocation } from "react-router";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
 import { useAuth } from "src/auth/auth";
 import Box from "@mui/material/Box";
 
@@ -14,14 +13,7 @@ const MainLayout = () => {
   const { status } = useAuth();
 
   if (status === "initializing") {
-    return (
-      <Backdrop
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={true}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
+    return <AuthLoadingBackdrop open={true} />;
   }
 
   /* If user is authenticated, redirect to the intended route

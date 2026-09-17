@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import {
-  Backdrop,
   Box,
   Button,
-  CircularProgress,
   Container,
   Link,
   TextField,
@@ -13,6 +11,7 @@ import {
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Page from "src/components/Page";
+import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
 import { useAuth } from "src/auth/auth";
 import SimpleDialog from "src/components/SimpleDialog";
 import ExternalLink from "src/components/ExternalLink";
@@ -38,6 +37,7 @@ const LoginView = () => {
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    setIsRedirecting(true);
     try {
       // wait to see if login was successful (we don't care about the return
       // value here)
@@ -159,15 +159,7 @@ const LoginView = () => {
           justifyContent: "center",
         }}
       >
-        <Backdrop
-          sx={(theme) => ({
-            zIndex: theme.zIndex.modal + 1,
-            color: theme.palette.background.default,
-          })}
-          open={isRedirecting}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        <AuthLoadingBackdrop open={isRedirecting} />
         <Container maxWidth="sm">
           <Box
             sx={{
