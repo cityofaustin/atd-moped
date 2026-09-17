@@ -29,6 +29,7 @@ const LoginView = () => {
     setIsRedirecting(true);
     try {
       await loginSSO();
+      setIsRedirecting(false);
     } catch (error) {
       console.error("Error during SSO sign-in: ", error);
       setIsRedirecting(false);
@@ -37,17 +38,10 @@ const LoginView = () => {
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-    setIsRedirecting(true);
     try {
-      // wait to see if login was successful (we don't care about the return
-      // value here)
       await loginWithPassword(values.email, values.password);
-
-      // mark the form as non-submitting
       setSubmitting(false);
     } catch (err) {
-      // If an error occured, showcase the proper message (we customised the
-      // message ourselves in `AuthProvider`'s code)
       setErrors({ password: err.message });
       setSubmitting(false);
     }
