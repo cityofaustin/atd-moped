@@ -5,6 +5,7 @@ import {
 } from "@mui/x-data-grid-pro";
 import type { SxProps, Theme } from "@mui/material";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import useDataGridRowHighlight from "./useDataGridRowHighlight";
 
 type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
   /** Optional style overrides merged with the default DataGrid style. */
@@ -25,33 +26,52 @@ type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
 const MopedDataGrid = <R extends GridValidRowModel>({
   sx,
   slotProps = {},
+  getRowClassName,
+  getRowId,
+  apiRef,
+  rows = [],
   ...props
 }: MopedDataGridProps<R>) => {
-  const mergedSx = {
-    ...dataGridProStyleOverrides,
-    ...sx,
-  };
-
-  const mergedSlotProps = {
-    ...slotProps,
-    loadingOverlay: {
-      variant: "circular-progress" as const,
-      noRowsVariant: "circular-progress" as const,
-    },
-  };
-
+  const {
+    apiRef: gridApiRef,
+    eventHandlers,
+    getRowClassNameWithHighlight,
+    highlightedRowId,
+    highlightedRowStyle,
+  } = useDataGridRowHighlight({
+    apiRef,
+    eventHandlers: props,
+    getRowClassName,
+    getRowId,
+    rows,
+  });
   return (
     <DataGridPro<R>
-      sx={mergedSx}
-      slotProps={mergedSlotProps}
+      sx={{
+        ...dataGridProStyleOverrides,
+        ...sx,
+        ...(highlightedRowId !== null && highlightedRowStyle),
+      }}
+      slotProps={{
+        ...slotProps,
+        loadingOverlay: {
+          variant: "circular-progress",
+          noRowsVariant: "circular-progress",
+        },
+      }}
       density="comfortable"
       getRowHeight={() => "auto"}
+      getRowClassName={getRowClassNameWithHighlight}
       hideFooter
       disableRowSelectionOnClick
       // Show toolbar if a toolbar slot is provided
       showToolbar={!!props.slots?.toolbar}
       onProcessRowUpdateError={(error) => console.error(error)}
+      getRowId={getRowId}
+      apiRef={gridApiRef}
+      rows={rows}
       {...props}
+      {...eventHandlers}
     />
   );
 };

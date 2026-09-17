@@ -60,6 +60,7 @@ export const SUMMARY_QUERY = graphql(`
         entity_id
       }
       moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+        project_phase_id
         moped_phase {
           phase_id
           phase_name
