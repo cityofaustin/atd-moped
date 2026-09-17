@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Link, { type LinkProps } from "@mui/material/Link";
 import { Link as RouterLink, useParams, useSearchParams } from "react-router";
-import { getMopedDataGridRowLinkPath } from "src/utils/mopedDataGridRowLinkPath";
 
 interface MopedDataGridRowLinkProps extends Omit<LinkProps, "href"> {
   projectId?: string | number;
@@ -41,7 +40,7 @@ const MopedDataGridRowLink = ({
     nextSearchParams.set(paramLabel, String(paramId));
   }
 
-  const destinationPath = getMopedDataGridRowLinkPath(targetProjectId, tab);
+  const destinationPath = `/moped/projects/${targetProjectId}?tab=${tab}`;
   const destination = `${destinationPath.split("?")[0]}?${nextSearchParams}`;
 
   return (
