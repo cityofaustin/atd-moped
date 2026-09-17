@@ -38,12 +38,15 @@ const LoginView = () => {
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    setIsRedirecting(true);
     try {
       await loginWithPassword(values.email, values.password);
       setSubmitting(false);
+      setIsRedirecting(false);
     } catch (err) {
       setErrors({ password: err.message });
       setSubmitting(false);
+      setIsRedirecting(false);
     }
   };
 
