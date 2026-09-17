@@ -73,10 +73,10 @@ const AuthProvider = ({ children }) => {
     const listener = ({ payload }) => {
       console.log(payload);
       switch (payload.event) {
-        case "signIn":
+        case "signedIn":
           resolveSession();
           break;
-        case "signOut":
+        case "signedOut":
           deleteSessionDatabaseData();
           setState({ status: "unauthenticated" });
           break;
