@@ -9,7 +9,7 @@ export const getCognitoSession = async () => {
   try {
     const session = await fetchAuthSession();
 
-    return session;
+    return session.tokens ? session : null;
   } catch (err) {
     console.error("Error getting Cognito session: ", err);
     return null;
