@@ -1,4 +1,4 @@
-import { Auth } from "aws-amplify";
+import { fetchAuthSession } from "aws-amplify/auth";
 import { getCognitoIdJwt, getHighestRole } from "src/auth/claims";
 
 /**
@@ -7,7 +7,7 @@ import { getCognitoIdJwt, getHighestRole } from "src/auth/claims";
  */
 export const getCognitoSession = async () => {
   try {
-    const session = await Auth.currentSession();
+    const session = await fetchAuthSession();
 
     return session;
   } catch (err) {
