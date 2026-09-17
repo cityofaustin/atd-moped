@@ -1,6 +1,5 @@
 import {
   DataGridPro,
-  useGridApiRef,
   type DataGridProProps,
   type GridValidRowModel,
 } from "@mui/x-data-grid-pro";
@@ -33,14 +32,14 @@ const MopedDataGrid = <R extends GridValidRowModel>({
   rows = [],
   ...props
 }: MopedDataGridProps<R>) => {
-  const internalApiRef = useGridApiRef();
-  const gridApiRef = apiRef ?? internalApiRef;
   const {
+    apiRef: gridApiRef,
     eventHandlers,
     getRowClassNameWithHighlight,
     highlightedRowId,
+    highlightedRowStyle,
   } = useDataGridRowHighlight({
-    apiRef: gridApiRef,
+    apiRef,
     eventHandlers: props,
     getRowClassName,
     getRowId,
@@ -51,11 +50,7 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       sx={{
         ...dataGridProStyleOverrides,
         ...sx,
-        ...(highlightedRowId !== null && {
-          "& .moped-data-grid-highlighted-row": {
-            backgroundColor: "rgba(0, 0, 0, 0.04)",
-          },
-        }),
+        ...(highlightedRowId !== null && highlightedRowStyle),
       }}
       slotProps={{
         ...slotProps,

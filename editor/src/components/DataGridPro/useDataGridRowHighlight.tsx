@@ -2,6 +2,7 @@ import { useEffect, type RefObject } from "react";
 import {
   type GridApi,
   type DataGridProProps,
+  useGridApiRef,
   type GridRowId,
   type GridRowClassNameParams,
   type GridRowIdGetter,
@@ -28,14 +29,12 @@ type RowEditStartHandler<R extends GridValidRowModel> = NonNullable<
 >;
 
 type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
-  apiRef: RefObject<GridApi | null>;
+  apiRef?: RefObject<GridApi | null>;
   eventHandlers: HighlightEventHandlers<R>;
   getRowClassName?: (params: GridRowClassNameParams<R>) => string;
   getRowId?: GridRowIdGetter<R>;
   rows: readonly R[];
 };
-
-const HIGHLIGHT_ROW_PARAM = "highlightedRowId";
 
 const useDataGridRowHighlight = <R extends GridValidRowModel>({
   apiRef,
@@ -44,14 +43,22 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   getRowId,
   rows,
 }: UseDataGridRowHighlightParams<R>) => {
+  const internalApiRef = useGridApiRef();
+  const gridApiRef = apiRef ?? internalApiRef;
   const [searchParams, setSearchParams] = useSearchParams();
-  const highlightedRowId = searchParams.get(HIGHLIGHT_ROW_PARAM);
+  const highlightedRowLabel = "highlightedRowId";
+  const highlightedRowId = searchParams.get(highlightedRowLabel);
+  const highlightedRowStyle = {
+    "& .moped-data-grid-highlighted-row": {
+      backgroundColor: "rgba(0, 0, 0, 0.04)",
+    },
+  };
 
   useEffect(() => {
     if (
       highlightedRowId === null ||
       rows.length === 0 ||
-      apiRef.current === null
+      gridApiRef.current === null
     ) {
       return;
     }
@@ -66,18 +73,18 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     }
 
     const rowId = getRowId ? getRowId(highlightedRow) : highlightedRow.id;
-    const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(rowId);
+    const rowIndex = gridApiRef.current.getRowIndexRelativeToVisibleRows(rowId);
 
     // Scroll to the row and center it in the viewport
     if (rowIndex !== undefined && rowIndex >= 0) {
-      apiRef.current.scrollToIndexes({ rowIndex });
+      gridApiRef.current.scrollToIndexes({ rowIndex });
       requestAnimationFrame(() => {
-        apiRef.current?.getRowElement(rowId)?.scrollIntoView({
+        gridApiRef.current?.getRowElement(rowId)?.scrollIntoView({
           block: "center",
         });
       });
     }
-  }, [apiRef, getRowId, highlightedRowId, rows]);
+  }, [getRowId, gridApiRef, highlightedRowId, rows]);
 
   const getRowClassNameWithHighlight = (params: GridRowClassNameParams<R>) => {
     const rowId = getRowId ? getRowId(params.row) : params.row.id;
@@ -94,13 +101,10 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   };
 
   const clearHighlightForRow = (rowId: GridRowId) => {
-    if (
-      highlightedRowId !== null &&
-      String(rowId) !== highlightedRowId
-    ) {
+    if (highlightedRowId !== null && String(rowId) !== highlightedRowId) {
       setSearchParams((currentSearchParams) => {
         const nextSearchParams = new URLSearchParams(currentSearchParams);
-        nextSearchParams.delete(HIGHLIGHT_ROW_PARAM);
+        nextSearchParams.delete(highlightedRowLabel);
         return nextSearchParams;
       });
     }
@@ -109,7 +113,7 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   const handleCellEditStart: CellEditStartHandler<R> = (
     params,
     event,
-    details,
+    details
   ) => {
     clearHighlightForRow(params.id);
     eventHandlers.onCellEditStart?.(params, event, details);
@@ -118,17 +122,13 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   const handleCellDoubleClick: CellDoubleClickHandler<R> = (
     params,
     event,
-    details,
+    details
   ) => {
     clearHighlightForRow(params.id);
     eventHandlers.onCellDoubleClick?.(params, event, details);
   };
 
-  const handleCellClick: CellClickHandler<R> = (
-    params,
-    event,
-    details,
-  ) => {
+  const handleCellClick: CellClickHandler<R> = (params, event, details) => {
     if (params.field === "_edit" || params.field === "edit") {
       clearHighlightForRow(params.id);
     }
@@ -138,15 +138,17 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   const handleRowEditStart: RowEditStartHandler<R> = (
     params,
     event,
-    details,
+    details
   ) => {
     clearHighlightForRow(params.id);
     eventHandlers.onRowEditStart?.(params, event, details);
   };
 
   return {
+    apiRef: gridApiRef,
     getRowClassNameWithHighlight,
     highlightedRowId,
+    highlightedRowStyle,
     eventHandlers: {
       onCellClick: handleCellClick,
       onCellDoubleClick: handleCellDoubleClick,
