@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Auth, Hub } from "aws-amplify";
 import { AuthContext } from "src/auth/auth";
-import { getHasuraClaims, findHighestRole } from "src/auth/claims";
+import { getHighestRole } from "src/auth/claims";
 import { getCognitoSession } from "src/auth/session";
 import {
   initializeUserDBObject,
@@ -16,7 +16,7 @@ import {
  * State is one of:
  *   { status: "initializing" }
  *   { status: "unauthenticated" }
- *   { status: "authenticated", claims, role, mopedUser }
+ *   { status: "authenticated", role, mopedUser }
  *
  * Tokens are fetched at the point of use (see src/auth/session.js) and not held
  * in state.
@@ -36,10 +36,7 @@ const AuthProvider = ({ children }) => {
       return;
     }
 
-    const claims = getHasuraClaims(session);
-    const role = claims
-      ? findHighestRole(claims["x-hasura-allowed-roles"])
-      : null;
+    const role = getHighestRole(session);
 
     // A session we can't retrieve a Hasura role from is unusable, so sign out
     // rather than leaving the user on a page where every query will fail.
@@ -55,7 +52,7 @@ const AuthProvider = ({ children }) => {
       const mopedUser = await initializeUserDBObject(session);
       setSessionDatabaseData(mopedUser);
 
-      setState({ status: "authenticated", claims, role, mopedUser });
+      setState({ status: "authenticated", role, mopedUser });
     } catch (error) {
       console.error("Error fetching Moped user record: ", error);
       await Auth.signOut();

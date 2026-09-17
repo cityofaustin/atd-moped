@@ -5,8 +5,8 @@ import { createBugReportLink } from "src/utils/urls";
 import { useAuth } from "src/auth/auth";
 
 const FallbackComponent = ({ error }) => {
-  const { claims } = useAuth();
-  const userEmail = claims?.email;
+  const { mopedUser } = useAuth();
+  const userEmail = mopedUser?.email;
 
   return (
     <Box

@@ -57,8 +57,8 @@ const ProjectSummaryProjectECapris = ({
   handleSnackbar,
   disabled = false,
 }) => {
-  const { claims } = useAuth();
-  const userEmail = claims?.email;
+  const { mopedUser } = useAuth();
+  const userEmail = mopedUser?.email;
 
   const initialValue = eCaprisSubprojectId
     ? (findOptionById(options, eCaprisSubprojectId) ?? {
