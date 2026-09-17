@@ -1,8 +1,6 @@
 import { nonLoginUserRole } from "src/views/staff/helpers";
 import type { AuthSession, JWT } from "aws-amplify/auth";
 
-const HASURA_NAMESPACE = "https://hasura.io/jwt/claims";
-
 /**
  * Extended Cognito Auth Session that includes the Hasura claims added by our pre-token lambda.
  */
@@ -10,7 +8,7 @@ type MopedAuthSession = AuthSession & {
   tokens: NonNullable<AuthSession["tokens"]> & {
     idToken: JWT & {
       payload: JWT["payload"] & {
-        [HASURA_NAMESPACE]: string;
+        "https://hasura.io/jwt/claims": string;
       };
     };
   };
@@ -28,17 +26,22 @@ export const ROLE_ORDER = [
  * @param session - The Cognito user session.
  * @returns The ID JWT token.
  */
-export const getCognitoIdJwt = (session: MopedAuthSession) =>
-  session?.tokens?.idToken ? session.tokens.idToken.toString() : null;
+export const getCognitoIdJwt = (session: MopedAuthSession | null) =>
+  session?.tokens?.idToken?.toString() ?? null;
 
 /** Retrieves the Hasura claims from the Cognito session.
  * @param session - The Cognito session
  * @returns The Hasura claims or null if not found.
  */
 export const getHasuraClaims = (session: MopedAuthSession) => {
-  const hasuraClaims =
-    session?.tokens?.idToken?.payload["https://hasura.io/jwt/claims"] ?? null;
-  return hasuraClaims ? JSON.parse(hasuraClaims) : null;
+  const rawHasuraClaims =
+    session?.tokens?.idToken?.payload["https://hasura.io/jwt/claims"];
+  if (typeof rawHasuraClaims !== "string") return null;
+  try {
+    return JSON.parse(rawHasuraClaims);
+  } catch {
+    return null;
+  }
 };
 
 /**

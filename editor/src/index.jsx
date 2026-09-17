@@ -12,11 +12,6 @@ import { Hub, CookieStorage } from "aws-amplify/utils";
 import config from "./config";
 import UmamiAnalytics from "src/components/UmamiAnalytics";
 
-// https://docs.amplify.aws/gen1/react/build-a-backend/utilities/hub/#listening-for-messages
-Hub.listen("auth", ({ payload }) =>
-  console.debug("[hub::auth]", payload.event, payload)
-);
-
 Amplify.configure({
   Auth: {
     Cognito: {
@@ -52,6 +47,11 @@ if (["production", "staging", "test"].includes(config.env.APP_ENVIRONMENT)) {
     })
   );
 }
+
+// https://docs.amplify.aws/gen1/react/build-a-backend/utilities/hub/#listening-for-messages
+Hub.listen("auth", ({ payload }) =>
+  console.debug("[hub::auth]", payload.event, payload)
+);
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>

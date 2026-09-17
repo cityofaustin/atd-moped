@@ -71,7 +71,6 @@ const AuthProvider = ({ children }) => {
     resolveSession();
 
     const listener = ({ payload }) => {
-      console.log(payload);
       switch (payload.event) {
         case "signedIn":
           resolveSession();
@@ -95,23 +94,18 @@ const AuthProvider = ({ children }) => {
    * @param {string} usernameOrEmail
    * @param {string} password
    */
-  const loginWithPassword = useCallback(async (usernameOrEmail, password) => {
-    try {
-      await signIn({ username: usernameOrEmail, password });
-    } catch (err) {
-      if (err?.code === "UserNotFoundException") {
-        err.message = "Invalid username or password";
-      }
-      throw err;
-    }
-  }, []);
+  const loginWithPassword = useCallback(
+    (usernameOrEmail, password) =>
+      signIn({ username: usernameOrEmail, password }),
+    []
+  );
 
   /**
    * Sign in with Azure AD. Redirects away from the app. State is set when
    * the browser returns and the useEffect resolves the session.
    */
   const loginSSO = useCallback(
-    () => signInWithRedirect({ provider: "AzureAD" }),
+    () => signInWithRedirect({ provider: { custom: "AzureAD" } }),
     []
   );
 
