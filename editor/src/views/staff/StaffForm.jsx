@@ -7,7 +7,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WORKGROUPS_QUERY } from "src/queries/workgroups";
-import { findHighestRole } from "src/auth/user";
+import { findHighestRole } from "src/auth/claims";
 
 import { useQuery } from "@apollo/client";
 import {

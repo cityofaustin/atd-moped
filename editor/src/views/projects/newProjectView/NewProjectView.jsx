@@ -9,10 +9,12 @@ import {
   ADD_PROJECT,
   PROJECT_FOLLOW,
 } from "src/queries/project";
-import { knackSignalRecordToFeatureSignalsRecord, generateProjectComponent } from "src/utils/signalComponentHelpers";
+import {
+  knackSignalRecordToFeatureSignalsRecord,
+  generateProjectComponent,
+} from "src/utils/signalComponentHelpers";
 
-import { useSessionDatabaseData } from "src/auth/user";
-
+import { useSessionDatabaseData } from "src/auth/mopedUser";
 
 /**
  * New Project View
