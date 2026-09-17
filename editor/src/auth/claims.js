@@ -1,4 +1,15 @@
 import { nonLoginUserRole } from "src/views/staff/helpers";
+import type { AuthSession } from "aws-amplify/auth";
+
+interface MopedAuthSession extends AuthSession {
+  tokens: {
+    idToken: {
+      payload: {
+        "https://hasura.io/jwt/claims": string;
+      };
+    };
+  };
+}
 
 export const ROLE_ORDER = [
   "moped-admin",
@@ -12,14 +23,15 @@ export const ROLE_ORDER = [
  * @param {CognitoUserSession} session - The Cognito user session.
  * @returns {string} The ID JWT token.
  */
-export const getCognitoIdJwt = (session) =>
-  session?.idToken ? session.idToken.getJwtToken() : null;
+export const getCognitoIdJwt = (session: MopedAuthSession) =>
+  session?.tokens?.idToken ? session.tokens.idToken.getJwtToken() : null;
 
 /** Retrieves the Hasura claims from the Cognito session.
  * @param {Object} session - The Cognito session
  * @returns {Object|null} The Hasura claims or null if not found.
  */
-export const getHasuraClaims = (session) => {
+export const getHasuraClaims = (session: MopedAuthSession) => {
+  console.log(session);
   try {
     return JSON.parse(session.idToken.payload["https://hasura.io/jwt/claims"]);
   } catch {
@@ -32,7 +44,7 @@ export const getHasuraClaims = (session) => {
  * @param {object} user - The Cognito user session containing ID token and claims.
  * @returns {string|null} The database ID or null if not found.
  */
-export const getDatabaseId = (session) => {
+export const getDatabaseId = (session: MopedAuthSession) => {
   const claims = getHasuraClaims(session);
   return claims?.["x-hasura-user-db-id"] ?? null;
 };

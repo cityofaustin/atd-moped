@@ -12,12 +12,11 @@ import { Hub, CookieStorage } from "aws-amplify/utils";
 import config from "./config";
 import UmamiAnalytics from "src/components/UmamiAnalytics";
 
-// https://aws-amplify.github.io/docs/js/hub
-Hub.listen(/.*/, ({ channel, payload }) =>
-  console.debug(`[hub::${channel}::${payload.event}]`, payload)
+// https://docs.amplify.aws/gen1/react/build-a-backend/utilities/hub/#listening-for-messages
+Hub.listen("auth", ({ payload }) =>
+  console.debug("[hub::auth]", payload.event, payload)
 );
 
-// https://aws-amplify.github.io/docs/js/authentication#manual-setup
 Amplify.configure({
   Auth: {
     Cognito: {
