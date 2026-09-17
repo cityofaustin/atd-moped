@@ -9,6 +9,7 @@ import {
 } from "@mui/x-data-grid-pro";
 import { useSearchParams } from "react-router";
 
+// Compiles a list of event handlers to clear the highlight for a row when any other row is edited or clicked.
 type HighlightEventHandlers<R extends GridValidRowModel> = Pick<
   DataGridProProps<R>,
   "onCellClick" | "onCellDoubleClick" | "onCellEditStart" | "onRowEditStart"
@@ -69,6 +70,7 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     const rowId = getRowId ? getRowId(highlightedRow) : highlightedRow.id;
     const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(rowId);
 
+    // Scroll to the row and center it in the viewport
     if (rowIndex !== undefined && rowIndex >= 0) {
       apiRef.current.scrollToIndexes({ rowIndex });
       requestAnimationFrame(() => {
