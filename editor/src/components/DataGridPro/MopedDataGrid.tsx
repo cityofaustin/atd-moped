@@ -11,8 +11,6 @@ import useDataGridRowHighlight from "./useDataGridRowHighlight";
 type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
   /** Optional style overrides merged with the default DataGrid style. */
   sx?: SxProps<Theme>;
-  /** URL search parameter used to identify and highlight a row. */
-  highlightRowParam?: string;
 };
 
 /**
@@ -31,7 +29,6 @@ const MopedDataGrid = <R extends GridValidRowModel>({
   slotProps = {},
   getRowClassName,
   getRowId,
-  highlightRowParam,
   apiRef,
   rows = [],
   ...props
@@ -47,7 +44,6 @@ const MopedDataGrid = <R extends GridValidRowModel>({
     eventHandlers: props,
     getRowClassName,
     getRowId,
-    highlightRowParam,
     rows,
   });
   return (

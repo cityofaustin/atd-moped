@@ -32,22 +32,20 @@ type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
   eventHandlers: HighlightEventHandlers<R>;
   getRowClassName?: (params: GridRowClassNameParams<R>) => string;
   getRowId?: GridRowIdGetter<R>;
-  highlightRowParam?: string;
   rows: readonly R[];
 };
+
+const HIGHLIGHT_ROW_PARAM = "highlightedRowId";
 
 const useDataGridRowHighlight = <R extends GridValidRowModel>({
   apiRef,
   eventHandlers,
   getRowClassName,
   getRowId,
-  highlightRowParam,
   rows,
 }: UseDataGridRowHighlightParams<R>) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const highlightedRowId = highlightRowParam
-    ? searchParams.get(highlightRowParam)
-    : null;
+  const highlightedRowId = searchParams.get(HIGHLIGHT_ROW_PARAM);
 
   useEffect(() => {
     if (
@@ -97,13 +95,12 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
 
   const clearHighlightForRow = (rowId: GridRowId) => {
     if (
-      highlightRowParam &&
       highlightedRowId !== null &&
       String(rowId) !== highlightedRowId
     ) {
       setSearchParams((currentSearchParams) => {
         const nextSearchParams = new URLSearchParams(currentSearchParams);
-        nextSearchParams.delete(highlightRowParam);
+        nextSearchParams.delete(HIGHLIGHT_ROW_PARAM);
         return nextSearchParams;
       });
     }

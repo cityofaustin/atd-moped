@@ -5,7 +5,6 @@ import { Link as RouterLink, useParams, useSearchParams } from "react-router";
 interface MopedDataGridRowLinkProps extends Omit<LinkProps, "href"> {
   projectId?: string | number;
   tab: string;
-  paramLabel: string;
   paramId?: string | number;
   children: ReactNode;
 }
@@ -16,7 +15,6 @@ interface MopedDataGridRowLinkProps extends Omit<LinkProps, "href"> {
 const MopedDataGridRowLink = ({
   projectId,
   tab,
-  paramLabel,
   paramId,
   children,
   ...linkProps
@@ -35,9 +33,9 @@ const MopedDataGridRowLink = ({
   nextSearchParams.set("tab", tab);
 
   if (paramId === undefined) {
-    nextSearchParams.delete(paramLabel);
+    nextSearchParams.delete("highlightedRowId");
   } else {
-    nextSearchParams.set(paramLabel, String(paramId));
+    nextSearchParams.set("highlightedRowId", String(paramId));
   }
 
   const destinationPath = `/moped/projects/${targetProjectId}?tab=${tab}`;

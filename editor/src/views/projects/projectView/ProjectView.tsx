@@ -411,7 +411,6 @@ const ProjectView = () => {
                             <MopedDataGridRowLink
                               projectId={projectId}
                               tab={"timeline"}
-                              paramLabel={"currentPhaseId"}
                               paramId={
                                 data?.moped_project?.[0]?.moped_proj_phases?.[0]
                                   ?.project_phase_id
