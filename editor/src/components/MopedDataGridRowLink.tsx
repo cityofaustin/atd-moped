@@ -1,4 +1,4 @@
-import React from "react";
+import type { ReactNode } from "react";
 import Link, { type LinkProps } from "@mui/material/Link";
 import { Link as RouterLink, useParams, useSearchParams } from "react-router";
 import { getMopedDataGridRowLinkPath } from "src/utils/mopedDataGridRowLinkPath";
@@ -6,9 +6,9 @@ import { getMopedDataGridRowLinkPath } from "src/utils/mopedDataGridRowLinkPath"
 interface MopedDataGridRowLinkProps extends Omit<LinkProps, "href"> {
   projectId?: string | number;
   tab: string;
-  paramLabel?: string;
+  paramLabel: string;
   paramId?: string | number;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /**
@@ -20,45 +20,35 @@ const MopedDataGridRowLink = ({
   paramLabel,
   paramId,
   children,
-  onClick,
   ...linkProps
 }: MopedDataGridRowLinkProps) => {
   const { projectId: routeProjectId } = useParams<{ projectId: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const targetProjectId = projectId ?? routeProjectId;
 
-  if (paramLabel === undefined) {
-    throw new Error("MopedDataGridRowLink requires a param label");
-  }
   if (targetProjectId === undefined) {
     throw new Error(
       "MopedDataGridRowLink requires a project ID or a project route"
     );
   }
 
+  const nextSearchParams = new URLSearchParams(searchParams);
+  nextSearchParams.set("tab", tab);
+
+  if (paramId === undefined) {
+    nextSearchParams.delete(paramLabel);
+  } else {
+    nextSearchParams.set(paramLabel, String(paramId));
+  }
+
+  const destinationPath = getMopedDataGridRowLinkPath(targetProjectId, tab);
+  const destination = `${destinationPath.split("?")[0]}?${nextSearchParams}`;
+
   return (
     <Link
       {...linkProps}
       component={RouterLink}
-      to={getMopedDataGridRowLinkPath(targetProjectId, tab)}
-      onClick={(event) => {
-        onClick?.(event);
-        if (event.defaultPrevented) {
-          return;
-        }
-        event.preventDefault();
-
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.set("tab", tab);
-
-        if (paramId === undefined) {
-          nextSearchParams.delete(paramLabel);
-        } else {
-          nextSearchParams.set(paramLabel, String(paramId));
-        }
-
-        setSearchParams(nextSearchParams);
-      }}
+      to={destination}
     >
       {children}
     </Link>

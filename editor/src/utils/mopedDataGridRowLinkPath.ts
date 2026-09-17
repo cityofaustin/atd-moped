@@ -14,7 +14,6 @@ export const useNavigateToMopedDataGridRow = (
   projectId?: string | number,
   tab?: string
 ) => {
-  console.log("useNavigateToMopedDataGridRow", { projectId, tab });
   const navigate = useNavigate();
   const { projectId: routeProjectId } = useParams<{ projectId: string }>();
   const targetProjectId = projectId ?? routeProjectId;
