@@ -75,6 +75,16 @@ where mpc.component_id = new_mc.component_id
     )
     and mpc.is_deleted = false;
 
+-- Remove work types copied onto the new point types
+delete from moped_component_work_types mcwt
+using moped_components mc
+where mcwt.component_id = mc.component_id
+    and mc.component_name = 'Speed Management'
+    and mc.component_subtype in (
+        'Speed Cushions (Asphalt)',
+        'Speed Cushions (Rubber)'
+    );
+
 delete from moped_components
 where
     component_name = 'Speed Management'

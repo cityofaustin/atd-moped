@@ -18,6 +18,29 @@ insert into moped_components
 (component_name, component_subtype, line_representation, feature_layer_id) values
 ('Speed Management', 'Speed Cushions (Rubber)', false, 5);
 
+-- Copy allowed work types from the renamed linear types onto the new point types
+insert into moped_component_work_types (component_id, work_type_id)
+select
+    new_mc.component_id,
+    mcwt.work_type_id
+from moped_component_work_types mcwt
+join moped_components old_mc
+    on old_mc.component_id = mcwt.component_id
+join moped_components new_mc
+    on new_mc.component_name = 'Speed Management'
+    and new_mc.is_deleted = false
+    and (
+        (
+            old_mc.component_subtype = 'Speed Cushions (Asphalt, linear)'
+            and new_mc.component_subtype = 'Speed Cushions (Asphalt)'
+        )
+        or
+        (
+            old_mc.component_subtype = 'Speed Cushions (Rubber, linear)'
+            and new_mc.component_subtype = 'Speed Cushions (Rubber)'
+        )
+    )
+where old_mc.component_name = 'Speed Management';
 
 -- Retarget these projects' speed cushions at the new point types
 update moped_proj_components mpc
