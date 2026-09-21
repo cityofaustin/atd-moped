@@ -65,6 +65,7 @@ where mpc.component_id = old_mc.component_id
         277, 297, 299, 300, 301, 303, 474, 475, 477, 478, 574, 3568, 3570, 3574
     )
     and mpc.is_deleted = false;
+
 -- One centroid MultiPoint per remaining drawn line, same parent component
 insert into feature_drawn_points (
     component_id,
@@ -96,6 +97,7 @@ where mpc.project_id in (
     )
     and fdl.is_deleted = false
     and mpc.is_deleted = false;
+
 -- Soft-delete the original drawn lines
 update feature_drawn_lines fdl
 set is_deleted = true
