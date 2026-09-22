@@ -1,36 +1,15 @@
 import { useEffect, type RefObject } from "react";
 import {
   type GridApi,
-  type DataGridProProps,
   useGridApiRef,
-  type GridRowId,
   type GridRowClassNameParams,
   type GridRowIdGetter,
   type GridValidRowModel,
 } from "@mui/x-data-grid-pro";
 import { useSearchParams } from "react-router";
 
-// Compiles a list of event handlers to clear the highlight for a row when any other row is edited or clicked.
-type HighlightEventHandlers<R extends GridValidRowModel> = Pick<
-  DataGridProProps<R>,
-  "onCellClick" | "onCellDoubleClick" | "onCellEditStart" | "onRowEditStart"
->;
-type CellClickHandler<R extends GridValidRowModel> = NonNullable<
-  DataGridProProps<R>["onCellClick"]
->;
-type CellDoubleClickHandler<R extends GridValidRowModel> = NonNullable<
-  DataGridProProps<R>["onCellDoubleClick"]
->;
-type CellEditStartHandler<R extends GridValidRowModel> = NonNullable<
-  DataGridProProps<R>["onCellEditStart"]
->;
-type RowEditStartHandler<R extends GridValidRowModel> = NonNullable<
-  DataGridProProps<R>["onRowEditStart"]
->;
-
 type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
   apiRef?: RefObject<GridApi | null>;
-  eventHandlers: HighlightEventHandlers<R>;
   getRowClassName?: (params: GridRowClassNameParams<R>) => string;
   getRowId?: GridRowIdGetter<R>;
   rows: readonly R[];
@@ -38,7 +17,6 @@ type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
 
 const useDataGridRowHighlight = <R extends GridValidRowModel>({
   apiRef,
-  eventHandlers,
   getRowClassName,
   getRowId,
   rows,
@@ -53,6 +31,27 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
       backgroundColor: "rgba(0, 0, 0, 0.04)",
     },
   };
+
+  useEffect(() => {
+    if (highlightedRowId === null) {
+      return;
+    }
+
+    const clearHighlight = () => {
+      setSearchParams((currentSearchParams) => {
+        if (!currentSearchParams.has(highlightedRowLabel)) {
+          return currentSearchParams;
+        }
+
+        const nextSearchParams = new URLSearchParams(currentSearchParams);
+        nextSearchParams.delete(highlightedRowLabel);
+        return nextSearchParams;
+      });
+    };
+
+    document.addEventListener("click", clearHighlight);
+    return () => document.removeEventListener("click", clearHighlight);
+  }, [highlightedRowId, setSearchParams]);
 
   useEffect(() => {
     if (
@@ -100,61 +99,11 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
       .join(" ");
   };
 
-  const clearHighlightForRow = (rowId: GridRowId) => {
-    if (highlightedRowId !== null && String(rowId) !== highlightedRowId) {
-      setSearchParams((currentSearchParams) => {
-        const nextSearchParams = new URLSearchParams(currentSearchParams);
-        nextSearchParams.delete(highlightedRowLabel);
-        return nextSearchParams;
-      });
-    }
-  };
-
-  const handleCellEditStart: CellEditStartHandler<R> = (
-    params,
-    event,
-    details
-  ) => {
-    clearHighlightForRow(params.id);
-    eventHandlers.onCellEditStart?.(params, event, details);
-  };
-
-  const handleCellDoubleClick: CellDoubleClickHandler<R> = (
-    params,
-    event,
-    details
-  ) => {
-    clearHighlightForRow(params.id);
-    eventHandlers.onCellDoubleClick?.(params, event, details);
-  };
-
-  const handleCellClick: CellClickHandler<R> = (params, event, details) => {
-    if (params.field === "_edit" || params.field === "edit") {
-      clearHighlightForRow(params.id);
-    }
-    eventHandlers.onCellClick?.(params, event, details);
-  };
-
-  const handleRowEditStart: RowEditStartHandler<R> = (
-    params,
-    event,
-    details
-  ) => {
-    clearHighlightForRow(params.id);
-    eventHandlers.onRowEditStart?.(params, event, details);
-  };
-
   return {
     apiRef: gridApiRef,
     getRowClassNameWithHighlight,
     highlightedRowId,
     highlightedRowStyle,
-    eventHandlers: {
-      onCellClick: handleCellClick,
-      onCellDoubleClick: handleCellDoubleClick,
-      onCellEditStart: handleCellEditStart,
-      onRowEditStart: handleRowEditStart,
-    },
   };
 };
 
