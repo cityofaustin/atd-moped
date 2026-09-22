@@ -1,19 +1,19 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useMemo, type RefObject } from "react";
 import {
   type GridApi,
   type DataGridProProps,
   useGridApiRef,
-  type GridRowClassNameParams,
   type GridRowIdGetter,
+  type GridRowSelectionModel,
   type GridValidRowModel,
 } from "@mui/x-data-grid-pro";
 import { useSearchParams } from "react-router";
 
 type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
   apiRef?: RefObject<GridApi | null>;
-  getRowClassName?: (params: GridRowClassNameParams<R>) => string;
   getRowId?: GridRowIdGetter<R>;
   onCellClick?: DataGridProProps<R>["onCellClick"];
+  rowSelectionModel?: GridRowSelectionModel;
   rows: readonly R[];
 };
 
@@ -21,36 +21,37 @@ const HIGHLIGHTED_ROW_PARAM = "highlightedRowId";
 
 const useDataGridRowHighlight = <R extends GridValidRowModel>({
   apiRef,
-  getRowClassName,
   getRowId,
   onCellClick,
+  rowSelectionModel,
   rows,
 }: UseDataGridRowHighlightParams<R>) => {
   const internalApiRef = useGridApiRef();
   const gridApiRef = apiRef ?? internalApiRef;
   const [searchParams, setSearchParams] = useSearchParams();
   const highlightedRowId = searchParams.get(HIGHLIGHTED_ROW_PARAM);
-  const highlightedRowStyle = {
-    "& .moped-data-grid-highlighted-row": {
-      backgroundColor: "rgba(0, 0, 0, 0.04)",
-    },
-  };
+  const highlightedRow = rows.find((row) => {
+    const rowId = getRowId ? getRowId(row) : row.id;
+    return String(rowId) === highlightedRowId;
+  });
+  const highlightedRowSelectionModel = useMemo<GridRowSelectionModel>(
+    () =>
+      highlightedRow
+        ? {
+            type: "include",
+            ids: new Set([
+              getRowId ? getRowId(highlightedRow) : highlightedRow.id,
+            ]),
+          }
+        : (rowSelectionModel ?? { type: "include", ids: new Set() }),
+    [getRowId, highlightedRow, rowSelectionModel],
+  );
 
   useEffect(() => {
     if (
-      highlightedRowId === null ||
-      rows.length === 0 ||
+      highlightedRow === undefined ||
       gridApiRef.current === null
     ) {
-      return;
-    }
-
-    const highlightedRow = rows.find((row) => {
-      const rowId = getRowId ? getRowId(row) : row.id;
-      return String(rowId) === highlightedRowId;
-    });
-
-    if (!highlightedRow) {
       return;
     }
 
@@ -66,21 +67,7 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
         });
       });
     }
-  }, [getRowId, gridApiRef, highlightedRowId, rows]);
-
-  const getRowClassNameWithHighlight = (params: GridRowClassNameParams<R>) => {
-    const rowId = getRowId ? getRowId(params.row) : params.row.id;
-    const rowClassName = getRowClassName?.(params) || "";
-
-    return [
-      rowClassName,
-      highlightedRowId !== null && String(rowId) === highlightedRowId
-        ? "moped-data-grid-highlighted-row"
-        : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
-  };
+  }, [getRowId, gridApiRef, highlightedRow]);
 
   const handleCellClick: NonNullable<
     DataGridProProps<R>["onCellClick"]
@@ -103,9 +90,8 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   return {
     apiRef: gridApiRef,
     handleCellClick,
-    getRowClassNameWithHighlight,
     highlightedRowId,
-    highlightedRowStyle,
+    rowSelectionModel: highlightedRowSelectionModel,
   };
 };
 

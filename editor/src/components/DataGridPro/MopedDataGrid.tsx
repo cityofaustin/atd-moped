@@ -26,24 +26,22 @@ type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
 const MopedDataGrid = <R extends GridValidRowModel>({
   sx,
   slotProps = {},
-  getRowClassName,
   getRowId,
   apiRef,
   onCellClick,
+  rowSelectionModel,
   rows = [],
   ...props
 }: MopedDataGridProps<R>) => {
   const {
     apiRef: gridApiRef,
     handleCellClick,
-    getRowClassNameWithHighlight,
-    highlightedRowId,
-    highlightedRowStyle,
+    rowSelectionModel: highlightedRowSelectionModel,
   } = useDataGridRowHighlight({
     apiRef,
-    getRowClassName,
     getRowId,
     onCellClick,
+    rowSelectionModel,
     rows,
   });
   return (
@@ -51,7 +49,6 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       sx={{
         ...dataGridProStyleOverrides,
         ...sx,
-        ...(highlightedRowId !== null && highlightedRowStyle),
       }}
       slotProps={{
         ...slotProps,
@@ -62,7 +59,6 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       }}
       density="comfortable"
       getRowHeight={() => "auto"}
-      getRowClassName={getRowClassNameWithHighlight}
       hideFooter
       disableRowSelectionOnClick
       // Show toolbar if a toolbar slot is provided
@@ -73,6 +69,7 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       apiRef={gridApiRef}
       rows={rows}
       {...props}
+      rowSelectionModel={highlightedRowSelectionModel}
     />
   );
 };
