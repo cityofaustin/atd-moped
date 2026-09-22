@@ -1,6 +1,7 @@
 import { useEffect, type RefObject } from "react";
 import {
   type GridApi,
+  type DataGridProProps,
   useGridApiRef,
   type GridRowClassNameParams,
   type GridRowIdGetter,
@@ -12,46 +13,28 @@ type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
   apiRef?: RefObject<GridApi | null>;
   getRowClassName?: (params: GridRowClassNameParams<R>) => string;
   getRowId?: GridRowIdGetter<R>;
+  onCellClick?: DataGridProProps<R>["onCellClick"];
   rows: readonly R[];
 };
+
+const HIGHLIGHTED_ROW_PARAM = "highlightedRowId";
 
 const useDataGridRowHighlight = <R extends GridValidRowModel>({
   apiRef,
   getRowClassName,
   getRowId,
+  onCellClick,
   rows,
 }: UseDataGridRowHighlightParams<R>) => {
   const internalApiRef = useGridApiRef();
   const gridApiRef = apiRef ?? internalApiRef;
   const [searchParams, setSearchParams] = useSearchParams();
-  const highlightedRowLabel = "highlightedRowId";
-  const highlightedRowId = searchParams.get(highlightedRowLabel);
+  const highlightedRowId = searchParams.get(HIGHLIGHTED_ROW_PARAM);
   const highlightedRowStyle = {
     "& .moped-data-grid-highlighted-row": {
       backgroundColor: "rgba(0, 0, 0, 0.04)",
     },
   };
-
-  useEffect(() => {
-    if (highlightedRowId === null) {
-      return;
-    }
-
-    const clearHighlight = () => {
-      setSearchParams((currentSearchParams) => {
-        if (!currentSearchParams.has(highlightedRowLabel)) {
-          return currentSearchParams;
-        }
-
-        const nextSearchParams = new URLSearchParams(currentSearchParams);
-        nextSearchParams.delete(highlightedRowLabel);
-        return nextSearchParams;
-      });
-    };
-
-    document.addEventListener("click", clearHighlight);
-    return () => document.removeEventListener("click", clearHighlight);
-  }, [highlightedRowId, setSearchParams]);
 
   useEffect(() => {
     if (
@@ -99,8 +82,27 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
       .join(" ");
   };
 
+  const handleCellClick: NonNullable<
+    DataGridProProps<R>["onCellClick"]
+  > = (params, event, details) => {
+    if (highlightedRowId !== null) {
+      setSearchParams((currentSearchParams) => {
+        if (!currentSearchParams.has(HIGHLIGHTED_ROW_PARAM)) {
+          return currentSearchParams;
+        }
+
+        const nextSearchParams = new URLSearchParams(currentSearchParams);
+        nextSearchParams.delete(HIGHLIGHTED_ROW_PARAM);
+        return nextSearchParams;
+      });
+    }
+
+    onCellClick?.(params, event, details);
+  };
+
   return {
     apiRef: gridApiRef,
+    handleCellClick,
     getRowClassNameWithHighlight,
     highlightedRowId,
     highlightedRowStyle,

@@ -29,11 +29,13 @@ const MopedDataGrid = <R extends GridValidRowModel>({
   getRowClassName,
   getRowId,
   apiRef,
+  onCellClick,
   rows = [],
   ...props
 }: MopedDataGridProps<R>) => {
   const {
     apiRef: gridApiRef,
+    handleCellClick,
     getRowClassNameWithHighlight,
     highlightedRowId,
     highlightedRowStyle,
@@ -41,6 +43,7 @@ const MopedDataGrid = <R extends GridValidRowModel>({
     apiRef,
     getRowClassName,
     getRowId,
+    onCellClick,
     rows,
   });
   return (
@@ -64,6 +67,7 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       disableRowSelectionOnClick
       // Show toolbar if a toolbar slot is provided
       showToolbar={!!props.slots?.toolbar}
+      onCellClick={handleCellClick}
       onProcessRowUpdateError={(error) => console.error(error)}
       getRowId={getRowId}
       apiRef={gridApiRef}
