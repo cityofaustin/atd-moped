@@ -7,7 +7,7 @@ import {
   type GridRowSelectionModel,
   type GridValidRowModel,
 } from "@mui/x-data-grid-pro";
-import { useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 
 type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
   apiRef?: RefObject<GridApi | null>;
@@ -28,6 +28,7 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
 }: UseDataGridRowHighlightParams<R>) => {
   const internalApiRef = useGridApiRef();
   const gridApiRef = apiRef ?? internalApiRef;
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const highlightedRowId = searchParams.get(HIGHLIGHTED_ROW_PARAM);
   const highlightedRow = rows.find((row) => {
@@ -73,15 +74,11 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     DataGridProProps<R>["onCellClick"]
   > = (params, event, details) => {
     if (highlightedRowId !== null) {
-      setSearchParams((currentSearchParams) => {
-        if (!currentSearchParams.has(HIGHLIGHTED_ROW_PARAM)) {
-          return currentSearchParams;
-        }
-
-        const nextSearchParams = new URLSearchParams(currentSearchParams);
+      const nextSearchParams = new URLSearchParams(searchParams);
+      if (nextSearchParams.has(HIGHLIGHTED_ROW_PARAM)) {
         nextSearchParams.delete(HIGHLIGHTED_ROW_PARAM);
-        return nextSearchParams;
-      });
+        setSearchParams(nextSearchParams, { state: location.state });
+      }
     }
 
     onCellClick?.(params, event, details);
