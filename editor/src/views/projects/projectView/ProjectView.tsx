@@ -308,6 +308,8 @@ const ProjectView = () => {
    */
   const currentPhase =
     data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
+  const currentPhaseId =
+    data?.moped_project?.[0]?.moped_proj_phases?.[0]?.project_phase_id;
   const isProjectDeleted = data?.moped_project[0]?.is_deleted ?? false;
 
   /**
@@ -411,10 +413,7 @@ const ProjectView = () => {
                             <MopedDataGridRowLink
                               projectId={Number(projectId)}
                               tab={"timeline"}
-                              paramId={
-                                data?.moped_project?.[0]?.moped_proj_phases?.[0]
-                                  ?.project_phase_id
-                              }
+                              paramId={Number(currentPhaseId)}
                             >
                               <ProjectStatusBadge
                                 phaseKey={currentPhase?.phase_key ?? ""}
