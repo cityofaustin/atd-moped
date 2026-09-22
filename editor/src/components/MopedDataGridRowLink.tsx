@@ -1,11 +1,19 @@
 import type { ReactNode } from "react";
 import Link, { type LinkProps } from "@mui/material/Link";
-import { Link as RouterLink, useParams, useSearchParams } from "react-router";
+import { Link as RouterLink, useLocation, useSearchParams } from "react-router";
 
 interface MopedDataGridRowLinkProps extends Omit<LinkProps, "href"> {
-  projectId?: string | number;
-  tab: string;
-  paramId?: string | number;
+  projectId: number;
+  tab:
+    | "summary"
+    | "map"
+    | "timeline"
+    | "team"
+    | "funding"
+    | "notes"
+    | "files"
+    | "activity_log";
+  paramId: number;
   children: ReactNode;
 }
 
@@ -19,15 +27,8 @@ const MopedDataGridRowLink = ({
   children,
   ...linkProps
 }: MopedDataGridRowLinkProps) => {
-  const { projectId: routeProjectId } = useParams<{ projectId: string }>();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
-  const targetProjectId = projectId ?? routeProjectId;
-
-  if (targetProjectId === undefined) {
-    throw new Error(
-      "MopedDataGridRowLink requires a project ID or a project route"
-    );
-  }
 
   const nextSearchParams = new URLSearchParams(searchParams);
   nextSearchParams.set("tab", tab);
@@ -38,13 +39,16 @@ const MopedDataGridRowLink = ({
     nextSearchParams.set("highlightedRowId", String(paramId));
   }
 
-  const destinationPath = `/moped/projects/${targetProjectId}?tab=${tab}`;
-  const destination = `${destinationPath.split("?")[0]}?${nextSearchParams}`;
+  const destination = {
+    pathname: `/moped/projects/${projectId}`,
+    search: `?${nextSearchParams.toString()}`,
+  };
 
   return (
     <Link
       {...linkProps}
       component={RouterLink}
+      state={location.state}
       to={destination}
     >
       {children}

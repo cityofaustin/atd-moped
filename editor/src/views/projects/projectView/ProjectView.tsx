@@ -409,7 +409,7 @@ const ProjectView = () => {
                         >
                           <Box>
                             <MopedDataGridRowLink
-                              projectId={projectId}
+                              projectId={Number(projectId)}
                               tab={"timeline"}
                               paramId={
                                 data?.moped_project?.[0]?.moped_proj_phases?.[0]
