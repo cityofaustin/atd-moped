@@ -37,7 +37,9 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     const rowId = getRowId ? getRowId(row) : row.id;
     return String(rowId) === highlightedRowId;
   });
-  const highlightedRowSelectionModel = useMemo<GridRowSelectionModel>(
+  const highlightedRowSelectionModel = useMemo<
+    GridRowSelectionModel | undefined
+  >(
     () =>
       highlightedRow
         ? {
@@ -46,15 +48,12 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
               getRowId ? getRowId(highlightedRow) : highlightedRow.id,
             ]),
           }
-        : (rowSelectionModel ?? { type: "include", ids: new Set() }),
-    [getRowId, highlightedRow, rowSelectionModel],
+        : rowSelectionModel,
+    [getRowId, highlightedRow, rowSelectionModel]
   );
 
   useEffect(() => {
-    if (
-      highlightedRow === undefined ||
-      gridApiRef.current === null
-    ) {
+    if (highlightedRow === undefined || gridApiRef.current === null) {
       return;
     }
 
@@ -72,14 +71,19 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     }
   }, [getRowId, gridApiRef, highlightedRow]);
 
-  const handleCellClick: NonNullable<
-    DataGridProProps<R>["onCellClick"]
-  > = (params, event, details) => {
+  const handleCellClick: NonNullable<DataGridProProps<R>["onCellClick"]> = (
+    params,
+    event,
+    details
+  ) => {
     if (highlightedRowId !== null) {
       const nextSearchParams = new URLSearchParams(searchParams);
       if (highlightedRowParam && nextSearchParams.has(highlightedRowParam)) {
         nextSearchParams.delete(highlightedRowParam);
-        setSearchParams(nextSearchParams, { state: location.state });
+        setSearchParams(nextSearchParams, {
+          state: location.state,
+          replace: true,
+        });
       }
     }
 
