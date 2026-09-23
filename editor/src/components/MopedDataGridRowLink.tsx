@@ -13,6 +13,7 @@ interface MopedDataGridRowLinkProps extends Omit<LinkProps, "href"> {
     | "notes"
     | "files"
     | "activity_log";
+  highlightedRowParam: string;
   paramId: number;
   children: ReactNode;
 }
@@ -23,6 +24,7 @@ interface MopedDataGridRowLinkProps extends Omit<LinkProps, "href"> {
 const MopedDataGridRowLink = ({
   projectId,
   tab,
+  highlightedRowParam,
   paramId,
   children,
   ...linkProps
@@ -34,9 +36,9 @@ const MopedDataGridRowLink = ({
   nextSearchParams.set("tab", tab);
 
   if (paramId === undefined) {
-    nextSearchParams.delete("highlightedRowId");
+    nextSearchParams.delete(highlightedRowParam);
   } else {
-    nextSearchParams.set("highlightedRowId", String(paramId));
+    nextSearchParams.set(highlightedRowParam, String(paramId));
   }
 
   const destination = {

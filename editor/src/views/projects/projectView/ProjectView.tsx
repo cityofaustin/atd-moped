@@ -62,6 +62,7 @@ import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import MopedDataGridRowLink from "src/components/MopedDataGridRowLink";
+import { highlightedRowParam } from "./ProjectPhases";
 
 interface DialogState {
   title: React.ReactNode;
@@ -413,6 +414,7 @@ const ProjectView = () => {
                             <MopedDataGridRowLink
                               projectId={Number(projectId)}
                               tab={"timeline"}
+                              highlightedRowParam={highlightedRowParam}
                               paramId={Number(currentPhaseId)}
                             >
                               <ProjectStatusBadge

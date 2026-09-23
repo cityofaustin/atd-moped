@@ -12,16 +12,16 @@ import { useLocation, useSearchParams } from "react-router";
 type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
   apiRef?: RefObject<GridApi | null>;
   getRowId?: GridRowIdGetter<R>;
+  highlightedRowParam?: string;
   onCellClick?: DataGridProProps<R>["onCellClick"];
   rowSelectionModel?: GridRowSelectionModel;
   rows: readonly R[];
 };
 
-const HIGHLIGHTED_ROW_PARAM = "highlightedRowId";
-
 const useDataGridRowHighlight = <R extends GridValidRowModel>({
   apiRef,
   getRowId,
+  highlightedRowParam,
   onCellClick,
   rowSelectionModel,
   rows,
@@ -30,7 +30,9 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   const gridApiRef = apiRef ?? internalApiRef;
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const highlightedRowId = searchParams.get(HIGHLIGHTED_ROW_PARAM);
+  const highlightedRowId = highlightedRowParam
+    ? searchParams.get(highlightedRowParam)
+    : null;
   const highlightedRow = rows.find((row) => {
     const rowId = getRowId ? getRowId(row) : row.id;
     return String(rowId) === highlightedRowId;
@@ -75,8 +77,8 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   > = (params, event, details) => {
     if (highlightedRowId !== null) {
       const nextSearchParams = new URLSearchParams(searchParams);
-      if (nextSearchParams.has(HIGHLIGHTED_ROW_PARAM)) {
-        nextSearchParams.delete(HIGHLIGHTED_ROW_PARAM);
+      if (highlightedRowParam && nextSearchParams.has(highlightedRowParam)) {
+        nextSearchParams.delete(highlightedRowParam);
         setSearchParams(nextSearchParams, { state: location.state });
       }
     }
