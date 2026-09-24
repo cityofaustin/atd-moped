@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useMutation } from "@apollo/client";
 import { UPDATE_NON_MOPED_USER } from "src/queries/staff";
 import {

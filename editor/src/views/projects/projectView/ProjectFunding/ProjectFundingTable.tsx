@@ -10,7 +10,7 @@ import {
   type GridEventListener,
   useGridApiRef,
   gridColumnFieldsSelector,
-  GridRowId,
+  type GridRowId,
   type GridRowModesModel,
 } from "@mui/x-data-grid-pro";
 import MopedDataGridInlineEdit from "src/components/DataGridPro/MopedDataGridInlineEdit";
@@ -465,6 +465,7 @@ const ProjectFundingTable = ({
 
   const dataGridColumns = useColumns({
     dataLookups,
+    fdusArray,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

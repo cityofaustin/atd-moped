@@ -1,4 +1,7 @@
--- Most recent migration: moped-database/migrations/default/1788304724360_update_exploded_view/up.sql
+-- Drop new component geography view and revert to previous version of component_arcgis_online_view and exploded_component_arcgis_online_view
+DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
+DROP VIEW IF EXISTS component_geography_view;
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
 WITH work_types AS (
@@ -25,6 +28,93 @@ council_districts AS (
     LEFT JOIN features ON features_council_districts.feature_id = features.id
     WHERE features.is_deleted = false
     GROUP BY features.component_id
+),
+
+comp_geography AS (
+    SELECT
+        feature_union.component_id                                                 AS project_component_id,
+        string_agg(
+            DISTINCT feature_union.id::text, ', '::text
+        )                                                                          AS feature_ids,
+        st_asgeojson(st_multi(st_union(array_agg(feature_union.geography))))::json AS geometry,
+        st_asgeojson(
+            st_multi(st_union(array_agg(feature_union.line_geography)))
+        )::json                                                                    AS line_geometry,
+        string_agg(DISTINCT feature_union.signal_id::text, ', '::text)             AS signal_ids,
+        sum(
+            feature_union.length_feet
+        )                                                                          AS length_feet_total,
+        count(feature_union.id)                                                    AS feature_count
+    FROM (
+        SELECT
+            feature_signals.id,
+            feature_signals.component_id,
+            feature_signals.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_signals.geography, 7::double precision)::geometry
+            )                                   AS line_geography,
+            feature_signals.signal_id,
+            null::integer                       AS length_feet
+        FROM feature_signals
+        WHERE feature_signals.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_street_segments.id,
+            feature_street_segments.component_id,
+            feature_street_segments.geography::geometry AS geography,
+            feature_street_segments.geography::geometry AS line_geography,
+            null::integer                               AS signal_id,
+            feature_street_segments.length_feet
+        FROM feature_street_segments
+        WHERE feature_street_segments.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_intersections.id,
+            feature_intersections.component_id,
+            feature_intersections.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_intersections.geography, 7::double precision)::geometry
+            )                                         AS line_geography,
+            null::integer                             AS signal_id,
+            null::integer                             AS length_feet
+        FROM feature_intersections
+        WHERE feature_intersections.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_drawn_points.id,
+            feature_drawn_points.component_id,
+            feature_drawn_points.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_drawn_points.geography, 7::double precision)::geometry
+            )                                        AS line_geography,
+            null::integer                            AS signal_id,
+            null::integer                            AS length_feet
+        FROM feature_drawn_points
+        WHERE feature_drawn_points.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_drawn_lines.id,
+            feature_drawn_lines.component_id,
+            feature_drawn_lines.geography::geometry AS geography,
+            feature_drawn_lines.geography::geometry AS line_geography,
+            null::integer                           AS signal_id,
+            feature_drawn_lines.length_feet
+        FROM feature_drawn_lines
+        WHERE feature_drawn_lines.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_school_beacons.id,
+            feature_school_beacons.component_id,
+            feature_school_beacons.geography::geometry AS geography,
+            st_exteriorring(
+                st_buffer(feature_school_beacons.geography, 7::double precision)::geometry
+            )                                          AS line_geography,
+            null::integer                              AS signal_id,
+            null::integer                              AS length_feet
+        FROM feature_school_beacons
+        WHERE feature_school_beacons.is_deleted = false
+    ) feature_union
+    GROUP BY feature_union.component_id
 ),
 
 subcomponents AS (
@@ -215,9 +305,7 @@ SELECT
     END::text                                   AS project_development_status_date_fiscal_year_quarter,
     plv.added_by                                AS project_added_by
 FROM moped_proj_components mpc
-LEFT JOIN
-    component_geography_view comp_geography
-    ON mpc.project_component_id = comp_geography.project_component_id
+LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
 LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
@@ -242,3 +330,17 @@ LEFT JOIN LATERAL
     ) project_development_status_date
     ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
+
+CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS
+SELECT
+    component_arcgis_online_view.project_id,
+    component_arcgis_online_view.project_component_id,
+    st_geometrytype(dump.geom)            AS geometry_type,
+    dump.path[1]                          AS point_index,
+    component_arcgis_online_view.geometry AS original_geometry,
+    st_asgeojson(dump.geom)               AS exploded_geometry,
+    component_arcgis_online_view.project_updated_at
+FROM component_arcgis_online_view
+,
+LATERAL st_dump (st_geomfromgeojson (component_arcgis_online_view.geometry)) dump (path, geom)
+WHERE st_geometrytype (st_geomfromgeojson (component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;

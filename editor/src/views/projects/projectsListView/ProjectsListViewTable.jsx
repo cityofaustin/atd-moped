@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { Box, Container, Paper } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { useQuery } from "@apollo/client";
 import Search from "src/components/GridTable/Search";
 import MopedDataGrid from "src/components/DataGridPro/MopedDataGrid";

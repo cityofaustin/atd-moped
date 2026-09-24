@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from "react";
-import { AlertProps } from "@mui/material";
+import { useCallback, useState, type SyntheticEvent } from "react";
+import type { AlertProps, SnackbarCloseReason } from "@mui/material";
 
-interface SnackbarState {
+export interface SnackbarState {
   /** Whether the snackbar is open */
   open: boolean;
   /** The message to display in the snackbar */
@@ -22,6 +22,15 @@ export type HandleSnackbar = (
   message: string,
   severity: AlertProps["severity"] | "",
   error?: unknown
+) => void;
+
+/**
+ * Shared close handler for Snackbar and Alert.
+ * Reason is optional so the same callback works for both components.
+ */
+export type HandleSnackbarClose = (
+  event: Event | SyntheticEvent,
+  reason?: SnackbarCloseReason
 ) => void;
 
 /**
@@ -66,10 +75,7 @@ export const useFeedbackSnackbar = () => {
   /**
    * Callback to reset the snackbar state on snackbar close
    */
-  const handleSnackbarClose = (
-    _event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose: HandleSnackbarClose = (_event, reason) => {
     if (reason === "clickaway") {
       return;
     }

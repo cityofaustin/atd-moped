@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, Button } from "@mui/material";
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 /**
  * Renders a fallback component
