@@ -7,7 +7,7 @@ import CopyTextButton from "src/components/CopyTextButton";
 import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { isValidUrl } from "src/utils/urls";
 import { cleanUpFileKey } from "src/views/projects/projectView/ProjectFiles/helpers";
-import { useUser } from "src/auth/user";
+import { getCognitoSession } from "src/auth/session";
 
 /**
  * Renders a file link based on the file type
@@ -25,8 +25,6 @@ const ProjectFileLink = ({
   condensed = false,
   showNetworkPathStyles = true,
 }) => {
-  const { getCognitoSession } = useUser();
-
   /* Download file */
   if (fileKey) {
     const displayName = cleanUpFileKey(fileKey);
@@ -108,7 +106,7 @@ const ProjectFileLink = ({
       <CopyTextButton
         textToCopy={fileUrl}
         copyButtonText="Copy network location"
-        buttonProps={{ size: "small" }}
+        iconButtonProps={{ size: "small" }}
         iconProps={{ fontSize: "small" }}
         iconOnly
       />

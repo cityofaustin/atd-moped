@@ -33,7 +33,7 @@ import {
 
 import { DASHBOARD_QUERY } from "src/queries/dashboard";
 
-import { useSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/mopedUser";
 import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 function a11yProps(index) {

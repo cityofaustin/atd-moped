@@ -1,5 +1,15 @@
-import React from "react";
 import { IconButton, Icon } from "@mui/material";
+
+interface ProjectSummaryIconButtonsProps {
+  /** Function to handle save action */
+  handleSave: () => void;
+  /** Function to handle close action */
+  handleClose: () => void;
+  /** Condition to disable the save button */
+  disabledCondition: boolean;
+  /** Loading state to disable buttons */
+  loading: boolean;
+}
 
 const iconButtonStyles = {
   width: 40,
@@ -8,20 +18,12 @@ const iconButtonStyles = {
   alignSelf: "center",
 };
 
-/**
- * ProjectSummaryIconButtons Component
- * @param {function} handleSave - Function to handle save action
- * @param {function} handleClose - Function to handle close action
- * @param {boolean} disabledCondition - Condition to disable the save button
- * @param {boolean} loading - Loading state to disable buttons
- * @returns {JSX.Element}
- */
 const ProjectSummaryIconButtons = ({
   handleSave,
   handleClose,
   disabledCondition,
   loading,
-}) => {
+}: ProjectSummaryIconButtonsProps) => {
   return (
     <div style={{ display: "contents" }}>
       <IconButton

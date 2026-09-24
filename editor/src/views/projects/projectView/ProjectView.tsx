@@ -50,7 +50,7 @@ import ProjectActivityLog from "src/views/projects/projectView/ProjectActivityLo
 import ProjectNameEditable from "src/views/projects/projectView/ProjectNameEditable";
 import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
-import { useSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/mopedUser";
 import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
