@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useMutation } from "@apollo/client";
-import { useUser } from "src/auth/user";
+import { useAuth } from "src/auth/auth";
 import { INSERT_USER_EVENT } from "src/queries/staff";
 
 /**
@@ -20,12 +20,13 @@ import { INSERT_USER_EVENT } from "src/queries/staff";
  * };
  */
 export function useLogUserEvent() {
-  const { user } = useUser();
+  const { status } = useAuth();
+  const isAuthenticated = status === "authenticated";
   const [insertUserEvent] = useMutation(INSERT_USER_EVENT);
 
   const logUserEvent = useCallback(
     (eventName) => {
-      if (!eventName || !user) {
+      if (!eventName || !isAuthenticated) {
         return;
       }
 
@@ -38,7 +39,7 @@ export function useLogUserEvent() {
         }
       );
     },
-    [insertUserEvent, user]
+    [insertUserEvent, isAuthenticated]
   );
 
   return logUserEvent;

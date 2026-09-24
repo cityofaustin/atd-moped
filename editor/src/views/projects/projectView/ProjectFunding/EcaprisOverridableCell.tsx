@@ -1,9 +1,26 @@
 import NotableCellPopover from "src/components/NotableCellPopover";
+import { type SavedFundingRow } from "src/views/projects/projectView/ProjectFunding/helpers";
+
+interface EcaprisOverridableCellProps {
+  row: SavedFundingRow;
+  ecaprisValue?: number | null;
+  currentValue?: number | null;
+  displayValue: string | number | null;
+}
+
+type GetShowOverrideIndicatorProps = Omit<
+  EcaprisOverridableCellProps,
+  "displayValue"
+>;
 
 /**
  * Helper to determine if the eCAPRIS override indicator should be shown for a cell
  */
-const getShowOverrideIndicator = ({ row, ecaprisValue, currentValue }) => {
+const getShowOverrideIndicator = ({
+  row,
+  ecaprisValue,
+  currentValue,
+}: GetShowOverrideIndicatorProps) => {
   const hasValue = currentValue !== null && currentValue !== undefined;
   const isOverridden = ecaprisValue !== currentValue;
   return (
@@ -20,7 +37,7 @@ const EcaprisOverridableCell = ({
   ecaprisValue,
   currentValue,
   displayValue,
-}) => (
+}: EcaprisOverridableCellProps) => (
   <NotableCellPopover
     value={displayValue}
     isEnabled={getShowOverrideIndicator({ row, ecaprisValue, currentValue })}

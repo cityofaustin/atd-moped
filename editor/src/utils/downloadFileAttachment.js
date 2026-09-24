@@ -1,5 +1,5 @@
 import config from "src/config";
-import { getCognitoIdJwt } from "src/auth/user";
+import { getCognitoIdJwt } from "src/auth/claims";
 
 /**
  * Downloads a file from S3 using the API.
