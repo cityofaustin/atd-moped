@@ -8,10 +8,13 @@ import {
   MenuItem,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { LinkOff } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import MopedDataGridRowLink from "src/components/MopedDataGridRowLink";
+import { highlightedRowParam } from "src/views/projects/projectView/ProjectFiles/ProjectFiles";
 
 /**
  *
@@ -21,10 +24,12 @@ import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfir
  * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
  * @param {Function} detachFileMutation - function to detach file from parent record
  * @param {string} confirmationFileType - type of file, either funding or work activity. Used in delete confirmation message
+ * @param {number} projectId - project ID used to link to the attached file in the Files table
  * @returns {JSX.Element}
  */
 const AttachedFile = ({
   file,
+  projectId,
   refetch,
   fileRecordId,
   handleSnackbar,
@@ -106,6 +111,19 @@ const AttachedFile = ({
           horizontal: "center",
         }}
       >
+        <MenuItem
+          component={MopedDataGridRowLink}
+          projectId={Number(projectId)}
+          tab="files"
+          highlightedRowParam={highlightedRowParam}
+          paramId={file.project_file_id}
+          onClick={handleMenuClose}
+        >
+          <ListItemIcon>
+            <EditOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Edit" />
+        </MenuItem>
         <MenuItem
           onClick={() => setIsDeleteConfirmationOpen(true)}
           selected={false}
