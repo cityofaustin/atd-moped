@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ProjectSummaryIconButtons from "src/views/projects/projectView/ProjectSummary/ProjectSummaryIconButtons";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 import CopyTextButton from "src/components/CopyTextButton";
@@ -10,6 +10,8 @@ import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { useUser } from "src/auth/user";
 import { filterOptions } from "src/utils/autocompleteHelpers";
+import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
+import { type GetFundingLookupsQuery } from "src/gql/graphql";
 
 import {
   fieldBox,
@@ -24,30 +26,38 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "src/queries/project";
 
+type SubprojectFundingOptionArray = GetFundingLookupsQuery["ecapris_options"];
+type SubprojectFundingOption = SubprojectFundingOptionArray[number];
+
+interface ProjectSummaryECaprisProps {
+  /** The id of the current project being viewed */
+  projectId: number;
+  /** The current eCAPRIS subproject ID */
+  eCaprisSubprojectId: string | null;
+  /**  The list of eCAPRIS subproject ID options */
+  options: SubprojectFundingOptionArray;
+  /** True if project summary refetch is loading */
+  loading: boolean;
+  /** refetch function from Apollo or batch of apollo refetch functions wrapped in one */
+  refetch: () => void;
+  /** The function to show the snackbar */
+  handleSnackbar: HandleSnackbar;
+  /** Whether the edit functionality should be disabled, defaults to false */
+  disabled?: boolean;
+}
+
 // Find full option object by id
-const findOptionById = (options, id) => {
-  return options?.find((option) => option?.ecapris_subproject_id === id);
+const findOptionById = (options: SubprojectFundingOptionArray, id: string) => {
+  return options.find((option) => option?.ecapris_subproject_id === id);
 };
 
 // Get option label for autocomplete display
-const getOptionLabel = (option) => {
+const getOptionLabel = (option: SubprojectFundingOption) => {
   return option
     ? `${option.ecapris_subproject_id} - ${option.subproject_name}`
     : "";
 };
 
-/**
- * ProjectSummaryProjectECapris Component
- * @param {Number} projectId - The id of the current project being viewed
- * @param {String} eCaprisSubprojectId - The current eCAPRIS subproject ID
- * @param {Array} options - The list of eCAPRIS subproject ID options
- * @param {boolean} loading - True if project summary refetch is loading
- * @param {function} refetch - The refetch function from apollo
- * @param {function} handleSnackbar - The function to show the snackbar
- * @param {boolean} disabled - Whether the edit functionality should be disabled, optional
- * @returns {JSX.Element}
- * @constructor
- */
 const ProjectSummaryProjectECapris = ({
   projectId,
   eCaprisSubprojectId,
@@ -56,18 +66,21 @@ const ProjectSummaryProjectECapris = ({
   refetch,
   handleSnackbar,
   disabled = false,
-}) => {
+}: ProjectSummaryECaprisProps) => {
+  /* @ts-expect-error address useUser and UserContext in issue 30204 */
   const { user } = useUser();
   const userEmail = user?.idToken?.payload?.email;
 
-  const initialValue = eCaprisSubprojectId
+  const initialValue: SubprojectFundingOption | null = eCaprisSubprojectId
     ? (findOptionById(options, eCaprisSubprojectId) ?? {
         ecapris_subproject_id: eCaprisSubprojectId,
+        subproject_name: "",
       })
     : null;
 
   const [editMode, setEditMode] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValue, setSelectedValue] =
+    useState<SubprojectFundingOption | null>(null);
   // Capture input value to include in service request if user encounters missing eCAPRIS subproject ID in options list
   const [inputValue, setInputValue] = useState("");
 
@@ -119,10 +132,14 @@ const ProjectSummaryProjectECapris = ({
     <Grid size={12} sx={fieldGridItem}>
       <Typography sx={fieldLabel}>eCAPRIS subproject ID</Typography>
       <Box
-        sx={[{
-          display: "flex",
-          justifyContent: "flex-start"
-        }, ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox])]}>
+        sx={[
+          {
+            display: "flex",
+            justifyContent: "flex-start",
+          },
+          ...(Array.isArray(fieldBox) ? fieldBox : [fieldBox]),
+        ]}
+      >
         {editMode && (
           <>
             <Autocomplete
@@ -156,17 +173,15 @@ const ProjectSummaryProjectECapris = ({
               noOptionsText={
                 <Typography variant="body2">
                   eCAPRIS subproject ID not found.{" "}
-                  {
-                    <ExternalLink
-                      url={createBugReportLink(
-                        {
-                          message: `Missing eCAPRIS subproject ID ${inputValue ?? ""} for project ${projectId}`,
-                        },
-                        userEmail
-                      )}
-                      text={"Click here"}
-                    />
-                  }{" "}
+                  <ExternalLink
+                    url={createBugReportLink(
+                      {
+                        message: `Missing eCAPRIS subproject ID ${inputValue ?? ""} for project ${projectId}`,
+                      },
+                      userEmail
+                    )}
+                    text={"Click here"}
+                  />{" "}
                   to report.
                 </Typography>
               }
