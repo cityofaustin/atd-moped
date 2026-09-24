@@ -617,7 +617,6 @@ const ProjectFundingTable = ({
         }}
       />
       {deleteConfirmationId !== null && (
-        // @ts-expect-error Migrating DeleteConfirmationModal to TS captured in issue #29890
         <DeleteConfirmationModal
           type={"funding source"}
           submitDelete={handleDeleteClick(deleteConfirmationId)}
