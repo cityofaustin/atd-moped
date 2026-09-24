@@ -111,21 +111,19 @@ const AttachedFile = ({
           horizontal: "center",
         }}
       >
-        {projectId && (
-          <MenuItem
-            component={MopedDataGridRowLink}
-            projectId={Number(projectId)}
-            tab="files"
-            highlightedRowParam={highlightedRowParam}
-            paramId={file.project_file_id}
-            onClick={handleMenuClose}
-          >
-            <ListItemIcon>
-              <EditOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Edit" />
-          </MenuItem>
-        )}
+        <MenuItem
+          component={MopedDataGridRowLink}
+          projectId={Number(projectId)}
+          tab="files"
+          highlightedRowParam={highlightedRowParam}
+          paramId={file.project_file_id}
+          onClick={handleMenuClose}
+        >
+          <ListItemIcon>
+            <EditOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Edit" />
+        </MenuItem>
         <MenuItem
           onClick={() => setIsDeleteConfirmationOpen(true)}
           selected={false}
