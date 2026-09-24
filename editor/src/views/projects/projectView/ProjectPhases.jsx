@@ -24,6 +24,8 @@ import {
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 
+export const highlightedRowParam = "project_phase_id";
+
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
   useMemo(() => {
@@ -229,6 +231,7 @@ const ProjectPhases = ({
         autoHeight
         columns={columns}
         getRowId={(row) => row.project_phase_id}
+        highlightedRowParam={highlightedRowParam}
         disableColumnMenu
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
