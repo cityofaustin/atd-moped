@@ -61,6 +61,8 @@ import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import MopedDataGridRowLink from "src/components/MopedDataGridRowLink";
+import { highlightedRowParam } from "./ProjectPhases";
 
 interface DialogState {
   title: React.ReactNode;
@@ -307,6 +309,8 @@ const ProjectView = () => {
    */
   const currentPhase =
     data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
+  const currentPhaseId =
+    data?.moped_project?.[0]?.moped_proj_phases?.[0]?.project_phase_id;
   const isProjectDeleted = data?.moped_project[0]?.is_deleted ?? false;
 
   /**
@@ -407,10 +411,17 @@ const ProjectView = () => {
                           }}
                         >
                           <Box>
-                            <ProjectStatusBadge
-                              phaseKey={currentPhase?.phase_key ?? ""}
-                              phaseName={currentPhase?.phase_name ?? ""}
-                            />
+                            <MopedDataGridRowLink
+                              projectId={Number(projectId)}
+                              tab={"timeline"}
+                              highlightedRowParam={highlightedRowParam}
+                              paramId={Number(currentPhaseId)}
+                            >
+                              <ProjectStatusBadge
+                                phaseKey={currentPhase?.phase_key ?? ""}
+                                phaseName={currentPhase?.phase_name ?? ""}
+                              />
+                            </MopedDataGridRowLink>
                           </Box>
                           <Box>
                             <ProjectFollowButton
