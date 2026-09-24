@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1748534889272_create_notes_view/up.sql
+-- Most recent migration: database/migrations/default/1748534889272_create_notes_view/up.sql
 
 CREATE OR REPLACE VIEW combined_project_notes_view AS
 SELECT
