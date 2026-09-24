@@ -1,4 +1,4 @@
--- Most recent migration: database/migrations/default/1784844049772_add_agol_reporting_fields/up.sql
+-- Most recent migration: database/migrations/default/1790287850592_remove_ecapris_amount_override_toggle/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS
 WITH project_person_list_lookup AS (

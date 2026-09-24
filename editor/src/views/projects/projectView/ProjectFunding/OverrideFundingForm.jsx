@@ -1,34 +1,39 @@
-import { useMutation, useQuery } from "@apollo/client";
-import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
-import { currencyFormatter } from "src/utils/numberFormatters";
+import {
+  currencyFormatter,
+  removeDecimalsAndTrailingNumbers,
+  removeNonIntegers,
+} from "src/utils/numberFormatters";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import {
   ADD_PROJECT_FUNDING_AND_REATTACH,
-  ECAPRIS_SUBPROJECT_FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
 } from "src/queries/funding";
-import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
+import { nullIfSameAsEcapris } from "src/views/projects/projectView/ProjectFunding/helpers";
 import * as yup from "yup";
 
 const validationSchema = ({ appropriatedFunding }) =>
   yup.object().shape({
     funding_amount: yup
       .number()
+      .nullable()
       .test(
         "lessThanAppropriated",
         `Amount cannot exceed appropriated amount of ${currencyFormatter.format(
           appropriatedFunding
         )}`,
         function (value) {
+          if (value === null || appropriatedFunding === null) return true;
           return value <= appropriatedFunding;
         }
       )
@@ -36,90 +41,80 @@ const validationSchema = ({ appropriatedFunding }) =>
         "differentFromAppropriated",
         `Amount must be different from appropriated amount of ${currencyFormatter.format(appropriatedFunding)} if overriding`,
         function (value) {
-          const isOverriding = this.parent.should_use_ecapris_amount === false;
-          return isOverriding ? value !== appropriatedFunding : true;
+          if (value === null || appropriatedFunding === null) return true;
+          return value !== appropriatedFunding;
         }
-      )
-      .nullable(),
+      ),
   });
 
-const renderECaprisLabel = (lookup, recordId, recordType) => {
+const findLookupName = (lookup, recordId, recordType) => {
   const fundingRecord = lookup.find(
     (option) => option[`funding_${recordType}_id`] === recordId
   );
-  return fundingRecord && fundingRecord[`funding_${recordType}_name`]
-    ? fundingRecord[`funding_${recordType}_name`]
-    : "-";
+  return fundingRecord?.[`funding_${recordType}_name`] ?? null;
 };
 
-/** Transforms DataGrid row to database funding record format for mutations
- * @param {Object} gridRecord - DataGrid row object
- * @return {Object} - transformed funding record for database mutation
+/**
+ * Keeps only digits so a formatted amount like $86,753.09 is stored as 86753
+ * @param {string} value - the current input value
+ * @param {Object} field - the react-hook-form field object
  */
-const transformGridToDatabase = (gridRecord) => {
-  // Extract the lookup ids from the selected lookup objects
-  const funding_source_id = gridRecord.fund_source
-    ? gridRecord.fund_source.funding_source_id
-    : null;
-  const funding_program_id = gridRecord.fund_program
-    ? gridRecord.fund_program.funding_program_id
-    : null;
-  const funding_status_id = gridRecord.fund_status
-    ? gridRecord.fund_status.funding_status_id
-    : null;
-  const fdu = gridRecord.fdu ? gridRecord.fdu.fdu : null;
-  const unit_long_name = gridRecord.fdu ? gridRecord.fdu.unit_long_name : null;
-  const ecapris_funding_id = gridRecord.fdu
-    ? gridRecord.fdu.ecapris_funding_id
-    : null;
+const amountOnChangeHandler = (value, field) => {
+  const integerValue = value
+    ? removeNonIntegers(removeDecimalsAndTrailingNumbers(value))
+    : "";
+  field.onChange(integerValue === "" ? null : Number(integerValue));
+};
 
-  const ecapris_subproject_id = gridRecord.fdu
-    ? gridRecord.fdu.ecapris_subproject_id
-    : null;
+const amountValueHandler = (value) =>
+  value === null || value === undefined ? "" : currencyFormatter.format(value);
 
-  const fdu_record_amount = gridRecord.fdu ? gridRecord.fdu.amount : null;
-  // if the amount on the fdu matches what we are saving, its not an override
-  const should_use_ecapris_amount =
-    fdu_record_amount === Number(gridRecord.funding_amount);
+/**
+ * Wraps an input whose value overrides an eCAPRIS value. When the input is empty and unfocused,
+ * the eCAPRIS value shows in place of the label so it reads as the inherited value.
+ * @param {string} fieldLabel - label shown when the input is focused or has an override value
+ * @param {string|null} ecaprisValueLabel - eCAPRIS value shown as the label when inherited
+ * @param {string} ecaprisHelperText - reference text shown below the input
+ * @param {boolean} hasOverride - if the input has a value that overrides the eCAPRIS value
+ * @param {function} onRevert - clears the override value so the eCAPRIS value is inherited
+ * @param {string} errorMessage - optional validation error message
+ * @param {function} renderInput - renders the input given the label to display
+ */
+const EcaprisOverridableField = ({
+  fieldLabel,
+  ecaprisValueLabel,
+  ecaprisHelperText,
+  hasOverride,
+  onRevert,
+  errorMessage,
+  renderInput,
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const label =
+    isFocused || hasOverride || !ecaprisValueLabel
+      ? fieldLabel
+      : ecaprisValueLabel;
 
-  // the database expects the funding amount to be an Int or null. An empty string will result in an error, coerce to null
-  const funding_amount = gridRecord.funding_amount
-    ? gridRecord.funding_amount
-    : null;
-
-  const {
-    id,
-    __typename,
-    is_synced_from_ecapris,
-    status_name,
-    program_name,
-    source_name,
-    moped_fund_program,
-    moped_fund_source,
-    moped_fund_status,
-    proj_funding_id,
-    isNew,
-    is_manual,
-    ecapris_funding_files,
-    moped_funding_files,
-    ecapris_funding,
-    ...databaseFields
-  } = gridRecord;
-
-  // Return the database fields along with the extracted lookup ids
-  return {
-    ...databaseFields,
-    funding_source_id,
-    funding_program_id,
-    // If no new funding status is selected, the default should be used
-    funding_status_id: funding_status_id ? funding_status_id : 1,
-    fdu,
-    unit_long_name,
-    ecapris_funding_id,
-    ecapris_subproject_id,
-    should_use_ecapris_amount,
-    funding_amount,
-  };
+  return (
+    <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start" }}>
+      <FormControl
+        fullWidth
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+      >
+        {renderInput(label)}
+        <FormHelperText sx={{ color: "primary.main" }}>
+          {ecaprisHelperText}
+        </FormHelperText>
+        {errorMessage ? (
+          <FormHelperText error>{errorMessage}</FormHelperText>
+        ) : null}
+      </FormControl>
+      <Button onClick={onRevert} disabled={!hasOverride} sx={{ mt: 0.25 }}>
+        Revert
+      </Button>
+    </Stack>
+  );
 };
 
 const OverrideFundingForm = ({
@@ -131,84 +126,99 @@ const OverrideFundingForm = ({
   handleClose,
   dataLookups,
 }) => {
-  const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
-    variables: { fdu: fundingRecord.fdu.fdu },
-  });
-
-  const appropriatedFunding = fduData?.ecapris_subproject_funding
-    ? fduData.ecapris_subproject_funding[0]["amount"]
-    : 0;
-
-  const ecaprisSourceId = fduData?.ecapris_subproject_funding
-    ? fduData.ecapris_subproject_funding[0]["funding_source_id"]
-    : null;
-
-  const ecaprisProgramId = fduData?.ecapris_subproject_funding
-    ? fduData.ecapris_subproject_funding[0]["funding_program_id"]
-    : null;
+  const appropriatedFunding = fundingRecord.ecapris_funding?.app ?? null;
+  const ecaprisSourceId =
+    fundingRecord.ecapris_funding?.funding_source_id ?? null;
+  const ecaprisProgramId =
+    fundingRecord.ecapris_funding?.funding_program_id ?? null;
 
   const {
     handleSubmit,
     control,
     formState: { isDirty, isValid, errors },
-    watch,
     setValue,
   } = useForm({
+    // Values stored in moped_proj_funding are overrides; null means the eCAPRIS value is inherited
     defaultValues: {
-      funding_amount: fundingRecord.funding_amount,
+      funding_amount: fundingRecord.moped_funding_amount ?? null,
       description: fundingRecord.funding_description ?? "",
-      should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
-      funding_source_id: fundingRecord.moped_fund_source?.funding_source_id,
-      funding_program_id: fundingRecord.moped_fund_program?.funding_program_id,
+      funding_source_id: fundingRecord.moped_funding_source_id ?? null,
+      funding_program_id: fundingRecord.moped_funding_program_id ?? null,
       fund_status: fundingRecord.moped_fund_status?.funding_status_id,
     },
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",
   });
 
-  const [should_use_ecapris_amount] = watch(["should_use_ecapris_amount"]);
+  const [fundingAmount, fundingSourceId, fundingProgramId] = useWatch({
+    control,
+    name: ["funding_amount", "funding_source_id", "funding_program_id"],
+  });
+
+  const revertField = (name) =>
+    setValue(name, null, { shouldDirty: true, shouldValidate: true });
 
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
     fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
   const fundingSources = dataLookups["moped_fund_sources"];
+  const fundingPrograms = dataLookups["moped_fund_programs"];
+
+  const ecaprisSourceName = findLookupName(
+    fundingSources,
+    ecaprisSourceId,
+    "source"
+  );
+  const ecaprisProgramName = findLookupName(
+    fundingPrograms,
+    ecaprisProgramId,
+    "program"
+  );
+  const ecaprisAmountLabel =
+    appropriatedFunding === null
+      ? null
+      : currencyFormatter.format(appropriatedFunding);
 
   const [mutate, mutationState] = useMutation(
     isNewOverride ? ADD_PROJECT_FUNDING_AND_REATTACH : UPDATE_PROJECT_FUNDING
   );
 
   const onSubmit = (data) => {
-    const transformedRecord = transformGridToDatabase(fundingRecord);
-    const attachmentEntityId = fundingRecord.proj_funding_id;
-    const fileIds = fundingRecord.ecapris_funding_files.map(
-      (file) => file.moped_project_file.project_file_id
-    );
-    const fileAttachmentObjects = fileIds.map((id) => ({
-      file_id: id,
-    }));
+    const fundingValues = {
+      fdu: fundingRecord.fdu.fdu,
+      unit_long_name: fundingRecord.fdu.unit_long_name,
+      funding_amount: data.funding_amount,
+      funding_description: data.description,
+      // Store null for values matching eCAPRIS so they are inherited instead of overridden
+      funding_source_id: nullIfSameAsEcapris(
+        data.funding_source_id,
+        ecaprisSourceId
+      ),
+      funding_program_id: nullIfSameAsEcapris(
+        data.funding_program_id,
+        ecaprisProgramId
+      ),
+      funding_status_id: data.fund_status ?? 1,
+    };
 
-    // override record with data from form
-    transformedRecord.funding_description = data.description;
-    transformedRecord.funding_amount = data.funding_amount;
-    transformedRecord.should_use_ecapris_amount =
-      data.should_use_ecapris_amount;
-    transformedRecord.funding_source_id = data.funding_source_id;
-    transformedRecord.funding_program_id = data.funding_program_id;
-    transformedRecord.funding_status_id = data.fund_status;
+    const fileAttachmentObjects = fundingRecord.ecapris_funding_files.map(
+      (file) => ({ file_id: file.moped_project_file.project_file_id })
+    );
 
     const payload = isNewOverride
       ? {
           fundingObjects: {
-            ...transformedRecord,
+            ...fundingValues,
+            ecapris_funding_id: fundingRecord.fdu.ecapris_funding_id,
             ecapris_subproject_id: fundingRecord.ecapris_subproject_id,
             project_id: Number(projectId),
             files_project_fundings: { data: fileAttachmentObjects },
           },
-          entityId: attachmentEntityId,
+          entityId: fundingRecord.proj_funding_id,
           projectId,
         }
       : {
-          ...transformedRecord,
+          ...fundingValues,
           proj_funding_id: fundingRecord.proj_funding_id,
         };
 
@@ -237,64 +247,77 @@ const OverrideFundingForm = ({
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Grid container spacing={2} sx={{ pt: 1 }}>
         <Grid size={12}>
-          <FormControl fullWidth>
-            <ControlledAutocomplete
-              control={control}
-              name="funding_source_id"
-              label="Source"
-              options={fundingSources}
-              filterOptions={filterOptions}
-              getOptionLabel={(option) => option?.funding_source_name || ""}
-              onChangeHandler={(fund_source, field) => {
-                return field.onChange(fund_source?.funding_source_id || null);
-              }}
-              isOptionEqualToValue={(option, selectedOption) =>
-                option.funding_source_id === selectedOption.funding_source_id
-              }
-              valueHandler={(value) =>
-                value
-                  ? fundingSources.find((s) => s.funding_source_id === value)
-                  : null
-              }
-            />
-            <FormHelperText>
-              eCAPRIS source:{" "}
-              {renderECaprisLabel(fundingSources, ecaprisSourceId, "source")}
-            </FormHelperText>
-          </FormControl>
+          <EcaprisOverridableField
+            fieldLabel="Funding source"
+            ecaprisValueLabel={ecaprisSourceName}
+            ecaprisHelperText={
+              ecaprisSourceName
+                ? `eCAPRIS source: ${ecaprisSourceName}`
+                : "No funding source in eCAPRIS"
+            }
+            hasOverride={fundingSourceId !== null}
+            onRevert={() => revertField("funding_source_id")}
+            renderInput={(label) => (
+              <ControlledAutocomplete
+                control={control}
+                name="funding_source_id"
+                label={label}
+                options={fundingSources}
+                filterOptions={filterOptions}
+                getOptionLabel={(option) => option?.funding_source_name || ""}
+                onChangeHandler={(fund_source, field) => {
+                  return field.onChange(fund_source?.funding_source_id || null);
+                }}
+                isOptionEqualToValue={(option, selectedOption) =>
+                  option.funding_source_id === selectedOption.funding_source_id
+                }
+                valueHandler={(value) =>
+                  value
+                    ? fundingSources.find((s) => s.funding_source_id === value)
+                    : null
+                }
+              />
+            )}
+          />
         </Grid>
         <Grid size={12}>
-          <FormControl fullWidth>
-            <ControlledAutocomplete
-              control={control}
-              name="funding_program_id"
-              label="Program"
-              options={dataLookups["moped_fund_programs"]}
-              filterOptions={filterOptions}
-              getOptionLabel={(option) => option?.funding_program_name || ""}
-              onChangeHandler={(fund_source, field) => {
-                return field.onChange(fund_source?.funding_program_id || null);
-              }}
-              isOptionEqualToValue={(option, selectedOption) =>
-                option.funding_program_id === selectedOption.funding_program_id
-              }
-              valueHandler={(value) =>
-                value
-                  ? dataLookups["moped_fund_programs"].find(
-                      (s) => s.funding_program_id === value
-                    )
-                  : null
-              }
-            />
-            <FormHelperText>
-              eCAPRIS program:{" "}
-              {renderECaprisLabel(
-                dataLookups["moped_fund_programs"],
-                ecaprisProgramId,
-                "program"
-              )}
-            </FormHelperText>
-          </FormControl>
+          <EcaprisOverridableField
+            fieldLabel="Funding program"
+            ecaprisValueLabel={ecaprisProgramName}
+            ecaprisHelperText={
+              ecaprisProgramName
+                ? `eCAPRIS program: ${ecaprisProgramName}`
+                : "No funding program in eCAPRIS"
+            }
+            hasOverride={fundingProgramId !== null}
+            onRevert={() => revertField("funding_program_id")}
+            renderInput={(label) => (
+              <ControlledAutocomplete
+                control={control}
+                name="funding_program_id"
+                label={label}
+                options={fundingPrograms}
+                filterOptions={filterOptions}
+                getOptionLabel={(option) => option?.funding_program_name || ""}
+                onChangeHandler={(fund_program, field) => {
+                  return field.onChange(
+                    fund_program?.funding_program_id || null
+                  );
+                }}
+                isOptionEqualToValue={(option, selectedOption) =>
+                  option.funding_program_id ===
+                  selectedOption.funding_program_id
+                }
+                valueHandler={(value) =>
+                  value
+                    ? fundingPrograms.find(
+                        (s) => s.funding_program_id === value
+                      )
+                    : null
+                }
+              />
+            )}
+          />
         </Grid>
         <Grid size={12}>
           <FormControl fullWidth>
@@ -335,63 +358,28 @@ const OverrideFundingForm = ({
           </FormControl>
         </Grid>
         <Grid size={12}>
-          <Controller
-            name="should_use_ecapris_amount"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormControlLabel
-                control={
-                  <Switch
-                    // Invert value for switch so that "on" means we are overriding and NOT using eCAPRIS amount
-                    checked={!value}
-                    onChange={(e) => {
-                      // Check target value so we can restore previous amount if unchecking (if there is one)
-                      if (e.target.checked) {
-                        setValue(
-                          "funding_amount",
-                          fundingRecord.funding_amount ?? appropriatedFunding
-                        );
-                        onChange(false);
-                      } else {
-                        setValue("funding_amount", appropriatedFunding);
-                        onChange(true);
-                      }
-                    }}
-                  />
-                }
-                label="Override eCAPRIS appropriated amount"
+          <EcaprisOverridableField
+            fieldLabel="Funding amount"
+            ecaprisValueLabel={ecaprisAmountLabel}
+            ecaprisHelperText={`eCAPRIS amount: ${ecaprisAmountLabel ?? "-"}`}
+            hasOverride={fundingAmount !== null}
+            onRevert={() => revertField("funding_amount")}
+            errorMessage={errors.funding_amount?.message}
+            renderInput={(label) => (
+              <ControlledTextInput
+                fullWidth
+                label={label}
+                name="funding_amount"
+                control={control}
+                size="small"
+                type="text"
+                inputMode="numeric"
+                valueHandler={amountValueHandler}
+                onChangeHandler={amountOnChangeHandler}
+                error={!!errors.funding_amount}
               />
             )}
           />
-        </Grid>
-        <Grid size={12}>
-          <FormControl fullWidth>
-            <ControlledTextInput
-              fullWidth
-              autoFocus
-              label="Amount"
-              name="funding_amount"
-              control={control}
-              size="small"
-              type="text"
-              inputMode="numeric"
-              // the default value handler on the controlled text input Coerces falsey values to an empty string
-              // which is making 0 appear as an empty string. we do want null to be an empty string
-              valueHandler={(value) => (value === null ? "" : value)}
-              onChangeHandler={amountOnChangeHandler}
-              disabled={should_use_ecapris_amount}
-              error={!!errors.funding_amount}
-            />
-            <FormHelperText>
-              eCAPRIS appropriated amount:{" "}
-              {currencyFormatter.format(appropriatedFunding)}
-            </FormHelperText>
-            {errors.funding_amount ? (
-              <FormHelperText error>
-                {errors.funding_amount?.message}
-              </FormHelperText>
-            ) : null}
-          </FormControl>
         </Grid>
       </Grid>
       <Grid
