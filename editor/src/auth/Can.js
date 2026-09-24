@@ -1,4 +1,4 @@
-import { getHighestRole, useUser } from "../auth/user";
+import { useAuth } from "src/auth/auth";
 import rules from "./rolesBasedRules";
 
 const check = (rules, role, action) => {
@@ -16,8 +16,10 @@ const check = (rules, role, action) => {
 };
 
 const Can = ({ perform, yes = null, no = null }) => {
-  const { user } = useUser();
-  const role = getHighestRole(user);
+  const { status, role } = useAuth();
+
+  if (status === "initializing") return null;
+  if (status !== "authenticated") return no;
 
   return check(rules, role, perform) ? yes : no;
 };

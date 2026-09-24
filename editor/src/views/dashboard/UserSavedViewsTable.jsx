@@ -11,7 +11,7 @@ import {
   UPDATE_USER_SAVED_VIEW,
   DELETE_USER_SAVED_VIEW,
 } from "src/queries/userSavedViews";
-import { useSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/mopedUser";
 
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -114,7 +114,9 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
   });
 
   const [updateUserSavedView] = useMutation(UPDATE_USER_SAVED_VIEW);
-  const [deleteUserSavedView, { loading: mutationPending }] = useMutation(DELETE_USER_SAVED_VIEW);
+  const [deleteUserSavedView, { loading: mutationPending }] = useMutation(
+    DELETE_USER_SAVED_VIEW
+  );
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);

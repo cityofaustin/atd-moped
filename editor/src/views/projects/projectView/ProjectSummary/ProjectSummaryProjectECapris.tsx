@@ -8,7 +8,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { useUser } from "src/auth/user";
+import { useAuth } from "src/auth/auth";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
 import { type GetFundingLookupsQuery } from "src/gql/graphql";
@@ -67,9 +67,9 @@ const ProjectSummaryProjectECapris = ({
   handleSnackbar,
   disabled = false,
 }: ProjectSummaryECaprisProps) => {
-  /* @ts-expect-error address useUser and UserContext in issue 30204 */
-  const { user } = useUser();
-  const userEmail = user?.idToken?.payload?.email;
+  const { mopedUser } = useAuth();
+  /* @ts-expect-error address useAuth and AuthContext in issue 30204 */
+  const userEmail = mopedUser?.email;
 
   const initialValue: SubprojectFundingOption | null = eCaprisSubprojectId
     ? (findOptionById(options, eCaprisSubprojectId) ?? {

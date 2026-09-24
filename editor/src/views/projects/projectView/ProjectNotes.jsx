@@ -14,7 +14,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 
-import { useSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/mopedUser";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router";
 import parse from "html-react-parser";
@@ -216,17 +216,20 @@ const ProjectNotes = ({
     },
   });
 
-  const [deleteExistingNote, { loading: mutationPending }] = useMutation(DELETE_PROJECT_NOTE, {
-    onCompleted() {
-      refetch();
-      if (isStatusEditModal) {
-        closeModalDialog();
-      } else {
-        // refetch the project summary query passed down from ProjectView
-        refetchProjectSummary();
-      }
-    },
-  });
+  const [deleteExistingNote, { loading: mutationPending }] = useMutation(
+    DELETE_PROJECT_NOTE,
+    {
+      onCompleted() {
+        refetch();
+        if (isStatusEditModal) {
+          closeModalDialog();
+        } else {
+          // refetch the project summary query passed down from ProjectView
+          refetchProjectSummary();
+        }
+      },
+    }
+  );
 
   const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_SYNC);
 

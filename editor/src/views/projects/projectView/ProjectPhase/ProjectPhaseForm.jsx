@@ -21,7 +21,7 @@ import {
   useDefaultValues,
   useSubphases,
 } from "./helpers";
-import { useSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/mopedUser";
 import { useResetDependentFieldOnParentFieldChange } from "../ProjectComponents/utils/form";
 import {
   UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE,
