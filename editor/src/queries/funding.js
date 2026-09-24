@@ -22,7 +22,9 @@ export const COMBINED_FUNDING_QUERY = graphql(`
       is_manual
       unit_long_name
       ecapris_subproject_id
-      should_use_ecapris_amount
+      moped_funding_amount
+      moped_funding_source_id
+      moped_funding_program_id
       ecapris_funding_files(where: { is_deleted: { _eq: false } }) {
         id
         moped_project_file {
@@ -150,7 +152,6 @@ export const UPDATE_PROJECT_FUNDING = graphql(`
     $funding_status_id: Int
     $fdu: String
     $unit_long_name: String
-    $should_use_ecapris_amount: Boolean
   ) {
     update_moped_proj_funding_by_pk(
       pk_columns: { proj_funding_id: $proj_funding_id }
@@ -162,7 +163,6 @@ export const UPDATE_PROJECT_FUNDING = graphql(`
         funding_status_id: $funding_status_id
         fdu: $fdu
         unit_long_name: $unit_long_name
-        should_use_ecapris_amount: $should_use_ecapris_amount
       }
     ) {
       proj_funding_id
