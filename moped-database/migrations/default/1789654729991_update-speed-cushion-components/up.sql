@@ -73,6 +73,7 @@ insert into feature_drawn_points (
     source_layer,
     project_extent_id,
     created_by_user_id,
+    updated_by_user_id,
     is_deleted
 )
 select
@@ -81,6 +82,7 @@ select
     'drawnByUserPoint',
     fdl.project_extent_id,
     fdl.created_by_user_id,
+    fdl.updated_by_user_id,
     false
 from feature_drawn_lines fdl
 join moped_proj_components mpc
