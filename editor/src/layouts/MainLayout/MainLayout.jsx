@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet, Navigate, useLocation } from "react-router";
-import { useUser } from "src/auth/user";
+import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
+import { useAuth } from "src/auth/auth";
 import Box from "@mui/material/Box";
 
 /**
@@ -9,14 +10,18 @@ import Box from "@mui/material/Box";
  */
 const MainLayout = () => {
   const location = useLocation();
-  const { user } = useUser();
+  const { status } = useAuth();
+
+  if (status === "initializing") {
+    return <AuthLoadingBackdrop open={true} />;
+  }
 
   /* If user is authenticated, redirect to the intended route
    * after login or if a browser refresh occurs.
    * If no intended route is preserved, redirect to the default route.
    * See DashboardLayout.js for how the React Router state is passed.
    */
-  if (user) {
+  if (status === "authenticated") {
     // Get the intended route from location state
     const from = location.state?.from;
 
@@ -33,9 +38,7 @@ const MainLayout = () => {
     return <Navigate to="/moped" replace />;
   }
 
-  return user ? (
-    <Navigate to="/moped" />
-  ) : (
+  return (
     <Box
       sx={(theme) => ({
         backgroundColor: theme.palette.background.default,

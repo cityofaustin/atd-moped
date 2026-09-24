@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const COMBINED_FUNDING_QUERY = gql`
+export const COMBINED_FUNDING_QUERY = graphql(`
   query GetCombinedProjectFunding(
     $projectFundingConditions: combined_project_funding_view_bool_exp!
   ) {
@@ -14,11 +15,8 @@ export const COMBINED_FUNDING_QUERY = gql`
       funding_amount: amount
       funding_description: description
       program_name
-      funding_program_id
       source_name
-      funding_source_id
       status_name
-      funding_status_id
       ecapris_funding_id: fao_id
       is_synced_from_ecapris
       is_manual
@@ -45,31 +43,30 @@ export const COMBINED_FUNDING_QUERY = gql`
       }
       ecapris_funding {
         id
+        fdu
+        fao_id
+        unit_long_name
         funding_source_id
         funding_program_id
         app
       }
-    }
-    moped_fund_sources(where: { is_deleted: { _eq: false } }) {
-      funding_source_id
-      funding_source_name
-    }
-    moped_fund_programs(where: { is_deleted: { _eq: false } }) {
-      funding_program_id
-      funding_program_name
-    }
-    moped_fund_status(where: { funding_status_id: { _neq: 0 } }) {
-      funding_status_id
-      funding_status_name
-    }
-    ecapris_subproject_funding(distinct_on: ecapris_subproject_id) {
-      ecapris_subproject_id
-      subproject_name
+      moped_fund_source {
+        funding_source_id
+        funding_source_name
+      }
+      moped_fund_program {
+        funding_program_id
+        funding_program_name
+      }
+      moped_fund_status {
+        funding_status_id
+        funding_status_name
+      }
     }
   }
-`;
+`);
 
-export const GET_FUNDING_LOOKUPS = gql`
+export const GET_FUNDING_LOOKUPS = graphql(`
   query GetFundingLookups {
     ecapris_subproject_funding {
       ecapris_funding_id: fao_id
@@ -88,15 +85,33 @@ export const GET_FUNDING_LOOKUPS = gql`
         funding_program_name
       }
     }
+    ecapris_options: ecapris_subproject_funding(
+      distinct_on: ecapris_subproject_id
+    ) {
+      ecapris_subproject_id
+      subproject_name
+    }
     moped_file_types {
       id
       name
     }
+    moped_fund_sources(where: { is_deleted: { _eq: false } }) {
+      funding_source_id
+      funding_source_name
+    }
+    moped_fund_programs(where: { is_deleted: { _eq: false } }) {
+      funding_program_id
+      funding_program_name
+    }
+    moped_fund_status(where: { funding_status_id: { _neq: 0 } }) {
+      funding_status_id
+      funding_status_name
+    }
   }
-`;
+`);
 
 export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
-  query EcaprisFduSubproject($ecapris_subproject_id: String!) {
+  query EcaprisFdusSubproject($ecapris_subproject_id: String!) {
     ecapris_subproject_funding(
       where: { ecapris_subproject_id: { _eq: $ecapris_subproject_id } }
     ) {
@@ -125,14 +140,14 @@ export const ECAPRIS_SUBPROJECT_FUNDING_QUERY = gql`
   }
 `;
 
-export const UPDATE_PROJECT_FUNDING = gql`
+export const UPDATE_PROJECT_FUNDING = graphql(`
   mutation UpdateProjectFunding(
     $proj_funding_id: Int!
     $funding_amount: Int
     $funding_description: String
     $funding_program_id: Int
     $funding_source_id: Int
-    $funding_status_id: Int!
+    $funding_status_id: Int
     $fdu: String
     $unit_long_name: String
     $should_use_ecapris_amount: Boolean
@@ -153,9 +168,9 @@ export const UPDATE_PROJECT_FUNDING = gql`
       proj_funding_id
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT_FUNDING = gql`
+export const DELETE_PROJECT_FUNDING = graphql(`
   mutation DeleteProjectFunding($proj_funding_id: Int!) {
     update_moped_proj_funding(
       _set: { is_deleted: true }
@@ -170,11 +185,11 @@ export const DELETE_PROJECT_FUNDING = gql`
       affected_rows
     }
   }
-`;
+`);
 
 /* Delete funding record and also transfer file attachments back to
 synced eCAPRIS record that is restored. Executes in one transaction. */
-export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
+export const DELETE_PROJECT_FUNDING_AND_REATTACH = graphql(`
   mutation DeleteProjectFundingAndReattach(
     $proj_funding_id: Int!
     $attachmentObjects: [files_ecapris_funding_insert_input!]!
@@ -201,9 +216,9 @@ export const DELETE_PROJECT_FUNDING_AND_REATTACH = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const ADD_PROJECT_FUNDING = gql`
+export const ADD_PROJECT_FUNDING = graphql(`
   mutation AddProjectFunding(
     $fundingObjects: [moped_proj_funding_insert_input!]!
   ) {
@@ -213,12 +228,12 @@ export const ADD_PROJECT_FUNDING = gql`
       }
     }
   }
-`;
+`);
 
 /* Add funding record and also transfer synced eCAPRIS row attachments to
 the new Moped funding record inserted as an override of eCAPRIS. Executes in 
 one transaction. */
-export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
+export const ADD_PROJECT_FUNDING_AND_REATTACH = graphql(`
   mutation AddProjectFundingAndReattach(
     $fundingObjects: [moped_proj_funding_insert_input!]!
     $entityId: Int!
@@ -236,18 +251,7 @@ export const ADD_PROJECT_FUNDING_AND_REATTACH = gql`
       affected_rows
     }
   }
-`;
-
-export const UPDATE_FUNDING_TASK_ORDERS = gql`
-  mutation AddProjectFunding($projectId: Int!, $taskOrders: jsonb!) {
-    update_moped_project(
-      _set: { task_order: $taskOrders }
-      where: { project_id: { _eq: $projectId } }
-    ) {
-      affected_rows
-    }
-  }
-`;
+`);
 
 export const WORK_ACTIVITY_QUERY = gql`
   query ProjectWorkActivity($projectId: Int) {
@@ -320,7 +324,7 @@ export const UPDATE_WORK_ACTIVITY = gql`
   mutation UpdateWorkActivity(
     $id: Int!
     $object: moped_proj_work_activity_set_input!
-    $fileObjects: [moped_project_files_insert_input]!
+    $fileObjects: [moped_project_files_insert_input!]!
   ) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }

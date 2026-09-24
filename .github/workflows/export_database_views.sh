@@ -20,7 +20,7 @@ if ! $USE_GITHUB_ACTION; then
         echo "  Current dir: $CURRENT_DIR" >&2
         exit 1
     fi
-    # Defaults matching moped-database/docker-compose.yml
+    # Defaults matching database/docker-compose.yml
     : "${POSTGRES_USER:=moped}"
     : "${POSTGRES_DB:=moped}"
     export POSTGRES_USER POSTGRES_DB
@@ -30,7 +30,7 @@ function run_psql() {
     if [[ "$USE_GITHUB_ACTION" == "true" ]]; then
         psql "$@"
     else
-        docker compose -f ./moped-database/docker-compose.yml exec -T moped-pgsql psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" "$@" < /dev/null
+        docker compose -f ./database/docker-compose.yml exec -T moped-pgsql psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" "$@" < /dev/null
     fi
 }
 
@@ -38,19 +38,19 @@ function create_view_file() {
     local VIEW_NAME=$1
 
     echo "View: $VIEW_NAME"
-    MOST_RECENT_MIGRATION=$(grep -rl --include=up.sql -E "CREATE (OR REPLACE )?VIEW (\"?public\"?.)?\"?$VIEW_NAME\"?" moped-database/migrations/default | sort -V | tail -n 1)
+    MOST_RECENT_MIGRATION=$(grep -rl --include=up.sql -E "CREATE (OR REPLACE )?VIEW (\"?public\"?.)?\"?$VIEW_NAME\"?" database/migrations/default | sort -V | tail -n 1)
     echo "MOST_RECENT_MIGRATION: $MOST_RECENT_MIGRATION"
 
     # Create the view file with header
-    echo "-- Most recent migration: $MOST_RECENT_MIGRATION" > moped-database/views/$VIEW_NAME.sql
-    echo "" >> moped-database/views/$VIEW_NAME.sql
+    echo "-- Most recent migration: $MOST_RECENT_MIGRATION" > database/views/$VIEW_NAME.sql
+    echo "" >> database/views/$VIEW_NAME.sql
 
     # Query the view definition and append to the file
-    run_psql -v ON_ERROR_STOP=1 -A -t -c "SELECT 'CREATE OR REPLACE VIEW ' || '$VIEW_NAME' || ' AS' || chr(10) || pg_get_viewdef('$VIEW_NAME'::regclass, true);" >> moped-database/views/$VIEW_NAME.sql
+    run_psql -v ON_ERROR_STOP=1 -A -t -c "SELECT 'CREATE OR REPLACE VIEW ' || '$VIEW_NAME' || ' AS' || chr(10) || pg_get_viewdef('$VIEW_NAME'::regclass, true);" >> database/views/$VIEW_NAME.sql
 }
 
 function populate_views() {
-    mkdir -p moped-database/views
+    mkdir -p database/views
     while IFS= read -r VIEW_NAME; do
         create_view_file "$VIEW_NAME"
     done < <(

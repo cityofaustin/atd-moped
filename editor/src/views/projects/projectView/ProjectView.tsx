@@ -50,7 +50,7 @@ import ProjectActivityLog from "src/views/projects/projectView/ProjectActivityLo
 import ProjectNameEditable from "src/views/projects/projectView/ProjectNameEditable";
 import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
-import { useSessionDatabaseData } from "src/auth/user";
+import { useSessionDatabaseData } from "src/auth/mopedUser";
 import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -61,6 +61,8 @@ import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
 import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import MopedDataGridRowLink from "src/components/MopedDataGridRowLink";
+import { highlightedRowParam } from "./ProjectPhases";
 
 interface DialogState {
   title: React.ReactNode;
@@ -307,6 +309,8 @@ const ProjectView = () => {
    */
   const currentPhase =
     data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
+  const currentPhaseId =
+    data?.moped_project?.[0]?.moped_proj_phases?.[0]?.project_phase_id;
   const isProjectDeleted = data?.moped_project[0]?.is_deleted ?? false;
 
   /**
@@ -407,10 +411,17 @@ const ProjectView = () => {
                           }}
                         >
                           <Box>
-                            <ProjectStatusBadge
-                              phaseKey={currentPhase?.phase_key ?? ""}
-                              phaseName={currentPhase?.phase_name ?? ""}
-                            />
+                            <MopedDataGridRowLink
+                              projectId={Number(projectId)}
+                              tab={"timeline"}
+                              highlightedRowParam={highlightedRowParam}
+                              paramId={Number(currentPhaseId)}
+                            >
+                              <ProjectStatusBadge
+                                phaseKey={currentPhase?.phase_key ?? ""}
+                                phaseName={currentPhase?.phase_name ?? ""}
+                              />
+                            </MopedDataGridRowLink>
                           </Box>
                           <Box>
                             <ProjectFollowButton
@@ -446,7 +457,7 @@ const ProjectView = () => {
                                 horizontal: "center",
                               }}
                               slots={{
-                                transition: Fade
+                                transition: Fade,
                               }}
                             >
                               <MenuItem
@@ -524,6 +535,8 @@ const ProjectView = () => {
                     </AppBar>
                     {TABS.map((tab, i) => {
                       const TabComponent = tab.Component;
+                      const projectId = data.moped_project[0].project_id;
+
                       return (
                         <TabPanel
                           data-name={"moped-project-view-tabpanel"}
@@ -541,6 +554,7 @@ const ProjectView = () => {
                           {/* @ts-expect-error - Adding types is captured in issue #29271 */}
                           <TabComponent
                             loading={loading}
+                            projectId={projectId}
                             data={data}
                             error={error}
                             refetch={refetch}

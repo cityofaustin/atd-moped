@@ -130,6 +130,43 @@ export type Citext_Comparison_Exp = {
   _similar?: unknown;
 };
 
+/** Boolean expression to filter rows from the table "combined_project_funding_view". All fields are combined with a logical 'AND'. */
+export type Combined_Project_Funding_View_Bool_Exp = {
+  _and?: Array<Combined_Project_Funding_View_Bool_Exp> | null | undefined;
+  _not?: Combined_Project_Funding_View_Bool_Exp | null | undefined;
+  _or?: Array<Combined_Project_Funding_View_Bool_Exp> | null | undefined;
+  amount?: Int_Comparison_Exp | null | undefined;
+  created_at?: Timestamptz_Comparison_Exp | null | undefined;
+  description?: String_Comparison_Exp | null | undefined;
+  ecapris_funding?: Ecapris_Subproject_Funding_Bool_Exp | null | undefined;
+  ecapris_funding_files?: Files_Ecapris_Funding_Bool_Exp | null | undefined;
+  ecapris_funding_files_aggregate?:
+    Files_Ecapris_Funding_Aggregate_Bool_Exp | null | undefined;
+  ecapris_subproject_id?: String_Comparison_Exp | null | undefined;
+  fao_id?: Int_Comparison_Exp | null | undefined;
+  fdu?: String_Comparison_Exp | null | undefined;
+  funding_program_id?: Int_Comparison_Exp | null | undefined;
+  funding_source_id?: Int_Comparison_Exp | null | undefined;
+  funding_status_id?: Int_Comparison_Exp | null | undefined;
+  id?: String_Comparison_Exp | null | undefined;
+  is_manual?: Boolean_Comparison_Exp | null | undefined;
+  is_synced_from_ecapris?: Boolean_Comparison_Exp | null | undefined;
+  moped_fund_program?: Moped_Fund_Programs_Bool_Exp | null | undefined;
+  moped_fund_source?: Moped_Fund_Sources_Bool_Exp | null | undefined;
+  moped_fund_status?: Moped_Fund_Status_Bool_Exp | null | undefined;
+  moped_funding_files?: Files_Project_Funding_Bool_Exp | null | undefined;
+  moped_funding_files_aggregate?:
+    Files_Project_Funding_Aggregate_Bool_Exp | null | undefined;
+  original_id?: Int_Comparison_Exp | null | undefined;
+  program_name?: String_Comparison_Exp | null | undefined;
+  project_id?: Int_Comparison_Exp | null | undefined;
+  should_use_ecapris_amount?: Boolean_Comparison_Exp | null | undefined;
+  source_name?: String_Comparison_Exp | null | undefined;
+  status_name?: String_Comparison_Exp | null | undefined;
+  unit_long_name?: String_Comparison_Exp | null | undefined;
+  updated_at?: Timestamptz_Comparison_Exp | null | undefined;
+};
+
 /** Boolean expression to filter rows from the table "current_phase_view". All fields are combined with a logical 'AND'. */
 export type Current_Phase_View_Bool_Exp = {
   _and?: Array<Current_Phase_View_Bool_Exp> | null | undefined;
@@ -375,6 +412,32 @@ export type Deprecated_Moped_Types_Update_Column =
   | "type_name"
   /** column name */
   | "type_order";
+
+/** Boolean expression to filter rows from the table "ecapris_subproject_funding". All fields are combined with a logical 'AND'. */
+export type Ecapris_Subproject_Funding_Bool_Exp = {
+  _and?: Array<Ecapris_Subproject_Funding_Bool_Exp> | null | undefined;
+  _not?: Ecapris_Subproject_Funding_Bool_Exp | null | undefined;
+  _or?: Array<Ecapris_Subproject_Funding_Bool_Exp> | null | undefined;
+  app?: Int_Comparison_Exp | null | undefined;
+  bond_year?: Int_Comparison_Exp | null | undefined;
+  created_at?: Timestamptz_Comparison_Exp | null | undefined;
+  created_by_user_id?: Int_Comparison_Exp | null | undefined;
+  ecapris_subproject_id?: String_Comparison_Exp | null | undefined;
+  fao_id?: Int_Comparison_Exp | null | undefined;
+  fdu?: String_Comparison_Exp | null | undefined;
+  fdu_status?: String_Comparison_Exp | null | undefined;
+  funding_program_id?: Int_Comparison_Exp | null | undefined;
+  funding_source_id?: Int_Comparison_Exp | null | undefined;
+  id?: Int_Comparison_Exp | null | undefined;
+  moped_fund_program?: Moped_Fund_Programs_Bool_Exp | null | undefined;
+  moped_fund_source?: Moped_Fund_Sources_Bool_Exp | null | undefined;
+  program?: String_Comparison_Exp | null | undefined;
+  subprogram?: String_Comparison_Exp | null | undefined;
+  subproject_name?: String_Comparison_Exp | null | undefined;
+  unit_long_name?: String_Comparison_Exp | null | undefined;
+  updated_at?: Timestamptz_Comparison_Exp | null | undefined;
+  updated_by_user_id?: Int_Comparison_Exp | null | undefined;
+};
 
 export type Feature_Drawn_Lines_Aggregate_Bool_Exp = {
   bool_and?: Feature_Drawn_Lines_Aggregate_Bool_Exp_Bool_And | null | undefined;
@@ -2307,6 +2370,16 @@ export type Moped_Fund_Sources_Update_Column =
   | "funding_source_name"
   /** column name */
   | "is_deleted";
+
+/** Boolean expression to filter rows from the table "moped_fund_status". All fields are combined with a logical 'AND'. */
+export type Moped_Fund_Status_Bool_Exp = {
+  _and?: Array<Moped_Fund_Status_Bool_Exp> | null | undefined;
+  _not?: Moped_Fund_Status_Bool_Exp | null | undefined;
+  _or?: Array<Moped_Fund_Status_Bool_Exp> | null | undefined;
+  funding_status_description?: String_Comparison_Exp | null | undefined;
+  funding_status_id?: Int_Comparison_Exp | null | undefined;
+  funding_status_name?: String_Comparison_Exp | null | undefined;
+};
 
 /** Boolean expression to filter rows from the table "moped_milestones". All fields are combined with a logical 'AND'. */
 export type Moped_Milestones_Bool_Exp = {
@@ -4703,6 +4776,28 @@ export type Moped_Proj_Work_Activity_Select_Column_Moped_Proj_Work_Activity_Aggr
   /** column name */
   "is_deleted";
 
+/** input type for updating data in table "moped_proj_work_activity" */
+export type Moped_Proj_Work_Activity_Set_Input = {
+  contract_amount?: number | null | undefined;
+  contract_number?: string | null | undefined;
+  created_at?: string | null | undefined;
+  created_by_user_id?: number | null | undefined;
+  description?: string | null | undefined;
+  id?: number | null | undefined;
+  interim_work_activity_id?: string | null | undefined;
+  is_deleted?: boolean | null | undefined;
+  project_id?: number | null | undefined;
+  status_id?: number | null | undefined;
+  status_note?: string | null | undefined;
+  task_orders?: unknown;
+  updated_at?: string | null | undefined;
+  updated_by_user_id?: number | null | undefined;
+  work_assignment_id?: string | null | undefined;
+  /** (Deprecated) External link to a related work order. E.g., to the Knack Data Tracker */
+  work_order_url?: string | null | undefined;
+  workgroup_contractor?: string | null | undefined;
+};
+
 /** Boolean expression to filter rows from the table "moped_proj_work_activity_status". All fields are combined with a logical 'AND'. */
 export type Moped_Proj_Work_Activity_Status_Bool_Exp = {
   _and?: Array<Moped_Proj_Work_Activity_Status_Bool_Exp> | null | undefined;
@@ -6129,46 +6224,29 @@ export type GetComponentsFormOptionsQueryVariables = Exact<{
 
 export type GetComponentsFormOptionsQuery = {
   moped_components: Array<{
-    __typename: "moped_components";
     component_id: number;
     component_name: string;
     component_subtype: string | null;
     line_representation: boolean;
-    feature_layer: { __typename: "feature_layers"; internal_table: string };
-    asset_feature_layer: {
-      __typename: "feature_layers";
-      internal_table: string;
-    } | null;
+    feature_layer: { internal_table: string };
+    asset_feature_layer: { internal_table: string } | null;
     moped_components_subcomponents: Array<{
-      __typename: "moped_components_subcomponents";
       moped_subcomponent: {
-        __typename: "moped_subcomponents";
         subcomponent_id: number;
         subcomponent_name: string;
       };
     }>;
     moped_component_work_types: Array<{
-      __typename: "moped_component_work_types";
-      moped_work_type: {
-        __typename: "moped_work_types";
-        id: number;
-        name: string;
-      };
+      moped_work_type: { id: number; name: string };
     }>;
   }>;
   moped_phases: Array<{
-    __typename: "moped_phases";
     phase_name: string;
     phase_id: number;
     phase_name_simple: string;
-    moped_subphases: Array<{
-      __typename: "moped_subphases";
-      subphase_id: number;
-      subphase_name: string;
-    }>;
+    moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
   }>;
   moped_component_tags: Array<{
-    __typename: "moped_component_tags";
     slug: string;
     id: number;
     full_name: string | null;
@@ -6180,14 +6258,10 @@ export type AddProjectComponentMutationVariables = Exact<{
 }>;
 
 export type AddProjectComponentMutation = {
-  insert_moped_proj_components_one: {
-    __typename: "moped_proj_components";
-    component_id: number;
-  } | null;
+  insert_moped_proj_components_one: { component_id: number } | null;
 };
 
 export type ProjectComponentFieldsFragment = {
-  __typename: "moped_proj_components";
   project_component_id: number;
   component_id: number;
   description: string | null;
@@ -6198,60 +6272,33 @@ export type ProjectComponentFieldsFragment = {
   srts_id: string | null;
   location_description: string | null;
   moped_components: {
-    __typename: "moped_components";
     component_id: number;
     component_name: string;
     component_subtype: string | null;
     line_representation: boolean;
-    feature_layer: { __typename: "feature_layers"; internal_table: string };
-    asset_feature_layer: {
-      __typename: "feature_layers";
-      internal_table: string;
-    } | null;
+    feature_layer: { internal_table: string };
+    asset_feature_layer: { internal_table: string } | null;
   };
   moped_proj_components_subcomponents: Array<{
-    __typename: "moped_proj_components_subcomponents";
     subcomponent_id: number;
-    moped_subcomponent: {
-      __typename: "moped_subcomponents";
-      subcomponent_name: string;
-    };
+    moped_subcomponent: { subcomponent_name: string };
   }>;
   moped_proj_component_work_types: Array<{
-    __typename: "moped_proj_component_work_types";
-    moped_work_type: {
-      __typename: "moped_work_types";
-      id: number;
-      name: string;
-    };
+    moped_work_type: { id: number; name: string };
   }>;
   moped_proj_component_tags: Array<{
-    __typename: "moped_proj_component_tags";
     component_tag_id: number;
-    moped_component_tag: {
-      __typename: "moped_component_tags";
-      full_name: string | null;
-    };
+    moped_component_tag: { full_name: string | null };
   }>;
   moped_phase: {
-    __typename: "moped_phases";
     phase_id: number;
     phase_name: string;
     phase_name_simple: string;
     phase_key: string;
-    moped_subphases: Array<{
-      __typename: "moped_subphases";
-      subphase_id: number;
-      subphase_name: string;
-    }>;
+    moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
   } | null;
-  moped_subphase: {
-    __typename: "moped_subphases";
-    subphase_id: number;
-    subphase_name: string;
-  } | null;
+  moped_subphase: { subphase_id: number; subphase_name: string } | null;
   feature_street_segments: Array<{
-    __typename: "feature_street_segments";
     id: number;
     source_layer: string;
     ctn_segment_id: number;
@@ -6259,7 +6306,6 @@ export type ProjectComponentFieldsFragment = {
     geometry: unknown;
   }>;
   feature_intersections: Array<{
-    __typename: "feature_intersections";
     id: number;
     source_layer: string;
     intersection_id: number;
@@ -6267,7 +6313,6 @@ export type ProjectComponentFieldsFragment = {
     geometry: unknown;
   }>;
   feature_signals: Array<{
-    __typename: "feature_signals";
     id: number;
     component_id: number;
     location_name: string;
@@ -6277,21 +6322,18 @@ export type ProjectComponentFieldsFragment = {
     geometry: unknown;
   }>;
   feature_drawn_lines: Array<{
-    __typename: "feature_drawn_lines";
     id: number;
     source_layer: string;
     component_id: number;
     geometry: unknown;
   }>;
   feature_drawn_points: Array<{
-    __typename: "feature_drawn_points";
     id: number;
     source_layer: string;
     component_id: number;
     geometry: unknown;
   }>;
   feature_school_beacons: Array<{
-    __typename: "feature_school_beacons";
     id: number;
     component_id: number;
     knack_id: string;
@@ -6310,47 +6352,36 @@ export type GetProjectComponentsQueryVariables = Exact<{
 }>;
 
 export type GetProjectComponentsQuery = {
-  moped_proj_components: Array<
-    { __typename: "moped_proj_components" } & {
-      " $fragmentRefs"?: {
-        ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-      };
-    }
-  >;
+  moped_proj_components: Array<{
+    " $fragmentRefs"?: {
+      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    };
+  }>;
   project_geography: Array<{
-    __typename: "project_geography";
     component_id: number | null;
     attributes: unknown;
     council_districts: Array<number> | null;
     length_feet: number | null;
     geometry: unknown;
   }>;
-  parentProjectComponents: Array<
-    { __typename: "moped_proj_components" } & {
+  parentProjectComponents: Array<{
+    " $fragmentRefs"?: {
+      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    };
+  }>;
+  siblingProjects: Array<{
+    moped_proj_components: Array<{
       " $fragmentRefs"?: {
         ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
       };
-    }
-  >;
-  siblingProjects: Array<{
-    __typename: "moped_project";
-    moped_proj_components: Array<
-      { __typename: "moped_proj_components" } & {
-        " $fragmentRefs"?: {
-          ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-        };
-      }
-    >;
+    }>;
   }>;
   childProjects: Array<{
-    __typename: "moped_project";
-    moped_proj_components: Array<
-      { __typename: "moped_proj_components" } & {
-        " $fragmentRefs"?: {
-          ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-        };
-      }
-    >;
+    moped_proj_components: Array<{
+      " $fragmentRefs"?: {
+        ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+      };
+    }>;
   }>;
 };
 
@@ -6381,46 +6412,16 @@ export type UpdateProjectComponentMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectComponentMutation = {
-  update_moped_proj_components_subcomponents: {
-    __typename: "moped_proj_components_subcomponents_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_component_work_types: {
-    __typename: "moped_proj_component_work_types_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_component_tags: {
-    __typename: "moped_proj_component_tags_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_components_by_pk: {
-    __typename: "moped_proj_components";
-    project_component_id: number;
-  } | null;
-  insert_moped_proj_components_subcomponents: {
-    __typename: "moped_proj_components_subcomponents_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_moped_proj_component_work_types: {
-    __typename: "moped_proj_component_work_types_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_signals: {
-    __typename: "feature_signals_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_moped_proj_component_tags: {
-    __typename: "moped_proj_component_tags_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_school_beacons: {
-    __typename: "feature_school_beacons_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_features: {
-    __typename: "features_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_components_subcomponents: { affected_rows: number } | null;
+  update_moped_proj_component_work_types: { affected_rows: number } | null;
+  update_moped_proj_component_tags: { affected_rows: number } | null;
+  update_moped_proj_components_by_pk: { project_component_id: number } | null;
+  insert_moped_proj_components_subcomponents: { affected_rows: number } | null;
+  insert_moped_proj_component_work_types: { affected_rows: number } | null;
+  insert_feature_signals: { affected_rows: number } | null;
+  insert_moped_proj_component_tags: { affected_rows: number } | null;
+  insert_feature_school_beacons: { affected_rows: number } | null;
+  update_features: { affected_rows: number } | null;
 };
 
 export type UpdateComponentFeaturesMutationVariables = Exact<{
@@ -6447,42 +6448,19 @@ export type UpdateComponentFeaturesMutationVariables = Exact<{
 }>;
 
 export type UpdateComponentFeaturesMutation = {
-  insert_feature_street_segments: {
-    __typename: "feature_street_segments_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_intersections: {
-    __typename: "feature_intersections_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_signals: {
-    __typename: "feature_signals_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_drawn_lines: {
-    __typename: "feature_drawn_lines_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_feature_drawn_points: {
-    __typename: "feature_drawn_points_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_features_many: Array<{
-    __typename: "features_mutation_response";
-    affected_rows: number;
-  } | null> | null;
+  insert_feature_street_segments: { affected_rows: number } | null;
+  insert_feature_intersections: { affected_rows: number } | null;
+  insert_feature_signals: { affected_rows: number } | null;
+  insert_feature_drawn_lines: { affected_rows: number } | null;
+  insert_feature_drawn_points: { affected_rows: number } | null;
+  update_features_many: Array<{ affected_rows: number } | null> | null;
   update_feature_drawn_lines_many: Array<{
-    __typename: "feature_drawn_lines_mutation_response";
     affected_rows: number;
   } | null> | null;
   update_feature_drawn_points_many: Array<{
-    __typename: "feature_drawn_points_mutation_response";
     affected_rows: number;
   } | null> | null;
-  insert_feature_school_beacons: {
-    __typename: "feature_school_beacons_mutation_response";
-    affected_rows: number;
-  } | null;
+  insert_feature_school_beacons: { affected_rows: number } | null;
 };
 
 export type DeleteMopedComponentMutationVariables = Exact<{
@@ -6490,14 +6468,8 @@ export type DeleteMopedComponentMutationVariables = Exact<{
 }>;
 
 export type DeleteMopedComponentMutation = {
-  update_moped_proj_components_by_pk: {
-    __typename: "moped_proj_components";
-    project_component_id: number;
-  } | null;
-  update_moped_proj_components_subcomponents: {
-    __typename: "moped_proj_components_subcomponents_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_components_by_pk: { project_component_id: number } | null;
+  update_moped_proj_components_subcomponents: { affected_rows: number } | null;
 };
 
 export type UpdateComponentAttributesMutationVariables = Exact<{
@@ -6506,10 +6478,285 @@ export type UpdateComponentAttributesMutationVariables = Exact<{
 }>;
 
 export type UpdateComponentAttributesMutation = {
-  update_moped_proj_components_by_pk: {
-    __typename: "moped_proj_components";
-    project_component_id: number;
+  update_moped_proj_components_by_pk: { project_component_id: number } | null;
+};
+
+export type GetCombinedProjectFundingQueryVariables = Exact<{
+  projectFundingConditions: Combined_Project_Funding_View_Bool_Exp;
+}>;
+
+export type GetCombinedProjectFundingQuery = {
+  combined_project_funding_view: Array<{
+    id: string | null;
+    fdu: string | null;
+    program_name: string | null;
+    source_name: string | null;
+    status_name: string | null;
+    is_synced_from_ecapris: boolean | null;
+    is_manual: boolean | null;
+    unit_long_name: string | null;
+    ecapris_subproject_id: string | null;
+    should_use_ecapris_amount: boolean | null;
+    proj_funding_id: number | null;
+    funding_amount: number | null;
+    funding_description: string | null;
+    ecapris_funding_id: number | null;
+    ecapris_funding_files: Array<{
+      id: number;
+      moped_project_file: {
+        project_file_id: number;
+        file_url: string | null;
+        file_key: string | null;
+        file_name: string;
+      };
+    }>;
+    moped_funding_files: Array<{
+      id: number;
+      moped_project_file: {
+        project_file_id: number;
+        file_url: string | null;
+        file_key: string | null;
+        file_name: string;
+      };
+    }>;
+    ecapris_funding: {
+      id: number;
+      fdu: string;
+      fao_id: number;
+      unit_long_name: string;
+      funding_source_id: number | null;
+      funding_program_id: number | null;
+      app: number;
+    } | null;
+    moped_fund_source: {
+      funding_source_id: number;
+      funding_source_name: string;
+    } | null;
+    moped_fund_program: {
+      funding_program_id: number;
+      funding_program_name: string;
+    } | null;
+    moped_fund_status: {
+      funding_status_id: number;
+      funding_status_name: string;
+    } | null;
+  }>;
+};
+
+export type GetFundingLookupsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetFundingLookupsQuery = {
+  ecapris_subproject_funding: Array<{
+    ecapris_subproject_id: string;
+    fdu: string;
+    unit_long_name: string;
+    funding_source_id: number | null;
+    funding_program_id: number | null;
+    ecapris_funding_id: number;
+    amount: number;
+    moped_fund_source: {
+      funding_source_id: number;
+      funding_source_name: string;
+    } | null;
+    moped_fund_program: {
+      funding_program_id: number;
+      funding_program_name: string;
+    } | null;
+  }>;
+  ecapris_options: Array<{
+    ecapris_subproject_id: string;
+    subproject_name: string;
+  }>;
+  moped_file_types: Array<{ id: number; name: string }>;
+  moped_fund_sources: Array<{
+    funding_source_id: number;
+    funding_source_name: string;
+  }>;
+  moped_fund_programs: Array<{
+    funding_program_id: number;
+    funding_program_name: string;
+  }>;
+  moped_fund_status: Array<{
+    funding_status_id: number;
+    funding_status_name: string;
+  }>;
+};
+
+export type EcaprisFdusSubprojectQueryVariables = Exact<{
+  ecapris_subproject_id: string;
+}>;
+
+export type EcaprisFdusSubprojectQuery = {
+  ecapris_subproject_funding: Array<{
+    fdu: string;
+    unit_long_name: string;
+    fdu_status: string | null;
+    funding_source_id: number | null;
+    funding_program_id: number | null;
+    ecapris_funding_id: number;
+    amount: number;
+  }>;
+};
+
+export type EcaprisFduSubprojectQueryVariables = Exact<{
+  fdu: string;
+}>;
+
+export type EcaprisFduSubprojectQuery = {
+  ecapris_subproject_funding: Array<{
+    fdu: string;
+    unit_long_name: string;
+    fdu_status: string | null;
+    funding_source_id: number | null;
+    funding_program_id: number | null;
+    ecapris_funding_id: number;
+    amount: number;
+  }>;
+};
+
+export type UpdateProjectFundingMutationVariables = Exact<{
+  proj_funding_id: number;
+  funding_amount?: number | null | undefined;
+  funding_description?: string | null | undefined;
+  funding_program_id?: number | null | undefined;
+  funding_source_id?: number | null | undefined;
+  funding_status_id?: number | null | undefined;
+  fdu?: string | null | undefined;
+  unit_long_name?: string | null | undefined;
+  should_use_ecapris_amount?: boolean | null | undefined;
+}>;
+
+export type UpdateProjectFundingMutation = {
+  update_moped_proj_funding_by_pk: { proj_funding_id: number } | null;
+};
+
+export type DeleteProjectFundingMutationVariables = Exact<{
+  proj_funding_id: number;
+}>;
+
+export type DeleteProjectFundingMutation = {
+  update_moped_proj_funding: { affected_rows: number } | null;
+  update_files_project_funding: { affected_rows: number } | null;
+};
+
+export type DeleteProjectFundingAndReattachMutationVariables = Exact<{
+  proj_funding_id: number;
+  attachmentObjects:
+    | Array<Files_Ecapris_Funding_Insert_Input>
+    | Files_Ecapris_Funding_Insert_Input;
+}>;
+
+export type DeleteProjectFundingAndReattachMutation = {
+  update_moped_proj_funding: { affected_rows: number } | null;
+  update_files_project_funding: { affected_rows: number } | null;
+  insert_files_ecapris_funding: { affected_rows: number } | null;
+};
+
+export type AddProjectFundingMutationVariables = Exact<{
+  fundingObjects:
+    Array<Moped_Proj_Funding_Insert_Input> | Moped_Proj_Funding_Insert_Input;
+}>;
+
+export type AddProjectFundingMutation = {
+  insert_moped_proj_funding: {
+    returning: Array<{ proj_funding_id: number }>;
   } | null;
+};
+
+export type AddProjectFundingAndReattachMutationVariables = Exact<{
+  fundingObjects:
+    Array<Moped_Proj_Funding_Insert_Input> | Moped_Proj_Funding_Insert_Input;
+  entityId: number;
+  projectId: number;
+}>;
+
+export type AddProjectFundingAndReattachMutation = {
+  insert_moped_proj_funding: {
+    returning: Array<{ proj_funding_id: number }>;
+  } | null;
+  update_files_ecapris_funding: { affected_rows: number } | null;
+};
+
+export type ProjectWorkActivityQueryVariables = Exact<{
+  projectId?: number | null | undefined;
+}>;
+
+export type ProjectWorkActivityQuery = {
+  moped_proj_work_activity: Array<{
+    workgroup_contractor: string | null;
+    id: number;
+    project_id: number;
+    contract_number: string | null;
+    description: string | null;
+    work_assignment_id: string | null;
+    contract_amount: number | null;
+    status_id: number;
+    reference_id: string | null;
+    status_note: string | null;
+    task_orders: unknown;
+    created_at: string;
+    updated_at: string;
+    moped_work_activity_status: { id: number; name: string | null };
+    created_by_user: {
+      first_name: string;
+      last_name: string;
+      moped_workgroup: { workgroup_name: string } | null;
+    } | null;
+    updated_by_user: {
+      first_name: string;
+      last_name: string;
+      moped_workgroup: { workgroup_name: string } | null;
+    } | null;
+    work_activity_files: Array<{
+      id: number;
+      moped_project_file: {
+        project_file_id: number;
+        file_url: string | null;
+        file_key: string | null;
+        file_name: string;
+      };
+    }>;
+  }>;
+};
+
+export type WorkActivityStatusOptionsQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type WorkActivityStatusOptionsQuery = {
+  moped_proj_work_activity_status: Array<{
+    value: number;
+    label: string | null;
+  }>;
+};
+
+export type AddWorkActivityMutationVariables = Exact<{
+  object: Moped_Proj_Work_Activity_Insert_Input;
+}>;
+
+export type AddWorkActivityMutation = {
+  insert_moped_proj_work_activity_one: { id: number } | null;
+};
+
+export type UpdateWorkActivityMutationVariables = Exact<{
+  id: number;
+  object: Moped_Proj_Work_Activity_Set_Input;
+  fileObjects:
+    Array<Moped_Project_Files_Insert_Input> | Moped_Project_Files_Insert_Input;
+}>;
+
+export type UpdateWorkActivityMutation = {
+  update_moped_proj_work_activity_by_pk: { id: number } | null;
+  insert_moped_project_files: { affected_rows: number } | null;
+};
+
+export type DeleteWorkActivityMutationVariables = Exact<{
+  id: number;
+}>;
+
+export type DeleteWorkActivityMutation = {
+  update_moped_proj_work_activity_by_pk: { id: number } | null;
+  update_files_project_work_activities: { affected_rows: number } | null;
 };
 
 export type AddProjectMutationVariables = Exact<{
@@ -6518,14 +6765,12 @@ export type AddProjectMutationVariables = Exact<{
 
 export type AddProjectMutation = {
   insert_moped_project_one: {
-    __typename: "moped_project";
     added_by: number | null;
     project_id: number;
     project_name: string;
     project_description: string;
     ecapris_subproject_id: string | null;
     moped_proj_phases: Array<{
-      __typename: "moped_proj_phases";
       phase_id: number;
       is_current_phase: boolean | null;
     }>;
@@ -6539,7 +6784,6 @@ export type ProjectSummaryQueryVariables = Exact<{
 
 export type ProjectSummaryQuery = {
   moped_project: Array<{
-    __typename: "moped_project";
     project_id: number;
     project_name: string;
     project_name_secondary: string | null;
@@ -6556,45 +6800,24 @@ export type ProjectSummaryQuery = {
     should_sync_ecapris_statuses: boolean;
     should_sync_ecapris_funding: boolean;
     moped_project: {
-      __typename: "moped_project";
       project_name: string;
       project_name_full: string | null;
     } | null;
     moped_proj_components: Array<{
-      __typename: "moped_proj_components";
       feature_signals: Array<{
-        __typename: "feature_signals";
         signal_id: number;
         knack_id: string;
         id: number;
       }>;
     }>;
-    moped_entity: {
-      __typename: "moped_entity";
-      entity_name: string;
-      entity_id: number;
-    } | null;
-    moped_project_lead: {
-      __typename: "moped_entity";
-      entity_name: string;
-      entity_id: number;
-    } | null;
+    moped_entity: { entity_name: string; entity_id: number } | null;
+    moped_project_lead: { entity_name: string; entity_id: number } | null;
     moped_proj_phases: Array<{
-      __typename: "moped_proj_phases";
-      moped_phase: {
-        __typename: "moped_phases";
-        phase_id: number;
-        phase_name: string;
-        phase_key: string;
-      };
+      project_phase_id: number;
+      moped_phase: { phase_id: number; phase_name: string; phase_key: string };
     }>;
-    moped_public_process_statuses: {
-      __typename: "moped_public_process_statuses";
-      id: number;
-      name: string;
-    } | null;
+    moped_public_process_statuses: { id: number; name: string } | null;
     project_list_view: {
-      __typename: "project_list_view";
       project_id: number | null;
       project_status_update: string | null;
       project_status_update_date_created: string | null;
@@ -6602,73 +6825,44 @@ export type ProjectSummaryQuery = {
     } | null;
   }>;
   moped_proj_partners: Array<{
-    __typename: "moped_proj_partners";
     proj_partner_id: number;
     project_id: number;
     entity_id: number;
-    moped_entity: {
-      __typename: "moped_entity";
-      entity_name: string;
-      entity_id: number;
-    };
+    moped_entity: { entity_name: string; entity_id: number };
   }>;
   moped_phases: Array<{
-    __typename: "moped_phases";
     phase_id: number;
     phase_name: string;
     phase_order: number | null;
   }>;
-  moped_entity: Array<{
-    __typename: "moped_entity";
-    entity_id: number;
-    entity_name: string;
-  }>;
+  moped_entity: Array<{ entity_id: number; entity_name: string }>;
   moped_note_types: Array<{
-    __typename: "moped_note_types";
     id: number;
     name: string;
     slug: string;
     source: string;
   }>;
-  moped_public_process_statuses: Array<{
-    __typename: "moped_public_process_statuses";
-    id: number;
-    name: string;
-  }>;
-  moped_user_followed_projects: Array<{
-    __typename: "moped_user_followed_projects";
-    project_id: number;
-    user_id: number;
-  }>;
+  moped_public_process_statuses: Array<{ id: number; name: string }>;
+  moped_user_followed_projects: Array<{ project_id: number; user_id: number }>;
   project_geography: Array<{
-    __typename: "project_geography";
     attributes: unknown;
     council_districts: Array<number> | null;
     geometry: unknown;
   }>;
-  moped_proj_components: Array<
-    { __typename: "moped_proj_components" } & {
+  moped_proj_components: Array<{
+    " $fragmentRefs"?: {
+      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    };
+  }>;
+  childProjects: Array<{
+    project_geography: Array<{ council_districts: Array<number> | null }>;
+    moped_proj_components: Array<{
       " $fragmentRefs"?: {
         ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
       };
-    }
-  >;
-  childProjects: Array<{
-    __typename: "moped_project";
-    project_geography: Array<{
-      __typename: "project_geography";
-      council_districts: Array<number> | null;
     }>;
-    moped_proj_components: Array<
-      { __typename: "moped_proj_components" } & {
-        " $fragmentRefs"?: {
-          ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
-        };
-      }
-    >;
   }>;
   ecapris_subproject_funding: Array<{
-    __typename: "ecapris_subproject_funding";
     ecapris_subproject_id: string;
     subproject_name: string;
   }>;
@@ -6680,35 +6874,29 @@ export type TeamQueryQueryVariables = Exact<{
 
 export type TeamQueryQuery = {
   moped_project_by_pk: {
-    __typename: "moped_project";
     project_id: number;
     moped_proj_personnel: Array<{
-      __typename: "moped_proj_personnel";
       notes: string | null;
       project_personnel_id: number;
       created_at: string;
       created_by_user_id: number | null;
       is_deleted: boolean;
       moped_user: {
-        __typename: "moped_users";
         first_name: string;
         last_name: string;
         user_id: number;
         is_deleted: boolean;
         email: unknown;
         moped_workgroup: {
-          __typename: "moped_workgroup";
           workgroup_id: number;
           workgroup_name: string;
         } | null;
       };
       moped_proj_personnel_roles: Array<{
-        __typename: "moped_proj_personnel_roles";
         id: number;
         project_personnel_id: number;
         project_role_id: number;
         moped_project_role: {
-          __typename: "moped_project_roles";
           project_role_id: number;
           project_role_name: string;
           project_role_description: string | null;
@@ -6717,13 +6905,11 @@ export type TeamQueryQuery = {
     }>;
   } | null;
   moped_project_roles: Array<{
-    __typename: "moped_project_roles";
     project_role_id: number;
     project_role_name: string;
     project_role_description: string | null;
   }>;
   moped_users: Array<{
-    __typename: "moped_users";
     first_name: string;
     last_name: string;
     workgroup_id: number | null;
@@ -6731,11 +6917,7 @@ export type TeamQueryQuery = {
     is_deleted: boolean;
     email: unknown;
   }>;
-  moped_workgroup: Array<{
-    __typename: "moped_workgroup";
-    workgroup_id: number;
-    workgroup_name: string;
-  }>;
+  moped_workgroup: Array<{ workgroup_id: number; workgroup_name: string }>;
 };
 
 export type InserProjectPersonnelMutationVariables = Exact<{
@@ -6743,10 +6925,7 @@ export type InserProjectPersonnelMutationVariables = Exact<{
 }>;
 
 export type InserProjectPersonnelMutation = {
-  insert_moped_proj_personnel_one: {
-    __typename: "moped_proj_personnel";
-    project_personnel_id: number;
-  } | null;
+  insert_moped_proj_personnel_one: { project_personnel_id: number } | null;
 };
 
 export type UpdateProjectPersonnelMutationVariables = Exact<{
@@ -6759,18 +6938,9 @@ export type UpdateProjectPersonnelMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectPersonnelMutation = {
-  update_moped_proj_personnel_by_pk: {
-    __typename: "moped_proj_personnel";
-    project_personnel_id: number;
-  } | null;
-  update_moped_proj_personnel_roles: {
-    __typename: "moped_proj_personnel_roles_mutation_response";
-    affected_rows: number;
-  } | null;
-  insert_moped_proj_personnel_roles: {
-    __typename: "moped_proj_personnel_roles_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_personnel_by_pk: { project_personnel_id: number } | null;
+  update_moped_proj_personnel_roles: { affected_rows: number } | null;
+  insert_moped_proj_personnel_roles: { affected_rows: number } | null;
 };
 
 export type DeleteProjectPersonnelMutationVariables = Exact<{
@@ -6779,7 +6949,6 @@ export type DeleteProjectPersonnelMutationVariables = Exact<{
 
 export type DeleteProjectPersonnelMutation = {
   update_moped_proj_personnel_by_pk: {
-    __typename: "moped_proj_personnel";
     is_deleted: boolean;
     project_personnel_id: number;
   } | null;
@@ -6791,23 +6960,13 @@ export type TeamTimelineQueryVariables = Exact<{
 
 export type TeamTimelineQuery = {
   moped_phases: Array<{
-    __typename: "moped_phases";
     phase_id: number;
     phase_name: string;
     phase_order: number | null;
-    moped_subphases: Array<{
-      __typename: "moped_subphases";
-      subphase_name: string;
-      subphase_id: number;
-    }>;
+    moped_subphases: Array<{ subphase_name: string; subphase_id: number }>;
   }>;
-  moped_subphases: Array<{
-    __typename: "moped_subphases";
-    subphase_name: string;
-    subphase_id: number;
-  }>;
+  moped_subphases: Array<{ subphase_name: string; subphase_id: number }>;
   moped_proj_phases: Array<{
-    __typename: "moped_proj_phases";
     project_phase_id: number;
     is_current_phase: boolean | null;
     project_id: number;
@@ -6818,25 +6977,15 @@ export type TeamTimelineQuery = {
     is_phase_start_confirmed: boolean;
     is_phase_end_confirmed: boolean;
     phase_description: string | null;
-    moped_subphase: {
-      __typename: "moped_subphases";
-      subphase_id: number;
-      subphase_name: string;
-    } | null;
-    moped_phase: {
-      __typename: "moped_phases";
-      phase_id: number;
-      phase_name: string;
-    };
+    moped_subphase: { subphase_id: number; subphase_name: string } | null;
+    moped_phase: { phase_id: number; phase_name: string };
   }>;
   moped_milestones: Array<{
-    __typename: "moped_milestones";
     milestone_id: number;
     milestone_name: string;
     related_phase_id: number | null;
   }>;
   moped_proj_milestones: Array<{
-    __typename: "moped_proj_milestones";
     milestone_id: number;
     description: string | null;
     date_estimate: unknown;
@@ -6845,23 +6994,16 @@ export type TeamTimelineQuery = {
     project_milestone_id: number;
     project_id: number;
     moped_milestone: {
-      __typename: "moped_milestones";
       milestone_id: number;
       milestone_name: string;
       related_phase_id: number | null;
     };
   }>;
   project_list_view: Array<{
-    __typename: "project_list_view";
     substantial_completion_date: string | null;
     project_id: number | null;
   }>;
-  moped_note_types: Array<{
-    __typename: "moped_note_types";
-    id: number;
-    name: string;
-    slug: string;
-  }>;
+  moped_note_types: Array<{ id: number; name: string; slug: string }>;
 };
 
 export type AddProjectPhaseMutationVariables = Exact<{
@@ -6871,14 +7013,9 @@ export type AddProjectPhaseMutationVariables = Exact<{
 }>;
 
 export type AddProjectPhaseMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
   insert_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
     returning: Array<{
-      __typename: "moped_proj_phases";
       phase_id: number;
       phase_description: string | null;
       phase_start: string | null;
@@ -6899,14 +7036,9 @@ export type AddProjectPhaseWithStatusUpdateMutationVariables = Exact<{
 }>;
 
 export type AddProjectPhaseWithStatusUpdateMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
   insert_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
     returning: Array<{
-      __typename: "moped_proj_phases";
       phase_id: number;
       phase_description: string | null;
       phase_start: string | null;
@@ -6917,12 +7049,7 @@ export type AddProjectPhaseWithStatusUpdateMutation = {
     }>;
   } | null;
   insert_moped_proj_notes: {
-    __typename: "moped_proj_notes_mutation_response";
-    returning: Array<{
-      __typename: "moped_proj_notes";
-      project_id: number;
-      project_note: string;
-    }>;
+    returning: Array<{ project_id: number; project_note: string }>;
   } | null;
 };
 
@@ -6935,12 +7062,8 @@ export type ProjectPhasesMutationMutationVariables = Exact<{
 }>;
 
 export type ProjectPhasesMutationMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
   update_moped_proj_phases_by_pk: {
-    __typename: "moped_proj_phases";
     project_id: number;
     project_phase_id: number;
     phase_id: number;
@@ -6951,12 +7074,7 @@ export type ProjectPhasesMutationMutation = {
     phase_description: string | null;
   } | null;
   insert_moped_proj_notes: {
-    __typename: "moped_proj_notes_mutation_response";
-    returning: Array<{
-      __typename: "moped_proj_notes";
-      project_id: number;
-      project_note: string;
-    }>;
+    returning: Array<{ project_id: number; project_note: string }>;
   } | null;
 };
 
@@ -6965,10 +7083,7 @@ export type DeleteProjectPhaseMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectPhaseMutation = {
-  update_moped_proj_phases: {
-    __typename: "moped_proj_phases_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_phases: { affected_rows: number } | null;
 };
 
 export type ProjectMilestonesMutationMutationVariables = Exact<{
@@ -6982,7 +7097,6 @@ export type ProjectMilestonesMutationMutationVariables = Exact<{
 
 export type ProjectMilestonesMutationMutation = {
   update_moped_proj_milestones_by_pk: {
-    __typename: "moped_proj_milestones";
     project_id: number;
     project_milestone_id: number;
     date_estimate: unknown;
@@ -6997,10 +7111,7 @@ export type DeleteProjectMilestoneMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectMilestoneMutation = {
-  update_moped_proj_milestones: {
-    __typename: "moped_proj_milestones_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_proj_milestones: { affected_rows: number } | null;
 };
 
 export type AddProjectMilestoneMutationVariables = Exact<{
@@ -7011,9 +7122,7 @@ export type AddProjectMilestoneMutationVariables = Exact<{
 
 export type AddProjectMilestoneMutation = {
   insert_moped_proj_milestones: {
-    __typename: "moped_proj_milestones_mutation_response";
     returning: Array<{
-      __typename: "moped_proj_milestones";
       milestone_id: number;
       description: string | null;
       date_estimate: unknown;
@@ -7031,7 +7140,6 @@ export type FollowProjectMutationVariables = Exact<{
 
 export type FollowProjectMutation = {
   insert_moped_user_followed_projects_one: {
-    __typename: "moped_user_followed_projects";
     project_id: number;
     user_id: number;
   } | null;
@@ -7043,10 +7151,7 @@ export type UnfollowProjectMutationVariables = Exact<{
 }>;
 
 export type UnfollowProjectMutation = {
-  delete_moped_user_followed_projects: {
-    __typename: "moped_user_followed_projects_mutation_response";
-    affected_rows: number;
-  } | null;
+  delete_moped_user_followed_projects: { affected_rows: number } | null;
 };
 
 export type GetMopedProjectChangesQueryVariables = Exact<{
@@ -7055,7 +7160,6 @@ export type GetMopedProjectChangesQueryVariables = Exact<{
 
 export type GetMopedProjectChangesQuery = {
   moped_activity_log: Array<{
-    __typename: "moped_activity_log";
     activity_id: unknown;
     created_at: string | null;
     record_project_id: number | null;
@@ -7064,7 +7168,6 @@ export type GetMopedProjectChangesQuery = {
     operation_type: string | null;
     record_data: unknown;
     updated_by_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
       picture: string | null;
@@ -7073,68 +7176,36 @@ export type GetMopedProjectChangesQuery = {
     } | null;
   }>;
   moped_users: Array<{
-    __typename: "moped_users";
     first_name: string;
     last_name: string;
     user_id: number;
     email: unknown;
   }>;
-  moped_phases: Array<{
-    __typename: "moped_phases";
-    phase_id: number;
-    phase_name: string;
-  }>;
-  moped_subphases: Array<{
-    __typename: "moped_subphases";
-    subphase_id: number;
-    subphase_name: string;
-  }>;
-  moped_milestones: Array<{
-    __typename: "moped_milestones";
-    milestone_id: number;
-    milestone_name: string;
-  }>;
-  moped_tags: Array<{ __typename: "moped_tags"; name: string; id: number }>;
-  moped_entity: Array<{
-    __typename: "moped_entity";
-    entity_id: number;
-    entity_name: string;
-  }>;
+  moped_phases: Array<{ phase_id: number; phase_name: string }>;
+  moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+  moped_milestones: Array<{ milestone_id: number; milestone_name: string }>;
+  moped_tags: Array<{ name: string; id: number }>;
+  moped_entity: Array<{ entity_id: number; entity_name: string }>;
   moped_fund_sources: Array<{
-    __typename: "moped_fund_sources";
     funding_source_id: number;
     funding_source_name: string;
   }>;
   moped_fund_programs: Array<{
-    __typename: "moped_fund_programs";
     funding_program_id: number;
     funding_program_name: string;
   }>;
   moped_fund_status: Array<{
-    __typename: "moped_fund_status";
     funding_status_id: number;
     funding_status_name: string;
   }>;
-  moped_public_process_statuses: Array<{
-    __typename: "moped_public_process_statuses";
-    id: number;
-    name: string;
-  }>;
+  moped_public_process_statuses: Array<{ id: number; name: string }>;
   moped_components: Array<{
-    __typename: "moped_components";
     component_id: number;
     component_name: string;
     component_subtype: string | null;
   }>;
-  deprecated_moped_types: Array<{
-    __typename: "deprecated_moped_types";
-    type_id: number;
-    type_name: string;
-  }>;
-  activity_log_lookup_tables: Array<{
-    __typename: "moped_activity_log";
-    record_type: string;
-  }>;
+  deprecated_moped_types: Array<{ type_id: number; type_name: string }>;
+  activity_log_lookup_tables: Array<{ record_type: string }>;
 };
 
 export type GetMopedProjectChangeDetailsQueryVariables = Exact<{
@@ -7143,7 +7214,6 @@ export type GetMopedProjectChangeDetailsQueryVariables = Exact<{
 
 export type GetMopedProjectChangeDetailsQuery = {
   moped_activity_log: Array<{
-    __typename: "moped_activity_log";
     activity_id: unknown;
     created_at: string | null;
     record_project_id: number | null;
@@ -7152,13 +7222,11 @@ export type GetMopedProjectChangeDetailsQuery = {
     description: unknown;
     operation_type: string | null;
     moped_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
       user_id: number;
     } | null;
     updated_by_user: {
-      __typename: "moped_users";
       first_name: string;
       last_name: string;
       picture: string | null;
@@ -7166,10 +7234,7 @@ export type GetMopedProjectChangeDetailsQuery = {
       user_id: number;
     } | null;
   }>;
-  activity_log_lookup_tables: Array<{
-    __typename: "moped_activity_log";
-    record_type: string;
-  }>;
+  activity_log_lookup_tables: Array<{ record_type: string }>;
 };
 
 export type MopedProjectFilesQueryVariables = Exact<{
@@ -7178,7 +7243,6 @@ export type MopedProjectFilesQueryVariables = Exact<{
 
 export type MopedProjectFilesQuery = {
   moped_project_files: Array<{
-    __typename: "moped_project_files";
     project_file_id: number;
     project_id: number;
     file_key: string | null;
@@ -7190,18 +7254,9 @@ export type MopedProjectFilesQuery = {
     created_at: string;
     created_by_user_id: number;
     file_url: string | null;
-    moped_user: {
-      __typename: "moped_users";
-      user_id: number;
-      first_name: string;
-      last_name: string;
-    };
+    moped_user: { user_id: number; first_name: string; last_name: string };
   }>;
-  moped_file_types: Array<{
-    __typename: "moped_file_types";
-    id: number;
-    name: string;
-  }>;
+  moped_file_types: Array<{ id: number; name: string }>;
 };
 
 export type UpdateProjectFileAttachmentMutationVariables = Exact<{
@@ -7213,10 +7268,7 @@ export type UpdateProjectFileAttachmentMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectFileAttachmentMutation = {
-  update_moped_project_files: {
-    __typename: "moped_project_files_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project_files: { affected_rows: number } | null;
 };
 
 export type DeleteProjectFileAttachmentMutationVariables = Exact<{
@@ -7224,22 +7276,10 @@ export type DeleteProjectFileAttachmentMutationVariables = Exact<{
 }>;
 
 export type DeleteProjectFileAttachmentMutation = {
-  update_moped_project_files: {
-    __typename: "moped_project_files_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_ecapris_funding: {
-    __typename: "files_ecapris_funding_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_project_funding: {
-    __typename: "files_project_funding_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_files_project_work_activities: {
-    __typename: "files_project_work_activities_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project_files: { affected_rows: number } | null;
+  update_files_ecapris_funding: { affected_rows: number } | null;
+  update_files_project_funding: { affected_rows: number } | null;
+  update_files_project_work_activities: { affected_rows: number } | null;
 };
 
 export type Insert_Single_ArticleMutationVariables = Exact<{
@@ -7247,10 +7287,7 @@ export type Insert_Single_ArticleMutationVariables = Exact<{
 }>;
 
 export type Insert_Single_ArticleMutation = {
-  insert_moped_project_files: {
-    __typename: "moped_project_files_mutation_response";
-    affected_rows: number;
-  } | null;
+  insert_moped_project_files: { affected_rows: number } | null;
 };
 
 export type InsertFileWithEcaprisConnectionMutationVariables = Exact<{
@@ -7259,12 +7296,8 @@ export type InsertFileWithEcaprisConnectionMutationVariables = Exact<{
 
 export type InsertFileWithEcaprisConnectionMutation = {
   insert_moped_project_files_one: {
-    __typename: "moped_project_files";
     project_file_id: number;
-    files_ecapris_fundings: Array<{
-      __typename: "files_ecapris_funding";
-      id: number;
-    }>;
+    files_ecapris_fundings: Array<{ id: number }>;
   } | null;
 };
 
@@ -7273,10 +7306,7 @@ export type DetachFileEcaprisFundingMutationVariables = Exact<{
 }>;
 
 export type DetachFileEcaprisFundingMutation = {
-  update_files_ecapris_funding_by_pk: {
-    __typename: "files_ecapris_funding";
-    id: number;
-  } | null;
+  update_files_ecapris_funding_by_pk: { id: number } | null;
 };
 
 export type InsertFileWithMopedFundingConnectionMutationVariables = Exact<{
@@ -7285,12 +7315,8 @@ export type InsertFileWithMopedFundingConnectionMutationVariables = Exact<{
 
 export type InsertFileWithMopedFundingConnectionMutation = {
   insert_moped_project_files_one: {
-    __typename: "moped_project_files";
     project_file_id: number;
-    files_project_fundings: Array<{
-      __typename: "files_project_funding";
-      id: number;
-    }>;
+    files_project_fundings: Array<{ id: number }>;
   } | null;
 };
 
@@ -7299,10 +7325,7 @@ export type DetachFileMopedFundingMutationVariables = Exact<{
 }>;
 
 export type DetachFileMopedFundingMutation = {
-  update_files_project_funding_by_pk: {
-    __typename: "files_project_funding";
-    id: number;
-  } | null;
+  update_files_project_funding_by_pk: { id: number } | null;
 };
 
 export type AttachExistingFileToEcaprisFundingMutationVariables = Exact<{
@@ -7310,10 +7333,7 @@ export type AttachExistingFileToEcaprisFundingMutationVariables = Exact<{
 }>;
 
 export type AttachExistingFileToEcaprisFundingMutation = {
-  insert_files_ecapris_funding_one: {
-    __typename: "files_ecapris_funding";
-    id: number;
-  } | null;
+  insert_files_ecapris_funding_one: { id: number } | null;
 };
 
 export type AttachExistingFileToMopedFundingMutationVariables = Exact<{
@@ -7321,10 +7341,7 @@ export type AttachExistingFileToMopedFundingMutationVariables = Exact<{
 }>;
 
 export type AttachExistingFileToMopedFundingMutation = {
-  insert_files_project_funding_one: {
-    __typename: "files_project_funding";
-    id: number;
-  } | null;
+  insert_files_project_funding_one: { id: number } | null;
 };
 
 export type InsertFileWithWorkActivityConnectionMutationVariables = Exact<{
@@ -7333,12 +7350,8 @@ export type InsertFileWithWorkActivityConnectionMutationVariables = Exact<{
 
 export type InsertFileWithWorkActivityConnectionMutation = {
   insert_moped_project_files_one: {
-    __typename: "moped_project_files";
     project_file_id: number;
-    files_project_work_activities: Array<{
-      __typename: "files_project_work_activities";
-      id: number;
-    }>;
+    files_project_work_activities: Array<{ id: number }>;
   } | null;
 };
 
@@ -7347,10 +7360,7 @@ export type AttachExistingFileToWorkActivityMutationVariables = Exact<{
 }>;
 
 export type AttachExistingFileToWorkActivityMutation = {
-  insert_files_project_work_activities_one: {
-    __typename: "files_project_work_activities";
-    id: number;
-  } | null;
+  insert_files_project_work_activities_one: { id: number } | null;
 };
 
 export type DetachFileWorkActivityMutationVariables = Exact<{
@@ -7358,20 +7368,13 @@ export type DetachFileWorkActivityMutationVariables = Exact<{
 }>;
 
 export type DetachFileWorkActivityMutation = {
-  update_files_project_work_activities_by_pk: {
-    __typename: "files_project_work_activities";
-    id: number;
-  } | null;
+  update_files_project_work_activities_by_pk: { id: number } | null;
 };
 
 export type FileTypesLookupQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FileTypesLookupQuery = {
-  moped_file_types: Array<{
-    __typename: "moped_file_types";
-    id: number;
-    name: string;
-  }>;
+  moped_file_types: Array<{ id: number; name: string }>;
 };
 
 export type ArchiveMopedProjectMutationVariables = Exact<{
@@ -7379,21 +7382,14 @@ export type ArchiveMopedProjectMutationVariables = Exact<{
 }>;
 
 export type ArchiveMopedProjectMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
-  clear_parent_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
+  clear_parent_project: { affected_rows: number } | null;
 };
 
 export type GetSignalComponentsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetSignalComponentsQuery = {
   moped_components: Array<{
-    __typename: "moped_components";
     component_name: string;
     component_subtype: string | null;
     component_id: number;
@@ -7419,10 +7415,7 @@ export type ProjectUpdateSponsorMutationVariables = Exact<{
 }>;
 
 export type ProjectUpdateSponsorMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    project_sponsor: number | null;
-  } | null;
+  update_moped_project_by_pk: { project_sponsor: number | null } | null;
 };
 
 export type ProjectUpdateLeadMutationVariables = Exact<{
@@ -7431,10 +7424,7 @@ export type ProjectUpdateLeadMutationVariables = Exact<{
 }>;
 
 export type ProjectUpdateLeadMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    project_lead_id: number | null;
-  } | null;
+  update_moped_project_by_pk: { project_lead_id: number | null } | null;
 };
 
 export type ProjectUpdatePublicProcessMutationVariables = Exact<{
@@ -7444,7 +7434,6 @@ export type ProjectUpdatePublicProcessMutationVariables = Exact<{
 
 export type ProjectUpdatePublicProcessMutation = {
   update_moped_project_by_pk: {
-    __typename: "moped_project";
     public_process_status_id: number | null;
   } | null;
 };
@@ -7456,14 +7445,8 @@ export type UpdateMopedProjectPartnersMutationVariables = Exact<{
 }>;
 
 export type UpdateMopedProjectPartnersMutation = {
-  insert_moped_proj_partners: {
-    __typename: "moped_proj_partners_mutation_response";
-    affected_rows: number;
-  } | null;
-  update_moped_proj_partners: {
-    __typename: "moped_proj_partners_mutation_response";
-    affected_rows: number;
-  } | null;
+  insert_moped_proj_partners: { affected_rows: number } | null;
+  update_moped_proj_partners: { affected_rows: number } | null;
 };
 
 export type UpdateProjectWebsiteMutationVariables = Exact<{
@@ -7472,10 +7455,7 @@ export type UpdateProjectWebsiteMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectWebsiteMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectDescriptionMutationVariables = Exact<{
@@ -7484,10 +7464,7 @@ export type UpdateProjectDescriptionMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectDescriptionMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectECaprisMutationVariables = Exact<{
@@ -7496,10 +7473,7 @@ export type UpdateProjectECaprisMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectECaprisClearMutationVariables = Exact<{
@@ -7507,10 +7481,7 @@ export type UpdateProjectECaprisClearMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisClearMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectInterimIdMutationVariables = Exact<{
@@ -7519,10 +7490,7 @@ export type UpdateProjectInterimIdMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectInterimIdMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    interim_project_id: number | null;
-  } | null;
+  update_moped_project_by_pk: { interim_project_id: number | null } | null;
 };
 
 export type ClearProjectInterimIdMutationVariables = Exact<{
@@ -7530,10 +7498,7 @@ export type ClearProjectInterimIdMutationVariables = Exact<{
 }>;
 
 export type ClearProjectInterimIdMutation = {
-  update_moped_project_by_pk: {
-    __typename: "moped_project";
-    interim_project_id: number | null;
-  } | null;
+  update_moped_project_by_pk: { interim_project_id: number | null } | null;
 };
 
 export type UpdateProjectECaprisSyncMutationVariables = Exact<{
@@ -7542,10 +7507,7 @@ export type UpdateProjectECaprisSyncMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisSyncMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectECaprisFundingSyncMutationVariables = Exact<{
@@ -7554,10 +7516,7 @@ export type UpdateProjectECaprisFundingSyncMutationVariables = Exact<{
 }>;
 
 export type UpdateProjectECaprisFundingSyncMutation = {
-  update_moped_project: {
-    __typename: "moped_project_mutation_response";
-    affected_rows: number;
-  } | null;
+  update_moped_project: { affected_rows: number } | null;
 };
 
 export type UpdateProjectNameMutationVariables = Exact<{
@@ -7568,7 +7527,6 @@ export type UpdateProjectNameMutationVariables = Exact<{
 
 export type UpdateProjectNameMutation = {
   update_moped_project_by_pk: {
-    __typename: "moped_project";
     project_name: string;
     project_name_secondary: string | null;
   } | null;
@@ -7578,52 +7536,28 @@ export type ProjectLookupsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProjectLookupsQuery = {
   moped_fund_sources: Array<{
-    __typename: "moped_fund_sources";
     funding_source_id: number;
     funding_source_name: string;
   }>;
   moped_fund_programs: Array<{
-    __typename: "moped_fund_programs";
     funding_program_id: number;
     funding_program_name: string;
   }>;
-  moped_entity: Array<{
-    __typename: "moped_entity";
-    entity_id: number;
-    entity_name: string;
-  }>;
-  moped_tags: Array<{ __typename: "moped_tags"; name: string; id: number }>;
-  moped_public_process_statuses: Array<{
-    __typename: "moped_public_process_statuses";
-    name: string;
-    id: number;
-  }>;
+  moped_entity: Array<{ entity_id: number; entity_name: string }>;
+  moped_tags: Array<{ name: string; id: number }>;
+  moped_public_process_statuses: Array<{ name: string; id: number }>;
   moped_users: Array<{
-    __typename: "moped_users";
     first_name: string;
     last_name: string;
     user_id: number;
   }>;
-  moped_phases: Array<{
-    __typename: "moped_phases";
-    phase_id: number;
-    phase_name: string;
-  }>;
+  moped_phases: Array<{ phase_id: number; phase_name: string }>;
   moped_components: Array<{
-    __typename: "moped_components";
     component_id: number;
     component_name_full: string | null;
   }>;
-  layer_council_district: Array<{
-    __typename: "layer_council_district";
-    id: number;
-    council_district: number;
-  }>;
-  moped_work_types: Array<{
-    __typename: "moped_work_types";
-    id: number;
-    name: string;
-  }>;
+  layer_council_district: Array<{ id: number; council_district: number }>;
+  moped_work_types: Array<{ id: number; name: string }>;
 };
 
 export type ProjectOptionsQueryVariables = Exact<{
@@ -7632,7 +7566,6 @@ export type ProjectOptionsQueryVariables = Exact<{
 
 export type ProjectOptionsQuery = {
   moped_project: Array<{
-    __typename: "moped_project";
     project_id: number;
     project_name_full: string | null;
   }>;
@@ -7644,7 +7577,6 @@ export type GetProjectsComponentsQueryVariables = Exact<{
 
 export type GetProjectsComponentsQuery = {
   project_geography: Array<{
-    __typename: "project_geography";
     project_id: number | null;
     project_name: string | null;
     component_id: number | null;
@@ -11031,6 +10963,2198 @@ export const UpdateComponentAttributesDocument = {
   UpdateComponentAttributesMutation,
   UpdateComponentAttributesMutationVariables
 >;
+export const GetCombinedProjectFundingDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetCombinedProjectFunding" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectFundingConditions" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: {
+                kind: "Name",
+                value: "combined_project_funding_view_bool_exp",
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "combined_project_funding_view" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "projectFundingConditions" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: { kind: "EnumValue", value: "desc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "proj_funding_id" },
+                  name: { kind: "Name", value: "original_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "fdu" } },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "funding_amount" },
+                  name: { kind: "Name", value: "amount" },
+                },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "funding_description" },
+                  name: { kind: "Name", value: "description" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "program_name" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "source_name" } },
+                { kind: "Field", name: { kind: "Name", value: "status_name" } },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "ecapris_funding_id" },
+                  name: { kind: "Name", value: "fao_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_synced_from_ecapris" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "is_manual" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "unit_long_name" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_subproject_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "should_use_ecapris_amount" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_funding_files" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "where" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "is_deleted" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "_eq" },
+                                  value: { kind: "BooleanValue", value: false },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_project_file" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "project_file_id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_url" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_key" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_name" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_funding_files" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "where" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "is_deleted" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "_eq" },
+                                  value: { kind: "BooleanValue", value: false },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_project_file" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "project_file_id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_url" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_key" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_name" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_funding" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "fdu" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "fao_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "unit_long_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_id" },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "app" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_source" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_name" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_program" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_name" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_status" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_status_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_status_name" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCombinedProjectFundingQuery,
+  GetCombinedProjectFundingQueryVariables
+>;
+export const GetFundingLookupsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetFundingLookups" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "ecapris_subproject_funding" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "ecapris_funding_id" },
+                  name: { kind: "Name", value: "fao_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_subproject_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "fdu" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "unit_long_name" },
+                },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "amount" },
+                  name: { kind: "Name", value: "app" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_source_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_source" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_source_name" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_program_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_fund_program" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "funding_program_name" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "ecapris_options" },
+            name: { kind: "Name", value: "ecapris_subproject_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "distinct_on" },
+                value: { kind: "EnumValue", value: "ecapris_subproject_id" },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_subproject_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "subproject_name" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_file_types" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_fund_sources" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_source_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_source_name" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_fund_programs" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_program_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_program_name" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_fund_status" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "funding_status_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_neq" },
+                            value: { kind: "IntValue", value: "0" },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_status_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_status_name" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetFundingLookupsQuery,
+  GetFundingLookupsQueryVariables
+>;
+export const EcaprisFdusSubprojectDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "EcaprisFdusSubproject" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "ecapris_subproject_id" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "ecapris_subproject_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "ecapris_subproject_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: {
+                                kind: "Name",
+                                value: "ecapris_subproject_id",
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "ecapris_funding_id" },
+                  name: { kind: "Name", value: "fao_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "fdu" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "unit_long_name" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "fdu_status" } },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "amount" },
+                  name: { kind: "Name", value: "app" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_source_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_program_id" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  EcaprisFdusSubprojectQuery,
+  EcaprisFdusSubprojectQueryVariables
+>;
+export const EcaprisFduSubprojectDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "EcaprisFduSubproject" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "fdu" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "ecapris_subproject_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "fdu" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "fdu" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "ecapris_funding_id" },
+                  name: { kind: "Name", value: "fao_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "fdu" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "unit_long_name" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "fdu_status" } },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "amount" },
+                  name: { kind: "Name", value: "app" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_source_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_program_id" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  EcaprisFduSubprojectQuery,
+  EcaprisFduSubprojectQueryVariables
+>;
+export const UpdateProjectFundingDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateProjectFunding" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "proj_funding_id" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "funding_amount" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "funding_description" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "funding_program_id" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "funding_source_id" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "funding_status_id" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "fdu" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "unit_long_name" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "should_use_ecapris_amount" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_proj_funding_by_pk" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "proj_funding_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "proj_funding_id" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "funding_amount" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "funding_amount" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "funding_description" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "funding_description" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "funding_program_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "funding_program_id" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "funding_source_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "funding_source_id" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "funding_status_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "funding_status_id" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "fdu" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "fdu" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "unit_long_name" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "unit_long_name" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: {
+                        kind: "Name",
+                        value: "should_use_ecapris_amount",
+                      },
+                      value: {
+                        kind: "Variable",
+                        name: {
+                          kind: "Name",
+                          value: "should_use_ecapris_amount",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "proj_funding_id" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateProjectFundingMutation,
+  UpdateProjectFundingMutationVariables
+>;
+export const DeleteProjectFundingDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteProjectFunding" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "proj_funding_id" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_proj_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "proj_funding_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "proj_funding_id" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_files_project_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "entity_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "proj_funding_id" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteProjectFundingMutation,
+  DeleteProjectFundingMutationVariables
+>;
+export const DeleteProjectFundingAndReattachDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteProjectFundingAndReattach" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "proj_funding_id" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "attachmentObjects" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: {
+                  kind: "NamedType",
+                  name: {
+                    kind: "Name",
+                    value: "files_ecapris_funding_insert_input",
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_proj_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "proj_funding_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "proj_funding_id" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_files_project_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "entity_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "proj_funding_id" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_files_ecapris_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "attachmentObjects" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "on_conflict" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "constraint" },
+                      value: {
+                        kind: "EnumValue",
+                        value:
+                          "files_ecapris_funding_project_id_entity_id_file_id_key",
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "update_columns" },
+                      value: {
+                        kind: "ListValue",
+                        values: [{ kind: "EnumValue", value: "is_deleted" }],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteProjectFundingAndReattachMutation,
+  DeleteProjectFundingAndReattachMutationVariables
+>;
+export const AddProjectFundingDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddProjectFunding" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "fundingObjects" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: {
+                  kind: "NamedType",
+                  name: {
+                    kind: "Name",
+                    value: "moped_proj_funding_insert_input",
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_proj_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "fundingObjects" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "returning" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "proj_funding_id" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddProjectFundingMutation,
+  AddProjectFundingMutationVariables
+>;
+export const AddProjectFundingAndReattachDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddProjectFundingAndReattach" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "fundingObjects" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: {
+                  kind: "NamedType",
+                  name: {
+                    kind: "Name",
+                    value: "moped_proj_funding_insert_input",
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "entityId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_proj_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "fundingObjects" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "returning" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "proj_funding_id" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_files_ecapris_funding" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "entity_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "entityId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddProjectFundingAndReattachMutation,
+  AddProjectFundingAndReattachMutationVariables
+>;
+export const ProjectWorkActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "ProjectWorkActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_proj_work_activity" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "workgroup_contractor" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "project_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "contract_number" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "work_assignment_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "contract_amount" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "status_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "reference_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_work_activity_status" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "status_note" } },
+                { kind: "Field", name: { kind: "Name", value: "task_orders" } },
+                { kind: "Field", name: { kind: "Name", value: "created_at" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "created_by_user" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "first_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "last_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_workgroup" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "workgroup_name" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "updated_by_user" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "first_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "last_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_workgroup" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "workgroup_name" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "work_activity_files" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "where" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "is_deleted" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "_eq" },
+                                  value: { kind: "BooleanValue", value: false },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_project_file" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "project_file_id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_url" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_key" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "file_name" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ProjectWorkActivityQuery,
+  ProjectWorkActivityQueryVariables
+>;
+export const WorkActivityStatusOptionsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "WorkActivityStatusOptions" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_proj_work_activity_status" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "value" },
+                  name: { kind: "Name", value: "id" },
+                },
+                {
+                  kind: "Field",
+                  alias: { kind: "Name", value: "label" },
+                  name: { kind: "Name", value: "name" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  WorkActivityStatusOptionsQuery,
+  WorkActivityStatusOptionsQueryVariables
+>;
+export const AddWorkActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddWorkActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: {
+                kind: "Name",
+                value: "moped_proj_work_activity_insert_input",
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "insert_moped_proj_work_activity_one",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "object" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddWorkActivityMutation,
+  AddWorkActivityMutationVariables
+>;
+export const UpdateWorkActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateWorkActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: {
+                kind: "Name",
+                value: "moped_proj_work_activity_set_input",
+              },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "fileObjects" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: {
+                  kind: "NamedType",
+                  name: {
+                    kind: "Name",
+                    value: "moped_project_files_insert_input",
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "update_moped_proj_work_activity_by_pk",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "id" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_project_files" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "fileObjects" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateWorkActivityMutation,
+  UpdateWorkActivityMutationVariables
+>;
+export const DeleteWorkActivityDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteWorkActivity" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "update_moped_proj_work_activity_by_pk",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "id" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: {
+              kind: "Name",
+              value: "update_files_project_work_activities",
+            },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "entity_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "id" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteWorkActivityMutation,
+  DeleteWorkActivityMutationVariables
+>;
 export const AddProjectDocument = {
   kind: "Document",
   definitions: [
@@ -11419,6 +13543,10 @@ export const ProjectSummaryDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_phase_id" },
+                      },
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "moped_phase" },

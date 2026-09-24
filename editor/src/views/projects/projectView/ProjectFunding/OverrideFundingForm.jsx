@@ -16,7 +16,6 @@ import {
   ECAPRIS_SUBPROJECT_FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
 } from "src/queries/funding";
-import { transformGridToDatabase } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { amountOnChangeHandler } from "src/views/projects/projectView/ProjectWorkActivity/utils/form";
 import * as yup from "yup";
 
@@ -53,6 +52,76 @@ const renderECaprisLabel = (lookup, recordId, recordType) => {
     : "-";
 };
 
+/** Transforms DataGrid row to database funding record format for mutations
+ * @param {Object} gridRecord - DataGrid row object
+ * @return {Object} - transformed funding record for database mutation
+ */
+const transformGridToDatabase = (gridRecord) => {
+  // Extract the lookup ids from the selected lookup objects
+  const funding_source_id = gridRecord.fund_source
+    ? gridRecord.fund_source.funding_source_id
+    : null;
+  const funding_program_id = gridRecord.fund_program
+    ? gridRecord.fund_program.funding_program_id
+    : null;
+  const funding_status_id = gridRecord.fund_status
+    ? gridRecord.fund_status.funding_status_id
+    : null;
+  const fdu = gridRecord.fdu ? gridRecord.fdu.fdu : null;
+  const unit_long_name = gridRecord.fdu ? gridRecord.fdu.unit_long_name : null;
+  const ecapris_funding_id = gridRecord.fdu
+    ? gridRecord.fdu.ecapris_funding_id
+    : null;
+
+  const ecapris_subproject_id = gridRecord.fdu
+    ? gridRecord.fdu.ecapris_subproject_id
+    : null;
+
+  const fdu_record_amount = gridRecord.fdu ? gridRecord.fdu.amount : null;
+  // if the amount on the fdu matches what we are saving, its not an override
+  const should_use_ecapris_amount =
+    fdu_record_amount === Number(gridRecord.funding_amount);
+
+  // the database expects the funding amount to be an Int or null. An empty string will result in an error, coerce to null
+  const funding_amount = gridRecord.funding_amount
+    ? gridRecord.funding_amount
+    : null;
+
+  const {
+    id,
+    __typename,
+    is_synced_from_ecapris,
+    status_name,
+    program_name,
+    source_name,
+    moped_fund_program,
+    moped_fund_source,
+    moped_fund_status,
+    proj_funding_id,
+    isNew,
+    is_manual,
+    ecapris_funding_files,
+    moped_funding_files,
+    ecapris_funding,
+    ...databaseFields
+  } = gridRecord;
+
+  // Return the database fields along with the extracted lookup ids
+  return {
+    ...databaseFields,
+    funding_source_id,
+    funding_program_id,
+    // If no new funding status is selected, the default should be used
+    funding_status_id: funding_status_id ? funding_status_id : 1,
+    fdu,
+    unit_long_name,
+    ecapris_funding_id,
+    ecapris_subproject_id,
+    should_use_ecapris_amount,
+    funding_amount,
+  };
+};
+
 const OverrideFundingForm = ({
   fundingRecord,
   projectId,
@@ -60,7 +129,7 @@ const OverrideFundingForm = ({
   setOverrideFundingRecord,
   handleSnackbar,
   handleClose,
-  dataProjectFunding,
+  dataLookups,
 }) => {
   const { data: fduData } = useQuery(ECAPRIS_SUBPROJECT_FUNDING_QUERY, {
     variables: { fdu: fundingRecord.fdu.fdu },
@@ -89,9 +158,9 @@ const OverrideFundingForm = ({
       funding_amount: fundingRecord.funding_amount,
       description: fundingRecord.funding_description ?? "",
       should_use_ecapris_amount: fundingRecord?.should_use_ecapris_amount,
-      funding_source_id: fundingRecord.fund_source?.funding_source_id,
-      funding_program_id: fundingRecord.fund_program?.funding_program_id,
-      fund_status: fundingRecord.fund_status?.funding_status_id,
+      funding_source_id: fundingRecord.moped_fund_source?.funding_source_id,
+      funding_program_id: fundingRecord.moped_fund_program?.funding_program_id,
+      fund_status: fundingRecord.moped_fund_status?.funding_status_id,
     },
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",
@@ -102,7 +171,7 @@ const OverrideFundingForm = ({
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
   const isNewOverride =
     fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
-  const fundingSources = dataProjectFunding["moped_fund_sources"];
+  const fundingSources = dataLookups["moped_fund_sources"];
 
   const [mutate, mutationState] = useMutation(
     isNewOverride ? ADD_PROJECT_FUNDING_AND_REATTACH : UPDATE_PROJECT_FUNDING
@@ -200,7 +269,7 @@ const OverrideFundingForm = ({
               control={control}
               name="funding_program_id"
               label="Program"
-              options={dataProjectFunding["moped_fund_programs"]}
+              options={dataLookups["moped_fund_programs"]}
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_program_name || ""}
               onChangeHandler={(fund_source, field) => {
@@ -211,7 +280,7 @@ const OverrideFundingForm = ({
               }
               valueHandler={(value) =>
                 value
-                  ? dataProjectFunding["moped_fund_programs"].find(
+                  ? dataLookups["moped_fund_programs"].find(
                       (s) => s.funding_program_id === value
                     )
                   : null
@@ -220,7 +289,7 @@ const OverrideFundingForm = ({
             <FormHelperText>
               eCAPRIS program:{" "}
               {renderECaprisLabel(
-                dataProjectFunding["moped_fund_programs"],
+                dataLookups["moped_fund_programs"],
                 ecaprisProgramId,
                 "program"
               )}
@@ -246,7 +315,7 @@ const OverrideFundingForm = ({
               control={control}
               name="fund_status"
               label="Status"
-              options={dataProjectFunding["moped_fund_status"]}
+              options={dataLookups["moped_fund_status"]}
               filterOptions={filterOptions}
               getOptionLabel={(option) => option?.funding_status_name || ""}
               onChangeHandler={(fund_status, field) => {
@@ -257,7 +326,7 @@ const OverrideFundingForm = ({
               }
               valueHandler={(value) =>
                 value
-                  ? dataProjectFunding["moped_fund_status"].find(
+                  ? dataLookups["moped_fund_status"].find(
                       (s) => s.funding_status_id === value
                     )
                   : null
