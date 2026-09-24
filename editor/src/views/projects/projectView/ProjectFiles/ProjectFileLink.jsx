@@ -106,7 +106,7 @@ const ProjectFileLink = ({
       <CopyTextButton
         textToCopy={fileUrl}
         copyButtonText="Copy network location"
-        buttonProps={{ size: "small" }}
+        iconButtonProps={{ size: "small" }}
         iconProps={{ fontSize: "small" }}
         iconOnly
       />

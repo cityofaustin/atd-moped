@@ -49,6 +49,7 @@ const AuthProvider = ({ children }) => {
     try {
       // TODO: Remove localStorage cache and fetch user data when needed for a view
       // to prevent de-synchronization between the local cache and the database
+      // See issue #30400
       const mopedUser = await initializeUserDBObject(session);
       setSessionDatabaseData(mopedUser);
 
