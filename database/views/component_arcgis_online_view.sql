@@ -1,4 +1,4 @@
--- Most recent migration: database/migrations/default/1788304724360_update_exploded_view/up.sql
+-- Most recent migration: database/migrations/default/1790287850592_remove_ecapris_amount_override_toggle/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
 WITH work_types AS (
