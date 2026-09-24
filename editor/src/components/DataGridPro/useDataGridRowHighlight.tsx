@@ -37,6 +37,13 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     const rowId = getRowId ? getRowId(row) : row.id;
     return String(rowId) === highlightedRowId;
   });
+  const emptyRowSelectionModel = useMemo<GridRowSelectionModel>(
+    () => ({
+      type: "include",
+      ids: new Set(),
+    }),
+    [],
+  );
   const highlightedRowSelectionModel = useMemo<
     GridRowSelectionModel | undefined
   >(
@@ -48,8 +55,16 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
               getRowId ? getRowId(highlightedRow) : highlightedRow.id,
             ]),
           }
-        : rowSelectionModel,
-    [getRowId, highlightedRow, rowSelectionModel]
+        : highlightedRowParam
+          ? emptyRowSelectionModel
+          : rowSelectionModel,
+    [
+      emptyRowSelectionModel,
+      getRowId,
+      highlightedRow,
+      highlightedRowParam,
+      rowSelectionModel,
+    ],
   );
 
   useEffect(() => {
