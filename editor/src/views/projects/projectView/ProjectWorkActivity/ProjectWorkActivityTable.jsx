@@ -104,6 +104,7 @@ const useColumns = ({
                 return (
                   <AttachedFile
                     key={file.project_file_id}
+                    projectId={row.project_id}
                     fileRecordId={file_record.id}
                     file={file}
                     refetch={refetch}

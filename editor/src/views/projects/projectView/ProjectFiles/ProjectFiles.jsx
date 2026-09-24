@@ -40,6 +40,7 @@ import {
 } from "src/views/projects/projectView/ProjectFiles/helpers";
 
 const requiredFields = ["file_name", "file_type"];
+export const highlightedRowParam = "project_file_id";
 
 const useColumns = ({
   rowModesModel,
@@ -414,6 +415,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         rows={rows || []}
         loading={loading || !data}
         getRowId={(row) => row.project_file_id}
+        highlightedRowParam={highlightedRowParam}
         onRowEditStop={handleRowEditStop(rows, setRows)}
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
