@@ -7,6 +7,7 @@ import Footer from "src/layouts/DashboardLayout/Footer";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
 import { useApolloErrorContext } from "src/utils/errorHandling";
+import { setReturnTo } from "src/auth/returnTo";
 
 /**
  * Dashboard layout component for the app when users are signed in.
@@ -22,18 +23,23 @@ const DashboardLayout = () => {
     setApolloError(null);
   }, [location.pathname, setApolloError]);
 
+  // Remember where users were headed so we can send them back after sign-in.
+  // Runs before the sign-in redirect so we capture the route they wanted.
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      setReturnTo(location);
+    }
+  }, [status, location]);
+
   if (status === "initializing") {
     return <AuthLoadingBackdrop open={true} />;
   }
 
-  /* If not authenticated, redirect to sign-in page and preserve the current
-   * location so they can be redirected back after successful login or if a
-   * browser refresh occurs. See MainLayout.js for how this is handled.
+  /* If not authenticated, redirect to the sign-in page. The effect above stored
+   * the route they wanted in sessionStorage; MainLayout reads it after sign-in.
    */
   if (status === "unauthenticated") {
-    return (
-      <Navigate to="/moped/session/signin" state={{ from: location }} replace />
-    );
+    return <Navigate to="/moped/session/signin" replace />;
   }
 
   return (
