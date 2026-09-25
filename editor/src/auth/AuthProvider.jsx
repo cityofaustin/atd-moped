@@ -79,6 +79,11 @@ const AuthProvider = ({ children }) => {
           deleteSessionDatabaseData();
           setState({ status: "unauthenticated" });
           break;
+        // If token refresh fails, treat the user as unauthenticated.
+        case "tokenRefresh_failure":
+          deleteSessionDatabaseData();
+          setState({ status: "unauthenticated" });
+          break;
         default:
           break;
       }
@@ -110,7 +115,7 @@ const AuthProvider = ({ children }) => {
   );
 
   /**
-   * Sign out. The Hub "signOut" handler clears state and the cached user row,
+   * Sign out. The Hub "signedOut" handler clears state and the cached user row,
    * so explicit logouts and SDK-initiated ones take the same path.
    */
   const logout = useCallback(() => signOut(), []);
