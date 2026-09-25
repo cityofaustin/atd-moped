@@ -7,7 +7,7 @@ This utility creates random projects in Moped.
 1. Start the Hasura cluster and Editor:
 
 ```shell
-# ./moped-database
+# ./database
 $ ./hasura-cluster start
 
 # ./editor

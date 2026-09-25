@@ -6813,6 +6813,7 @@ export type ProjectSummaryQuery = {
     moped_entity: { entity_name: string; entity_id: number } | null;
     moped_project_lead: { entity_name: string; entity_id: number } | null;
     moped_proj_phases: Array<{
+      project_phase_id: number;
       moped_phase: { phase_id: number; phase_name: string; phase_key: string };
     }>;
     moped_public_process_statuses: { id: number; name: string } | null;
@@ -13542,6 +13543,10 @@ export const ProjectSummaryDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_phase_id" },
+                      },
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "moped_phase" },

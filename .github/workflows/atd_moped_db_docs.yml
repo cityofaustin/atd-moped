@@ -9,7 +9,7 @@ on:
       - main
       - production
     paths:
-      - "moped-database/**"
+      - "database/**"
       - ".github/workflows/atd_moped_db_docs.yml"
 
 jobs:
@@ -42,7 +42,7 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          cd ./moped-database;
+          cd ./database;
           ./hasura-cluster setenv local;
           ./hasura-cluster start;
           cd ./schemaspy;

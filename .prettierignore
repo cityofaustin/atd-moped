@@ -1,2 +1,2 @@
 # Ignore DB config code
-moped-database/*
+database/*

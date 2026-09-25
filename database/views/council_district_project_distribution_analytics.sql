@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1758551918596_adjust-projects-per-district-view/up.sql
+-- Most recent migration: database/migrations/default/1758551918596_adjust-projects-per-district-view/up.sql
 
 CREATE OR REPLACE VIEW council_district_project_distribution_analytics AS
 WITH area_project_buffers AS (

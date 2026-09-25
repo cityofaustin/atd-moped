@@ -5,10 +5,13 @@ import {
 } from "@mui/x-data-grid-pro";
 import type { SxProps, Theme } from "@mui/material";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import useDataGridRowHighlight from "./useDataGridRowHighlight";
 
 type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
   /** Optional style overrides merged with the default DataGrid style. */
   sx?: SxProps<Theme>;
+  /** Search parameter used to identify the row to preselect. */
+  highlightedRowParam?: string;
 };
 
 /**
@@ -25,33 +28,52 @@ type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
 const MopedDataGrid = <R extends GridValidRowModel>({
   sx,
   slotProps = {},
+  getRowId,
+  highlightedRowParam,
+  apiRef,
+  onCellClick,
+  rowSelectionModel,
+  rows = [],
   ...props
 }: MopedDataGridProps<R>) => {
-  const mergedSx = {
-    ...dataGridProStyleOverrides,
-    ...sx,
-  };
-
-  const mergedSlotProps = {
-    ...slotProps,
-    loadingOverlay: {
-      variant: "circular-progress" as const,
-      noRowsVariant: "circular-progress" as const,
-    },
-  };
-
+  const {
+    apiRef: gridApiRef,
+    handleCellClick,
+    rowSelectionModel: highlightedRowSelectionModel,
+  } = useDataGridRowHighlight({
+    apiRef,
+    getRowId,
+    highlightedRowParam,
+    onCellClick,
+    rowSelectionModel,
+    rows,
+  });
   return (
     <DataGridPro<R>
-      sx={mergedSx}
-      slotProps={mergedSlotProps}
+      sx={{
+        ...dataGridProStyleOverrides,
+        ...sx,
+      }}
+      slotProps={{
+        ...slotProps,
+        loadingOverlay: {
+          variant: "circular-progress",
+          noRowsVariant: "circular-progress",
+        },
+      }}
       density="comfortable"
       getRowHeight={() => "auto"}
       hideFooter
       disableRowSelectionOnClick
       // Show toolbar if a toolbar slot is provided
       showToolbar={!!props.slots?.toolbar}
+      onCellClick={handleCellClick}
       onProcessRowUpdateError={(error) => console.error(error)}
+      getRowId={getRowId}
+      apiRef={gridApiRef}
+      rows={rows}
       {...props}
+      rowSelectionModel={highlightedRowSelectionModel}
     />
   );
 };
