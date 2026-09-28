@@ -1,6 +1,9 @@
 import { nonLoginUserRole } from "src/views/staff/helpers";
 import type { AuthSession, JWT } from "aws-amplify/auth";
 
+// Key for accessing Hasura claims in the JWT payload set by our Cognito pre-token Lambda.
+const HASURA_CLAIMS_KEY = "https://hasura.io/jwt/claims";
+
 /**
  * Extended Cognito Auth Session that includes the Hasura claims added by our pre-token lambda.
  */
@@ -8,10 +11,19 @@ type MopedAuthSession = AuthSession & {
   tokens: NonNullable<AuthSession["tokens"]> & {
     idToken: JWT & {
       payload: JWT["payload"] & {
-        "https://hasura.io/jwt/claims": string;
+        [HASURA_CLAIMS_KEY]: string;
       };
     };
   };
+};
+
+/**
+ * The Hasura claims the app reads that were added by our Cognito pre-token Lambda.
+ * See auth/cognito-pre-token-hook/README.md for more details.
+ */
+type HasuraClaims = {
+  "x-hasura-allowed-roles": string[];
+  "x-hasura-user-db-id": string;
 };
 
 export const ROLE_ORDER = [
@@ -33,12 +45,11 @@ export const getCognitoIdJwt = (session: MopedAuthSession | null) =>
  * @param session - The Cognito session
  * @returns The Hasura claims or null if not found.
  */
-export const getHasuraClaims = (session: MopedAuthSession) => {
-  const rawHasuraClaims =
-    session?.tokens?.idToken?.payload["https://hasura.io/jwt/claims"];
+export const getHasuraClaims = (session: MopedAuthSession | null) => {
+  const rawHasuraClaims = session?.tokens?.idToken?.payload[HASURA_CLAIMS_KEY];
   if (typeof rawHasuraClaims !== "string") return null;
   try {
-    return JSON.parse(rawHasuraClaims);
+    return JSON.parse(rawHasuraClaims) as HasuraClaims;
   } catch {
     return null;
   }
@@ -46,9 +57,9 @@ export const getHasuraClaims = (session: MopedAuthSession) => {
 
 /**
  * Retrieves the database ID from the Cognito user session.
- * @param user - The Cognito user session containing ID token and claims.
+ * @param session - The Cognito user session containing ID token and claims.
  */
-export const getDatabaseId = (session: MopedAuthSession) => {
+export const getDatabaseId = (session: MopedAuthSession | null) => {
   const claims = getHasuraClaims(session);
   return claims?.["x-hasura-user-db-id"] ?? null;
 };
@@ -68,7 +79,7 @@ export const findHighestRole = (roles: string[] | null) => {
  * @param session - Cognito session containing roles in the token
  * @returns The highest user role or null if not found.
  */
-export const getHighestRole = (session: MopedAuthSession) => {
+export const getHighestRole = (session: MopedAuthSession | null) => {
   const claims = getHasuraClaims(session);
   if (!claims) return null;
 
