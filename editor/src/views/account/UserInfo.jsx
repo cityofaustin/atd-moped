@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material";
 import { getUserFullName } from "src/utils/userNames";
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useAuth } from "src/auth/auth";
 
 const UserInfo = () => {
-  const user = useSessionDatabaseData();
+  const { mopedUser: user } = useAuth();
   const userFullName = getUserFullName(user);
   const userEmail = user?.email;
 

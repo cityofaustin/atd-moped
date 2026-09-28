@@ -4,12 +4,7 @@ import { signIn, signInWithRedirect, signOut } from "aws-amplify/auth";
 import { AuthContext } from "src/auth/auth";
 import { getHighestRole } from "src/auth/claims";
 import { getCognitoSession } from "src/auth/session";
-import {
-  initializeUserDBObject,
-  setSessionDatabaseData,
-  deleteSessionDatabaseData,
-} from "src/auth/mopedUser";
-import type { MopedAuthSession } from "src/auth/claims";
+import { fetchMopedUser } from "src/auth/mopedUser";
 
 /**
  * Auth provider for the app. The Amplify Hub listener is the source of truth for
@@ -33,7 +28,6 @@ const AuthProvider = ({ children }) => {
     const session = await getCognitoSession();
 
     if (!session) {
-      deleteSessionDatabaseData();
       setState({ status: "unauthenticated" });
       return;
     }
@@ -49,11 +43,7 @@ const AuthProvider = ({ children }) => {
     }
 
     try {
-      // TODO: Remove localStorage cache and fetch user data when needed for a view
-      // to prevent de-synchronization between the local cache and the database
-      // See issue #30400
-      const mopedUser = await initializeUserDBObject(session);
-      setSessionDatabaseData(mopedUser);
+      const mopedUser = await fetchMopedUser(session);
 
       setState({ status: "authenticated", role, mopedUser });
     } catch (error) {
@@ -77,12 +67,10 @@ const AuthProvider = ({ children }) => {
           resolveSession();
           break;
         case "signedOut":
-          deleteSessionDatabaseData();
           setState({ status: "unauthenticated" });
           break;
         // If token refresh fails, treat the user as unauthenticated.
         case "tokenRefresh_failure":
-          deleteSessionDatabaseData();
           setState({ status: "unauthenticated" });
           break;
         default:

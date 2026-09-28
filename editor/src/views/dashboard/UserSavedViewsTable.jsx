@@ -11,7 +11,7 @@ import {
   UPDATE_USER_SAVED_VIEW,
   DELETE_USER_SAVED_VIEW,
 } from "src/queries/userSavedViews";
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useAuth } from "src/auth/auth";
 
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
@@ -103,8 +103,8 @@ const useColumns = ({
 
 const UserSavedViewsTable = ({ handleSnackbar }) => {
   // user data
-  const userSessionData = useSessionDatabaseData();
-  const userId = userSessionData?.user_id;
+  const { mopedUser } = useAuth();
+  const userId = mopedUser?.user_id;
 
   const { loading, data, refetch } = useQuery(USER_SAVED_VIEWS_QUERY, {
     variables: {
