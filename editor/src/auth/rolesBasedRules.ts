@@ -1,21 +1,18 @@
 // Read-only permissions not enforced by Can component
-// since all authorized users should have access
+// since all authorized users should have access (except non-login users)
 const readOnlyStaticRules = [
   "dashboard:visit",
   "projects:visit",
   "users:visit",
   "user:get",
   "moped:visit",
-  "dashboard:visit",
   "account:visit",
   "staff:visit",
   "project:visit",
-  "projects:visit",
   "settings:visit",
   "notFound:visit",
   "undefinedRoute:visit",
   "logout:visit",
-  "settings:visit",
   "404:visit",
   "all:visit",
   "style:visit",
@@ -36,6 +33,10 @@ const adminStaticRules = [
 ];
 
 export const rules = {
+  "non-login-user": {
+    label: "Non-login user",
+    static: [] as string[],
+  },
   "moped-viewer": {
     label: "Read-only",
     static: readOnlyStaticRules,
