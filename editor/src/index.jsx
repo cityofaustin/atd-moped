@@ -36,7 +36,7 @@ Amplify.configure({
   },
 });
 
-if (["production", "staging", "test"].includes(config.env.APP_ENVIRONMENT)) {
+if (["production", "staging"].includes(config.env.APP_ENVIRONMENT)) {
   cognitoUserPoolsTokenProvider.setKeyValueStorage(
     new CookieStorage({
       domain: window.location.hostname,
