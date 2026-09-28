@@ -14,7 +14,9 @@ import {
   type GridRowId,
   type GridRowModesModel,
 } from "@mui/x-data-grid-pro";
-import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
+import LookupAutocompleteComponent, {
+  type DependentField,
+} from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
@@ -208,8 +210,7 @@ const getFduAutocompleteProps = (
   };
 };
 
-// TODO: Update setFieldValue to accept generic or null when migrating LookupAutocompleteComponent to TS captured in #29927
-const fduAutocompleteDependentFields = [
+const fduAutocompleteDependentFields: DependentField<GridFDUOption>[] = [
   {
     fieldName: "unit_long_name",
     setFieldValue: (newValue: GridFDUOption | null) =>
@@ -342,11 +343,10 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"ecapris_funding"}
-            options={dataLookups?.ecapris_subproject_funding}
+            options={dataLookups?.ecapris_subproject_funding ?? []}
             fullWidthPopper={true}
             autocompleteProps={{
               ...getFduAutocompleteProps(
@@ -396,7 +396,6 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
@@ -427,7 +426,6 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
@@ -451,11 +449,9 @@ export const useColumns = ({
         valueFormatter: (value: FundingRowFromQuery["moped_fund_status"]) =>
           value?.funding_status_name,
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_status"}
-            defaultValue={1}
             options={dataLookups?.moped_fund_status ?? []}
             fullWidthPopper={true}
           />

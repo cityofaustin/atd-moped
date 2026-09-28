@@ -1,27 +1,51 @@
-import React, { useCallback } from "react";
-import { Autocomplete, TextField } from "@mui/material";
-import { useGridApiContext } from "@mui/x-data-grid-pro";
+import React, { type SyntheticEvent, useCallback } from "react";
+import {
+  Autocomplete,
+  type AutocompleteProps,
+  TextField,
+  type TextFieldProps,
+} from "@mui/material";
+import {
+  type GridRenderEditCellParams,
+  useGridApiContext,
+} from "@mui/x-data-grid-pro";
 import FullWidthPopper from "src/components/FullWidthPopper";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
+/** A field in the same row whose value should update when the autocomplete value changes */
+export interface DependentField<TOption> {
+  /** Name of the dependent field */
+  fieldName: string;
+  /** Takes the newly selected option and returns the dependent field's new value */
+  setFieldValue: (newValue: TOption | null) => unknown;
+}
+
+type LookupAutocompleteComponentProps<TOption extends object> = Pick<
+  GridRenderEditCellParams,
+  "id" | "field" | "hasFocus"
+> & {
+  /** Field value */
+  value?: TOption | null;
+  /** Name of lookup table relationship */
+  name: string;
+  /** The lookup table data */
+  options: TOption[];
+  /** Should component use custom Popper component */
+  fullWidthPopper?: boolean;
+  /** Props passed to the MUI Autocomplete component */
+  autocompleteProps?: Partial<AutocompleteProps<TOption, false, false, false>>;
+  /** Props passed to the renderInput TextField */
+  textFieldProps?: TextFieldProps;
+  /** Fields in the same row to update when the value changes */
+  dependentFieldsArray?: DependentField<TOption>[];
+  /** Function to refetch lookup table data when dropdown is opened */
+  refetch?: () => unknown;
+};
+
 /**
  * Component for dropdown select using a lookup table as options
- * @param {Number} id - row id in Data Grid
- * @param {string} value - Field value
- * @param {string} field - name of Field
- * @param {Boolean} hasFocus - does field have focus in table
- * @param {String} name - name of lookup table relationship
- * @param {Array<Object>} options - the lookup table data
- * @param {Boolean} fullWidthPopper - should component use custom Popper component
- * @param {Object} autocompleteProps - props passed to the MUI Autocomplete Component
- * @param {Object} textFieldProps - props passed to the renderInput TextField
- * @param {Array<Object>} dependentFieldsArray - optional, array of objects {fieldName: String, setFieldValue: function
- * that takes newValue as input and returns the dependent fields change}
- * @param {function} refetch - optional, function to refetch lookup table data when dropdown is opened
- *
- * @returns {React component}
  */
-const LookupAutocompleteComponent = ({
+const LookupAutocompleteComponent = <TOption extends object>({
   id,
   value,
   field,
@@ -33,15 +57,15 @@ const LookupAutocompleteComponent = ({
   textFieldProps,
   dependentFieldsArray,
   refetch,
-}) => {
+}: LookupAutocompleteComponentProps<TOption>) => {
   const apiRef = useGridApiContext();
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLInputElement>(null);
 
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (hasFocus) {
-      ref.current.focus();
+      ref.current?.focus();
     }
   }, [hasFocus]);
 
@@ -52,7 +76,10 @@ const LookupAutocompleteComponent = ({
     }
   }, [open, refetch]);
 
-  const handleChange = async (event, newValue) => {
+  const handleChange = async (
+    event: SyntheticEvent,
+    newValue: TOption | null
+  ) => {
     await apiRef.current.setEditCellValue({
       id,
       field,
@@ -71,19 +98,24 @@ const LookupAutocompleteComponent = ({
   };
 
   const defaultGetOptionLabel = useCallback(
-    (option) => option[`${name}_name`],
+    (option: TOption) =>
+      String((option as Record<string, unknown>)[`${name}_name`] ?? ""),
     [name]
   );
 
   const defaultIsOptionEqualToValue = useCallback(
-    (value, option) => value[`${name}_id`] === option[`${name}_id`],
+    (option: TOption, value: TOption) =>
+      (option as Record<string, unknown>)[`${name}_id`] ===
+      (value as Record<string, unknown>)[`${name}_id`],
     [name]
   );
 
   return (
     <Autocomplete
       sx={{ width: "100%", mx: 1, alignContent: "center" }}
-      value={value?.[`${name}_id`] ? value : null}
+      value={
+        value && (value as Record<string, unknown>)[`${name}_id`] ? value : null
+      }
       id={name}
       filterOptions={filterOptions}
       options={options}
@@ -95,7 +127,10 @@ const LookupAutocompleteComponent = ({
           {...textFieldProps}
           slotProps={{
             ...params.slotProps,
-            htmlInput: { "data-1p-ignore": true, ...params.slotProps.htmlInput }
+            htmlInput: {
+              "data-1p-ignore": true,
+              ...params.slotProps.htmlInput,
+            },
           }}
         />
       )}
@@ -118,8 +153,9 @@ const LookupAutocompleteComponent = ({
         setOpen(false);
       }}
       slots={{
-        popper: fullWidthPopper && FullWidthPopper
-      }} />
+        popper: fullWidthPopper ? FullWidthPopper : undefined,
+      }}
+    />
   );
 };
 
