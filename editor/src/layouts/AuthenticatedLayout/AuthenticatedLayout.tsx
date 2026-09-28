@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet, Navigate, useLocation } from "react-router";
 import Box from "@mui/material/Box";
-import TopBar from "src/layouts/DashboardLayout/TopBar";
+import TopBar from "src/layouts/AuthenticatedLayout/TopBar";
 import { useAuth } from "src/auth/auth";
-import Footer from "src/layouts/DashboardLayout/Footer";
+import Footer from "src/layouts/AuthenticatedLayout/Footer";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
 import { useApolloErrorContext } from "src/utils/errorHandling";
@@ -11,9 +11,8 @@ import { setReturnTo } from "src/auth/returnTo";
 
 /**
  * Dashboard layout component for the app when users are signed in.
- * @returns {JSX.Element}
  */
-const DashboardLayout = () => {
+const AuthenticatedLayout = () => {
   const { status } = useAuth();
   const location = useLocation();
   const { apolloError, setApolloError } = useApolloErrorContext();
@@ -53,6 +52,7 @@ const DashboardLayout = () => {
       }}
     >
       <Box>
+        {/* @ts-expect-error Migrating TopBar to TS captured in #30450 */}
         <TopBar />
       </Box>
       <Box
@@ -63,6 +63,7 @@ const DashboardLayout = () => {
           flexDirection: "column",
         }}
       >
+        {/* @ts-expect-error Migrating ApolloErrorHandler to TS captured in #30450 */}
         <ApolloErrorHandler error={apolloError}>
           <Outlet />
         </ApolloErrorHandler>
@@ -72,4 +73,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default AuthenticatedLayout;

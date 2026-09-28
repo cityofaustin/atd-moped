@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet, Navigate } from "react-router";
 import Box from "@mui/material/Box";
 import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
@@ -7,7 +6,6 @@ import { takeReturnTo } from "src/auth/returnTo";
 
 /**
  * Main layout component for the app when not logged in (sign in page).
- * @returns {JSX.Element}
  */
 const MainLayout = () => {
   const { status } = useAuth();
