@@ -1,26 +1,36 @@
 import { fetchAuthSession } from "aws-amplify/auth";
-import { getCognitoIdJwt, getHighestRole } from "src/auth/claims";
+import {
+  getCognitoIdJwt,
+  getHighestRole,
+  type MopedAuthSession,
+} from "src/auth/claims";
 
 /**
  * Returns a valid Cognito session to provide roles and id token to
  * Apollo Client GraphQL requests and Moped API requests.
  */
-export const getCognitoSession = async () => {
+export const getCognitoSession = async (): Promise<MopedAuthSession | null> => {
   try {
     const session = await fetchAuthSession();
 
-    return session.tokens ? session : null;
+    // Assert that any session we return has Hasura claims. getHighestRole
+    // returns null if they're missing and AuthProvider signs the user out.
+    return session.tokens ? (session as MopedAuthSession) : null;
   } catch (err) {
     console.error("Error getting Cognito session: ", err);
     return null;
   }
 };
 
+type RequestAuth = {
+  token: string;
+  role: string;
+};
+
 /**
  * Token and role for a single outgoing request.
- * @return {Promise<{token: string, role: string}|null>} Null when unauthenticated
  */
-export const getRequestAuth = async () => {
+export const getRequestAuth = async (): Promise<RequestAuth | null> => {
   const session = await getCognitoSession();
   if (!session) return null;
 

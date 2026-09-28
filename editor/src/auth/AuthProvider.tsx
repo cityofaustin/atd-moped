@@ -9,6 +9,7 @@ import {
   setSessionDatabaseData,
   deleteSessionDatabaseData,
 } from "src/auth/mopedUser";
+import type { MopedAuthSession } from "src/auth/claims";
 
 /**
  * Auth provider for the app. The Amplify Hub listener is the source of truth for

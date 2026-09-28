@@ -1,7 +1,11 @@
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const AuthLoadingBackdrop = ({ open }) => {
+interface AuthLoadingBackdropProps {
+  open: boolean;
+}
+
+const AuthLoadingBackdrop = ({ open }: AuthLoadingBackdropProps) => {
   return (
     <Backdrop
       sx={(theme) => ({
