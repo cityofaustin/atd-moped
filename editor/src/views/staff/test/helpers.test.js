@@ -3,8 +3,8 @@ import {
   roleLooksGood,
   transformFormDataIntoDatabaseTypes,
   isUserNonLoginUser,
-  nonLoginUserRole,
 } from "../helpers";
+import { nonLoginUserRole } from "src/auth/claims";
 
 describe("passwordLooksGood()", () => {
   it("returns false for invalid passwords", () => {

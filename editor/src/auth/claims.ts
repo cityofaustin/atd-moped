@@ -1,4 +1,3 @@
-import { nonLoginUserRole } from "src/views/staff/helpers";
 import type { AuthSession, JWT } from "aws-amplify/auth";
 
 // Key for accessing Hasura claims in the JWT payload set by our Cognito pre-token Lambda.
@@ -25,6 +24,8 @@ type HasuraClaims = {
   "x-hasura-allowed-roles": string[];
   "x-hasura-user-db-id": string;
 };
+
+export const nonLoginUserRole = "non-login-user";
 
 export const ROLE_ORDER = [
   "moped-admin",
