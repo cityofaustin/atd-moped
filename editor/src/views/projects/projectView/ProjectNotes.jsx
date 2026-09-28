@@ -14,7 +14,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 
-import { useAuth } from "src/auth/auth";
+import { useMopedUser } from "src/auth/auth";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router";
 import parse from "html-react-parser";
@@ -107,7 +107,7 @@ const ProjectNotes = ({
   eCaprisSubprojectId = null,
 }) => {
   /* User details for create and update mutations */
-  const { mopedUser } = useAuth();
+  const mopedUser = useMopedUser();
 
   /** Get projectId from URL params if not passed down from ProjectSummaryStatusUpdate component
    * If component is being used in edit modal from dashboard get project id from props instead of url params.

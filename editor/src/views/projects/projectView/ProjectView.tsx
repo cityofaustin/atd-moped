@@ -50,7 +50,7 @@ import ProjectActivityLog from "src/views/projects/projectView/ProjectActivityLo
 import ProjectNameEditable from "src/views/projects/projectView/ProjectNameEditable";
 import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
-import { useAuth } from "src/auth/auth";
+import { useMopedUser } from "src/auth/auth";
 import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -136,7 +136,7 @@ const ProjectView = () => {
 
   const queryContext = useContext(ProjectListViewQueryContext);
 
-  const { mopedUser } = useAuth();
+  const mopedUser = useMopedUser();
   const userId = mopedUser?.user_id;
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =

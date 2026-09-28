@@ -14,7 +14,7 @@ import {
   generateProjectComponent,
 } from "src/utils/signalComponentHelpers";
 
-import { useAuth } from "src/auth/auth";
+import { useMopedUser } from "src/auth/auth";
 
 /**
  * New Project View
@@ -30,7 +30,7 @@ const NewProjectView = () => {
   const navigate = useNavigate();
 
   // user data
-  const { mopedUser } = useAuth();
+  const mopedUser = useMopedUser();
   const userId = mopedUser?.user_id;
 
   /**

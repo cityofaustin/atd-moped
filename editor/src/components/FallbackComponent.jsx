@@ -2,10 +2,10 @@ import React from "react";
 import { Box, Container, Typography } from "@mui/material";
 import ExternalLink from "src/components/ExternalLink";
 import { createBugReportLink } from "src/utils/urls";
-import { useAuth } from "src/auth/auth";
+import { useMopedUser } from "src/auth/auth";
 
 const FallbackComponent = ({ error }) => {
-  const { mopedUser } = useAuth();
+  const mopedUser = useMopedUser();
   const userEmail = mopedUser?.email;
 
   return (

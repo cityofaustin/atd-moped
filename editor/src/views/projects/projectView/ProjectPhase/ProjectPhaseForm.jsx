@@ -21,7 +21,7 @@ import {
   useDefaultValues,
   useSubphases,
 } from "./helpers";
-import { useAuth } from "src/auth/auth";
+import { useMopedUser } from "src/auth/auth";
 import { useResetDependentFieldOnParentFieldChange } from "../ProjectComponents/utils/form";
 import {
   UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE,
@@ -43,7 +43,7 @@ const ProjectPhaseForm = ({
 
   const isNewPhase = !phase.project_phase_id;
   const isCurrentPhase = phase.is_current_phase;
-  const { mopedUser } = useAuth();
+  const mopedUser = useMopedUser();
 
   const noteTypesIDLookup = useNoteTypeObject(noteTypes);
   const statusNoteTypeID = noteTypesIDLookup["status_update"];
