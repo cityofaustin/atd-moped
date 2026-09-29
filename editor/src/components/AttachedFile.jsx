@@ -15,7 +15,7 @@ import { useParams } from "react-router";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import MopedDataGridRowLink from "src/components/MopedDataGridRowLink";
-import { highlightedRowParam } from "src/views/projects/projectView/ProjectFiles/ProjectFiles";
+import { PROJECT_FILE_HIGHLIGHT_PARAM } from "src/views/projects/projectView/ProjectFiles/ProjectFiles";
 
 /**
  *
@@ -115,7 +115,7 @@ const AttachedFile = ({
           component={MopedDataGridRowLink}
           projectId={Number(projectId)}
           tab="files"
-          highlightedRowParam={highlightedRowParam}
+          highlightedRowParam={PROJECT_FILE_HIGHLIGHT_PARAM}
           paramId={file.project_file_id}
           onClick={handleMenuClose}
         >
