@@ -11,6 +11,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { LinkOff } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
+import { useParams } from "react-router";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import MopedDataGridRowLink from "src/components/MopedDataGridRowLink";
@@ -24,18 +25,17 @@ import { highlightedRowParam } from "src/views/projects/projectView/ProjectFiles
  * @param {Function} handleSnackbar - The function to handle feedback snackbar messages
  * @param {Function} detachFileMutation - function to detach file from parent record
  * @param {string} confirmationFileType - type of file, either funding or work activity. Used in delete confirmation message
- * @param {number} projectId - project ID used to link to the attached file in the Files table
  * @returns {JSX.Element}
  */
 const AttachedFile = ({
   file,
-  projectId,
   refetch,
   fileRecordId,
   handleSnackbar,
   detachFileMutation,
   confirmationFileType,
 }) => {
+  const { projectId } = useParams();
   const [anchorElement, setAnchorElement] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
