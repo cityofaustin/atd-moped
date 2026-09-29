@@ -19,8 +19,11 @@ const check = (rules: Rules, role: string, action: string) => {
 };
 
 interface CanProps {
+  /* The action the user is attempting to perform */
   perform: string;
+  /* Content to render if the user is allowed to perform the action */
   yes?: ReactNode;
+  /* Content to render if the user is not allowed to perform the action */
   no?: ReactNode;
 }
 

@@ -2,6 +2,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
 interface AuthLoadingBackdropProps {
+  /* Whether the backdrop should be displayed or not */
   open: boolean;
 }
 

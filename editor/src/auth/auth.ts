@@ -2,16 +2,22 @@ import { createContext, useContext } from "react";
 import type { MopedUser } from "src/auth/mopedUser";
 
 export type AuthState =
+  /* When sigining in, no role or mopedUser is available yet */
   | { status: "initializing" }
+  /* When not signed in, no role or mopedUser is ever available */
   | { status: "unauthenticated" }
+  /* When signed in, a role and mopedUser are available */
   | { status: "authenticated"; role: string; mopedUser: MopedUser };
 
 export type AuthContextValue = AuthState & {
+  /* Logs in the user with a username/email and password */
   loginWithPassword: (
     usernameOrEmail: string,
     password: string
   ) => Promise<unknown>;
+  /* Logs in the user using SSO via Microsoft */
   loginSSO: () => Promise<void>;
+  /* Logs out the currently authenticated user */
   logout: () => Promise<void>;
 };
 

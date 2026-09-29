@@ -23,7 +23,9 @@ export const getCognitoSession = async (): Promise<MopedAuthSession | null> => {
 };
 
 type RequestAuth = {
+  /* The JWT token for the request */
   token: string;
+  /* The role associated with the JWT token for the request */
   role: string;
 };
 
