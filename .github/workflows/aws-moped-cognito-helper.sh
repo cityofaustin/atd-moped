@@ -14,16 +14,27 @@ echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
 
 PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
 
+# Lambda runtime to build for and deploy to. Wheels are downloaded for this
+# version regardless of which Python runs this script.
+LAMBDA_PYTHON_VERSION="3.13"
+
 #
 # First, we need to create the python package by installing requirements
 #
 function install_requirements() {
+  echo "Cleaning previous build artifacts"
+  rm -rf package function.zip
   echo "Updating PIP"
   pip install --upgrade pip
   echo "Installing AWS's CLI"
   pip install awscli
-  echo "Installing requirements from ${PYTHON_REQUIREMENTS_FILE}..."
-  pip install -r "${PYTHON_REQUIREMENTS_FILE}" --platform manylinux2014_x86_64 --only-binary=:all: --target ./package
+  echo "Installing requirements from ${PYTHON_REQUIREMENTS_FILE} for Python ${LAMBDA_PYTHON_VERSION}..."
+  pip install -r "${PYTHON_REQUIREMENTS_FILE}" \
+    --platform manylinux2014_x86_64 \
+    --implementation cp \
+    --python-version "${LAMBDA_PYTHON_VERSION}" \
+    --only-binary=:all: \
+    --target ./package
 }
 
 #
@@ -59,7 +70,7 @@ function deploy_cognito_function() {
       --role "${ATD_MOPED_COGNITO_ROLE}" \
       --handler "handler.handler" \
       --tags "project=atd-moped,environment=${WORKING_STAGE}" \
-      --runtime python3.8 \
+      --runtime "python${LAMBDA_PYTHON_VERSION}" \
       --function-name "${FUNCTION_NAME}" \
       --zip-file fileb://$PWD/function.zip >/dev/null
   } || { # catch: update
