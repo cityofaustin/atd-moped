@@ -12,7 +12,7 @@ esac
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
 echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
 
-PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
+PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements.txt"
 
 # Lambda runtime to build for and deploy to. Wheels are downloaded for this
 # version regardless of which Python runs this script.
@@ -26,8 +26,6 @@ function install_requirements() {
   rm -rf package function.zip
   echo "Updating PIP"
   pip install --upgrade pip
-  echo "Installing AWS's CLI"
-  pip install awscli
   echo "Installing requirements from ${PYTHON_REQUIREMENTS_FILE} for Python ${LAMBDA_PYTHON_VERSION}..."
   pip install -r "${PYTHON_REQUIREMENTS_FILE}" \
     --platform manylinux2014_x86_64 \
