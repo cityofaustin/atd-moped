@@ -11,10 +11,10 @@ import {
 } from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
-import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdownMenu";
-import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
-import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
-import { navigationItems } from "src/layouts/DashboardLayout/helpers";
+import MobileDropdownMenu from "src/layouts/AuthenticatedLayout/NavBar/MobileDropdownMenu";
+import DropdownMenu from "src/layouts/AuthenticatedLayout/NavBar/DropdownMenu";
+import NavigationSearchInput from "src/layouts/AuthenticatedLayout/NavBar/NavigationSearchInput";
+import { navigationItems } from "src/layouts/AuthenticatedLayout/helpers";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local

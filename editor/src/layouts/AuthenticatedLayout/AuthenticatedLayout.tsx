@@ -10,7 +10,7 @@ import { useApolloErrorContext } from "src/utils/errorHandling";
 import { setReturnTo } from "src/auth/returnTo";
 
 /**
- * Dashboard layout component for the app when users are signed in.
+ * Layout component for the app when users are signed in.
  */
 const AuthenticatedLayout = () => {
   const { status } = useAuth();
@@ -35,7 +35,7 @@ const AuthenticatedLayout = () => {
   }
 
   /* If not authenticated, redirect to the sign-in page. The effect above stored
-   * the route they wanted in sessionStorage; MainLayout reads it after sign-in.
+   * the route they wanted in sessionStorage; UnauthenticatedLayout reads it after sign-in.
    */
   if (status === "unauthenticated") {
     return <Navigate to="/moped/session/signin" replace />;
