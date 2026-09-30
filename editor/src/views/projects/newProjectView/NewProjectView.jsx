@@ -14,7 +14,7 @@ import {
   generateProjectComponent,
 } from "src/utils/signalComponentHelpers";
 
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useMopedUser } from "src/auth/auth";
 
 /**
  * New Project View
@@ -30,8 +30,8 @@ const NewProjectView = () => {
   const navigate = useNavigate();
 
   // user data
-  const userSessionData = useSessionDatabaseData();
-  const userId = userSessionData?.user_id;
+  const mopedUser = useMopedUser();
+  const userId = mopedUser?.user_id;
 
   /**
    * Signals query

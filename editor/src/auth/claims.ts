@@ -6,7 +6,7 @@ const HASURA_CLAIMS_KEY = "https://hasura.io/jwt/claims";
 /**
  * Extended Cognito Auth Session that includes the Hasura claims added by our pre-token lambda.
  */
-type MopedAuthSession = AuthSession & {
+export type MopedAuthSession = AuthSession & {
   tokens: NonNullable<AuthSession["tokens"]> & {
     idToken: JWT & {
       payload: JWT["payload"] & {
