@@ -11,7 +11,7 @@ on:
     paths:
       - "auth/cognito-pre-token-hook/**"
       - ".github/workflows/aws-moped-cognito-helper.sh"
-      - ".github/workflows/cognito-hooks.yml"
+      - ".github/workflows/atd_moped_cognito_hooks_build.yml"
   workflow_dispatch:
     inputs:
       description:

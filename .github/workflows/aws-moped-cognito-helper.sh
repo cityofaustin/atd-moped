@@ -77,11 +77,25 @@ function deploy_cognito_function() {
       --function-name "${FUNCTION_NAME}" \
       --zip-file fileb://$PWD/function.zip >/dev/null
   }
+
+  # Lambda rejects config changes while a code update is in progress
+  echo "Waiting for code update to finish: ${FUNCTION_NAME}"
+  aws lambda wait function-updated --function-name "${FUNCTION_NAME}"
+
   echo "Resetting environment variables: ${FUNCTION_NAME} @ ${PWD}"
   aws lambda update-function-configuration \
     --function-name "${FUNCTION_NAME}" \
     --cli-input-json file://$PWD/handler_config.json | jq -r ".LastModified"
-  echo "Finished Lambda Update/Deployment"
+
+  aws lambda wait function-updated --function-name "${FUNCTION_NAME}"
+
+  # Enforce the runtime in case the config secret contains a Runtime key
+  echo "Ensuring runtime is python${LAMBDA_PYTHON_VERSION}"
+  aws lambda update-function-configuration \
+    --function-name "${FUNCTION_NAME}" \
+    --runtime "python${LAMBDA_PYTHON_VERSION}" | jq -r ".Runtime"
+
+  echo "Finished Lambda update/deployment"
 }
 
 #
