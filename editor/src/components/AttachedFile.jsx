@@ -8,10 +8,14 @@ import {
   MenuItem,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { LinkOff } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
+import { useParams } from "react-router";
 import ProjectFileLink from "src/views/projects/projectView/ProjectFiles/ProjectFileLink";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import MopedDataGridRowLink from "src/components/MopedDataGridRowLink";
+import { PROJECT_FILE_HIGHLIGHT_PARAM } from "src/views/projects/projectView/ProjectFiles/ProjectFiles";
 
 /**
  *
@@ -31,6 +35,7 @@ const AttachedFile = ({
   detachFileMutation,
   confirmationFileType,
 }) => {
+  const { projectId } = useParams();
   const [anchorElement, setAnchorElement] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
@@ -106,6 +111,19 @@ const AttachedFile = ({
           horizontal: "center",
         }}
       >
+        <MenuItem
+          component={MopedDataGridRowLink}
+          projectId={Number(projectId)}
+          tab="files"
+          highlightedRowParam={PROJECT_FILE_HIGHLIGHT_PARAM}
+          paramId={file.project_file_id}
+          onClick={handleMenuClose}
+        >
+          <ListItemIcon>
+            <EditOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Edit" />
+        </MenuItem>
         <MenuItem
           onClick={() => setIsDeleteConfirmationOpen(true)}
           selected={false}
