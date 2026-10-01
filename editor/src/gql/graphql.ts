@@ -154,13 +154,15 @@ export type Combined_Project_Funding_View_Bool_Exp = {
   moped_fund_program?: Moped_Fund_Programs_Bool_Exp | null | undefined;
   moped_fund_source?: Moped_Fund_Sources_Bool_Exp | null | undefined;
   moped_fund_status?: Moped_Fund_Status_Bool_Exp | null | undefined;
+  moped_funding_amount?: Int_Comparison_Exp | null | undefined;
   moped_funding_files?: Files_Project_Funding_Bool_Exp | null | undefined;
   moped_funding_files_aggregate?:
     Files_Project_Funding_Aggregate_Bool_Exp | null | undefined;
+  moped_funding_program_id?: Int_Comparison_Exp | null | undefined;
+  moped_funding_source_id?: Int_Comparison_Exp | null | undefined;
   original_id?: Int_Comparison_Exp | null | undefined;
   program_name?: String_Comparison_Exp | null | undefined;
   project_id?: Int_Comparison_Exp | null | undefined;
-  should_use_ecapris_amount?: Boolean_Comparison_Exp | null | undefined;
   source_name?: String_Comparison_Exp | null | undefined;
   status_name?: String_Comparison_Exp | null | undefined;
   unit_long_name?: String_Comparison_Exp | null | undefined;
@@ -3344,7 +3346,6 @@ export type Moped_Proj_Funding_Bool_Exp = {
   moped_fund_source?: Moped_Fund_Sources_Bool_Exp | null | undefined;
   proj_funding_id?: Int_Comparison_Exp | null | undefined;
   project_id?: Int_Comparison_Exp | null | undefined;
-  should_use_ecapris_amount?: Boolean_Comparison_Exp | null | undefined;
   unit_long_name?: String_Comparison_Exp | null | undefined;
   updated_at?: Timestamptz_Comparison_Exp | null | undefined;
   updated_by_user_id?: Int_Comparison_Exp | null | undefined;
@@ -3395,8 +3396,6 @@ export type Moped_Proj_Funding_Insert_Input = {
   proj_funding_id?: number | null | undefined;
   /** References the project this funding record is associated with */
   project_id?: number | null | undefined;
-  /** Indicates whether the funding record should use values from eCapris in combined view */
-  should_use_ecapris_amount?: boolean | null | undefined;
   /** The long name of the unit associated with this funding record from eCAPRIS */
   unit_long_name?: string | null | undefined;
   /** Timestamp when the record was last updated */
@@ -3449,8 +3448,6 @@ export type Moped_Proj_Funding_Select_Column =
   /** column name */
   | "project_id"
   /** column name */
-  | "should_use_ecapris_amount"
-  /** column name */
   | "unit_long_name"
   /** column name */
   | "updated_at"
@@ -3464,9 +3461,7 @@ export type Moped_Proj_Funding_Select_Column_Moped_Proj_Funding_Aggregate_Bool_E
   /** column name */
   | "is_legacy_funding_record"
   /** column name */
-  | "is_manual"
-  /** column name */
-  | "should_use_ecapris_amount";
+  | "is_manual";
 
 /** select "moped_proj_funding_aggregate_bool_exp_bool_or_arguments_columns" columns of table "moped_proj_funding" */
 export type Moped_Proj_Funding_Select_Column_Moped_Proj_Funding_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
@@ -3475,9 +3470,7 @@ export type Moped_Proj_Funding_Select_Column_Moped_Proj_Funding_Aggregate_Bool_E
   /** column name */
   | "is_legacy_funding_record"
   /** column name */
-  | "is_manual"
-  /** column name */
-  | "should_use_ecapris_amount";
+  | "is_manual";
 
 /** update columns of table "moped_proj_funding" */
 export type Moped_Proj_Funding_Update_Column =
@@ -3513,8 +3506,6 @@ export type Moped_Proj_Funding_Update_Column =
   | "proj_funding_id"
   /** column name */
   | "project_id"
-  /** column name */
-  | "should_use_ecapris_amount"
   /** column name */
   | "unit_long_name"
   /** column name */
@@ -6496,7 +6487,9 @@ export type GetCombinedProjectFundingQuery = {
     is_manual: boolean | null;
     unit_long_name: string | null;
     ecapris_subproject_id: string | null;
-    should_use_ecapris_amount: boolean | null;
+    moped_funding_amount: number | null;
+    moped_funding_source_id: number | null;
+    moped_funding_program_id: number | null;
     proj_funding_id: number | null;
     funding_amount: number | null;
     funding_description: string | null;
@@ -6598,22 +6591,6 @@ export type EcaprisFdusSubprojectQuery = {
   }>;
 };
 
-export type EcaprisFduSubprojectQueryVariables = Exact<{
-  fdu: string;
-}>;
-
-export type EcaprisFduSubprojectQuery = {
-  ecapris_subproject_funding: Array<{
-    fdu: string;
-    unit_long_name: string;
-    fdu_status: string | null;
-    funding_source_id: number | null;
-    funding_program_id: number | null;
-    ecapris_funding_id: number;
-    amount: number;
-  }>;
-};
-
 export type UpdateProjectFundingMutationVariables = Exact<{
   proj_funding_id: number;
   funding_amount?: number | null | undefined;
@@ -6623,7 +6600,6 @@ export type UpdateProjectFundingMutationVariables = Exact<{
   funding_status_id?: number | null | undefined;
   fdu?: string | null | undefined;
   unit_long_name?: string | null | undefined;
-  should_use_ecapris_amount?: boolean | null | undefined;
 }>;
 
 export type UpdateProjectFundingMutation = {
@@ -11065,7 +11041,15 @@ export const GetCombinedProjectFundingDocument = {
                 },
                 {
                   kind: "Field",
-                  name: { kind: "Name", value: "should_use_ecapris_amount" },
+                  name: { kind: "Name", value: "moped_funding_amount" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_funding_source_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_funding_program_id" },
                 },
                 {
                   kind: "Field",
@@ -11625,98 +11609,6 @@ export const EcaprisFdusSubprojectDocument = {
   EcaprisFdusSubprojectQuery,
   EcaprisFdusSubprojectQueryVariables
 >;
-export const EcaprisFduSubprojectDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "EcaprisFduSubproject" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "fdu" } },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "ecapris_subproject_funding" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "where" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "fdu" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "_eq" },
-                            value: {
-                              kind: "Variable",
-                              name: { kind: "Name", value: "fdu" },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  alias: { kind: "Name", value: "ecapris_funding_id" },
-                  name: { kind: "Name", value: "fao_id" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "fdu" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "unit_long_name" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "fdu_status" } },
-                {
-                  kind: "Field",
-                  alias: { kind: "Name", value: "amount" },
-                  name: { kind: "Name", value: "app" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "funding_source_id" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "funding_program_id" },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  EcaprisFduSubprojectQuery,
-  EcaprisFduSubprojectQueryVariables
->;
 export const UpdateProjectFundingDocument = {
   kind: "Document",
   definitions: [
@@ -11788,14 +11680,6 @@ export const UpdateProjectFundingDocument = {
             name: { kind: "Name", value: "unit_long_name" },
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "should_use_ecapris_amount" },
-          },
-          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
         },
       ],
       selectionSet: {
@@ -11882,20 +11766,6 @@ export const UpdateProjectFundingDocument = {
                       value: {
                         kind: "Variable",
                         name: { kind: "Name", value: "unit_long_name" },
-                      },
-                    },
-                    {
-                      kind: "ObjectField",
-                      name: {
-                        kind: "Name",
-                        value: "should_use_ecapris_amount",
-                      },
-                      value: {
-                        kind: "Variable",
-                        name: {
-                          kind: "Name",
-                          value: "should_use_ecapris_amount",
-                        },
                       },
                     },
                   ],
