@@ -51,6 +51,7 @@ import {
   createFundingFileConnectionData,
   type FundingRowForGrid,
   type DraftFundingRow,
+  type SavedFundingRow,
 } from "src/views/projects/projectView/ProjectFunding/helpers";
 import { useLogUserEvent } from "src/utils/userEvents";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
@@ -143,7 +144,7 @@ const ProjectFundingTable = ({
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [overrideFundingRecord, setOverrideFundingRecord] =
-    useState<FundingRowForGrid | null>(null);
+    useState<SavedFundingRow | null>(null);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState<FundingRowForGrid[]>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -638,7 +639,7 @@ const ProjectFundingTable = ({
           refetch={refetch}
         />
       )}
-      {overrideFundingRecord && (
+      {overrideFundingRecord && dataLookups && (
         <OverrideFundingDialog
           fundingRecord={overrideFundingRecord}
           projectId={projectId}

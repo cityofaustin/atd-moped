@@ -1,6 +1,11 @@
-import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { useForm, useWatch } from "react-hook-form";
+import {
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useState,
+} from "react";
+import { type ApolloQueryResult, useMutation } from "@apollo/client";
+import { type ControllerRenderProps, useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -19,39 +24,68 @@ import {
   ADD_PROJECT_FUNDING_AND_REATTACH,
   UPDATE_PROJECT_FUNDING,
 } from "src/queries/funding";
-import { nullIfSameAsEcapris } from "src/views/projects/projectView/ProjectFunding/helpers";
+import {
+  nullIfSameAsEcapris,
+  type FundingRowFromQuery,
+  type SavedFundingRow,
+} from "src/views/projects/projectView/ProjectFunding/helpers";
+import {
+  type GetCombinedProjectFundingQuery,
+  type GetFundingLookupsQuery,
+  type UpdateProjectFundingMutationVariables,
+} from "src/gql/graphql";
+import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
+// @ts-expect-error yup 0.29 does not ship type declarations; upgrade captured in #30538
 import * as yup from "yup";
 
-const validationSchema = ({ appropriatedFunding }) =>
-  yup.object().shape({
+type FundSource = GetFundingLookupsQuery["moped_fund_sources"][number];
+type FundProgram = GetFundingLookupsQuery["moped_fund_programs"][number];
+type FundStatus = GetFundingLookupsQuery["moped_fund_status"][number];
+
+/** Values stored in moped_proj_funding are overrides; null means the eCAPRIS value is inherited */
+type OverrideFundingFormValues = {
+  funding_amount: FundingRowFromQuery["moped_funding_amount"];
+  description: string;
+  funding_source_id: FundingRowFromQuery["moped_funding_source_id"];
+  funding_program_id: FundingRowFromQuery["moped_funding_program_id"];
+  fund_status: number | null;
+};
+
+/** Form fields that override an eCAPRIS value and can be reverted to inherit it */
+type OverridableFieldName =
+  "funding_amount" | "funding_source_id" | "funding_program_id";
+
+const validationSchema = ({
+  appropriatedFunding,
+}: {
+  appropriatedFunding: number | null;
+}) => {
+  // Messages only show when appropriatedFunding is not null
+  const appropriatedFundingLabel = currencyFormatter.format(
+    appropriatedFunding ?? 0
+  );
+
+  return yup.object().shape({
     funding_amount: yup
       .number()
       .nullable()
       .test(
         "lessThanAppropriated",
-        `Amount cannot exceed appropriated amount of ${currencyFormatter.format(
-          appropriatedFunding
-        )}`,
-        function (value) {
+        `Amount cannot exceed appropriated amount of ${appropriatedFundingLabel}`,
+        function (value: number | null) {
           if (value === null || appropriatedFunding === null) return true;
           return value <= appropriatedFunding;
         }
       )
       .test(
         "differentFromAppropriated",
-        `Amount must be different from appropriated amount of ${currencyFormatter.format(appropriatedFunding)} if overriding`,
-        function (value) {
+        `Amount must be different from appropriated amount of ${appropriatedFundingLabel} if overriding`,
+        function (value: number | null) {
           if (value === null || appropriatedFunding === null) return true;
           return value !== appropriatedFunding;
         }
       ),
   });
-
-const findLookupName = (lookup, recordId, recordType) => {
-  const fundingRecord = lookup.find(
-    (option) => option[`funding_${recordType}_id`] === recordId
-  );
-  return fundingRecord?.[`funding_${recordType}_name`] ?? null;
 };
 
 /**
@@ -59,26 +93,41 @@ const findLookupName = (lookup, recordId, recordType) => {
  * @param {string} value - the current input value
  * @param {Object} field - the react-hook-form field object
  */
-const amountOnChangeHandler = (value, field) => {
+const amountOnChangeHandler = (
+  value: string,
+  field: ControllerRenderProps<OverrideFundingFormValues, "funding_amount">
+) => {
   const integerValue = value
     ? removeNonIntegers(removeDecimalsAndTrailingNumbers(value))
     : "";
   field.onChange(integerValue === "" ? null : Number(integerValue));
 };
 
-const amountValueHandler = (value) =>
+const amountValueHandler = (
+  value: OverrideFundingFormValues["funding_amount"] | undefined
+) =>
   value === null || value === undefined ? "" : currencyFormatter.format(value);
+
+interface EcaprisOverridableFieldProps {
+  /** Label shown when the input is focused or has an override value */
+  fieldLabel: string;
+  /** eCAPRIS value shown as the label when inherited */
+  ecaprisValueLabel: string | null;
+  /** Reference text shown below the input */
+  ecaprisHelperText: string;
+  /** If the input has a value that overrides the eCAPRIS value */
+  hasOverride: boolean;
+  /** Clears the override value so the eCAPRIS value is inherited */
+  onRevert: () => void;
+  /** Optional validation error message */
+  errorMessage?: string;
+  /** Renders the input given the label to display */
+  renderInput: (label: string) => ReactNode;
+}
 
 /**
  * Wraps an input whose value overrides an eCAPRIS value. When the input is empty and unfocused,
  * the eCAPRIS value shows in place of the label so it reads as the inherited value.
- * @param {string} fieldLabel - label shown when the input is focused or has an override value
- * @param {string|null} ecaprisValueLabel - eCAPRIS value shown as the label when inherited
- * @param {string} ecaprisHelperText - reference text shown below the input
- * @param {boolean} hasOverride - if the input has a value that overrides the eCAPRIS value
- * @param {function} onRevert - clears the override value so the eCAPRIS value is inherited
- * @param {string} errorMessage - optional validation error message
- * @param {function} renderInput - renders the input given the label to display
  */
 const EcaprisOverridableField = ({
   fieldLabel,
@@ -88,7 +137,7 @@ const EcaprisOverridableField = ({
   onRevert,
   errorMessage,
   renderInput,
-}) => {
+}: EcaprisOverridableFieldProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const label =
     isFocused || hasOverride || !ecaprisValueLabel
@@ -117,6 +166,25 @@ const EcaprisOverridableField = ({
   );
 };
 
+export interface OverrideFundingFormProps {
+  /** The eCAPRIS synced or overridden funding row being edited */
+  fundingRecord: SavedFundingRow;
+  /** The project ID the funding record belongs to */
+  projectId: number;
+  /** Refetches the funding table query after saving */
+  refetchFundingQuery: () => Promise<
+    ApolloQueryResult<GetCombinedProjectFundingQuery>
+  >;
+  /** Sets the funding record being overridden; null closes the dialog */
+  setOverrideFundingRecord: Dispatch<SetStateAction<SavedFundingRow | null>>;
+  /** Function to handle snackbar notifications for user feedback */
+  handleSnackbar: HandleSnackbar;
+  /** Closes the override dialog */
+  handleClose: () => void;
+  /** Funding lookup table options */
+  dataLookups: GetFundingLookupsQuery;
+}
+
 const OverrideFundingForm = ({
   fundingRecord,
   projectId,
@@ -125,7 +193,7 @@ const OverrideFundingForm = ({
   handleSnackbar,
   handleClose,
   dataLookups,
-}) => {
+}: OverrideFundingFormProps) => {
   const appropriatedFunding = fundingRecord.ecapris_funding?.app ?? null;
   const ecaprisSourceId =
     fundingRecord.ecapris_funding?.funding_source_id ?? null;
@@ -137,14 +205,13 @@ const OverrideFundingForm = ({
     control,
     formState: { isDirty, isValid, errors },
     setValue,
-  } = useForm({
-    // Values stored in moped_proj_funding are overrides; null means the eCAPRIS value is inherited
+  } = useForm<OverrideFundingFormValues>({
     defaultValues: {
       funding_amount: fundingRecord.moped_funding_amount ?? null,
       description: fundingRecord.funding_description ?? "",
       funding_source_id: fundingRecord.moped_funding_source_id ?? null,
       funding_program_id: fundingRecord.moped_funding_program_id ?? null,
-      fund_status: fundingRecord.moped_fund_status?.funding_status_id,
+      fund_status: fundingRecord.moped_fund_status?.funding_status_id ?? null,
     },
     resolver: yupResolver(validationSchema({ appropriatedFunding })),
     mode: "onChange",
@@ -155,38 +222,48 @@ const OverrideFundingForm = ({
     name: ["funding_amount", "funding_source_id", "funding_program_id"],
   });
 
-  const revertField = (name) =>
+  const revertField = (name: OverridableFieldName) =>
     setValue(name, null, { shouldDirty: true, shouldValidate: true });
 
   // if record is synced from ecapris and not yet manual, its first time overriding amount and description
-  const isNewOverride =
-    fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual;
-  const fundingSources = dataLookups["moped_fund_sources"];
-  const fundingPrograms = dataLookups["moped_fund_programs"];
+  const isNewOverride = Boolean(
+    fundingRecord.is_synced_from_ecapris && !fundingRecord.is_manual
+  );
+  const fundingSources = dataLookups.moped_fund_sources;
+  const fundingPrograms = dataLookups.moped_fund_programs;
+  const fundingStatuses = dataLookups.moped_fund_status;
 
-  const ecaprisSourceName = findLookupName(
-    fundingSources,
-    ecaprisSourceId,
-    "source"
-  );
-  const ecaprisProgramName = findLookupName(
-    fundingPrograms,
-    ecaprisProgramId,
-    "program"
-  );
+  const ecaprisSourceName =
+    fundingSources.find(
+      (source) => source.funding_source_id === ecaprisSourceId
+    )?.funding_source_name ?? null;
+  const ecaprisProgramName =
+    fundingPrograms.find(
+      (program) => program.funding_program_id === ecaprisProgramId
+    )?.funding_program_name ?? null;
   const ecaprisAmountLabel =
     appropriatedFunding === null
       ? null
       : currencyFormatter.format(appropriatedFunding);
 
-  const [mutate, mutationState] = useMutation(
-    isNewOverride ? ADD_PROJECT_FUNDING_AND_REATTACH : UPDATE_PROJECT_FUNDING
+  const [addProjectFundingAndReattach, { loading: addLoading }] = useMutation(
+    ADD_PROJECT_FUNDING_AND_REATTACH
   );
+  const [updateProjectFunding, { loading: updateLoading }] = useMutation(
+    UPDATE_PROJECT_FUNDING
+  );
+  const isMutationLoading = isNewOverride ? addLoading : updateLoading;
 
-  const onSubmit = (data) => {
-    const fundingValues = {
-      fdu: fundingRecord.fdu.fdu,
-      unit_long_name: fundingRecord.fdu.unit_long_name,
+  const onSubmit = async (data: OverrideFundingFormValues) => {
+    const { proj_funding_id } = fundingRecord;
+    if (proj_funding_id === null) return;
+
+    const fundingValues: Omit<
+      UpdateProjectFundingMutationVariables,
+      "proj_funding_id"
+    > = {
+      fdu: fundingRecord.fdu?.fdu ?? null,
+      unit_long_name: fundingRecord.fdu?.unit_long_name ?? null,
       funding_amount: data.funding_amount,
       funding_description: data.description,
       // Store null for values matching eCAPRIS so they are inherited instead of overridden
@@ -201,46 +278,48 @@ const OverrideFundingForm = ({
       funding_status_id: data.fund_status ?? 1,
     };
 
-    const fileAttachmentObjects = fundingRecord.ecapris_funding_files.map(
-      (file) => ({ file_id: file.moped_project_file.project_file_id })
-    );
-
-    const payload = isNewOverride
-      ? {
-          fundingObjects: {
-            ...fundingValues,
-            ecapris_funding_id: fundingRecord.fdu.ecapris_funding_id,
-            ecapris_subproject_id: fundingRecord.ecapris_subproject_id,
-            project_id: Number(projectId),
-            files_project_fundings: { data: fileAttachmentObjects },
-          },
-          entityId: fundingRecord.proj_funding_id,
-          projectId,
-        }
-      : {
-          ...fundingValues,
-          proj_funding_id: fundingRecord.proj_funding_id,
-        };
-
     const snackbarVerb = isNewOverride ? "add" : "updat";
 
-    mutate({
-      variables: payload,
-    })
-      .then(() => {
-        handleSnackbar(true, `Funding source ${snackbarVerb}ed`, "success");
-        refetchFundingQuery();
-        setOverrideFundingRecord(null);
-        handleClose();
-      })
-      .catch((error) => {
-        handleSnackbar(
-          true,
-          `Error ${snackbarVerb}ing funding source`,
-          "error",
-          error
+    try {
+      if (isNewOverride) {
+        const fileAttachmentObjects = fundingRecord.ecapris_funding_files.map(
+          (file) => ({ file_id: file.moped_project_file.project_file_id })
         );
-      });
+
+        await addProjectFundingAndReattach({
+          variables: {
+            fundingObjects: {
+              ...fundingValues,
+              ecapris_funding_id: fundingRecord.fdu?.ecapris_funding_id ?? null,
+              ecapris_subproject_id: fundingRecord.ecapris_subproject_id,
+              project_id: projectId,
+              files_project_fundings: { data: fileAttachmentObjects },
+            },
+            entityId: proj_funding_id,
+            projectId,
+          },
+        });
+      } else {
+        await updateProjectFunding({
+          variables: {
+            ...fundingValues,
+            proj_funding_id,
+          },
+        });
+      }
+
+      handleSnackbar(true, `Funding source ${snackbarVerb}ed`, "success");
+      refetchFundingQuery();
+      setOverrideFundingRecord(null);
+      handleClose();
+    } catch (error) {
+      handleSnackbar(
+        true,
+        `Error ${snackbarVerb}ing funding source`,
+        "error",
+        error
+      );
+    }
   };
 
   return (
@@ -258,22 +337,34 @@ const OverrideFundingForm = ({
             hasOverride={fundingSourceId !== null}
             onRevert={() => revertField("funding_source_id")}
             renderInput={(label) => (
+              // @ts-expect-error Migrating ControlledAutocomplete to TS captured in #30536
               <ControlledAutocomplete
                 control={control}
                 name="funding_source_id"
                 label={label}
                 options={fundingSources}
                 filterOptions={filterOptions}
-                getOptionLabel={(option) => option?.funding_source_name || ""}
-                onChangeHandler={(fund_source, field) => {
-                  return field.onChange(fund_source?.funding_source_id || null);
-                }}
-                isOptionEqualToValue={(option, selectedOption) =>
+                getOptionLabel={(option: FundSource | null) =>
+                  option?.funding_source_name || ""
+                }
+                onChangeHandler={(
+                  fundSource: FundSource | null,
+                  field: ControllerRenderProps<
+                    OverrideFundingFormValues,
+                    "funding_source_id"
+                  >
+                ) => field.onChange(fundSource?.funding_source_id || null)}
+                isOptionEqualToValue={(
+                  option: FundSource,
+                  selectedOption: FundSource
+                ) =>
                   option.funding_source_id === selectedOption.funding_source_id
                 }
-                valueHandler={(value) =>
+                valueHandler={(value: number | null) =>
                   value
-                    ? fundingSources.find((s) => s.funding_source_id === value)
+                    ? fundingSources.find(
+                        (source) => source.funding_source_id === value
+                      )
                     : null
                 }
               />
@@ -292,26 +383,34 @@ const OverrideFundingForm = ({
             hasOverride={fundingProgramId !== null}
             onRevert={() => revertField("funding_program_id")}
             renderInput={(label) => (
+              // @ts-expect-error Migrating ControlledAutocomplete to TS captured in #30536
               <ControlledAutocomplete
                 control={control}
                 name="funding_program_id"
                 label={label}
                 options={fundingPrograms}
                 filterOptions={filterOptions}
-                getOptionLabel={(option) => option?.funding_program_name || ""}
-                onChangeHandler={(fund_program, field) => {
-                  return field.onChange(
-                    fund_program?.funding_program_id || null
-                  );
-                }}
-                isOptionEqualToValue={(option, selectedOption) =>
+                getOptionLabel={(option: FundProgram | null) =>
+                  option?.funding_program_name || ""
+                }
+                onChangeHandler={(
+                  fundProgram: FundProgram | null,
+                  field: ControllerRenderProps<
+                    OverrideFundingFormValues,
+                    "funding_program_id"
+                  >
+                ) => field.onChange(fundProgram?.funding_program_id || null)}
+                isOptionEqualToValue={(
+                  option: FundProgram,
+                  selectedOption: FundProgram
+                ) =>
                   option.funding_program_id ===
                   selectedOption.funding_program_id
                 }
-                valueHandler={(value) =>
+                valueHandler={(value: number | null) =>
                   value
                     ? fundingPrograms.find(
-                        (s) => s.funding_program_id === value
+                        (program) => program.funding_program_id === value
                       )
                     : null
                 }
@@ -322,6 +421,7 @@ const OverrideFundingForm = ({
         <Grid size={12}>
           <FormControl fullWidth>
             <ControlledTextInput
+              // @ts-expect-error Migrating ControlledTextInput to TS captured in #30537
               fullWidth
               label="Description"
               multiline
@@ -334,23 +434,33 @@ const OverrideFundingForm = ({
         </Grid>
         <Grid size={12}>
           <FormControl fullWidth>
+            {/* @ts-expect-error Migrating ControlledAutocomplete to TS captured in #30536 */}
             <ControlledAutocomplete
               control={control}
               name="fund_status"
               label="Status"
-              options={dataLookups["moped_fund_status"]}
+              options={fundingStatuses}
               filterOptions={filterOptions}
-              getOptionLabel={(option) => option?.funding_status_name || ""}
-              onChangeHandler={(fund_status, field) => {
-                return field.onChange(fund_status?.funding_status_id || 1);
-              }}
-              isOptionEqualToValue={(option, selectedOption) =>
+              getOptionLabel={(option: FundStatus | null) =>
+                option?.funding_status_name || ""
+              }
+              onChangeHandler={(
+                fundStatus: FundStatus | null,
+                field: ControllerRenderProps<
+                  OverrideFundingFormValues,
+                  "fund_status"
+                >
+              ) => field.onChange(fundStatus?.funding_status_id || 1)}
+              isOptionEqualToValue={(
+                option: FundStatus,
+                selectedOption: FundStatus
+              ) =>
                 option.funding_status_id === selectedOption.funding_status_id
               }
-              valueHandler={(value) =>
+              valueHandler={(value: number | null) =>
                 value
-                  ? dataLookups["moped_fund_status"].find(
-                      (s) => s.funding_status_id === value
+                  ? fundingStatuses.find(
+                      (status) => status.funding_status_id === value
                     )
                   : null
               }
@@ -367,6 +477,7 @@ const OverrideFundingForm = ({
             errorMessage={errors.funding_amount?.message}
             renderInput={(label) => (
               <ControlledTextInput
+                // @ts-expect-error Migrating ControlledTextInput to TS captured in #30537
                 fullWidth
                 label={label}
                 name="funding_amount"
@@ -396,7 +507,7 @@ const OverrideFundingForm = ({
             type="submit"
             // Disable save button if editing and no changes made or mutation is loading
             disabled={
-              (!isNewOverride && !isDirty) || mutationState.loading || !isValid
+              (!isNewOverride && !isDirty) || isMutationLoading || !isValid
             }
           >
             Save
@@ -406,4 +517,5 @@ const OverrideFundingForm = ({
     </form>
   );
 };
+
 export default OverrideFundingForm;
