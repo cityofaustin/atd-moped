@@ -310,7 +310,7 @@ type UseColumnsProps = {
   handleCancelClick: (id: GridRowId) => () => void;
   handleEditClick: (id: GridRowId) => () => void;
   handleFileAttachmentClick: (id: GridRowId) => () => void;
-  setOverrideFundingRecord: Dispatch<SetStateAction<FundingRowForGrid | null>>;
+  setOverrideFundingRecord: Dispatch<SetStateAction<SavedFundingRow | null>>;
   usingShiftKey: boolean;
   logUserEvent: (event: string) => void;
   refetch: () => Promise<ApolloQueryResult<GetCombinedProjectFundingQuery>>;
