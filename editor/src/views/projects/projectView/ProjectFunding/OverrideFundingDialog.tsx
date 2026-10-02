@@ -13,7 +13,7 @@ const OverrideFundingDialog = ({
   dataLookups,
 }: OverrideFundingFormProps) => {
   return (
-    // @ts-expect-error Migrating FormDialog to TS captured in #XXXXX
+    // @ts-expect-error Migrating FormDialog to TS captured in #30535
     <FormDialog
       title={`Override eCAPRIS FDU ${fundingRecord.fdu?.fdu ?? ""}`}
       open={true}
