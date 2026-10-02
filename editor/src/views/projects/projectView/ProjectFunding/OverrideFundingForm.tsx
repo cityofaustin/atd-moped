@@ -35,7 +35,7 @@ import {
   type UpdateProjectFundingMutationVariables,
 } from "src/gql/graphql";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
-// @ts-expect-error yup 0.29 does not ship type declarations; upgrade captured in #XXXXX
+// @ts-expect-error yup 0.29 does not ship type declarations; upgrade captured in #30538
 import * as yup from "yup";
 
 type FundSource = GetFundingLookupsQuery["moped_fund_sources"][number];
@@ -337,7 +337,7 @@ const OverrideFundingForm = ({
             hasOverride={fundingSourceId !== null}
             onRevert={() => revertField("funding_source_id")}
             renderInput={(label) => (
-              // @ts-expect-error Migrating ControlledAutocomplete to TS captured in #XXXXX
+              // @ts-expect-error Migrating ControlledAutocomplete to TS captured in #30536
               <ControlledAutocomplete
                 control={control}
                 name="funding_source_id"
@@ -383,7 +383,7 @@ const OverrideFundingForm = ({
             hasOverride={fundingProgramId !== null}
             onRevert={() => revertField("funding_program_id")}
             renderInput={(label) => (
-              // @ts-expect-error Migrating ControlledAutocomplete to TS captured in #XXXXX
+              // @ts-expect-error Migrating ControlledAutocomplete to TS captured in #30536
               <ControlledAutocomplete
                 control={control}
                 name="funding_program_id"
@@ -421,7 +421,7 @@ const OverrideFundingForm = ({
         <Grid size={12}>
           <FormControl fullWidth>
             <ControlledTextInput
-              // @ts-expect-error Migrating ControlledTextInput to TS captured in #XXXXX
+              // @ts-expect-error Migrating ControlledTextInput to TS captured in #30537
               fullWidth
               label="Description"
               multiline
@@ -434,7 +434,7 @@ const OverrideFundingForm = ({
         </Grid>
         <Grid size={12}>
           <FormControl fullWidth>
-            {/* @ts-expect-error Migrating ControlledAutocomplete to TS captured in #XXXXX */}
+            {/* @ts-expect-error Migrating ControlledAutocomplete to TS captured in #30536 */}
             <ControlledAutocomplete
               control={control}
               name="fund_status"
@@ -477,7 +477,7 @@ const OverrideFundingForm = ({
             errorMessage={errors.funding_amount?.message}
             renderInput={(label) => (
               <ControlledTextInput
-                // @ts-expect-error Migrating ControlledTextInput to TS captured in #XXXXX
+                // @ts-expect-error Migrating ControlledTextInput to TS captured in #30537
                 fullWidth
                 label={label}
                 name="funding_amount"
