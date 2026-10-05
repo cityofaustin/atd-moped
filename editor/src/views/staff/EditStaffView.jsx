@@ -3,7 +3,8 @@ import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router";
 import StaffForm from "./StaffForm";
 import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
-import { useUserApi, nonLoginUserRole, isUserNonLoginUser } from "./helpers";
+import { useUserApi, isUserNonLoginUser } from "./helpers";
+import { nonLoginUserRole } from "src/auth/claims";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
