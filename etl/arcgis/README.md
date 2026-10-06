@@ -4,10 +4,10 @@ Python script integration pushing Moped data to ESRI's ArcGIS Online (AGOL) plat
 
 ## Publish components to AGOL
 
-The script `components_to_agol.py` is used to publish component record data to AGOL. It has two primary modes of operation:
+The script `components_to_agol.py` is used to publish component record data to AGOL feature services. It has two primary modes of operation:
 
 - Full refresh: This mode will delete all existing records in the AGOL feature layer and replace them with the current data from the Moped database.
-- Incremental refresh: This mode will only update records that have been modified since a given timestamp.
+- Incremental refresh: This mode will delete and replace records for projects that have been modified since a given timestamp.
 
 The script is responsible for maintaining four layers in the AGOL in the [Staging Project Components](https://austin.maps.arcgis.com/home/item.html?id=9b024bcea3694f0699bb1183788e6ee8) and [Moped Project Components](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2) feature services:
 
@@ -22,13 +22,13 @@ The fourth layer is sourced from a derivative view, `exploded_component_arcgis_o
 
 ## Running the Script
 
-1. (If running full refresh) Ensure the local Moped stack is running with a current snapshot.
+1. Ensure the local Moped stack is running with a current snapshot.
 
-1. Configure an `env_file` according to the `env_template` example. You can find the username and password in the "ArcGIS Online (AGOL) Scripts Publisher" entry in the API Accessible Secrets vault in the team password store.
+2. Configure an `env_file` according to the `env_template` example which points to the **staging** endpoint. You can find the username and password in the "ArcGIS Online (AGOL) Scripts Publisher" entry in the API Accessible Secrets vault in the team password store.
 
-1. `docker compose build` to build the container.
+3. `docker compose build` to build the container.
 
-1. Run the script via one or more of the following:
+4. Run the script via one or more of the following:
    - `docker compose run arcgis -d` to start the script with the default interval of changes over the last week.
    - `docker compose run arcgis -f` to start the script with a full refresh.
    - `docker compose run arcgis -d <timestamptz>` to start the script with a refresh since the given timestamp.
@@ -36,7 +36,7 @@ The fourth layer is sourced from a derivative view, `exploded_component_arcgis_o
 
 ## Testing the Script
 
-To run the script without making changes to the AGOL dataset, use the `-n` flag (`--dry-run`) to see what changes would be made without executing them. This is useful to observe what projects have updated and what component data will be transferred without updating the production AGOL dataset.
+To run the script without making changes to the staging AGOL dataset, use the `-n` flag (`--dry-run`) to see what changes would be made without executing them. This is useful to observe what projects have updated and what component data will be transferred without updating the AGOL dataset.
 
 1. Run the script with the dry-run flag and any of the available options above:
    - `docker compose run arcgis -d <timestamptz> -n` to start the script in dry-run mode with a refresh since the given timestamp.

@@ -75,10 +75,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         case "signedOut":
           setState({ status: "unauthenticated" });
           break;
-        // If token refresh fails, treat the user as unauthenticated.
-        case "tokenRefresh_failure":
-          setState({ status: "unauthenticated" });
-          break;
         default:
           break;
       }
@@ -91,8 +87,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
    * Sign in with username and password. State is set by the Hub listener.
    */
   const loginWithPassword = useCallback(
-    (usernameOrEmail: string, password: string) =>
-      signIn({ username: usernameOrEmail, password }),
+    async (usernameOrEmail: string, password: string) => {
+      try {
+        return await signIn({ username: usernameOrEmail, password });
+      } catch (err) {
+        if (err?.name === "UserAlreadyAuthenticatedException") {
+          // Stale tokens from a failed refresh. Clear them and retry.
+          await signOut();
+          return signIn({ username: usernameOrEmail, password });
+        }
+        throw err;
+      }
+    },
     []
   );
 
@@ -100,10 +106,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
    * Sign in with Azure AD. Redirects away from the app. State is set when
    * the browser returns and the useEffect resolves the session.
    */
-  const loginSSO = useCallback(
-    () => signInWithRedirect({ provider: { custom: "AzureAD" } }),
-    []
-  );
+  const loginSSO = useCallback(async () => {
+    try {
+      return await signInWithRedirect({ provider: { custom: "AzureAD" } });
+    } catch (err) {
+      if (err?.name === "UserAlreadyAuthenticatedException") {
+        // Stale tokens from a failed refresh. Clear them and retry.
+        await signOut();
+        return signInWithRedirect({ provider: { custom: "AzureAD" } });
+      }
+      throw err;
+    }
+  }, []);
 
   /**
    * Sign out. The Hub "signedOut" handler clears state,
