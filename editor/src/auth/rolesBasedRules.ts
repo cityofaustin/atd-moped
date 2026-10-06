@@ -1,3 +1,10 @@
+import type { MopedRole } from "src/auth/claims";
+
+type RoleRules = {
+  label: string;
+  static: string[];
+};
+
 // Read-only permissions not enforced by Can component
 // since all authorized users should have access (except non-login users)
 const readOnlyStaticRules = [
@@ -49,6 +56,6 @@ export const rules = {
     label: "Admin",
     static: [...readOnlyStaticRules, ...editorStaticRules, ...adminStaticRules],
   },
-};
+} satisfies Record<MopedRole, RoleRules>;
 
 export default rules;

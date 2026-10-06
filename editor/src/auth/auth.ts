@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import type { MopedUser } from "src/auth/mopedUser";
+import type { MopedRole } from "src/auth/claims";
 
 export type AuthState =
   /* When sigining in, no role or mopedUser is available yet */
@@ -7,7 +8,7 @@ export type AuthState =
   /* When not signed in, no role or mopedUser is ever available */
   | { status: "unauthenticated" }
   /* When signed in, a role and mopedUser are available */
-  | { status: "authenticated"; role: string; mopedUser: MopedUser };
+  | { status: "authenticated"; role: MopedRole; mopedUser: MopedUser };
 
 export type AuthContextValue = AuthState & {
   /* Logs in the user with a username/email and password */

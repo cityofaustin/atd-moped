@@ -16,15 +16,6 @@ export type MopedAuthSession = AuthSession & {
   };
 };
 
-/**
- * The Hasura claims the app reads that were added by our Cognito pre-token Lambda.
- * See auth/cognito-pre-token-hook/README.md for more details.
- */
-type HasuraClaims = {
-  "x-hasura-allowed-roles": string[];
-  "x-hasura-user-db-id": string;
-};
-
 export const nonLoginUserRole = "non-login-user";
 
 export const ROLE_ORDER = [
@@ -32,7 +23,18 @@ export const ROLE_ORDER = [
   "moped-editor",
   "moped-viewer",
   nonLoginUserRole,
-];
+] as const;
+
+export type MopedRole = (typeof ROLE_ORDER)[number];
+
+/**
+ * The Hasura claims the app reads that were added by our Cognito pre-token Lambda.
+ * See auth/cognito-pre-token-hook/README.md for more details.
+ */
+type HasuraClaims = {
+  "x-hasura-allowed-roles": MopedRole[];
+  "x-hasura-user-db-id": string;
+};
 
 /** Get the Cognito ID JWT from a Cognito session.
  *

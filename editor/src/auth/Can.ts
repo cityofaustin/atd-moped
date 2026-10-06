@@ -1,12 +1,13 @@
 import { type ReactNode } from "react";
 import { useAuth } from "src/auth/auth";
 import rules from "./rolesBasedRules";
+import type { MopedRole } from "src/auth/claims";
 
 type Rules = typeof rules;
 
-const check = (rules: Rules, role: string, action: string) => {
+const check = (rules: Rules, role: MopedRole, action: string) => {
   // Collect user permissions and see if they include the given action
-  const permissions = rules[role as keyof Rules];
+  const permissions = rules[role];
   const staticPermissions = permissions?.static;
 
   if (staticPermissions && staticPermissions.includes(action)) {
