@@ -5,6 +5,7 @@ Python script that transfers eCapris statuses to the Moped database
 ## Sync eCapris statuses
 
 The script `ecapris_statuses_sync.py` is used to copy eCapris subproject statuses to the Moped database:
+
 - Statuses are matched by eCapris number which we store in the Moped project table as `ecapris_subproject_id`.
 - The statuses come from an Oracle Data Warehouse and a view set up by FSD called `ATD_SUB_PROJECT_STATUS_VW`.
 - See the secret called `Finance Data Warehouse Oracle DB` for the Data Warehouse credentials used in the environment.
@@ -33,4 +34,4 @@ The script `ecapris_statuses_sync.py` is used to copy eCapris subproject statuse
    --tag atddocker/atd-moped-etl-ecapris-statuses:development .
    ```
 1. Start your local Airflow instance ([atd-airflow](https://github.com/cityofaustin/atd-airflow)).
-1. The DAG is setup to use `development` as the Docker image tag in the local development stack which references the local Hasura API for queries and mutations done by the ETL. 
+1. The DAG is setup to use `development` as the Docker image tag in the local development stack which references the local Hasura API for queries and mutations done by the ETL.
