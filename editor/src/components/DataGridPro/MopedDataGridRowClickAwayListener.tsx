@@ -1,40 +1,31 @@
-import React, { createElement, forwardRef } from "react";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { GridRow, type GridRowProps } from "@mui/x-data-grid-pro";
+import {
+  GridRow,
+  type GridRowProps,
+  type GridSlotsComponent,
+} from "@mui/x-data-grid-pro";
 
 declare module "@mui/x-data-grid-pro" {
   interface RowPropsOverrides {
     highlightedRowId?: string | null;
     onHighlightedRowClickAway?: () => void;
-    rowComponent?: React.ElementType<GridRowProps>;
+    rowComponent?: GridSlotsComponent["row"];
   }
 }
 
 type MopedDataGridRowClickAwayListenerProps = GridRowProps & {
   highlightedRowId?: string | null;
   onHighlightedRowClickAway?: () => void;
-  rowComponent?: React.ElementType<GridRowProps>;
+  rowComponent?: GridSlotsComponent["row"];
 };
 
-const MopedDataGridRowClickAwayListener = forwardRef<
-  HTMLDivElement,
-  MopedDataGridRowClickAwayListenerProps
->(function MopedDataGridRowClickAwayListener(
-  {
-    highlightedRowId,
-    onHighlightedRowClickAway,
-    rowComponent = GridRow,
-    ...rowProps
-  },
-  ref
-) {
-  const row =
-    rowComponent === GridRow
-      ? createElement(GridRow, {
-          ...rowProps,
-          ref,
-        } as GridRowProps & React.RefAttributes<HTMLDivElement>)
-      : createElement(rowComponent, rowProps);
+function MopedDataGridRowClickAwayListener({
+  highlightedRowId,
+  onHighlightedRowClickAway,
+  rowComponent: Row = GridRow,
+  ...rowProps
+}: MopedDataGridRowClickAwayListenerProps) {
+  const row = <Row {...rowProps} />;
 
   if (
     highlightedRowId === null ||
@@ -50,6 +41,6 @@ const MopedDataGridRowClickAwayListener = forwardRef<
       {row}
     </ClickAwayListener>
   );
-});
+}
 
 export default MopedDataGridRowClickAwayListener;
