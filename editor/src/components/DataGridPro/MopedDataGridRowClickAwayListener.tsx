@@ -1,8 +1,8 @@
 import React, { createElement, forwardRef } from "react";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { GridRow, type GridRowProps } from "@mui/x-data-grid";
+import { GridRow, type GridRowProps } from "@mui/x-data-grid-pro";
 
-declare module "@mui/x-data-grid" {
+declare module "@mui/x-data-grid-pro" {
   interface RowPropsOverrides {
     highlightedRowId?: string | null;
     onHighlightedRowClickAway?: () => void;
