@@ -3,6 +3,7 @@ import {
   getCognitoIdJwt,
   getHighestRole,
   type MopedAuthSession,
+  hasHasuraClaims,
 } from "src/auth/claims";
 
 /**
@@ -12,10 +13,7 @@ import {
 export const getCognitoSession = async (): Promise<MopedAuthSession | null> => {
   try {
     const session = await fetchAuthSession();
-
-    // Assert that any session we return has Hasura claims. getHighestRole
-    // returns null if they're missing and AuthProvider signs the user out.
-    return session.tokens ? (session as MopedAuthSession) : null;
+    return hasHasuraClaims(session) ? session : null;
   } catch (err) {
     console.error("Error getting Cognito session: ", err);
     return null;

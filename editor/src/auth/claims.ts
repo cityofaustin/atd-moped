@@ -44,6 +44,12 @@ type HasuraClaims = {
 export const getCognitoIdJwt = (session: MopedAuthSession | null) =>
   session?.tokens?.idToken?.toString() ?? null;
 
+/** True when the session carries the Hasura claims our pre-token Lambda adds. */
+export const hasHasuraClaims = (
+  session: AuthSession
+): session is MopedAuthSession =>
+  typeof session.tokens?.idToken?.payload[HASURA_CLAIMS_KEY] === "string";
+
 /** Retrieves the Hasura claims from the Cognito session.
  * @param session - The Cognito session
  * @returns The Hasura claims or null if not found.
