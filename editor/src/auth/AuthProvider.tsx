@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Auth, Hub } from "aws-amplify";
-import { AuthContext } from "src/auth/auth";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Hub } from "aws-amplify/utils";
+import { signIn, signInWithRedirect, signOut } from "aws-amplify/auth";
+import { AuthContext, type AuthState } from "src/auth/auth";
 import { getHighestRole } from "src/auth/claims";
 import { getCognitoSession } from "src/auth/session";
-import {
-  initializeUserDBObject,
-  setSessionDatabaseData,
-  deleteSessionDatabaseData,
-} from "src/auth/mopedUser";
+import { fetchMopedUser } from "src/auth/mopedUser";
 
 /**
  * Auth provider for the app. The Amplify Hub listener is the source of truth for
@@ -18,11 +21,11 @@ import {
  *   { status: "unauthenticated" }
  *   { status: "authenticated", role, mopedUser }
  *
- * Tokens are fetched at the point of use (see src/auth/session.js) and not held
+ * Tokens are fetched at the point of use (see src/auth/session.ts) and not held
  * in state.
  */
-const AuthProvider = ({ children }) => {
-  const [state, setState] = useState({ status: "initializing" });
+const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [state, setState] = useState<AuthState>({ status: "initializing" });
 
   /**
    * Resolve the current session into auth state
@@ -31,7 +34,6 @@ const AuthProvider = ({ children }) => {
     const session = await getCognitoSession();
 
     if (!session) {
-      deleteSessionDatabaseData();
       setState({ status: "unauthenticated" });
       return;
     }
@@ -42,21 +44,17 @@ const AuthProvider = ({ children }) => {
     // rather than leaving the user on a page where every query will fail.
     if (!role) {
       console.error("No Hasura role found in Cognito session");
-      await Auth.signOut();
+      await signOut();
       return;
     }
 
     try {
-      // TODO: Remove localStorage cache and fetch user data when needed for a view
-      // to prevent de-synchronization between the local cache and the database
-      // See issue #30400
-      const mopedUser = await initializeUserDBObject(session);
-      setSessionDatabaseData(mopedUser);
+      const mopedUser = await fetchMopedUser(session);
 
       setState({ status: "authenticated", role, mopedUser });
     } catch (error) {
       console.error("Error fetching Moped user record: ", error);
-      await Auth.signOut();
+      await signOut();
     }
   }, []);
 
@@ -69,55 +67,63 @@ const AuthProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- resolveSession is async; the first setState happens after awaiting Amplify
     resolveSession();
 
-    const listener = ({ payload }) => {
+    const hubListenerCancel = Hub.listen("auth", ({ payload }) => {
       switch (payload.event) {
-        case "signIn":
+        case "signedIn":
           resolveSession();
           break;
-        case "signOut":
-          deleteSessionDatabaseData();
+        case "signedOut":
           setState({ status: "unauthenticated" });
           break;
         default:
           break;
       }
-    };
+    });
 
-    Hub.listen("auth", listener);
-
-    return () => Hub.remove("auth", listener);
+    return () => hubListenerCancel();
   }, [resolveSession]);
 
   /**
    * Sign in with username and password. State is set by the Hub listener.
-   * @param {string} usernameOrEmail
-   * @param {string} password
    */
-  const loginWithPassword = useCallback(async (usernameOrEmail, password) => {
+  const loginWithPassword = useCallback(
+    async (usernameOrEmail: string, password: string) => {
+      try {
+        return await signIn({ username: usernameOrEmail, password });
+      } catch (err) {
+        if (err?.name === "UserAlreadyAuthenticatedException") {
+          // Stale tokens from a failed refresh. Clear them and retry.
+          await signOut();
+          return signIn({ username: usernameOrEmail, password });
+        }
+        throw err;
+      }
+    },
+    []
+  );
+
+  /**
+   * Sign in with Azure AD. Redirects away from the app. State is set when
+   * the browser returns and the useEffect resolves the session.
+   */
+  const loginSSO = useCallback(async () => {
     try {
-      await Auth.signIn(usernameOrEmail, password);
+      return await signInWithRedirect({ provider: { custom: "AzureAD" } });
     } catch (err) {
-      if (err?.code === "UserNotFoundException") {
-        err.message = "Invalid username or password";
+      if (err?.name === "UserAlreadyAuthenticatedException") {
+        // Stale tokens from a failed refresh. Clear them and retry.
+        await signOut();
+        return signInWithRedirect({ provider: { custom: "AzureAD" } });
       }
       throw err;
     }
   }, []);
 
   /**
-   * Sign in with Azure AD. Redirects away from the app. State is set when
-   * the browser returns and the useEffect resolves the session.
-   */
-  const loginSSO = useCallback(
-    () => Auth.federatedSignIn({ provider: "AzureAD" }),
-    []
-  );
-
-  /**
-   * Sign out. The Hub "signOut" handler clears state and the cached user row,
+   * Sign out. The Hub "signedOut" handler clears state,
    * so explicit logouts and SDK-initiated ones take the same path.
    */
-  const logout = useCallback(() => Auth.signOut(), []);
+  const logout = useCallback(() => signOut(), []);
 
   const values = useMemo(
     () => ({ ...state, loginWithPassword, loginSSO, logout }),

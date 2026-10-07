@@ -33,7 +33,7 @@ import {
 
 import { DASHBOARD_QUERY } from "src/queries/dashboard";
 
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useMopedUser } from "src/auth/auth";
 import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 function a11yProps(index) {
@@ -223,9 +223,9 @@ const useColumns = ({ data, refetch, handleSnackbar }) => {
 };
 
 const DashboardView = () => {
-  const userSessionData = useSessionDatabaseData();
-  const userId = userSessionData?.user_id;
-  const userName = userSessionData?.first_name;
+  const mopedUser = useMopedUser();
+  const userId = mopedUser?.user_id;
+  const userName = mopedUser?.first_name;
 
   const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
     variables: { userId },

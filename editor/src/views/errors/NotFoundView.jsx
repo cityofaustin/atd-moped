@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
 import Page from "src/components/Page";
-import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
+import NavigationSearchInput from "src/layouts/AuthenticatedLayout/NavBar/NavigationSearchInput";
 
 const NotFoundView = () => {
   return (

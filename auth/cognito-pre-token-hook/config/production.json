@@ -1,0 +1,10 @@
+{
+  "Description": "AWS Cognito Hook Lambda: PRODUCTION",
+  "Environment": {
+    "Variables": {
+      "AWS_COGNITO_DYNAMO_TABLE_NAME": "atd-moped-users-production",
+      "AWS_COGNITO_DYNAMO_SECRET_NAME": "ATD_MOPED_USERS_COGNITO_DYNAMODB",
+      "API_ENVIRONMENT": "PRODUCTION"
+    }
+  }
+}

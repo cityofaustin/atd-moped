@@ -8,8 +8,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   helpItems,
   analysisItems,
-} from "src/layouts/DashboardLayout/NavBar/menuConfig";
-import { navigationItems } from "src/layouts/DashboardLayout/helpers";
+} from "src/layouts/AuthenticatedLayout/NavBar/menuConfig";
+import { navigationItems } from "src/layouts/AuthenticatedLayout/helpers";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 import UserInfo from "src/views/account/UserInfo";
 

@@ -10,42 +10,41 @@ on:
       - production
     paths:
       - "auth/cognito-pre-token-hook/**"
+      - ".github/workflows/aws-moped-cognito-helper.sh"
+      - ".github/workflows/atd_moped_cognito_hooks_build.yml"
   workflow_dispatch:
     inputs:
       description:
         default: ""
+
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/setup-python@v4
-        with:
-          # this python version must be compatible with aws lambda!
-          python-version: "3.8"
-          architecture: "x64"
-      # Get the code first
       - name: "Checkout"
-        uses: actions/checkout@v3
-      # Then install the AWC CLI tools & boto3
-      - name: "Install AWS Cli"
-        run: |
-          sudo apt-get install python3-setuptools
-          pip3 install awscli boto3
-      # Run the shell commands using the AWS environment variables
-      - name: "Build"
+        uses: actions/checkout@v4
+
+      # The Lambda target version is set by LAMBDA_PYTHON_VERSION in the helper
+      # script; this keeps the runner's Python in line with it.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          architecture: "x64"
+
+      # AWS CLI v2, jq, and zip are preinstalled on GitHub's Ubuntu runners.
+      - name: "Build & Deploy"
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           ATD_MOPED_COGNITO_ROLE: ${{ secrets.ATD_MOPED_COGNITO_ROLE }}
-          AWS_COGNITO_DYNAMO_TABLE_NAME: ${{ secrets.AWS_COGNITO_DYNAMO_TABLE_NAME }}
-          AWS_COGNITO_DYNAMO_SECRET_NAME: ${{ secrets.AWS_COGNITO_DYNAMO_SECRET_NAME }}
         run: |
           export BRANCH_NAME=${GITHUB_REF##*/}
           echo "SHA: ${GITHUB_SHA}"
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
+          aws --version
           source $(pwd)/.github/workflows/aws-moped-cognito-helper.sh
           deploy_cognito_functions

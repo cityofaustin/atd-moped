@@ -12,7 +12,11 @@ esac
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
 echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
 
-PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
+PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements.txt"
+
+# Lambda runtime to build for and deploy to. Wheels are downloaded for this
+# version regardless of which Python runs this script.
+LAMBDA_PYTHON_VERSION="3.13"
 
 #
 # First, we need to create the python package by installing requirements
@@ -20,10 +24,13 @@ PYTHON_REQUIREMENTS_FILE="$(pwd)/auth/cognito-pre-token-hook/requirements/${WORK
 function install_requirements() {
   echo "Updating PIP"
   pip install --upgrade pip
-  echo "Installing AWS's CLI"
-  pip install awscli
-  echo "Installing requirements from ${PYTHON_REQUIREMENTS_FILE}..."
-  pip install -r "${PYTHON_REQUIREMENTS_FILE}" --platform manylinux2014_x86_64 --only-binary=:all: --target ./package
+  echo "Installing requirements from ${PYTHON_REQUIREMENTS_FILE} for Python ${LAMBDA_PYTHON_VERSION}..."
+  pip install -r "${PYTHON_REQUIREMENTS_FILE}" \
+    --platform manylinux2014_x86_64 \
+    --implementation cp \
+    --python-version "${LAMBDA_PYTHON_VERSION}" \
+    --only-binary=:all: \
+    --target ./package
 }
 
 #
@@ -35,15 +42,6 @@ function bundle_function() {
   zip -r9 ../function.zip .
   cd ${OLDPWD}
   zip -g function.zip handler.py
-}
-
-#
-# Retrieves the environment variables JSON stored in AWS
-#
-function generate_environment() {
-  aws secretsmanager get-secret-value \
-    --secret-id "ATD_MOPED_COGNITO_HOOK_ENV_${WORKING_STAGE^^}" |
-    jq -rc ".SecretString" >handler_config.json
 }
 
 #
@@ -59,7 +57,7 @@ function deploy_cognito_function() {
       --role "${ATD_MOPED_COGNITO_ROLE}" \
       --handler "handler.handler" \
       --tags "project=atd-moped,environment=${WORKING_STAGE}" \
-      --runtime python3.8 \
+      --runtime "python${LAMBDA_PYTHON_VERSION}" \
       --function-name "${FUNCTION_NAME}" \
       --zip-file fileb://$PWD/function.zip >/dev/null
   } || { # catch: update
@@ -68,11 +66,20 @@ function deploy_cognito_function() {
       --function-name "${FUNCTION_NAME}" \
       --zip-file fileb://$PWD/function.zip >/dev/null
   }
-  echo "Resetting environment variables: ${FUNCTION_NAME} @ ${PWD}"
+
+  # Lambda rejects config changes while a code update is in progress
+  echo "Waiting for code update to finish: ${FUNCTION_NAME}"
+  aws lambda wait function-updated --function-name "${FUNCTION_NAME}"
+
+  echo "Applying ${WORKING_STAGE} config and runtime python${LAMBDA_PYTHON_VERSION}"
   aws lambda update-function-configuration \
     --function-name "${FUNCTION_NAME}" \
-    --cli-input-json file://$PWD/handler_config.json | jq -r ".LastModified"
-  echo "Finished Lambda Update/Deployment"
+    --cli-input-json "file://$PWD/config/${WORKING_STAGE}.json" \
+    --runtime "python${LAMBDA_PYTHON_VERSION}" |
+    jq -r '"Runtime: \(.Runtime)  LastModified: \(.LastModified)"'
+
+  aws lambda wait function-updated --function-name "${FUNCTION_NAME}"
+  echo "Finished Lambda update/deployment"
 }
 
 #
@@ -89,7 +96,6 @@ function deploy_cognito_functions() {
   echo "Entered directory: ${PWD}"
   install_requirements
   bundle_function
-  generate_environment "$FUNCTION_NAME"
   deploy_cognito_function "$FUNCTION_NAME"
   cd $MAIN_DIR
   echo "Exit, current path: ${PWD}"

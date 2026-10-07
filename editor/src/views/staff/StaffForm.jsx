@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import {
-  formatApiErrors,
-  transformFormDataIntoDatabaseTypes,
-  nonLoginUserRole,
-} from "./helpers";
+import { formatApiErrors, transformFormDataIntoDatabaseTypes } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WORKGROUPS_QUERY } from "src/queries/workgroups";
-import { findHighestRole } from "src/auth/claims";
+import { findHighestRole, nonLoginUserRole } from "src/auth/claims";
 
 import { useQuery } from "@apollo/client";
 import {
@@ -143,8 +139,9 @@ const StaffForm = ({
             slotProps={{
               inputLabel: {
                 shrink: true,
-              }
-            }} />
+              },
+            }}
+          />
         </Grid>
         <Grid
           size={{
@@ -167,8 +164,9 @@ const StaffForm = ({
             slotProps={{
               inputLabel: {
                 shrink: true,
-              }
-            }} />
+              },
+            }}
+          />
         </Grid>
         <Grid
           size={{
@@ -190,8 +188,9 @@ const StaffForm = ({
             slotProps={{
               inputLabel: {
                 shrink: true,
-              }
-            }} />
+              },
+            }}
+          />
         </Grid>
         <Grid
           size={{
@@ -213,8 +212,9 @@ const StaffForm = ({
             slotProps={{
               inputLabel: {
                 shrink: true,
-              }
-            }} />
+              },
+            }}
+          />
         </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
         <Grid
@@ -240,8 +240,9 @@ const StaffForm = ({
               slotProps={{
                 inputLabel: {
                   shrink: true,
-                }
-              }} />
+                },
+              }}
+            />
           ) : (
             <TextField
               fullWidth
@@ -255,7 +256,7 @@ const StaffForm = ({
               slotProps={{
                 inputLabel: {
                   shrink: true,
-                }
+                },
               }}
             />
           )}
@@ -408,8 +409,9 @@ const StaffForm = ({
             slotProps={{
               inputLabel: {
                 shrink: true,
-              }
-            }} />
+              },
+            }}
+          />
         </Grid>
         <Grid
           size={{

@@ -6,7 +6,7 @@ on:
       - production
     paths:
       - ".github/workflows/etl_ecapris_funding_docker.yml"
-      - "moped-etl/ecapris-funding/**"
+      - "etl/ecapris-funding/**"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
@@ -29,4 +29,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: atddocker/atd-moped-etl-ecapris-funding:${{ github.ref_name }}
-          context: ./moped-etl/ecapris-funding
+          context: ./etl/ecapris-funding

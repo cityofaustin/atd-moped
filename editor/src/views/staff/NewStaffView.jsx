@@ -5,7 +5,8 @@ import {
   StaffFormSaveButton,
 } from "./components/StaffFormButtons";
 import { useNavigate } from "react-router";
-import { isUserNonLoginUser, useUserApi, nonLoginUserRole } from "./helpers";
+import { isUserNonLoginUser, useUserApi } from "./helpers";
+import { nonLoginUserRole } from "src/auth/claims";
 import { useMutation } from "@apollo/client";
 import * as yup from "yup";
 
