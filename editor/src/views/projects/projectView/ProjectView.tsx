@@ -50,7 +50,7 @@ import ProjectActivityLog from "src/views/projects/projectView/ProjectActivityLo
 import ProjectNameEditable from "src/views/projects/projectView/ProjectNameEditable";
 import ProjectFollowButton from "src/views/projects/projectView/ProjectFollowButton";
 
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useMopedUser } from "src/auth/auth";
 import { useFeedbackSnackbar } from "src/components/useFeedbackSnackbar";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -136,12 +136,8 @@ const ProjectView = () => {
 
   const queryContext = useContext(ProjectListViewQueryContext);
 
-  const userSessionData = useSessionDatabaseData() as
-    | {
-        user_id: number;
-      }
-    | undefined;
-  const userId = userSessionData?.user_id;
+  const mopedUser = useMopedUser();
+  const userId = mopedUser?.user_id;
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
     useFeedbackSnackbar();

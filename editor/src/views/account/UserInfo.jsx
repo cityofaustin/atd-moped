@@ -1,11 +1,11 @@
 import { Stack, Typography } from "@mui/material";
 import { getUserFullName } from "src/utils/userNames";
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useMopedUser } from "src/auth/auth";
 
 const UserInfo = () => {
-  const user = useSessionDatabaseData();
-  const userFullName = getUserFullName(user);
-  const userEmail = user?.email;
+  const mopedUser = useMopedUser();
+  const userFullName = getUserFullName(mopedUser);
+  const userEmail = mopedUser?.email;
 
   return (
     <Stack direction="column" sx={{ alignItems: "left", cursor: "default" }}>

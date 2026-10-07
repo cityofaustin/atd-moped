@@ -6,7 +6,7 @@ const HASURA_CLAIMS_KEY = "https://hasura.io/jwt/claims";
 /**
  * Extended Cognito Auth Session that includes the Hasura claims added by our pre-token lambda.
  */
-type MopedAuthSession = AuthSession & {
+export type MopedAuthSession = AuthSession & {
   tokens: NonNullable<AuthSession["tokens"]> & {
     idToken: JWT & {
       payload: JWT["payload"] & {
@@ -16,15 +16,6 @@ type MopedAuthSession = AuthSession & {
   };
 };
 
-/**
- * The Hasura claims the app reads that were added by our Cognito pre-token Lambda.
- * See auth/cognito-pre-token-hook/README.md for more details.
- */
-type HasuraClaims = {
-  "x-hasura-allowed-roles": string[];
-  "x-hasura-user-db-id": string;
-};
-
 export const nonLoginUserRole = "non-login-user";
 
 export const ROLE_ORDER = [
@@ -32,7 +23,18 @@ export const ROLE_ORDER = [
   "moped-editor",
   "moped-viewer",
   nonLoginUserRole,
-];
+] as const;
+
+export type MopedRole = (typeof ROLE_ORDER)[number];
+
+/**
+ * The Hasura claims the app reads that were added by our Cognito pre-token Lambda.
+ * See auth/cognito-pre-token-hook/README.md for more details.
+ */
+type HasuraClaims = {
+  "x-hasura-allowed-roles": MopedRole[];
+  "x-hasura-user-db-id": string;
+};
 
 /** Get the Cognito ID JWT from a Cognito session.
  *
@@ -41,6 +43,12 @@ export const ROLE_ORDER = [
  */
 export const getCognitoIdJwt = (session: MopedAuthSession | null) =>
   session?.tokens?.idToken?.toString() ?? null;
+
+/** True when the session carries the Hasura claims our pre-token Lambda adds. */
+export const hasHasuraClaims = (
+  session: AuthSession
+): session is MopedAuthSession =>
+  typeof session.tokens?.idToken?.payload[HASURA_CLAIMS_KEY] === "string";
 
 /** Retrieves the Hasura claims from the Cognito session.
  * @param session - The Cognito session

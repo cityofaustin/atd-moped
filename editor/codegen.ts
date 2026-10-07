@@ -12,6 +12,7 @@ const config: CodegenConfig = {
     "src/queries/project.js",
     "src/queries/components.js",
     "src/queries/funding.js",
+    "src/queries/account.ts",
   ],
   generates: {
     "./src/gql/": {

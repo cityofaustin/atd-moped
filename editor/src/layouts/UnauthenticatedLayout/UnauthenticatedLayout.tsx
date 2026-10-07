@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet, Navigate } from "react-router";
 import Box from "@mui/material/Box";
 import AuthLoadingBackdrop from "src/auth/AuthLoadingBackdrop";
@@ -7,9 +6,8 @@ import { takeReturnTo } from "src/auth/returnTo";
 
 /**
  * Main layout component for the app when not logged in (sign in page).
- * @returns {JSX.Element}
  */
-const MainLayout = () => {
+const UnauthenticatedLayout = () => {
   const { status } = useAuth();
 
   if (status === "initializing") {
@@ -17,7 +15,7 @@ const MainLayout = () => {
   }
 
   /* If authenticated, send users wherever they were headed before sign-in or to
-   * default route. See src/auth/returnTo.js — DashboardLayout stores the
+   * default route. See src/auth/returnTo.js — AuthenticatedLayout stores the
    * path in sessionStorage so it survives the SSO redirect.
    */
   if (status === "authenticated") {
@@ -48,4 +46,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default UnauthenticatedLayout;

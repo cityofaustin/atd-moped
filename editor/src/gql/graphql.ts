@@ -6218,6 +6218,23 @@ export type Uuid_Comparison_Exp = {
   _nin?: Array<unknown> | null | undefined;
 };
 
+export type GetUserProfileQueryVariables = Exact<{
+  userId: number;
+}>;
+
+export type GetUserProfileQuery = {
+  moped_users: Array<{
+    user_id: number;
+    cognito_user_id: unknown;
+    email: unknown;
+    first_name: string;
+    last_name: string;
+    is_coa_staff: boolean;
+    title: string;
+    moped_workgroup: { workgroup_name: string } | null;
+  }>;
+};
+
 export type GetComponentsFormOptionsQueryVariables = Exact<{
   [key: string]: never;
 }>;
@@ -8175,6 +8192,97 @@ export const ProjectComponentFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProjectComponentFieldsFragment, unknown>;
+export const GetUserProfileDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetUserProfile" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_users" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "user_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "userId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "user_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "cognito_user_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "first_name" } },
+                { kind: "Field", name: { kind: "Name", value: "last_name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_coa_staff" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_workgroup" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "workgroup_name" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetUserProfileQuery, GetUserProfileQueryVariables>;
 export const GetComponentsFormOptionsDocument = {
   kind: "Document",
   definitions: [
