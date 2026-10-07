@@ -3,7 +3,7 @@ import type { MopedUser } from "src/auth/mopedUser";
 import type { MopedRole } from "src/auth/claims";
 
 export type AuthState =
-  /* When sigining in, no role or mopedUser is available yet */
+  /* When signing in, no role or mopedUser is available yet */
   | { status: "initializing" }
   /* When not signed in, no role or mopedUser is ever available */
   | { status: "unauthenticated" }
