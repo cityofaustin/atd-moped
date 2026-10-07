@@ -1,4 +1,4 @@
-import React from "react";
+import type { ReactNode } from "react";
 import {
   Button,
   Dialog,
@@ -8,19 +8,31 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
+interface DeleteConfirmationModalProps {
+  /** The type of entity being deleted (e.g., "project", "file", "funding record") used to populate the default confirmation text */
+  type: string;
+  /** The function that calls the appropriate delete mutation and any updates after deletion */
+  submitDelete: () => void;
+  /** Boolean state for whether the confirmation dialog is open or not */
+  isDeleteConfirmationOpen: boolean;
+  /** State setter function for controlling whether the confirmation dialog is open or not */
+  setIsDeleteConfirmationOpen: (isOpen: boolean) => void;
+  /** The React component that triggers the confirmation dialog (optional) */
+  children?: ReactNode;
+  /** Custom confirmation text to display in the dialog in place of the default (optional) */
+  confirmationText?: string;
+  /** Additional text to append to the default confirmation message (optional) */
+  additionalConfirmationText?: string;
+  /** Custom text for the delete action button, defaults to "Delete" */
+  actionButtonText?: string;
+  /** Custom icon for the delete action button, defaults to a delete icon */
+  actionButtonIcon?: ReactNode;
+  /** Mutation loading status from delete mutation */
+  mutationPending?: boolean;
+}
+
 /**
  * Dialog component to confirm delete actions across the app
- * @param {string} type - The type of entity being deleted (e.g., "project", "file", "funding record") used to populate the default confirmation text
- * @param {function} submitDelete - The function that calls the appropriate delete mutation and any updates after deletion
- * @param {boolean} isDeleteConfirmationOpen - Boolean state for whether the confirmation dialog is open or not
- * @param {function} setIsDeleteConfirmationOpen - State setter function for controlling whether the confirmation dialog is open or not
- * @param {JSX.Element} children - The React component that triggers the confirmation dialog
- * @param {string} confirmationText - Optional custom confirmation text to display in the dialog in place of the default
- * @param {string} additionalConfirmationText - Optional additional text to append to the default confirmation message
- * @param {string} actionButtonText - Optional custom text for the delete action button, defaults to "Delete"
- * @param {JSX.Element} actionButtonIcon - Optional custom icon for the delete action button, defaults to a delete icon
- * @param {boolean} mutationPending - mutation loading status from delete mutation
- * @returns {JSX.Element}
  */
 const DeleteConfirmationModal = ({
   type,
@@ -33,7 +45,7 @@ const DeleteConfirmationModal = ({
   actionButtonText = "Delete",
   actionButtonIcon,
   mutationPending,
-}) => {
+}: DeleteConfirmationModalProps) => {
   const handleDeleteClose = () => {
     setIsDeleteConfirmationOpen(false);
   };
