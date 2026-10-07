@@ -1,7 +1,6 @@
-import { useEffect, useMemo, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, type RefObject } from "react";
 import {
   type GridApi,
-  type DataGridProProps,
   useGridApiRef,
   type GridRowIdGetter,
   type GridRowSelectionModel,
@@ -13,7 +12,6 @@ type UseDataGridRowHighlightParams<R extends GridValidRowModel> = {
   apiRef?: RefObject<GridApi | null>;
   getRowId?: GridRowIdGetter<R>;
   highlightedRowParam?: string;
-  onCellClick?: DataGridProProps<R>["onCellClick"];
   rowSelectionModel?: GridRowSelectionModel;
   rows: readonly R[];
 };
@@ -22,7 +20,6 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
   apiRef,
   getRowId,
   highlightedRowParam,
-  onCellClick,
   rowSelectionModel,
   rows,
 }: UseDataGridRowHighlightParams<R>) => {
@@ -86,28 +83,43 @@ const useDataGridRowHighlight = <R extends GridValidRowModel>({
     }
   }, [getRowId, gridApiRef, highlightedRow]);
 
-  const handleCellClick: NonNullable<DataGridProProps<R>["onCellClick"]> = (
-    params,
-    event,
-    details
-  ) => {
-    if (highlightedRowId !== null) {
-      const nextSearchParams = new URLSearchParams(searchParams);
-      if (highlightedRowParam && nextSearchParams.has(highlightedRowParam)) {
-        nextSearchParams.delete(highlightedRowParam);
-        setSearchParams(nextSearchParams, {
-          state: location.state,
-          replace: true,
-        });
-      }
+  const clearHighlightedRow = useCallback(() => {
+    if (!highlightedRowParam || highlightedRowId === null) {
+      return;
     }
 
-    onCellClick?.(params, event, details);
-  };
+    const pathnameAtClick = location.pathname;
+    const highlightedRowIdAtClick = highlightedRowId;
+
+    window.setTimeout(() => {
+      if (window.location.pathname !== pathnameAtClick) {
+        return;
+      }
+
+      const nextSearchParams = new URLSearchParams(window.location.search);
+      if (
+        nextSearchParams.get(highlightedRowParam) !== highlightedRowIdAtClick
+      ) {
+        return;
+      }
+
+      nextSearchParams.delete(highlightedRowParam);
+      setSearchParams(nextSearchParams, {
+        state: location.state,
+        replace: true,
+      });
+    }, 0);
+  }, [
+    highlightedRowId,
+    highlightedRowParam,
+    location.state,
+    location.pathname,
+    setSearchParams,
+  ]);
 
   return {
     apiRef: gridApiRef,
-    handleCellClick,
+    clearHighlightedRow,
     highlightedRowId,
     rowSelectionModel: highlightedRowSelectionModel,
   };
