@@ -5,6 +5,7 @@ import {
 } from "@mui/x-data-grid-pro";
 import type { SxProps, Theme } from "@mui/material";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import MopedDataGridRowClickAwayListener from "./MopedDataGridRowClickAwayListener";
 import useDataGridRowHighlight from "./useDataGridRowHighlight";
 
 type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
@@ -34,17 +35,18 @@ const MopedDataGrid = <R extends GridValidRowModel>({
   onCellClick,
   rowSelectionModel,
   rows = [],
+  slots,
   ...props
 }: MopedDataGridProps<R>) => {
   const {
     apiRef: gridApiRef,
-    handleCellClick,
+    clearHighlightedRow,
+    highlightedRowId,
     rowSelectionModel: highlightedRowSelectionModel,
   } = useDataGridRowHighlight({
     apiRef,
     getRowId,
     highlightedRowParam,
-    onCellClick,
     rowSelectionModel,
     rows,
   });
@@ -56,18 +58,34 @@ const MopedDataGrid = <R extends GridValidRowModel>({
       }}
       slotProps={{
         ...slotProps,
+        ...(highlightedRowParam && {
+          row: {
+            ...slotProps.row,
+            highlightedRowId,
+            onHighlightedRowClickAway: clearHighlightedRow,
+            rowComponent: slots?.row,
+          },
+        }),
         loadingOverlay: {
           variant: "circular-progress",
           noRowsVariant: "circular-progress",
         },
       }}
+      slots={
+        highlightedRowParam
+          ? {
+              ...slots,
+              row: MopedDataGridRowClickAwayListener,
+            }
+          : slots
+      }
       density="comfortable"
       getRowHeight={() => "auto"}
       hideFooter
       disableRowSelectionOnClick
       // Show toolbar if a toolbar slot is provided
-      showToolbar={!!props.slots?.toolbar}
-      onCellClick={handleCellClick}
+      showToolbar={!!slots?.toolbar}
+      onCellClick={onCellClick}
       onProcessRowUpdateError={(error) => console.error(error)}
       getRowId={getRowId}
       apiRef={gridApiRef}
