@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getCognitoIdJwt } from "src/auth/claims";
+import { getCognitoIdJwt, nonLoginUserRole } from "src/auth/claims";
 import { getCognitoSession } from "src/auth/session";
 import axios from "axios";
 
@@ -124,8 +124,6 @@ export const transformFormDataIntoDatabaseTypes = (formData) => {
 
   return databaseData;
 };
-
-export const nonLoginUserRole = "non-login-user";
 
 /**
  * Determine if the user is a non-login user (true) or Moped user (false)

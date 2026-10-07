@@ -5,6 +5,7 @@ Python script that transfers eCAPRIS funding to the Moped database to provide a 
 ## Sync eCAPRIS funding
 
 The script `ecapris_funding_sync.py` is used to copy eCAPRIS subproject funding records to the Moped database:
+
 - FDUs are synced from a EDP dataset (s4mj-68pg) that is populated nightly by our [atd-finance-data program tagging ETL](https://github.com/cityofaustin/atd-airflow/blob/production/dags/atd_finance_data_fdu_program_tagging.py).
 - These records contain program and subprogram information tagging in addition to eCAPRIS data.
 - The original FDUs come from an Oracle Data Warehouse and a view set up by FSD called `ATD_FDUS_VW`.
@@ -36,4 +37,4 @@ The script `ecapris_funding_sync.py` is used to copy eCAPRIS subproject funding 
    --tag atddocker/atd-moped-etl-ecapris-funding:development .
    ```
 1. Start your local Airflow instance ([atd-airflow](https://github.com/cityofaustin/atd-airflow)).
-1. The DAG is setup to use `development` as the Docker image tag in the local development stack which references the local Hasura API for queries and mutations done by the ETL. 
+1. The DAG is setup to use `development` as the Docker image tag in the local development stack which references the local Hasura API for queries and mutations done by the ETL.
