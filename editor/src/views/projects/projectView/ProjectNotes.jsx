@@ -14,7 +14,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useMopedUser } from "src/auth/auth";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router";
 import parse from "html-react-parser";
@@ -107,7 +107,7 @@ const ProjectNotes = ({
   eCaprisSubprojectId = null,
 }) => {
   /* User details for create and update mutations */
-  const userSessionData = useSessionDatabaseData();
+  const mopedUser = useMopedUser();
 
   /** Get projectId from URL params if not passed down from ProjectSummaryStatusUpdate component
    * If component is being used in edit modal from dashboard get project id from props instead of url params.
@@ -456,7 +456,7 @@ const ProjectNotes = ({
                    * Only allow the user who wrote the status to edit it - if it is editable
                    */
                   const isNoteEditable =
-                    userSessionData.user_id === note.created_by_user_id &&
+                    mopedUser.user_id === note.created_by_user_id &&
                     note.is_editable;
                   const isEditingNote = editingNoteId === note.original_id;
                   return (

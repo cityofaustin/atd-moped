@@ -1,7 +1,7 @@
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { type ApolloQueryResult, useMutation } from "@apollo/client";
-import { useSessionDatabaseData } from "src/auth/mopedUser";
+import { useMopedUser } from "src/auth/auth";
 import { PROJECT_FOLLOW, PROJECT_UNFOLLOW } from "src/queries/project";
 import IconButtonWithTooltip from "src/components/IconButtonWithTooltip";
 import { type ProjectSummaryQuery } from "src/gql/graphql";
@@ -27,12 +27,8 @@ const ProjectFollowButton = ({
   refetch,
   handleSnackbar,
 }: ProjectFollowButtonProps) => {
-  const userSessionData = useSessionDatabaseData() as
-    | {
-        user_id: number;
-      }
-    | undefined;
-  const userId = userSessionData?.user_id;
+  const mopedUser = useMopedUser();
+  const userId = mopedUser?.user_id;
 
   const [followProject] = useMutation(PROJECT_FOLLOW);
   const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);

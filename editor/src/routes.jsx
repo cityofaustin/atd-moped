@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigate } from "react-router";
 import Can from "src/auth/Can";
-import DashboardLayout from "src/layouts/DashboardLayout/DashboardLayout";
-import MainLayout from "src/layouts/MainLayout/MainLayout";
+import AuthenticatedLayout from "src/layouts/AuthenticatedLayout/AuthenticatedLayout";
+import UnauthenticatedLayout from "src/layouts/UnauthenticatedLayout/UnauthenticatedLayout";
 import StaffListView from "src/views/staff/StaffListView";
 import NewStaffView from "src/views/staff/NewStaffView";
 import EditStaffView from "src/views/staff/EditStaffView";
@@ -20,7 +20,7 @@ export const routes = [
   { path: "/", element: <Navigate to="/moped" /> },
   {
     path: "/moped/session",
-    element: <MainLayout />,
+    element: <UnauthenticatedLayout />,
     children: [
       { path: "signin", element: <LoginView /> },
       { path: "*", element: <Navigate to="/signin" /> },
@@ -29,7 +29,7 @@ export const routes = [
   {
     path: "/moped",
     action: "moped:visit",
-    element: <DashboardLayout />,
+    element: <AuthenticatedLayout />,
     children: [
       {
         path: "/moped",
