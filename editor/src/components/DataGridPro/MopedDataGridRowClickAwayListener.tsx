@@ -1,35 +1,18 @@
+import { useContext } from "react";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import {
-  GridRow,
-  type GridRowProps,
-  type GridSlotsComponent,
-} from "@mui/x-data-grid-pro";
+import { GridRow, type GridRowProps } from "@mui/x-data-grid-pro";
+import MopedDataGridRowClickAwayContext from "./MopedDataGridRowClickAwayContext";
 
-declare module "@mui/x-data-grid-pro" {
-  interface RowPropsOverrides {
-    highlightedRowId?: string | null;
-    onHighlightedRowClickAway?: () => void;
-    rowComponent?: GridSlotsComponent["row"];
-  }
-}
-
-type MopedDataGridRowClickAwayListenerProps = GridRowProps & {
-  highlightedRowId?: string | null;
-  onHighlightedRowClickAway?: () => void;
-  rowComponent?: GridSlotsComponent["row"];
-};
-
-function MopedDataGridRowClickAwayListener({
-  highlightedRowId,
-  onHighlightedRowClickAway,
-  rowComponent: Row = GridRow,
-  ...rowProps
-}: MopedDataGridRowClickAwayListenerProps) {
+function MopedDataGridRowClickAwayListener({ ...rowProps }: GridRowProps) {
+  const {
+    highlightedRowId,
+    onHighlightedRowClickAway,
+    rowComponent: Row = GridRow,
+  } = useContext(MopedDataGridRowClickAwayContext);
   const row = <Row {...rowProps} />;
 
   if (
     highlightedRowId === null ||
-    highlightedRowId === undefined ||
     String(rowProps.rowId) !== highlightedRowId ||
     !onHighlightedRowClickAway
   ) {
