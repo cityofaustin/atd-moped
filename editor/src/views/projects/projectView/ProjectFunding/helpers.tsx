@@ -14,7 +14,9 @@ import {
   type GridRowId,
   type GridRowModesModel,
 } from "@mui/x-data-grid-pro";
-import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
+import LookupAutocompleteComponent, {
+  type DependentField,
+} from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
@@ -105,17 +107,17 @@ export const transformDatabaseToGrid = (
   return fundingRecords.map((record) => {
     const { id, fdu, ...rest } = record;
 
-    // Match what FDU autocomplete uses for options and to populate dependent fields
+    // Match what FDU autocomplete uses for options and to populate dependent fields.
+    // Amount, source, and program hold the eCAPRIS values so saves can detect inherited values.
     const fduAsOption: GridFDUOption | null = fdu
       ? {
           fdu,
           ecapris_funding_id: rest.ecapris_funding_id,
           ecapris_subproject_id: rest.ecapris_subproject_id,
           unit_long_name: rest.unit_long_name,
-          amount: rest.funding_amount,
-          funding_source_id: rest.moped_fund_source?.funding_source_id ?? null,
-          funding_program_id:
-            rest.moped_fund_program?.funding_program_id ?? null,
+          amount: rest.ecapris_funding?.app ?? null,
+          funding_source_id: rest.ecapris_funding?.funding_source_id ?? null,
+          funding_program_id: rest.ecapris_funding?.funding_program_id ?? null,
           moped_fund_source: rest.moped_fund_source,
           moped_fund_program: rest.moped_fund_program,
         }
@@ -130,29 +132,44 @@ export const transformDatabaseToGrid = (
   });
 };
 
+/**
+ * Values stored in moped_proj_funding override eCAPRIS values, so store null when a value
+ * matches the eCAPRIS value and let the combined view inherit it from eCAPRIS
+ */
+export const nullIfSameAsEcapris = <T,>(
+  value: T | null,
+  ecaprisValue: T | null | undefined
+): T | null =>
+  value !== null &&
+  ecaprisValue !== null &&
+  ecaprisValue !== undefined &&
+  value === ecaprisValue
+    ? null
+    : value;
+
 /** Transforms grid row to insert mutation payload */
 export const transformGridToInsertInput = (
   row: FundingRowForGrid
 ): AddProjectFundingMutationVariables["fundingObjects"] => {
-  // If user changes the autopopulated FDU amount from eCAPRIS while drafting, record begins as override
   const rawAmount = row.funding_amount;
   const fundingAmount = rawAmount === null ? null : Number(rawAmount);
-  const shouldUseEcaprisAmount =
-    row.fdu !== null &&
-    fundingAmount !== null &&
-    row.fdu.amount === fundingAmount;
 
   return {
     ecapris_funding_id: row.fdu?.ecapris_funding_id ?? null,
     ecapris_subproject_id: row.fdu?.ecapris_subproject_id ?? null,
     fdu: row.fdu?.fdu ?? null,
     unit_long_name: row.fdu?.unit_long_name ?? null,
-    funding_amount: fundingAmount,
+    funding_amount: nullIfSameAsEcapris(fundingAmount, row.fdu?.amount),
     funding_description: row.funding_description,
-    funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
-    funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
+    funding_program_id: nullIfSameAsEcapris(
+      row.moped_fund_program?.funding_program_id ?? null,
+      row.fdu?.funding_program_id
+    ),
+    funding_source_id: nullIfSameAsEcapris(
+      row.moped_fund_source?.funding_source_id ?? null,
+      row.fdu?.funding_source_id
+    ),
     funding_status_id: row.moped_fund_status?.funding_status_id ?? 1,
-    should_use_ecapris_amount: shouldUseEcaprisAmount,
   };
 };
 
@@ -163,12 +180,20 @@ export const transformGridToUpdateInput = (
   return {
     fdu: row.fdu?.fdu ?? null,
     unit_long_name: row.fdu?.unit_long_name ?? null,
-    funding_amount: row.funding_amount || null,
+    funding_amount: nullIfSameAsEcapris(
+      row.funding_amount || null,
+      row.fdu?.amount
+    ),
     funding_description: row.funding_description,
-    funding_program_id: row.moped_fund_program?.funding_program_id ?? null,
-    funding_source_id: row.moped_fund_source?.funding_source_id ?? null,
+    funding_program_id: nullIfSameAsEcapris(
+      row.moped_fund_program?.funding_program_id ?? null,
+      row.fdu?.funding_program_id
+    ),
+    funding_source_id: nullIfSameAsEcapris(
+      row.moped_fund_source?.funding_source_id ?? null,
+      row.fdu?.funding_source_id
+    ),
     funding_status_id: row.moped_fund_status?.funding_status_id ?? 1, // Default status to 'Tentative'
-    should_use_ecapris_amount: row.should_use_ecapris_amount, // Set by override toggle
   };
 };
 
@@ -208,8 +233,7 @@ const getFduAutocompleteProps = (
   };
 };
 
-// TODO: Update setFieldValue to accept generic or null when migrating LookupAutocompleteComponent to TS captured in #29927
-const fduAutocompleteDependentFields = [
+const fduAutocompleteDependentFields: DependentField<GridFDUOption>[] = [
   {
     fieldName: "unit_long_name",
     setFieldValue: (newValue: GridFDUOption | null) =>
@@ -286,7 +310,7 @@ type UseColumnsProps = {
   handleCancelClick: (id: GridRowId) => () => void;
   handleEditClick: (id: GridRowId) => () => void;
   handleFileAttachmentClick: (id: GridRowId) => () => void;
-  setOverrideFundingRecord: Dispatch<SetStateAction<FundingRowForGrid | null>>;
+  setOverrideFundingRecord: Dispatch<SetStateAction<SavedFundingRow | null>>;
   usingShiftKey: boolean;
   logUserEvent: (event: string) => void;
   refetch: () => Promise<ApolloQueryResult<GetCombinedProjectFundingQuery>>;
@@ -342,11 +366,10 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"ecapris_funding"}
-            options={dataLookups?.ecapris_subproject_funding}
+            options={dataLookups?.ecapris_subproject_funding ?? []}
             fullWidthPopper={true}
             autocompleteProps={{
               ...getFduAutocompleteProps(
@@ -390,13 +413,12 @@ export const useColumns = ({
             <EcaprisOverridableCell
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_source_id}
-              currentValue={row.moped_fund_source?.funding_source_id}
+              currentValue={row.moped_funding_source_id}
               displayValue={row.moped_fund_source?.funding_source_name ?? null}
             />
           );
         },
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
@@ -419,7 +441,7 @@ export const useColumns = ({
             <EcaprisOverridableCell
               row={row}
               ecaprisValue={row.ecapris_funding?.funding_program_id}
-              currentValue={row.moped_fund_program?.funding_program_id}
+              currentValue={row.moped_funding_program_id}
               displayValue={
                 row.moped_fund_program?.funding_program_name ?? null
               }
@@ -427,7 +449,6 @@ export const useColumns = ({
           );
         },
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
@@ -451,11 +472,9 @@ export const useColumns = ({
         valueFormatter: (value: FundingRowFromQuery["moped_fund_status"]) =>
           value?.funding_status_name,
         renderEditCell: (props) => (
-          // @ts-expect-error Migrating LookupAutocompleteComponent to TS captured in #29927
           <LookupAutocompleteComponent
             {...props}
             name={"funding_status"}
-            defaultValue={1}
             options={dataLookups?.moped_fund_status ?? []}
             fullWidthPopper={true}
           />
@@ -474,7 +493,7 @@ export const useColumns = ({
             <EcaprisOverridableCell
               row={row}
               ecaprisValue={row.ecapris_funding?.app}
-              currentValue={row.funding_amount}
+              currentValue={row.moped_funding_amount}
               displayValue={
                 amount === null ? null : currencyFormatter.format(amount)
               }
