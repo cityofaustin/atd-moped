@@ -74,10 +74,12 @@ select_permissions:
         - id
         - is_manual
         - is_synced_from_ecapris
+        - moped_funding_amount
+        - moped_funding_program_id
+        - moped_funding_source_id
         - original_id
         - program_name
         - project_id
-        - should_use_ecapris_amount
         - source_name
         - status_name
         - unit_long_name
@@ -99,10 +101,12 @@ select_permissions:
         - id
         - is_manual
         - is_synced_from_ecapris
+        - moped_funding_amount
+        - moped_funding_program_id
+        - moped_funding_source_id
         - original_id
         - program_name
         - project_id
-        - should_use_ecapris_amount
         - source_name
         - status_name
         - unit_long_name
@@ -124,10 +128,12 @@ select_permissions:
         - id
         - is_manual
         - is_synced_from_ecapris
+        - moped_funding_amount
+        - moped_funding_program_id
+        - moped_funding_source_id
         - original_id
         - program_name
         - project_id
-        - should_use_ecapris_amount
         - source_name
         - status_name
         - unit_long_name

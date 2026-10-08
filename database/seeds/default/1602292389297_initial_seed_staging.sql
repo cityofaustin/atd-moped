@@ -75,10 +75,10 @@ INSERT INTO public.ecapris_subproject_funding (id, ecapris_subproject_id, fao_id
 --
 -- Data for Name: moped_proj_funding; Type: TABLE DATA; Schema: public; Owner: moped
 --
-INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id, should_use_ecapris_amount) VALUES
-(1, 227, '2026-02-05 22:23:49.011335+00', null, 'Latest appropriated amount', 5, '2026-02-05 22:23:49.011335+00', 105682, 'f', '8119 6207 L039', 'Real Ave - Fake Rd to Cool Rd Shared Use Path', '12120.015', 't');
-INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id, should_use_ecapris_amount) VALUES
-(2, 227, '2026-02-05 22:23:49.011335+00', 78910, 'Override of eCAPRIS amount', 5, '2026-02-05 22:23:49.011335+00', 111450, 'f', '8119 2507 C128', 'A Nice Corridor', '12120.015', 'f');
+INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id) VALUES
+(1, 227, '2026-02-05 22:23:49.011335+00', null, 'Latest appropriated amount', 5, '2026-02-05 22:23:49.011335+00', 105682, 'f', '8119 6207 L039', 'Real Ave - Fake Rd to Cool Rd Shared Use Path', '12120.015');
+INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id) VALUES
+(2, 227, '2026-02-05 22:23:49.011335+00', 78910, 'Override of eCAPRIS amount', 5, '2026-02-05 22:23:49.011335+00', 111450, 'f', '8119 2507 C128', 'A Nice Corridor', '12120.015');
 INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, created_at, funding_amount, funding_description, funding_status_id, updated_at, ecapris_funding_id, is_legacy_funding_record, fdu, unit_long_name, ecapris_subproject_id) VALUES
 (3, 229, '2026-02-05 22:23:49.011335+00', 1337, 'Manually entered', 2, '2026-02-05 22:23:49.011335+00', null, 'f', null, null, null);
 

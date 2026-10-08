@@ -1,4 +1,6 @@
-import OverrideFundingForm from "src/views/projects/projectView/ProjectFunding/OverrideFundingForm";
+import OverrideFundingForm, {
+  type OverrideFundingFormProps,
+} from "src/views/projects/projectView/ProjectFunding/OverrideFundingForm";
 import FormDialog from "src/components/FormDialog";
 
 const OverrideFundingDialog = ({
@@ -9,10 +11,11 @@ const OverrideFundingDialog = ({
   handleSnackbar,
   projectId,
   dataLookups,
-}) => {
+}: OverrideFundingFormProps) => {
   return (
+    // @ts-expect-error Migrating FormDialog to TS captured in #30535
     <FormDialog
-      title={`Edit eCAPRIS FDU ${fundingRecord.fdu.fdu}`}
+      title={`Override eCAPRIS FDU ${fundingRecord.fdu?.fdu ?? ""}`}
       open={true}
       handleClose={handleClose}
     >
