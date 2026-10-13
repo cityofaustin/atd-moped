@@ -54,7 +54,7 @@ export const helpItems = [
 export const analysisItems = [
   {
     linkType: "external",
-    link: "https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee",
+    link: "https://experience.arcgis.com/experience/63536ea4e4064a608e73cfed995d4a61",
     title: "Analyze in AGOL",
     Icon: <MapOutlinedIcon fontSize="small" />,
   },
