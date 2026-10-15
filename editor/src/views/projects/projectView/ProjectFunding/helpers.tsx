@@ -512,7 +512,12 @@ export const useColumns = ({
         }),
         valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>
           value === null ? null : currencyFormatter.format(value),
-        renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
+        renderEditCell: (props) => (
+          <DollarAmountIntegerField
+            {...props}
+            appropriatedAmount={props.row.fdu?.amount}
+          />
+        ),
       },
       {
         headerName: "Files",

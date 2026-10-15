@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { TextField } from "@mui/material";
 import {
+  currencyFormatter,
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
 } from "src/utils/numberFormatters";
@@ -18,6 +19,8 @@ interface DollarAmountIntegerFieldProps extends GridRenderEditCellParams<
   error?: boolean;
   /* Error message text from input validation - injected by preProcessEditCellProps */
   errorMessage?: string | null;
+  /** Selected FDU's appropriated amount, if available. */
+  appropriatedAmount?: number | null;
 }
 
 /**
@@ -29,11 +32,13 @@ const DollarAmountIntegerField = ({
   value,
   field,
   hasFocus,
+  appropriatedAmount,
   error = false,
   errorMessage = null,
 }: DollarAmountIntegerFieldProps) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef<HTMLInputElement>(null);
+  const [appropriationError, setAppropriationError] = useState(false);
 
   React.useEffect(() => {
     if (hasFocus) {
@@ -43,14 +48,23 @@ const DollarAmountIntegerField = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = event.target;
-    // First, remove decimal point and trailing characters onChange to handle pasted numbers
-    const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(inputValue);
-
-    // Then, remove all non-integers and coerce string to number
-    const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
+    const valueWithIntegersOnly = inputValue
+      ? removeNonIntegers(removeDecimalsAndTrailingNumbers(inputValue))
+      : "";
     const numericValue =
       valueWithIntegersOnly === "" ? null : Number(valueWithIntegersOnly);
 
+    if (
+      appropriatedAmount !== null &&
+      appropriatedAmount !== undefined &&
+      numericValue !== null &&
+      numericValue >= appropriatedAmount
+    ) {
+      setAppropriationError(true);
+      return;
+    }
+
+    setAppropriationError(false);
     apiRef.current.setEditCellValue({
       id,
       field,
@@ -67,10 +81,22 @@ const DollarAmountIntegerField = ({
       name={field}
       type="text"
       inputMode="numeric"
-      value={value ?? ""}
+      value={
+        value === null || value === undefined || value === ""
+          ? ""
+          : currencyFormatter.format(Number(value))
+      }
       onChange={handleChange}
-      error={error}
-      helperText={error ? errorMessage : null}
+      error={error || appropriationError}
+      helperText={
+        appropriationError &&
+        appropriatedAmount !== null &&
+        appropriatedAmount !== undefined
+          ? `Amount cannot exceed appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
+          : error
+            ? errorMessage
+            : null
+      }
     />
   );
 };
