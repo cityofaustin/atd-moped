@@ -97,6 +97,20 @@ type GridFDUOption = {
   moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
 };
 
+const isGridFDUOption = (value: unknown): value is GridFDUOption =>
+  typeof value === "object" &&
+  value !== null &&
+  "fdu" in value &&
+  typeof value.fdu === "string" &&
+  "ecapris_funding_id" in value &&
+  (typeof value.ecapris_funding_id === "number" ||
+    value.ecapris_funding_id === null) &&
+  "ecapris_subproject_id" in value &&
+  (typeof value.ecapris_subproject_id === "string" ||
+    value.ecapris_subproject_id === null) &&
+  "amount" in value &&
+  (typeof value.amount === "number" || value.amount === null);
+
 /** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
  * @param fundingRecords - array of funding records from the database
  * @return transformed funding records for data grid
@@ -319,6 +333,64 @@ type UseColumnsProps = {
   projectECaprisSubprojectId: string | null;
 };
 
+const getAppropriatedAmount = (
+  fdu: GridFDUOption | null,
+  dataLookups: GetFundingLookupsQuery | undefined,
+  projectECaprisSubprojectId: string | null
+) => {
+  if (!fdu) {
+    return null;
+  }
+
+  const matchingFdu = dataLookups?.ecapris_subproject_funding.find(
+    (option) =>
+      (option.ecapris_funding_id === fdu.ecapris_funding_id &&
+        option.ecapris_subproject_id === fdu.ecapris_subproject_id) ||
+      (option.fdu === fdu.fdu &&
+        option.ecapris_subproject_id ===
+          (fdu.ecapris_subproject_id ?? projectECaprisSubprojectId))
+  );
+
+  return matchingFdu?.amount ?? fdu.amount;
+};
+
+const preProcessFundingAmountEditCellProps = (
+  params: GridPreProcessEditCellProps<
+    FundingRowForGrid["funding_amount"],
+    FundingRowForGrid
+  >,
+  dataLookups: GetFundingLookupsQuery | undefined,
+  projectECaprisSubprojectId: string | null
+) => {
+  // Data Grid provides an edited FDU here; otherwise use the row's existing selection.
+  const hasEditedFdu = Boolean(
+    params.otherFieldsProps && Object.hasOwn(params.otherFieldsProps, "fdu")
+  );
+  const fduValue = hasEditedFdu
+    ? params.otherFieldsProps?.fdu?.value
+    : params.row.fdu;
+  const selectedFdu = isGridFDUOption(fduValue) ? fduValue : null;
+  const appropriatedAmount = getAppropriatedAmount(
+    selectedFdu,
+    dataLookups,
+    projectECaprisSubprojectId
+  );
+  const amount = params.props.value;
+  const exceedsAppropriatedAmount =
+    appropriatedAmount !== null &&
+    amount !== null &&
+    amount !== undefined &&
+    Number(amount) >= appropriatedAmount;
+
+  return {
+    ...params.props,
+    error: exceedsAppropriatedAmount || isAmountOutOfRange(amount ?? null),
+    errorMessage: exceedsAppropriatedAmount
+      ? `Amount must be less than the FDU appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
+      : outOfRangeErrorMessage,
+  };
+};
+
 export const useColumns = ({
   dataLookups,
   fdusArray,
@@ -502,14 +574,15 @@ export const useColumns = ({
         },
         preProcessEditCellProps: (
           params: GridPreProcessEditCellProps<
-            FundingRowFromQuery["funding_amount"],
-            FundingRowFromQuery
+            FundingRowForGrid["funding_amount"],
+            FundingRowForGrid
           >
-        ) => ({
-          ...params.props,
-          error: isAmountOutOfRange(params.props.value ?? null),
-          errorMessage: outOfRangeErrorMessage,
-        }),
+        ) =>
+          preProcessFundingAmountEditCellProps(
+            params,
+            dataLookups,
+            projectECaprisSubprojectId
+          ),
         valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
@@ -581,6 +654,7 @@ export const useColumns = ({
                 handleSaveClick={handleSaveClick}
                 handleEditClick={handleEditClick}
                 handleFileAttachmentClick={handleFileAttachmentClick}
+                errorFields={["funding_amount"]}
                 editDisabled={false}
                 deleteDisabled={false}
               />
