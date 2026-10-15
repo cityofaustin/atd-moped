@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TextField } from "@mui/material";
 import {
   currencyFormatter,
@@ -19,8 +19,6 @@ interface DollarAmountIntegerFieldProps extends GridRenderEditCellParams<
   error?: boolean;
   /* Error message text from input validation - injected by preProcessEditCellProps */
   errorMessage?: string | null;
-  /** Selected FDU's appropriated amount, if available. */
-  appropriatedAmount?: number | null;
 }
 
 /**
@@ -32,13 +30,11 @@ const DollarAmountIntegerField = ({
   value,
   field,
   hasFocus,
-  appropriatedAmount,
   error = false,
   errorMessage = null,
 }: DollarAmountIntegerFieldProps) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef<HTMLInputElement>(null);
-  const [appropriationError, setAppropriationError] = useState(false);
 
   React.useEffect(() => {
     if (hasFocus) {
@@ -54,17 +50,6 @@ const DollarAmountIntegerField = ({
     const numericValue =
       valueWithIntegersOnly === "" ? null : Number(valueWithIntegersOnly);
 
-    if (
-      appropriatedAmount !== null &&
-      appropriatedAmount !== undefined &&
-      numericValue !== null &&
-      numericValue >= appropriatedAmount
-    ) {
-      setAppropriationError(true);
-      return;
-    }
-
-    setAppropriationError(false);
     apiRef.current.setEditCellValue({
       id,
       field,
@@ -87,16 +72,8 @@ const DollarAmountIntegerField = ({
           : currencyFormatter.format(Number(value))
       }
       onChange={handleChange}
-      error={error || appropriationError}
-      helperText={
-        appropriationError &&
-        appropriatedAmount !== null &&
-        appropriatedAmount !== undefined
-          ? `Amount cannot exceed appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
-          : error
-            ? errorMessage
-            : null
-      }
+      error={error}
+      helperText={error ? errorMessage : null}
     />
   );
 };

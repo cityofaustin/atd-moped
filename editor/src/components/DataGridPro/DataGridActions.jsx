@@ -20,6 +20,7 @@ import {
 /** Component for Data Grid table action buttons
  * @param {Number} id - Data Grid row id (same as project id)
  * @param {Array} requiredFields - fields that are required in order to save row
+ * @param {Array} errorFields - fields whose validation errors disable saving
  * @param {Object} rowModesModel - row modes state from data grid
  * @param {Function} handleCancelClick - handles cancel button click, optionally render cancel button if handler is passed
  * @param {Function} handleDeleteClick - handles delete button click, optionally render delete button if handler is passed
@@ -35,6 +36,7 @@ import {
 const DataGridActions = ({
   id,
   requiredFields = [],
+  errorFields = [],
   rowModesModel,
   handleCancelClick = null,
   handleDeleteOpen = null,
@@ -66,6 +68,13 @@ const DataGridActions = ({
         return false;
       }
     }
+
+    for (const field of errorFields) {
+      if (editState[id]?.[field]?.error) {
+        return false;
+      }
+    }
+
     return true;
   });
 
