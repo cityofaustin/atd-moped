@@ -337,6 +337,23 @@ export const useColumns = ({
   projectECaprisSubprojectId,
 }: UseColumnsProps): GridColDef<FundingRowForGrid>[] =>
   useMemo(() => {
+    const getAppropriatedAmount = (row: FundingRowForGrid) => {
+      if (!row.fdu) {
+        return null;
+      }
+
+      const matchingFdu = dataLookups?.ecapris_subproject_funding.find(
+        (option) =>
+          (option.ecapris_funding_id === row.fdu?.ecapris_funding_id &&
+            option.ecapris_subproject_id === row.fdu?.ecapris_subproject_id) ||
+          (option.fdu === row.fdu?.fdu &&
+            option.ecapris_subproject_id ===
+              (row.fdu?.ecapris_subproject_id ?? projectECaprisSubprojectId))
+      );
+
+      return matchingFdu?.amount ?? row.fdu.amount;
+    };
+
     const presentFduStrings = new Set(
       (fdusArray ?? []).map((fdu) => fdu?.fdu).filter(Boolean)
     );
@@ -515,7 +532,7 @@ export const useColumns = ({
         renderEditCell: (props) => (
           <DollarAmountIntegerField
             {...props}
-            appropriatedAmount={props.row.fdu?.amount}
+            appropriatedAmount={getAppropriatedAmount(props.row)}
           />
         ),
       },
