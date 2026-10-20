@@ -97,6 +97,7 @@ type GridFDUOption = {
   moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
 };
 
+// Validate values from Data Grid edit state before treating them as an FDU lookup option.
 const isGridFDUOption = (value: unknown): value is GridFDUOption =>
   typeof value === "object" &&
   value !== null &&
@@ -380,13 +381,13 @@ const preProcessFundingAmountEditCellProps = (
     appropriatedAmount !== null &&
     amount !== null &&
     amount !== undefined &&
-    Number(amount) >= appropriatedAmount;
+    Number(amount) > appropriatedAmount;
 
   return {
     ...params.props,
     error: exceedsAppropriatedAmount || isAmountOutOfRange(amount ?? null),
     errorMessage: exceedsAppropriatedAmount
-      ? `Amount must be less than the FDU appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
+      ? `Amount may not exceed the FDU appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
       : outOfRangeErrorMessage,
   };
 };
