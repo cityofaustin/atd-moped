@@ -97,20 +97,13 @@ type GridFDUOption = {
   moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
 };
 
-// Validate values from Data Grid edit state before treating them as an FDU lookup option.
-const isGridFDUOption = (value: unknown): value is GridFDUOption =>
+const getFduCode = (value: unknown): string | null =>
   typeof value === "object" &&
   value !== null &&
   "fdu" in value &&
-  typeof value.fdu === "string" &&
-  "ecapris_funding_id" in value &&
-  (typeof value.ecapris_funding_id === "number" ||
-    value.ecapris_funding_id === null) &&
-  "ecapris_subproject_id" in value &&
-  (typeof value.ecapris_subproject_id === "string" ||
-    value.ecapris_subproject_id === null) &&
-  "amount" in value &&
-  (typeof value.amount === "number" || value.amount === null);
+  typeof value.fdu === "string"
+    ? value.fdu
+    : null;
 
 /** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
  * @param fundingRecords - array of funding records from the database
@@ -335,24 +328,17 @@ type UseColumnsProps = {
 };
 
 const getAppropriatedAmount = (
-  fdu: GridFDUOption | null,
-  dataLookups: GetFundingLookupsQuery | undefined,
-  projectECaprisSubprojectId: string | null
-) => {
-  if (!fdu) {
+  fduCode: string | null,
+  dataLookups: GetFundingLookupsQuery | undefined
+): number | null => {
+  if (!fduCode) {
     return null;
   }
 
-  const matchingFdu = dataLookups?.ecapris_subproject_funding.find(
-    (option) =>
-      (option.ecapris_funding_id === fdu.ecapris_funding_id &&
-        option.ecapris_subproject_id === fdu.ecapris_subproject_id) ||
-      (option.fdu === fdu.fdu &&
-        option.ecapris_subproject_id ===
-          (fdu.ecapris_subproject_id ?? projectECaprisSubprojectId))
-  );
+  const lookupOptions = dataLookups?.ecapris_subproject_funding ?? [];
+  const matchingFdu = lookupOptions.find((option) => option.fdu === fduCode);
 
-  return matchingFdu?.amount ?? fdu.amount;
+  return matchingFdu?.amount ?? null;
 };
 
 const preProcessFundingAmountEditCellProps = (
@@ -360,21 +346,16 @@ const preProcessFundingAmountEditCellProps = (
     FundingRowForGrid["funding_amount"],
     FundingRowForGrid
   >,
-  dataLookups: GetFundingLookupsQuery | undefined,
-  projectECaprisSubprojectId: string | null
+  dataLookups: GetFundingLookupsQuery | undefined
 ) => {
-  // Data Grid provides an edited FDU here; otherwise use the row's existing selection.
-  const hasEditedFdu = Boolean(
-    params.otherFieldsProps && Object.hasOwn(params.otherFieldsProps, "fdu")
-  );
-  const fduValue = hasEditedFdu
-    ? params.otherFieldsProps?.fdu?.value
-    : params.row.fdu;
-  const selectedFdu = isGridFDUOption(fduValue) ? fduValue : null;
+  const editedFduValue = params.otherFieldsProps?.fdu?.value;
+  const selectedFduCode =
+    editedFduValue === undefined
+      ? (params.row.fdu?.fdu ?? null)
+      : getFduCode(editedFduValue);
   const appropriatedAmount = getAppropriatedAmount(
-    selectedFdu,
-    dataLookups,
-    projectECaprisSubprojectId
+    selectedFduCode,
+    dataLookups
   );
   const amount = params.props.value;
   const exceedsAppropriatedAmount =
@@ -387,7 +368,7 @@ const preProcessFundingAmountEditCellProps = (
     ...params.props,
     error: exceedsAppropriatedAmount || isAmountOutOfRange(amount ?? null),
     errorMessage: exceedsAppropriatedAmount
-      ? `Amount may not exceed the FDU appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
+      ? `Amount must be less than or equal to the FDU appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
       : outOfRangeErrorMessage,
   };
 };
@@ -578,12 +559,7 @@ export const useColumns = ({
             FundingRowForGrid["funding_amount"],
             FundingRowForGrid
           >
-        ) =>
-          preProcessFundingAmountEditCellProps(
-            params,
-            dataLookups,
-            projectECaprisSubprojectId
-          ),
+        ) => preProcessFundingAmountEditCellProps(params, dataLookups),
         valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
