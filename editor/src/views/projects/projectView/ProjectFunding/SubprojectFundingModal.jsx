@@ -97,14 +97,13 @@ const SubprojectFundingModal = ({
       fduRecord.ecapris_subproject_id = eCaprisID;
       fduRecord.fdu = fdu.fdu;
       fduRecord.project_id = projectId;
-      fduRecord.funding_amount = fdu.amount;
       fduRecord.unit_long_name = fdu.unit_long_name;
-      // All imports start as synced from eCAPRIS amounts
-      fduRecord.should_use_ecapris_amount = true;
+      // Amount, source, and program are left null so they are inherited from eCAPRIS
+      fduRecord.funding_amount = null;
+      fduRecord.funding_program_id = null;
+      fduRecord.funding_source_id = null;
       // funding status 5 is "Set Up"
       fduRecord.funding_status_id = 5;
-      fduRecord.funding_program_id = fdu.funding_program_id;
-      fduRecord.funding_source_id = fdu.funding_source_id;
       newFunds.push(fduRecord);
     });
 

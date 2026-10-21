@@ -34,7 +34,6 @@ insert_permissions:
         - funding_status_id
         - is_deleted
         - project_id
-        - should_use_ecapris_amount
         - unit_long_name
     comment: No insert permissions on audit fields
   - role: moped-editor
@@ -54,7 +53,6 @@ insert_permissions:
         - funding_status_id
         - is_deleted
         - project_id
-        - should_use_ecapris_amount
         - unit_long_name
     comment: No insert permissions on audit fields
 select_permissions:
@@ -75,7 +73,6 @@ select_permissions:
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
-        - should_use_ecapris_amount
         - unit_long_name
         - updated_at
         - updated_by_user_id
@@ -98,7 +95,6 @@ select_permissions:
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
-        - should_use_ecapris_amount
         - unit_long_name
         - updated_at
         - updated_by_user_id
@@ -121,7 +117,6 @@ select_permissions:
         - is_legacy_funding_record
         - proj_funding_id
         - project_id
-        - should_use_ecapris_amount
         - unit_long_name
         - updated_at
         - updated_by_user_id
@@ -141,7 +136,6 @@ update_permissions:
         - funding_status_id
         - is_deleted
         - project_id
-        - should_use_ecapris_amount
         - unit_long_name
       filter: {}
       check: null
@@ -161,7 +155,6 @@ update_permissions:
         - funding_status_id
         - is_deleted
         - project_id
-        - should_use_ecapris_amount
         - unit_long_name
       filter: {}
       check: null
