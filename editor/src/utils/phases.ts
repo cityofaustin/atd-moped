@@ -26,6 +26,7 @@ const backgroundColors = {
   success: theme.palette.success.light,
   info: theme.palette.info.main,
   error: theme.palette.error.main,
+  potential_and_on_hold: theme.palette.grey[500],
 };
 
 /**
@@ -86,8 +87,8 @@ export const styleMapping: Record<
     icon: PlayCircleOutlineOutlinedIcon,
   },
   potential: {
-    color: primary,
-    background: backgroundColors.default,
+    color: white,
+    background: backgroundColors.potential_and_on_hold,
     icon: RemoveCircleOutlineOutlinedIcon,
   },
   canceled: {
@@ -96,8 +97,8 @@ export const styleMapping: Record<
     icon: CancelOutlinedIcon,
   },
   on_hold: {
-    color: primary,
-    background: backgroundColors.default,
+    color: white,
+    background: backgroundColors.potential_and_on_hold,
     icon: PauseCircleOutlineOutlinedIcon,
   },
   complete: {
