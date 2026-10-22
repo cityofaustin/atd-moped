@@ -2,7 +2,7 @@
 name: moped-database
 services:
     hasura:
-        image: hasura/graphql-engine:v2.50.3
+        image: hasura/graphql-engine:v2.51.1
         depends_on:
             - moped-pgsql
         expose:
