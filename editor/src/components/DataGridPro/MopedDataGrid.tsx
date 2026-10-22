@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   DataGridPro,
   type DataGridProProps,
@@ -6,6 +7,7 @@ import {
 import type { SxProps, Theme } from "@mui/material";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import MopedDataGridRowClickAwayListener from "./MopedDataGridRowClickAwayListener";
+import MopedDataGridRowClickAwayContext from "./MopedDataGridRowClickAwayContext";
 import useDataGridRowHighlight from "./useDataGridRowHighlight";
 
 type MopedDataGridProps<R extends GridValidRowModel> = DataGridProProps<R> & {
@@ -50,49 +52,52 @@ const MopedDataGrid = <R extends GridValidRowModel>({
     rowSelectionModel,
     rows,
   });
+  const rowClickAwayContextValue = useMemo(
+    () => ({
+      highlightedRowId,
+      onHighlightedRowClickAway: clearHighlightedRow,
+      rowComponent: slots?.row,
+    }),
+    [clearHighlightedRow, highlightedRowId, slots?.row]
+  );
+
   return (
-    <DataGridPro<R>
-      sx={{
-        ...dataGridProStyleOverrides,
-        ...sx,
-      }}
-      slotProps={{
-        ...slotProps,
-        ...(highlightedRowParam && {
-          row: {
-            ...slotProps.row,
-            highlightedRowId,
-            onHighlightedRowClickAway: clearHighlightedRow,
-            rowComponent: slots?.row,
+    <MopedDataGridRowClickAwayContext.Provider value={rowClickAwayContextValue}>
+      <DataGridPro<R>
+        sx={{
+          ...dataGridProStyleOverrides,
+          ...sx,
+        }}
+        slotProps={{
+          ...slotProps,
+          loadingOverlay: {
+            variant: "circular-progress",
+            noRowsVariant: "circular-progress",
           },
-        }),
-        loadingOverlay: {
-          variant: "circular-progress",
-          noRowsVariant: "circular-progress",
-        },
-      }}
-      slots={
-        highlightedRowParam
-          ? {
-              ...slots,
-              row: MopedDataGridRowClickAwayListener,
-            }
-          : slots
-      }
-      density="comfortable"
-      getRowHeight={() => "auto"}
-      hideFooter
-      disableRowSelectionOnClick
-      // Show toolbar if a toolbar slot is provided
-      showToolbar={!!slots?.toolbar}
-      onCellClick={onCellClick}
-      onProcessRowUpdateError={(error) => console.error(error)}
-      getRowId={getRowId}
-      apiRef={gridApiRef}
-      rows={rows}
-      {...props}
-      rowSelectionModel={highlightedRowSelectionModel}
-    />
+        }}
+        slots={
+          highlightedRowParam
+            ? {
+                ...slots,
+                row: MopedDataGridRowClickAwayListener,
+              }
+            : slots
+        }
+        density="comfortable"
+        getRowHeight={() => "auto"}
+        hideFooter
+        disableRowSelectionOnClick
+        // Show toolbar if a toolbar slot is provided
+        showToolbar={!!slots?.toolbar}
+        onCellClick={onCellClick}
+        onProcessRowUpdateError={(error) => console.error(error)}
+        getRowId={getRowId}
+        apiRef={gridApiRef}
+        rows={rows}
+        {...props}
+        rowSelectionModel={highlightedRowSelectionModel}
+      />
+    </MopedDataGridRowClickAwayContext.Provider>
   );
 };
 
