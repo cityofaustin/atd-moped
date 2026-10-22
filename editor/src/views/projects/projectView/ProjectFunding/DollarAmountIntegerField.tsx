@@ -1,6 +1,7 @@
 import React from "react";
 import { TextField } from "@mui/material";
 import {
+  currencyFormatter,
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
 } from "src/utils/numberFormatters";
@@ -44,10 +45,10 @@ const DollarAmountIntegerField = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = event.target;
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
-    const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(inputValue);
-
     // Then, remove all non-integers and coerce string to number
-    const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
+    const valueWithIntegersOnly = inputValue
+      ? removeNonIntegers(removeDecimalsAndTrailingNumbers(inputValue))
+      : "";
     const numericValue =
       valueWithIntegersOnly === "" ? null : Number(valueWithIntegersOnly);
 
@@ -67,7 +68,11 @@ const DollarAmountIntegerField = ({
       name={field}
       type="text"
       inputMode="numeric"
-      value={value ?? ""}
+      value={
+        value === null || value === undefined || value === ""
+          ? ""
+          : currencyFormatter.format(Number(value))
+      }
       onChange={handleChange}
       error={error}
       helperText={error ? errorMessage : null}
