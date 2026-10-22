@@ -97,6 +97,14 @@ type GridFDUOption = {
   moped_fund_program: FundingRowFromQuery["moped_fund_program"] | null;
 };
 
+const getFduCode = (value: unknown): string | null =>
+  typeof value === "object" &&
+  value !== null &&
+  "fdu" in value &&
+  typeof value.fdu === "string"
+    ? value.fdu
+    : null;
+
 /** Transforms database funding records to DataGrid rows with objects to populate autocomplete components
  * @param fundingRecords - array of funding records from the database
  * @return transformed funding records for data grid
@@ -319,6 +327,52 @@ type UseColumnsProps = {
   projectECaprisSubprojectId: string | null;
 };
 
+const getAppropriatedAmount = (
+  fduCode: string | null,
+  dataLookups: GetFundingLookupsQuery | undefined
+): number | null => {
+  if (!fduCode) {
+    return null;
+  }
+
+  const lookupOptions = dataLookups?.ecapris_subproject_funding ?? [];
+  const matchingFdu = lookupOptions.find((option) => option.fdu === fduCode);
+
+  return matchingFdu?.amount ?? null;
+};
+
+const preProcessFundingAmountEditCellProps = (
+  params: GridPreProcessEditCellProps<
+    FundingRowForGrid["funding_amount"],
+    FundingRowForGrid
+  >,
+  dataLookups: GetFundingLookupsQuery | undefined
+) => {
+  const editedFduValue = params.otherFieldsProps?.fdu?.value;
+  const selectedFduCode =
+    editedFduValue === undefined
+      ? (params.row.fdu?.fdu ?? null)
+      : getFduCode(editedFduValue);
+  const appropriatedAmount = getAppropriatedAmount(
+    selectedFduCode,
+    dataLookups
+  );
+  const amount = params.props.value;
+  const exceedsAppropriatedAmount =
+    appropriatedAmount !== null &&
+    amount !== null &&
+    amount !== undefined &&
+    Number(amount) > appropriatedAmount;
+
+  return {
+    ...params.props,
+    error: exceedsAppropriatedAmount || isAmountOutOfRange(amount ?? null),
+    errorMessage: exceedsAppropriatedAmount
+      ? `Amount cannot exceed appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
+      : outOfRangeErrorMessage,
+  };
+};
+
 export const useColumns = ({
   dataLookups,
   fdusArray,
@@ -502,14 +556,10 @@ export const useColumns = ({
         },
         preProcessEditCellProps: (
           params: GridPreProcessEditCellProps<
-            FundingRowFromQuery["funding_amount"],
-            FundingRowFromQuery
+            FundingRowForGrid["funding_amount"],
+            FundingRowForGrid
           >
-        ) => ({
-          ...params.props,
-          error: isAmountOutOfRange(params.props.value ?? null),
-          errorMessage: outOfRangeErrorMessage,
-        }),
+        ) => preProcessFundingAmountEditCellProps(params, dataLookups),
         valueFormatter: (value: FundingRowFromQuery["funding_amount"]) =>
           value === null ? null : currencyFormatter.format(value),
         renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
@@ -581,6 +631,7 @@ export const useColumns = ({
                 handleSaveClick={handleSaveClick}
                 handleEditClick={handleEditClick}
                 handleFileAttachmentClick={handleFileAttachmentClick}
+                errorFields={["funding_amount"]}
                 editDisabled={false}
                 deleteDisabled={false}
               />
