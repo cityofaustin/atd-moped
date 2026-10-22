@@ -3,7 +3,7 @@ import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { GridRow, type GridRowProps } from "@mui/x-data-grid-pro";
 import MopedDataGridRowClickAwayContext from "./MopedDataGridRowClickAwayContext";
 
-function MopedDataGridRowClickAwayListener({ ...rowProps }: GridRowProps) {
+function MopedDataGridRowClickAwayListener(rowProps: GridRowProps) {
   const {
     highlightedRowId,
     onHighlightedRowClickAway,
