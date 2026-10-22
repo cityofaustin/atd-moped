@@ -6,7 +6,7 @@ export const MAPBOX_CONTROL_BUTTON_WIDTH = 29;
 
 export const COLORS = {
   black: "#000",
-  mutedGray: "#a6a2a2",
+  grey: "#e0e0e0",
   pinkBright: "#fc0885",
   pinkLight: "#fc74ba",
   pinkDark: "#b5055f",
@@ -122,10 +122,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.mutedGray,
+        "circle-stroke-color": COLORS.grey,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.mutedGray,
+        "circle-color": COLORS.grey,
         "circle-opacity": 0.9,
       },
     },
@@ -138,7 +138,7 @@ export const MAP_STYLES = {
       type: "line",
       paint: {
         "line-width": lineWidthStops,
-        "line-color": COLORS.mutedGray,
+        "line-color": COLORS.grey,
       },
       layout: {
         "line-cap": "round",
