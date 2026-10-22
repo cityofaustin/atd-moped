@@ -44,6 +44,8 @@ const DollarAmountIntegerField = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = event.target;
+    // First, remove decimal point and trailing characters onChange to handle pasted numbers
+    // Then, remove all non-integers and coerce string to number
     const valueWithIntegersOnly = inputValue
       ? removeNonIntegers(removeDecimalsAndTrailingNumbers(inputValue))
       : "";

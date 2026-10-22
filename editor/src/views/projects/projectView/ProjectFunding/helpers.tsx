@@ -368,7 +368,7 @@ const preProcessFundingAmountEditCellProps = (
     ...params.props,
     error: exceedsAppropriatedAmount || isAmountOutOfRange(amount ?? null),
     errorMessage: exceedsAppropriatedAmount
-      ? `Amount must be less than or equal to the FDU appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
+      ? `Amount cannot exceed appropriated amount of ${currencyFormatter.format(appropriatedAmount)}`
       : outOfRangeErrorMessage,
   };
 };
