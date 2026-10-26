@@ -122,7 +122,7 @@ const TopBar = () => {
           <MobileDropdownMenu />
         </Box>
         <Box sx={{ display: { xs: "none", md: "contents" } }}>
-          {/* @ts-expect-error Migrating DropdownMenu to TS captured in #TBD */}
+          {/* @ts-expect-error Migrating DropdownMenu to TS captured in #30914 */}
           <DropdownMenu
             handleDropdownClick={handleDropdownClick}
             handleDropdownClose={handleDropdownClose}
