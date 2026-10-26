@@ -1,15 +1,18 @@
-import React from "react";
+import { type ReactNode } from "react";
 import FallbackComponent from "src/components/FallbackComponent";
+
+interface ApolloErrorHandlerProps {
+  /** Apollo error returned by useQuery hook or set in ApolloErrorContext */
+  error?: Error | null;
+  /** Children components to render when no error occurs */
+  children: ReactNode;
+}
 
 /**
  * ApolloErrorHandler renders a FallbackComponent when an unexpected Apollo error occurs.
- * @param {Object} error - Apollo error returned by useQuery hook
- * @param {React.ReactNode} children - Children components to render when no error occurs
- * @returns {JSX.Element} - A loading backdrop or the children components or an error fallback component
- * @constructor
  */
-const ApolloErrorHandler = ({ error, children }) => {
-  return <>{error ? <FallbackComponent error={error ?? null} /> : children}</>;
+const ApolloErrorHandler = ({ error, children }: ApolloErrorHandlerProps) => {
+  return error ? <FallbackComponent error={error} /> : children;
 };
 
 export default ApolloErrorHandler;

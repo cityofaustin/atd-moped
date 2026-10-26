@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import { type MouseEvent, useState } from "react";
 import { Link as RouterLink, NavLink } from "react-router";
 import {
+  type AlertColor,
   AppBar,
   Box,
   Toolbar,
   Tabs,
   Tab,
   Alert,
-  useTheme,
 } from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
@@ -16,7 +16,7 @@ import DropdownMenu from "src/layouts/AuthenticatedLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/AuthenticatedLayout/NavBar/NavigationSearchInput";
 import { navigationItems } from "src/layouts/AuthenticatedLayout/helpers";
 
-const getAlertBannerSeverity = (env) => {
+const getAlertBannerSeverity = (env: string): AlertColor => {
   // show an orange banner on local
   // show blue on staging, netlify, test, ...not production
   switch (env) {
@@ -40,11 +40,12 @@ const EnvAlertBanner = () => {
   );
 };
 
-const TopBar = ({ className, ...rest }) => {
-  const theme = useTheme();
-  const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
+const TopBar = () => {
+  const [dropdownAnchorEl, setDropdownAnchorEl] = useState<HTMLElement | null>(
+    null
+  );
 
-  const handleDropdownClick = (event) => {
+  const handleDropdownClick = (event: MouseEvent<HTMLElement>) => {
     setDropdownAnchorEl(event.currentTarget);
   };
 
@@ -57,7 +58,6 @@ const TopBar = ({ className, ...rest }) => {
       sx={{ backgroundColor: "background.paper" }}
       elevation={2}
       position="sticky"
-      {...rest}
     >
       <EnvAlertBanner />
       <Toolbar sx={{ backgroundColor: "background.paper" }}>
@@ -83,23 +83,16 @@ const TopBar = ({ className, ...rest }) => {
                     minWidth: theme.spacing(9.375), // 75px / 8
                     height: theme.spacing(8), // 64px / 8
                     opacity: 1,
+                    // NavLink adds the "active" class when its route matches
+                    // see: https://reactrouter.com/api/components/NavLink#active
+                    "&.active": {
+                      color: theme.palette.primary.main,
+                      borderBottom: `${theme.spacing(0.25)} solid ${theme.palette.primary.main}`, // 2px / 8
+                      fontWeight: 800,
+                    },
                   })}
                   component={NavLink}
                   to={item.href}
-                  style={({ isActive }) =>
-                    // react-router-dom is removing support for "activeClassName" in favor of this isActive prop
-                    // see: https://reactrouter.com/docs/en/v6/upgrading/v5#remove-activeclassname-and-activestyle-props-from-navlink-
-                    isActive
-                      ? {
-                          // theme cannot be passed as a callback through the style prop, so we use useTheme
-                          color: theme.palette.primary.main,
-                          borderColor: theme.palette.primary.main,
-                          borderBottomWidth: theme.spacing(0.25), // 2px / 8
-                          borderStyle: "solid",
-                          fontWeight: 800,
-                        }
-                      : {}
-                  }
                 />
               ))}
             </Tabs>
@@ -129,6 +122,7 @@ const TopBar = ({ className, ...rest }) => {
           <MobileDropdownMenu />
         </Box>
         <Box sx={{ display: { xs: "none", md: "contents" } }}>
+          {/* @ts-expect-error Migrating DropdownMenu to TS captured in #TBD */}
           <DropdownMenu
             handleDropdownClick={handleDropdownClick}
             handleDropdownClose={handleDropdownClose}
