@@ -9,7 +9,7 @@ SELECT
     moped_proj_components.project_component_id        AS component_id,
     moped_proj_components.is_deleted,
     moped_project.project_name,
-    feature_layers.internal_table                     AS "table",
+    feature_layers.internal_table                     AS table,
     feature_layers.reference_layer_primary_key_column AS original_fk,
     moped_components.component_name,
     uniform_features.attributes,

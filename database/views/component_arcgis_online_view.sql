@@ -13,7 +13,8 @@ WITH work_types AS (
 
 council_districts AS (
     SELECT
-        features.component_id AS project_component_id,
+        features.component_id
+            AS project_component_id,
         string_agg(
             DISTINCT features_council_districts.council_district_id::text, ', '::text
         )                     AS council_districts,
@@ -111,15 +112,20 @@ SELECT
     CASE
         WHEN mc.line_representation = true THEN 'Line'::text
         ELSE 'Point'::text
-    END                                         AS geometry_type,
+    END
+        AS geometry_type,
     CASE
         WHEN comp_geography.geometry IS null THEN false
         ELSE true
-    END                                         AS is_mapped,
-    subcomponents.subcomponents                 AS component_subcomponents,
-    work_types.work_types                       AS component_work_types,
+    END
+        AS is_mapped,
+    subcomponents.subcomponents
+        AS component_subcomponents,
+    work_types.work_types
+        AS component_work_types,
     component_tags.component_tags,
-    mpc.description                             AS component_description,
+    mpc.description
+        AS component_description,
     mpc.interim_project_component_id,
     CASE
         WHEN mpc.phase_id IS null THEN plv.substantial_completion_date
@@ -127,24 +133,34 @@ SELECT
             mpc.phase_id IS NOT null AND mpc.completion_date IS null
             THEN null::timestamp with time zone
         ELSE mpc.completion_date
-    END                                         AS substantial_completion_date,
+    END
+        AS substantial_completion_date,
     plv.substantial_completion_date_estimated,
     mpc.srts_id,
-    mpc.location_description                    AS component_location_description,
+    mpc.location_description
+        AS component_location_description,
     plv.project_name,
     plv.project_name_secondary,
     plv.project_name_full,
     plv.project_description,
     plv.ecapris_subproject_id,
     plv.project_website,
-    plv.updated_at                              AS project_updated_at,
-    plv.date_added                              AS project_created_at,
-    mpc.phase_id                                AS component_phase_id,
-    mph.phase_name                              AS component_phase_name,
-    mph.phase_name_simple                       AS component_phase_name_simple,
-    current_phase.phase_id                      AS project_phase_id,
-    current_phase.phase_name                    AS project_phase_name,
-    current_phase.phase_name_simple             AS project_phase_name_simple,
+    plv.updated_at
+        AS project_updated_at,
+    plv.date_added
+        AS project_created_at,
+    mpc.phase_id
+        AS component_phase_id,
+    mph.phase_name
+        AS component_phase_name,
+    mph.phase_name_simple
+        AS component_phase_name_simple,
+    current_phase.phase_id
+        AS project_phase_id,
+    current_phase.phase_name
+        AS project_phase_name,
+    current_phase.phase_name_simple
+        AS project_phase_name_simple,
     coalesce(
         mph.phase_name, current_phase.phase_name
     )                                           AS current_phase_name,
@@ -158,7 +174,8 @@ SELECT
     plv.interim_project_id,
     plv.project_partners,
     plv.task_order_names,
-    plv.funding_source_and_program_names        AS funding_sources,
+    plv.funding_source_and_program_names
+        AS funding_sources,
     plv.project_funding_total,
     plv.project_status_update,
     plv.project_status_update_date_created,
@@ -173,10 +190,14 @@ SELECT
     plv.parent_project_id,
     plv.parent_project_name,
     plv.parent_project_url,
-    plv.parent_project_name                     AS parent_project_name_full,
-    rp.related_project_ids_with_self            AS related_project_ids,
-    rp.related_project_ids_searchable_with_self AS related_project_ids_searchable,
-    plv.knack_project_id                        AS knack_data_tracker_project_record_id,
+    plv.parent_project_name
+        AS parent_project_name_full,
+    rp.related_project_ids_with_self
+        AS related_project_ids,
+    rp.related_project_ids_searchable_with_self
+        AS related_project_ids_searchable,
+    plv.knack_project_id
+        AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text)
     || mpc.project_component_id::text           AS component_url,
@@ -187,33 +208,40 @@ SELECT
         plv.substantial_completion_date_estimated,
         coalesce(mph.phase_name_simple, current_phase.phase_name_simple)
     )                                           AS project_development_status,
-    project_development_status_date.result      AS project_development_status_date,
+    project_development_status_date.result
+        AS project_development_status_date,
     to_char(
         project_development_status_date.result, 'YYYY'::text
     )::integer                                  AS project_development_status_date_calendar_year,
     to_char(
         project_development_status_date.result, 'FMMonth YYYY'::text
-    )                                           AS project_development_status_date_calendar_year_month,
+    )
+        AS project_development_status_date_calendar_year_month,
     to_char(
         project_development_status_date.result, 'YYYY-MM'::text
-    )                                           AS project_development_status_date_calendar_year_month_numeric,
+    )
+        AS project_development_status_date_calendar_year_month_numeric,
     date_part(
         'quarter'::text, project_development_status_date.result
-    )::text                                     AS project_development_status_date_calendar_year_quarter,
+    )::text
+        AS project_development_status_date_calendar_year_quarter,
     CASE
         WHEN
             date_part('quarter'::text, project_development_status_date.result) = 4::double precision
             THEN (to_char(project_development_status_date.result, 'YYYY'::text)::integer + 1)::text
         ELSE to_char(project_development_status_date.result, 'YYYY'::text)
-    END                                         AS project_development_status_date_fiscal_year,
+    END
+        AS project_development_status_date_fiscal_year,
     CASE
         WHEN
             date_part('quarter'::text, project_development_status_date.result) = 4::double precision
             THEN 1::double precision
         ELSE
             date_part('quarter'::text, project_development_status_date.result) + 1::double precision
-    END::text                                   AS project_development_status_date_fiscal_year_quarter,
-    plv.added_by                                AS project_added_by
+    END::text
+        AS project_development_status_date_fiscal_year_quarter,
+    plv.added_by
+        AS project_added_by
 FROM moped_proj_components mpc
 LEFT JOIN
     component_geography_view comp_geography
@@ -229,8 +257,8 @@ LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
 LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
-LEFT JOIN LATERAL
-    (
+LEFT JOIN
+    LATERAL (
         SELECT
             get_project_development_status_date(
                 lpmd.latest::timestamp with time zone,

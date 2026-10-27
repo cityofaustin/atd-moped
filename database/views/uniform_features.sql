@@ -4,7 +4,8 @@ CREATE OR REPLACE VIEW uniform_features AS
 SELECT
     feature_signals.id,
     feature_signals.component_id,
-    'feature_signals'::text AS "table",
+    'feature_signals'::text
+        AS table,
     json_build_object(
         'signal_id',
         feature_signals.signal_id,
@@ -17,7 +18,8 @@ SELECT
     )                       AS attributes,
     feature_signals.geography,
     districts.council_districts,
-    NULL::integer           AS length_feet,
+    NULL::integer
+        AS length_feet,
     feature_signals.created_at,
     feature_signals.updated_at,
     feature_signals.created_by_user_id,
@@ -33,7 +35,8 @@ UNION ALL
 SELECT
     feature_street_segments.id,
     feature_street_segments.component_id,
-    'feature_street_segments'::text AS "table",
+    'feature_street_segments'::text
+        AS table,
     json_build_object(
         'ctn_segment_id',
         feature_street_segments.ctn_segment_id,
@@ -68,7 +71,8 @@ UNION ALL
 SELECT
     feature_intersections.id,
     feature_intersections.component_id,
-    'feature_intersections'::text AS "table",
+    'feature_intersections'::text
+        AS table,
     json_build_object(
         'intersection_id',
         feature_intersections.intersection_id,
@@ -77,7 +81,8 @@ SELECT
     )                             AS attributes,
     feature_intersections.geography,
     districts.council_districts,
-    NULL::integer                 AS length_feet,
+    NULL::integer
+        AS length_feet,
     feature_intersections.created_at,
     feature_intersections.updated_at,
     feature_intersections.created_by_user_id,
@@ -93,7 +98,7 @@ UNION ALL
 SELECT
     feature_drawn_points.id,
     feature_drawn_points.component_id,
-    'feature_drawn_points'::text AS "table",
+    'feature_drawn_points'::text AS table,
     NULL::json                   AS attributes,
     feature_drawn_points.geography,
     districts.council_districts,
@@ -113,7 +118,7 @@ UNION ALL
 SELECT
     feature_drawn_lines.id,
     feature_drawn_lines.component_id,
-    'feature_drawn_lines'::text AS "table",
+    'feature_drawn_lines'::text AS table,
     NULL::json                  AS attributes,
     feature_drawn_lines.geography,
     districts.council_districts,
@@ -133,7 +138,8 @@ UNION ALL
 SELECT
     feature_school_beacons.id,
     feature_school_beacons.component_id,
-    'feature_school_beacons'::text AS "table",
+    'feature_school_beacons'::text
+        AS table,
     json_build_object(
         'school_zone_beacon_id',
         feature_school_beacons.school_zone_beacon_id,
@@ -148,7 +154,8 @@ SELECT
     )                              AS attributes,
     feature_school_beacons.geography,
     districts.council_districts,
-    NULL::integer                  AS length_feet,
+    NULL::integer
+        AS length_feet,
     feature_school_beacons.created_at,
     feature_school_beacons.updated_at,
     feature_school_beacons.created_by_user_id,

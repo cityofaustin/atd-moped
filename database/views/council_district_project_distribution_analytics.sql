@@ -4,9 +4,8 @@ CREATE OR REPLACE VIEW council_district_project_distribution_analytics AS
 WITH area_project_buffers AS (
     SELECT
         projects.project_id,
-        st_buffer(
-            st_transform(projects.geography::geometry, 2277), 100::double precision
-        ) AS buffer_geom
+        st_buffer(st_transform(projects.geography::geometry, 2277), 100::double precision)
+            AS buffer_geom
     FROM project_geography projects
     INNER JOIN moped_project mp ON projects.project_id = mp.project_id
     WHERE
@@ -28,7 +27,8 @@ dissolved_project_buffers AS (
 area_district_aggregates AS (
     SELECT
         project_buffers.project_id,
-        districts.council_district AS council_district_id,
+        districts.council_district
+            AS council_district_id,
         sum(
             st_area(
                 st_intersection(
@@ -58,7 +58,8 @@ project_totals AS (
 
 SELECT
     ada.project_id,
-    ada.council_district_id AS district_id,
+    ada.council_district_id
+        AS district_id,
     round(
         (
             ada.total_area_in_district_sq_ft

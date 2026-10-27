@@ -12,12 +12,13 @@ SELECT
 FROM (SELECT
     feature_signals.id,
     feature_signals.component_id,
-    feature_signals.geography::geometry AS geography,
-    st_exteriorring(
-        st_buffer(feature_signals.geography, 7::double precision)::geometry
-    )                                   AS line_geography,
+    feature_signals.geography::geometry
+        AS geography,
+    st_exteriorring(st_buffer(feature_signals.geography, 7::double precision)::geometry)
+        AS line_geography,
     feature_signals.signal_id,
-    NULL::integer                       AS length_feet
+    NULL::integer
+        AS length_feet
 FROM feature_signals
 WHERE feature_signals.is_deleted = FALSE
 UNION ALL
@@ -34,24 +35,28 @@ UNION ALL
 SELECT
     feature_intersections.id,
     feature_intersections.component_id,
-    feature_intersections.geography::geometry AS geography,
-    st_exteriorring(
-        st_buffer(feature_intersections.geography, 7::double precision)::geometry
-    )                                         AS line_geography,
-    NULL::integer                             AS signal_id,
-    NULL::integer                             AS length_feet
+    feature_intersections.geography::geometry
+        AS geography,
+    st_exteriorring(st_buffer(feature_intersections.geography, 7::double precision)::geometry)
+        AS line_geography,
+    NULL::integer
+        AS signal_id,
+    NULL::integer
+        AS length_feet
 FROM feature_intersections
 WHERE feature_intersections.is_deleted = FALSE
 UNION ALL
 SELECT
     feature_drawn_points.id,
     feature_drawn_points.component_id,
-    feature_drawn_points.geography::geometry AS geography,
-    st_exteriorring(
-        st_buffer(feature_drawn_points.geography, 7::double precision)::geometry
-    )                                        AS line_geography,
-    NULL::integer                            AS signal_id,
-    NULL::integer                            AS length_feet
+    feature_drawn_points.geography::geometry
+        AS geography,
+    st_exteriorring(st_buffer(feature_drawn_points.geography, 7::double precision)::geometry)
+        AS line_geography,
+    NULL::integer
+        AS signal_id,
+    NULL::integer
+        AS length_feet
 FROM feature_drawn_points
 WHERE feature_drawn_points.is_deleted = FALSE
 UNION ALL
@@ -68,12 +73,14 @@ UNION ALL
 SELECT
     feature_school_beacons.id,
     feature_school_beacons.component_id,
-    feature_school_beacons.geography::geometry AS geography,
-    st_exteriorring(
-        st_buffer(feature_school_beacons.geography, 7::double precision)::geometry
-    )                                          AS line_geography,
-    NULL::integer                              AS signal_id,
-    NULL::integer                              AS length_feet
+    feature_school_beacons.geography::geometry
+        AS geography,
+    st_exteriorring(st_buffer(feature_school_beacons.geography, 7::double precision)::geometry)
+        AS line_geography,
+    NULL::integer
+        AS signal_id,
+    NULL::integer
+        AS length_feet
 FROM feature_school_beacons
 WHERE feature_school_beacons.is_deleted = FALSE) feature_union
 GROUP BY component_id;
