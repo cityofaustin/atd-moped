@@ -14,6 +14,5 @@ LEFT JOIN
     component_geography_view comp_geography
     ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN moped_project mp ON mpc.project_id = mp.project_id,
-    LATERAL st_dump(st_geomfromgeojson(comp_geography.geometry)) dump (path, geom)
-WHERE
-    mpc.is_deleted = false AND mp.is_deleted = false AND st_geometrytype(st_geomfromgeojson(comp_geography.geometry)) = 'ST_MultiPoint'::text;
+LATERAL st_dump(st_geomfromgeojson(comp_geography.geometry)) dump(path, geom)
+WHERE mpc.is_deleted = false AND mp.is_deleted = false AND st_geometrytype(st_geomfromgeojson(comp_geography.geometry)) = 'ST_MultiPoint'::text;

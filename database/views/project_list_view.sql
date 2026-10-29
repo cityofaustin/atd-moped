@@ -20,10 +20,14 @@ WITH project_person_list_lookup AS (
 funding_sources_lookup AS (
     SELECT
         cfv.project_id,
-        string_agg(DISTINCT cfv.source_name, ', '::text ORDER BY cfv.source_name)
-            AS funding_source_name,
-        string_agg(DISTINCT cfv.program_name, ', '::text ORDER BY cfv.program_name)
-            AS funding_program_names,
+        string_agg(
+            DISTINCT cfv.source_name, ', '::text
+            ORDER BY cfv.source_name
+        ) AS funding_source_name,
+        string_agg(
+            DISTINCT cfv.program_name, ', '::text
+            ORDER BY cfv.program_name
+        ) AS funding_program_names,
         string_agg(
             DISTINCT
             CASE
@@ -33,7 +37,8 @@ funding_sources_lookup AS (
                 WHEN cfv.source_name IS NOT null THEN cfv.source_name
                 WHEN cfv.program_name IS NOT null THEN cfv.program_name
                 ELSE null::text
-            END, ', '::text ORDER BY (
+            END, ', '::text
+            ORDER BY (
                 CASE
                     WHEN
                         cfv.source_name IS NOT null AND cfv.program_name IS NOT null
@@ -43,10 +48,10 @@ funding_sources_lookup AS (
                     ELSE null::text
                 END
             )
-        )
-            AS funding_source_and_program_names,
-        sum(cfv.amount)
-            AS project_funding_total
+        ) AS funding_source_and_program_names,
+        sum(
+            cfv.amount
+        ) AS project_funding_total
     FROM combined_project_funding_view cfv
     INNER JOIN moped_project ON cfv.project_id = moped_project.project_id
     WHERE
@@ -85,8 +90,8 @@ work_activities AS (
             mpwa.contract_number, ', '::text
         ) AS contract_numbers
     FROM moped_proj_work_activity mpwa
-    LEFT JOIN
-        LATERAL jsonb_array_elements(mpwa.task_orders) task_order_objects (task_order_object)
+    LEFT JOIN LATERAL
+        jsonb_array_elements(mpwa.task_orders) task_order_objects (task_order_object)
         ON true
     WHERE mpwa.is_deleted = false
     GROUP BY mpwa.project_id
@@ -112,7 +117,7 @@ project_district_association AS (
         INNER JOIN features_council_districts fcd ON f.id = fcd.feature_id
         WHERE f.is_deleted = false AND mpc.is_deleted = false
     ),
-                
+
 parent_child_project_map AS (
         SELECT
             parent_projects.project_id,
@@ -138,24 +143,16 @@ parent_child_project_map AS (
             WHERE project_and_children_districts.council_district_id IS NOT null
         ) AS project_and_child_project_council_districts,
         nullif(
-            array_to_string(
-                array_agg(
-                    DISTINCT project_districts.council_district_id
-                    ORDER BY project_districts.council_district_id
-                ),
-                ', '::text
-            ),
-            ''::text
+            array_to_string(array_agg(
+                DISTINCT project_districts.council_district_id
+                ORDER BY project_districts.council_district_id
+            ), ', '::text), ''::text
         ) AS project_council_districts_string,
         nullif(
-            array_to_string(
-                array_agg(
-                    DISTINCT project_and_children_districts.council_district_id
-                    ORDER BY project_and_children_districts.council_district_id
-                ),
-                ', '::text
-            ),
-            ''::text
+            array_to_string(array_agg(
+                DISTINCT project_and_children_districts.council_district_id
+                ORDER BY project_and_children_districts.council_district_id
+            ), ', '::text), ''::text
         ) AS project_and_child_project_council_districts_string
     FROM moped_project projects
     LEFT JOIN
@@ -211,7 +208,10 @@ phase_dates AS (
 project_component_work_types AS (
     SELECT
         mpc.project_id,
-        string_agg(DISTINCT mwt.name, ', '::text ORDER BY mwt.name) AS component_work_type_names
+        string_agg(
+            DISTINCT mwt.name, ', '::text
+            ORDER BY mwt.name
+        ) AS component_work_type_names
     FROM moped_proj_components mpc
     LEFT JOIN
         moped_proj_component_work_types mpcwt
@@ -310,36 +310,27 @@ SELECT
     mp.is_deleted,
     mp.updated_at,
     current_phase.phase_name                                                   AS current_phase,
-    current_phase.phase_key
-        AS current_phase_key,
-    current_phase.phase_name_simple
-        AS current_phase_simple,
+    current_phase.phase_key                                                    AS current_phase_key,
+    current_phase.phase_name_simple                                            AS current_phase_simple,
     ppll.project_team_members,
-    me.entity_name
-        AS project_sponsor,
+    me.entity_name                                                             AS project_sponsor,
     mel.entity_name                                                            AS project_lead,
-    mpps.name
-        AS public_process_status,
+    mpps.name                                                                  AS public_process_status,
     mp.interim_project_id,
     mp.parent_project_id,
     mp.knack_project_id,
     'https://mobility.austin.gov/moped/projects/'::text || mp.project_id::text AS project_url,
     'https://mobility.austin.gov/moped/projects/'::text
-    || mp.parent_project_id::text
-        AS parent_project_url,
-    proj_status_update.project_note
-        AS project_status_update,
-    proj_status_update.date_created
-        AS project_status_update_date_created,
-    proj_status_update.author
-        AS project_status_update_author,
+    || mp.parent_project_id::text                                              AS parent_project_url,
+    proj_status_update.project_note                                            AS project_status_update,
+    proj_status_update.date_created                                            AS project_status_update_date_created,
+    proj_status_update.author                                                  AS project_status_update_author,
     work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
-    parent_project.project_name_full
-        AS parent_project_name,
+    parent_project.project_name_full                                           AS parent_project_name,
     cpl.children_project_ids,
     project_partners_lookup.project_partners,
     project_feature_lookup.project_feature,
@@ -348,13 +339,11 @@ SELECT
     fsl.funding_source_and_program_names,
     fsl.project_funding_total,
     construction_start_dates.construction_start_date,
-    phase_dates.min_confirmed_phase_date
-        AS substantial_completion_date,
+    phase_dates.min_confirmed_phase_date                                       AS substantial_completion_date,
     CASE
         WHEN phase_dates.min_confirmed_phase_date IS NOT null THEN null::timestamp with time zone
         ELSE phase_dates.min_estimated_phase_date
-    END
-        AS substantial_completion_date_estimated,
+    END                                                                        AS substantial_completion_date_estimated,
     project_roles_lookup.project_inspector,
     project_roles_lookup.project_designer,
     project_tags_lookup.project_tags,

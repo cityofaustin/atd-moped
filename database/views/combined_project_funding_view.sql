@@ -3,42 +3,34 @@
 CREATE OR REPLACE VIEW combined_project_funding_view AS
 SELECT
     'moped_'::text
-    || moped_proj_funding.proj_funding_id
-        AS id,
-    moped_proj_funding.proj_funding_id
-        AS original_id,
+    || moped_proj_funding.proj_funding_id    AS id,
+    moped_proj_funding.proj_funding_id       AS original_id,
     moped_proj_funding.created_at,
     moped_proj_funding.updated_at,
     moped_proj_funding.project_id,
     moped_proj_funding.fdu,
     moped_proj_funding.unit_long_name,
-    COALESCE(moped_proj_funding.funding_amount, ecapris_subproject_funding.app)
-        AS amount,
-    moped_proj_funding.funding_description
-        AS description,
-    moped_fund_sources.funding_source_name
-        AS source_name,
-    COALESCE(moped_proj_funding.funding_source_id, ecapris_subproject_funding.funding_source_id)
-        AS funding_source_id,
-    moped_fund_status.funding_status_name
-        AS status_name,
+    COALESCE(
+        moped_proj_funding.funding_amount, ecapris_subproject_funding.app
+    )                                        AS amount,
+    moped_proj_funding.funding_description   AS description,
+    moped_fund_sources.funding_source_name   AS source_name,
+    COALESCE(
+        moped_proj_funding.funding_source_id, ecapris_subproject_funding.funding_source_id
+    )                                        AS funding_source_id,
+    moped_fund_status.funding_status_name    AS status_name,
     moped_proj_funding.funding_status_id,
-    moped_fund_programs.funding_program_name
-        AS program_name,
-    COALESCE(moped_proj_funding.funding_program_id, ecapris_subproject_funding.funding_program_id)
-        AS funding_program_id,
-    moped_proj_funding.ecapris_funding_id
-        AS fao_id,
+    moped_fund_programs.funding_program_name AS program_name,
+    COALESCE(
+        moped_proj_funding.funding_program_id, ecapris_subproject_funding.funding_program_id
+    )                                        AS funding_program_id,
+    moped_proj_funding.ecapris_funding_id    AS fao_id,
     moped_proj_funding.ecapris_subproject_id,
-    false
-        AS is_synced_from_ecapris,
+    false                                    AS is_synced_from_ecapris,
     moped_proj_funding.is_manual,
-    moped_proj_funding.funding_amount
-        AS moped_funding_amount,
-    moped_proj_funding.funding_source_id
-        AS moped_funding_source_id,
-    moped_proj_funding.funding_program_id
-        AS moped_funding_program_id
+    moped_proj_funding.funding_amount        AS moped_funding_amount,
+    moped_proj_funding.funding_source_id     AS moped_funding_source_id,
+    moped_proj_funding.funding_program_id    AS moped_funding_program_id
 FROM moped_proj_funding
 LEFT JOIN
     ecapris_subproject_funding
@@ -63,39 +55,27 @@ UNION ALL
 SELECT
     (('ecapris_'::text || ecapris_subproject_funding.id) || '_moped_'::text)
     || moped_project.project_id              AS id,
-    ecapris_subproject_funding.id
-        AS original_id,
+    ecapris_subproject_funding.id            AS original_id,
     ecapris_subproject_funding.created_at,
     ecapris_subproject_funding.updated_at,
     moped_project.project_id,
     ecapris_subproject_funding.fdu,
     ecapris_subproject_funding.unit_long_name,
-    ecapris_subproject_funding.app
-        AS amount,
-    null::text
-        AS description,
-    moped_fund_sources.funding_source_name
-        AS source_name,
+    ecapris_subproject_funding.app           AS amount,
+    null::text                               AS description,
+    moped_fund_sources.funding_source_name   AS source_name,
     ecapris_subproject_funding.funding_source_id,
-    'Set up'::text
-        AS status_name,
-    5
-        AS funding_status_id,
-    moped_fund_programs.funding_program_name
-        AS program_name,
+    'Set up'::text                           AS status_name,
+    5                                        AS funding_status_id,
+    moped_fund_programs.funding_program_name AS program_name,
     ecapris_subproject_funding.funding_program_id,
     ecapris_subproject_funding.fao_id,
     ecapris_subproject_funding.ecapris_subproject_id,
-    true
-        AS is_synced_from_ecapris,
-    false
-        AS is_manual,
-    null::integer
-        AS moped_funding_amount,
-    null::integer
-        AS moped_funding_source_id,
-    null::integer
-        AS moped_funding_program_id
+    true                                     AS is_synced_from_ecapris,
+    false                                    AS is_manual,
+    null::integer                            AS moped_funding_amount,
+    null::integer                            AS moped_funding_source_id,
+    null::integer                            AS moped_funding_program_id
 FROM ecapris_subproject_funding
 LEFT JOIN
     moped_fund_sources
