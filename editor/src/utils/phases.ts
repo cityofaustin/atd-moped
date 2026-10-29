@@ -87,7 +87,7 @@ export const styleMapping: Record<
     icon: PlayCircleOutlineOutlinedIcon,
   },
   potential: {
-    color: white,
+    color: primary,
     background: backgroundColors.potential_and_on_hold,
     icon: RemoveCircleOutlineOutlinedIcon,
   },
@@ -97,7 +97,7 @@ export const styleMapping: Record<
     icon: CancelOutlinedIcon,
   },
   on_hold: {
-    color: white,
+    color: primary,
     background: backgroundColors.potential_and_on_hold,
     icon: PauseCircleOutlineOutlinedIcon,
   },
