@@ -89,7 +89,7 @@
     "vite": "^8.3.5",
     "vite-plugin-checker": "^0.14.1",
     "vite-plugin-graphql-codegen": "^4.0.1",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "graphql": "^16.0.0"
