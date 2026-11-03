@@ -1,4 +1,4 @@
-import React from "react";
+import type { MouseEvent } from "react";
 import {
   Button,
   Divider,
@@ -16,17 +16,24 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import UserInfo from "src/views/account/UserInfo";
 import { helpItems, analysisItems } from "./menuConfig";
 
+interface DropdownMenuProps {
+  /** Opens the menu, anchoring it to the clicked element */
+  handleDropdownClick: (event: MouseEvent<HTMLElement>) => void;
+  /** Closes the menu */
+  handleDropdownClose: () => void;
+  /** Element the menu is anchored to, menu is closed when null */
+  dropdownAnchorEl: HTMLElement | null;
+}
+
 /**
  * Renders Dropdown Menu on screens above Sm breakpoint
  * See https://material-ui.com/components/menus/ and https://material-ui.com/api/popover/
- * @return {JSX.Element}
- * @constructor
  */
 const DropdownMenu = ({
   handleDropdownClick,
   handleDropdownClose,
   dropdownAnchorEl,
-}) => {
+}: DropdownMenuProps) => {
   const navigate = useNavigate();
 
   return (
