@@ -5,6 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  type DialogProps,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -22,17 +23,17 @@ interface FormDialogProps {
   /**  handles closing the dialog */
   handleClose: () => void;
   /** handles saving the form */
-  handleSave: () => void;
+  handleSave?: () => void;
   /**  handles canceling the form */
   handleCancel: () => void;
   /** MUI Dialog boolean that controls whether the dialog is open or not */
-  open: any;
+  open: DialogProps["open"];
   /**  React children elements */
   children: ReactNode;
   /** boolean that controls whether the dialog action buttons are shown or not */
   showDialogActions: boolean;
   /** additional props to pass to the MUI Dialog component */
-  dialogProps: any;
+  dialogProps?: Partial<DialogProps>;
 }
 
 const FormDialog = ({
