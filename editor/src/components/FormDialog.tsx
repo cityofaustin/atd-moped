@@ -19,19 +19,19 @@ interface FormDialogProps {
   /** label for the save button */
   saveButtonLabel?: string;
   /** boolean that controls whether the save button is disabled or not */
-  saveDisabled: boolean;
+  saveDisabled?: boolean;
   /**  handles closing the dialog */
   handleClose: () => void;
   /** handles saving the form */
   handleSave?: () => void;
   /**  handles canceling the form */
-  handleCancel: () => void;
+  handleCancel?: () => void;
   /** MUI Dialog boolean that controls whether the dialog is open or not */
   open: DialogProps["open"];
   /**  React children elements */
   children: ReactNode;
   /** boolean that controls whether the dialog action buttons are shown or not */
-  showDialogActions: boolean;
+  showDialogActions?: boolean;
   /** additional props to pass to the MUI Dialog component */
   dialogProps?: Partial<DialogProps>;
 }
