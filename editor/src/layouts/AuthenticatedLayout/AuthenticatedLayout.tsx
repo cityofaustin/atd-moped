@@ -52,7 +52,6 @@ const AuthenticatedLayout = () => {
       }}
     >
       <Box>
-        {/* @ts-expect-error Migrating TopBar to TS captured in #30450 */}
         <TopBar />
       </Box>
       <Box
@@ -63,7 +62,6 @@ const AuthenticatedLayout = () => {
           flexDirection: "column",
         }}
       >
-        {/* @ts-expect-error Migrating ApolloErrorHandler to TS captured in #30450 */}
         <ApolloErrorHandler error={apolloError}>
           <Outlet />
         </ApolloErrorHandler>
