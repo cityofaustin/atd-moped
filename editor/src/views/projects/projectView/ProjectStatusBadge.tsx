@@ -64,7 +64,6 @@ const ProjectStatusBadge = ({
 
   return (
     <Chip
-      component="span"
       sx={getChipStyles({ phaseKey, condensed, clickable, leftMargin })}
       icon={<ChipIcon sx={{ color: style.color }} color="action" />}
       label={phaseName || defaultLabel}
