@@ -1,29 +1,41 @@
+import { type ReactNode } from "react";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  type DialogProps,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 
-/**
- * Dialog wrapper component for displaying forms with optional save and cancel action buttons
- * This supports our RHF forms with their own buttons and forms that manage their own state.
- * @param {string} title - title of the dialog
- * @param {string} saveButtonLabel - label for the save button
- * @param {boolean} saveDisabled - boolean that controls whether the save button is disabled or not
- * @param {function} handleClose - handles closing the dialog
- * @param {function} handleSave - handles saving the form
- * @param {function} handleCancel - handles canceling the form
- * @param {boolean} open - MUI Dialog boolean that controls whether the dialog is open or not
- * @param {Object} children - React children elements
- * @param {boolean} showDialogActions - boolean that controls whether the dialog action buttons are shown or not
- * @param {Object} dialogProps - additional props to pass to the MUI Dialog component
- * @returns {JSX.Element}
- */
+/** Dialog wrapper component for displaying forms with optional save and cancel action buttons
+ * This supports our RHF forms with their own buttons and forms that manage their own state. */
+interface FormDialogProps {
+  /** title of the dialog */
+  title: string;
+  /** label for the save button */
+  saveButtonLabel?: string;
+  /** boolean that controls whether the save button is disabled or not */
+  saveDisabled?: boolean;
+  /**  handles closing the dialog */
+  handleClose: () => void;
+  /** handles saving the form */
+  handleSave?: () => void;
+  /**  handles canceling the form */
+  handleCancel?: () => void;
+  /** MUI Dialog boolean that controls whether the dialog is open or not */
+  open: DialogProps["open"];
+  /**  React children elements */
+  children: ReactNode;
+  /** boolean that controls whether the dialog action buttons are shown or not */
+  showDialogActions?: boolean;
+  /** additional props to pass to the MUI Dialog component */
+  dialogProps?: Partial<DialogProps>;
+}
+
 const FormDialog = ({
   title,
   saveButtonLabel = "Save",
@@ -34,7 +46,7 @@ const FormDialog = ({
   children,
   showDialogActions = false,
   dialogProps = {},
-}) => {
+}: FormDialogProps) => {
   return (
     <Dialog
       open={open}
