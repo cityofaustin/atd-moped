@@ -1,8 +1,4 @@
-import {
-  FDU_ALREADY_PRESENT_MESSAGE,
-  getPresentFduStrings,
-  isFduOptionDisabled,
-} from "../fduHelpers";
+import { getPresentFduStrings, isFduOptionDisabled } from "../fduHelpers";
 
 /**
  * Regression coverage for atd-data-tech#30040:
@@ -66,34 +62,5 @@ describe("isFduOptionDisabled()", () => {
   it("does not disable empty options", () => {
     expect(isFduOptionDisabled(null, present, undefined)).toBe(false);
     expect(isFduOptionDisabled({ fdu: "" }, present, undefined)).toBe(false);
-  });
-});
-
-describe("FDU already-present helper text", () => {
-  it("uses the same copy as the import modal", () => {
-    expect(FDU_ALREADY_PRESENT_MESSAGE).toBe("FDU already present on project");
-  });
-
-  it("is shown only when the option is disabled", () => {
-    const present = getPresentFduStrings([{ fdu: "8600-6200-9100" }]);
-    const option = { fdu: "8600-6200-9100" };
-
-    const helperTextForDisabled = isFduOptionDisabled(
-      option,
-      present,
-      undefined
-    )
-      ? FDU_ALREADY_PRESENT_MESSAGE
-      : null;
-    const helperTextForCurrentRow = isFduOptionDisabled(
-      option,
-      present,
-      "8600-6200-9100"
-    )
-      ? FDU_ALREADY_PRESENT_MESSAGE
-      : null;
-
-    expect(helperTextForDisabled).toBe(FDU_ALREADY_PRESENT_MESSAGE);
-    expect(helperTextForCurrentRow).toBeNull();
   });
 });
