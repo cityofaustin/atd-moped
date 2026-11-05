@@ -1,0 +1,75 @@
+#
+# Runs Playwright DB and E2E tests against a local Postgres + Hasura stack
+#
+name: "Editor E2E tests"
+
+on:
+  pull_request:
+    paths:
+      - "editor/**"
+      - "database/**"
+      - ".github/workflows/editor-e2e.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Playwright
+    # Fork and Dependabot PRs can't read the test users' login secrets
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: editor/.nvmrc
+          cache: npm
+          cache-dependency-path: editor/package-lock.json
+
+      - name: Install the Hasura CLI
+        env:
+          VERSION: v2.51.1
+        run: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+
+      - name: Start Postgres and Hasura, then apply migrations, metadata and seeds
+        working-directory: database
+        run: |
+          ./hasura-cluster setenv local
+          ./hasura-cluster start
+
+      - name: Install editor dependencies
+        working-directory: editor
+        run: npm ci
+
+      - name: Install Chromium
+        working-directory: editor
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        working-directory: editor
+        env:
+          E2E_EDITOR_EMAIL: ${{ secrets.E2E_EDITOR_EMAIL }}
+          E2E_EDITOR_PASSWORD: ${{ secrets.E2E_EDITOR_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+        run: npm run test:e2e
+
+      - name: Show Hasura logs
+        if: failure()
+        working-directory: database
+        run: docker compose logs hasura --tail=100
+
+      # Screenshots and video only. Traces hold login tokens, so they stay out of
+      # this public repo's artifacts (see editor/e2e/README.md).
+      - name: Upload the Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: editor/playwright-report/
+          retention-days: 7
