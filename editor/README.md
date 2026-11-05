@@ -37,6 +37,20 @@ npm run dev
 
 8. To login, locate the username and pw in the DTS password store under the name "Moped Test Editor (local, staging, prod)" or "Moped Test Admin (local, staging, prod)"
 
+## Running tests
+
+We use [Vitest](https://vitest.dev) for unit tests. Tests live next to the code they cover, in a `test/` folder (for example `src/utils/test/urls.test.js`).
+
+```shell
+# Re-run tests as you edit files
+npm test
+
+# Run all tests once, as the Netlify build does
+npm run test:ci
+```
+
+Netlify builds run `test:ci` after lint and typecheck, so a failing test fails the deploy preview. Date and time tests run in the `America/Chicago` time zone, set in `vitest.config.mjs`.
+
 ## GraphQL Codegen
 
 We use [GraphQL Codegen](https://the-guild.dev/graphql/codegen) with the `client-preset` to generate TypeScript types from our Hasura schema and GraphQL operations. The generated files live in `src/gql/` and are committed to the repo so we can type check in the Netlify build steps.

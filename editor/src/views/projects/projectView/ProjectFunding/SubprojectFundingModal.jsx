@@ -7,7 +7,7 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import { useQuery } from "@apollo/client";
 import { ECAPRIS_SUBPROJECT_FDU_QUERY } from "src/queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
-import { FDU_ALREADY_PRESENT_MESSAGE } from "src/views/projects/projectView/ProjectFunding/helpers";
+import { FDU_ALREADY_PRESENT_MESSAGE } from "src/views/projects/projectView/ProjectFunding/fduHelpers";
 
 const PAGE_SIZE = 10;
 

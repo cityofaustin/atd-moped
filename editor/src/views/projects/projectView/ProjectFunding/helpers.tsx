@@ -44,8 +44,11 @@ import {
   type UpdateProjectFundingMutationVariables,
 } from "src/gql/graphql";
 import { type HandleSnackbar } from "src/components/useFeedbackSnackbar";
-
-export const FDU_ALREADY_PRESENT_MESSAGE = "FDU already present on project";
+import {
+  FDU_ALREADY_PRESENT_MESSAGE,
+  getPresentFduStrings,
+  isFduOptionDisabled,
+} from "src/views/projects/projectView/ProjectFunding/fduHelpers";
 
 export type FundingRowsFromQuery =
   GetCombinedProjectFundingQuery["combined_project_funding_view"];
@@ -210,15 +213,13 @@ export const transformGridToUpdateInput = (
  * @param {string|null|undefined} currentFdu - FDU on the row being edited (kept selectable)
  */
 const getFduAutocompleteProps = (
-  presentFduStrings: Set<string | undefined>,
+  presentFduStrings: Set<string | null | undefined>,
   currentFdu: string | null | undefined
 ) => {
   const getFduOptionLabel = (option: GridFDUOption) =>
     option.fdu ? `${option.fdu} - ${option.unit_long_name}` : "";
   const isFduAlreadyPresent = (option: GridFDUOption) =>
-    Boolean(option?.fdu) &&
-    presentFduStrings.has(option.fdu) &&
-    option.fdu !== currentFdu;
+    isFduOptionDisabled(option, presentFduStrings, currentFdu);
 
   return {
     getOptionLabel: getFduOptionLabel,
@@ -391,9 +392,7 @@ export const useColumns = ({
   projectECaprisSubprojectId,
 }: UseColumnsProps): GridColDef<FundingRowForGrid>[] =>
   useMemo(() => {
-    const presentFduStrings = new Set(
-      (fdusArray ?? []).map((fdu) => fdu?.fdu).filter(Boolean)
-    );
+    const presentFduStrings = getPresentFduStrings(fdusArray);
 
     return [
       {
