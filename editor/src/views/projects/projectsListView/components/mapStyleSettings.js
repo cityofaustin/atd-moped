@@ -59,7 +59,7 @@ export const MAP_STYLES = {
         "circle-stroke-color": COLORS.white,
         "circle-stroke-width": 1,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.mutedGray,
+        "circle-color": COLORS.grey,
         "circle-opacity": 0.9,
       },
     },
@@ -69,7 +69,7 @@ export const MAP_STYLES = {
       type: "line",
       paint: {
         "line-width": lineWidthStops,
-        "line-color": COLORS.mutedGray,
+        "line-color": COLORS.grey,
         "line-opacity": 0.9,
       },
       layout: {
