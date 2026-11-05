@@ -21,6 +21,8 @@ export default tseslint.config(
       "**/*.test.{js,jsx,ts,tsx}",
       "src/gql/**",
       "**/test/**",
+      "playwright-report",
+      "test-results",
     ],
   },
   {
