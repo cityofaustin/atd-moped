@@ -1,31 +1,15 @@
 import { type MouseEvent, useState } from "react";
 import { Link as RouterLink, NavLink } from "react-router";
-import {
-  type AlertColor,
-  AppBar,
-  Box,
-  Toolbar,
-  Tabs,
-  Tab,
-  Alert,
-} from "@mui/material";
+import { AppBar, Box, Toolbar, Tabs, Tab, Alert } from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "src/layouts/AuthenticatedLayout/NavBar/MobileDropdownMenu";
 import DropdownMenu from "src/layouts/AuthenticatedLayout/NavBar/DropdownMenu";
 import NavigationSearchInput from "src/layouts/AuthenticatedLayout/NavBar/NavigationSearchInput";
-import { navigationItems } from "src/layouts/AuthenticatedLayout/helpers";
-
-const getAlertBannerSeverity = (env: string): AlertColor => {
-  // show an orange banner on local
-  // show blue on staging, netlify, test, ...not production
-  switch (env) {
-    case "local":
-      return "warning";
-    default:
-      return "info";
-  }
-};
+import {
+  getAlertBannerSeverity,
+  navigationItems,
+} from "src/layouts/AuthenticatedLayout/helpers";
 
 const EnvAlertBanner = () => {
   const env = import.meta.env.VITE_APP_ENV;
