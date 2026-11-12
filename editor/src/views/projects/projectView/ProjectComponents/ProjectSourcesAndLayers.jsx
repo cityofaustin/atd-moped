@@ -75,6 +75,20 @@ const ProjectSourcesAndLayers = ({
         <Layer
           beforeId="components-placeholder"
           {...{
+            ...MAP_STYLES["component-lines-casing"].layerProps,
+            layout: {
+              ...MAP_STYLES["component-lines-casing"].layerProps.layout,
+              visibility:
+                isViewingComponents || shouldShowMutedFeatures
+                  ? "visible"
+                  : "none",
+            },
+          }}
+          id="project-lines-casing"
+        />
+        <Layer
+          beforeId="components-placeholder"
+          {...{
             ...MAP_STYLES["project-lines"].layerProps,
             layout: {
               ...MAP_STYLES["project-lines"].layerProps.layout,

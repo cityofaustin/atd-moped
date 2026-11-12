@@ -4,20 +4,7 @@ import theme from "src/theme/index";
 export const MAPBOX_PADDING_PIXELS = 10;
 export const MAPBOX_CONTROL_BUTTON_WIDTH = 29;
 
-export const COLORS = {
-  black: "#000",
-  grey: "#e0e0e0",
-  pinkBright: "#fc0885",
-  pinkLight: "#fc74ba",
-  pinkDark: "#b5055f",
-  bluePrimary: "#1276D1",
-  blueDark: "#1069bc",
-  blueLight: "#a1cdf7",
-  steel: "#607d8f",
-  white: "#fff",
-  orange: "#ffb300",
-  lightOrange: "#ffc94a",
-};
+export const COLORS = theme.palette.map;
 
 export const pointsCircleRadiusStops = {
   stops: [
@@ -35,6 +22,14 @@ export const lineWidthStops = {
   ],
 };
 
+const lineCasingWidthStops = {
+  stops: [
+    // Keep a 1px casing around component lines at each zoom level.
+    [10, 4],
+    [20, 12],
+  ],
+};
+
 /**
  * Sets the interactivity and styles of the map layers
  * isInteractive - whether the layer is included in the map's interactiveLayerIds array
@@ -42,6 +37,20 @@ export const lineWidthStops = {
  * Note - we set the underlays as interactive to give users more clickable area
  */
 export const MAP_STYLES = {
+  "component-lines-casing": {
+    isInteractive: false,
+    layerProps: {
+      id: "component-lines-casing",
+      type: "line",
+      paint: {
+        "line-width": lineCasingWidthStops,
+        "line-color": COLORS.white,
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
   "project-points": {
     isInteractive: true,
     layerProps: {
@@ -86,10 +95,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.green,
+        "circle-stroke-color": COLORS.green,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.greenLight,
+        "circle-color": COLORS.greenLight,
         "circle-opacity": 0.9,
       },
     },
@@ -106,7 +115,7 @@ export const MAP_STYLES = {
           "case",
           ["boolean", ["feature-state", "hover"], false],
           COLORS.pinkDark,
-          theme.palette.map.green,
+          COLORS.green,
         ],
       },
       layout: {
@@ -342,7 +351,7 @@ export const MAP_STYLES = {
       type: "line",
       paint: {
         "line-width": lineWidthStops,
-        "line-color": theme.palette.map.green,
+        "line-color": COLORS.green,
       },
       layout: {
         "line-cap": "round",
@@ -357,10 +366,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.green,
+        "circle-stroke-color": COLORS.green,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.greenLight,
+        "circle-color": COLORS.greenLight,
         "circle-opacity": 0.9,
       },
     },

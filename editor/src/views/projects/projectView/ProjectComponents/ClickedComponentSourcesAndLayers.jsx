@@ -37,6 +37,14 @@ const ClickedComponentSourcesAndLayers = ({
       >
         <Layer
           beforeId="components-placeholder"
+          {...MAP_STYLES["component-lines-casing"].layerProps}
+          id="clicked-component-lines-casing"
+          layout={{
+            visibility: shouldHighlightLineComponent ? "visible" : "none",
+          }}
+        />
+        <Layer
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["clicked-component-features-lines"].layerProps,
             layout: {
