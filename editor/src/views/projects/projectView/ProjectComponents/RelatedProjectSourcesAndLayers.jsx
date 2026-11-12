@@ -40,6 +40,20 @@ const RelatedProjectSourcesAndLayers = ({
         <Layer
           beforeId="components-placeholder"
           {...{
+            ...MAP_STYLES["component-lines-casing"].layerProps,
+            layout: {
+              ...MAP_STYLES["component-lines-casing"].layerProps.layout,
+              visibility:
+                shouldShowNonMutedFeatures || shouldShowMutedFeatures
+                  ? "visible"
+                  : "none",
+            },
+          }}
+          id="related-project-lines-casing"
+        />
+        <Layer
+          beforeId="components-placeholder"
+          {...{
             ...MAP_STYLES["related-project-lines"].layerProps,
             layout: {
               ...MAP_STYLES["related-project-lines"].layerProps.layout,

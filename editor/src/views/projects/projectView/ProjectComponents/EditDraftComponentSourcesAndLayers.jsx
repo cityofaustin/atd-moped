@@ -24,6 +24,15 @@ const EditDraftComponentSourcesAndLayers = ({
       >
         <Layer
           beforeId="components-placeholder"
+          {...MAP_STYLES["component-lines-casing"].layerProps}
+          id="edit-draft-component-lines-casing"
+          layout={{
+            visibility:
+              linkMode === "lines" && isEditingComponent ? "visible" : "none",
+          }}
+        />
+        <Layer
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["edit-draft-component-lines"].layerProps,
             layout: {

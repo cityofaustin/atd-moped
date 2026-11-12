@@ -6,7 +6,7 @@ import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutli
 import { type SvgIconComponent } from "@mui/icons-material";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 
-import theme from "src/theme";
+import theme, { phaseColors as backgroundColors } from "src/theme";
 
 export const defaultIcon = HelpOutlineOutlinedIcon;
 export const defaultLabel = "Unknown";
@@ -15,19 +15,6 @@ export const defaultLabel = "Unknown";
  * Font colors
  */
 const primary = theme.palette.text.primary;
-const white = theme.palette.background.paper;
-
-/**
- * Background color mapping
- */
-const backgroundColors = {
-  default: theme.palette.grey[300],
-  warning: theme.palette.warning.light,
-  success: theme.palette.success.light,
-  info: theme.palette.info.main,
-  error: theme.palette.error.main,
-  potential_and_on_hold: theme.palette.grey[500],
-};
 
 /**
  * Main style configuration per phase name, containing font `color`, chip `background` color and the icon.
@@ -37,42 +24,42 @@ export const styleMapping: Record<
   { color: string; background: string; icon: SvgIconComponent }
 > = {
   planned: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   preliminary_engineering: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   scoping: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   preliminary_design: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   design: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   pre_construction: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   bid_award_execution: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   construction_ready: {
-    color: white,
+    color: primary,
     background: backgroundColors.success,
     icon: PlayCircleOutlineOutlinedIcon,
   },
@@ -82,27 +69,27 @@ export const styleMapping: Record<
     icon: PlayCircleOutlineOutlinedIcon,
   },
   post_construction: {
-    color: white,
+    color: primary,
     background: backgroundColors.info,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   potential: {
     color: primary,
-    background: backgroundColors.potential_and_on_hold,
+    background: backgroundColors.potentialAndOnHold,
     icon: RemoveCircleOutlineOutlinedIcon,
   },
   canceled: {
-    color: white,
+    color: primary,
     background: backgroundColors.error,
     icon: CancelOutlinedIcon,
   },
   on_hold: {
     color: primary,
-    background: backgroundColors.potential_and_on_hold,
+    background: backgroundColors.potentialAndOnHold,
     icon: PauseCircleOutlineOutlinedIcon,
   },
   complete: {
-    color: white,
+    color: primary,
     background: backgroundColors.info,
     icon: CheckCircleOutlineOutlinedIcon,
   },

@@ -22,6 +22,12 @@ const DraftComponentSourcesAndLayers = ({
       >
         <Layer
           beforeId="components-placeholder"
+          {...MAP_STYLES["component-lines-casing"].layerProps}
+          id="draft-component-lines-casing"
+          layout={{ visibility: linkMode === "lines" ? "visible" : "none" }}
+        />
+        <Layer
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["draft-component-lines"].layerProps,
             layout: {
