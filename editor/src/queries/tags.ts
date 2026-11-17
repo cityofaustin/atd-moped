@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const TAGS_QUERY = gql`
+export const TAGS_QUERY = graphql(`
   query TagsQuery($projectId: Int!) {
     # Do not filter by moped_tag.is_deleted here — soft-deleted tags that
     # were previously applied should still appear on projects.
@@ -19,9 +19,9 @@ export const TAGS_QUERY = gql`
       name
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT_TAG = gql`
+export const DELETE_PROJECT_TAG = graphql(`
   mutation DeleteProjectTag($id: Int!) {
     update_moped_proj_tags_by_pk(
       pk_columns: { id: $id }
@@ -30,9 +30,9 @@ export const DELETE_PROJECT_TAG = gql`
       id
     }
   }
-`;
+`);
 
-export const ADD_PROJECT_TAGS = gql`
+export const ADD_PROJECT_TAGS = graphql(`
   mutation AddProjectTags($objects: [moped_proj_tags_insert_input!]!) {
     insert_moped_proj_tags(objects: $objects) {
       returning {
@@ -40,4 +40,4 @@ export const ADD_PROJECT_TAGS = gql`
       }
     }
   }
-`;
+`);

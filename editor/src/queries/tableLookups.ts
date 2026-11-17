@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const COMPONENT_TAGS_QUERY = gql`
+export const COMPONENT_TAGS_QUERY = graphql(`
   query ComponentTagsForDataDictionary(
     $where: moped_component_tags_bool_exp
   ) {
@@ -16,9 +16,9 @@ export const COMPONENT_TAGS_QUERY = gql`
       is_deleted
     }
   }
-`;
+`);
 
-export const ADD_COMPONENT_TAG = gql`
+export const ADD_COMPONENT_TAG = graphql(`
   mutation AddComponentTag($object: moped_component_tags_insert_input!) {
     insert_moped_component_tags_one(object: $object) {
       id
@@ -29,9 +29,9 @@ export const ADD_COMPONENT_TAG = gql`
       is_deleted
     }
   }
-`;
+`);
 
-export const UPDATE_COMPONENT_TAG = gql`
+export const UPDATE_COMPONENT_TAG = graphql(`
   mutation UpdateComponentTag(
     $id: Int!
     $set: moped_component_tags_set_input!
@@ -45,9 +45,9 @@ export const UPDATE_COMPONENT_TAG = gql`
       is_deleted
     }
   }
-`;
+`);
 
-export const PROJECT_TAGS_QUERY = gql`
+export const PROJECT_TAGS_QUERY = graphql(`
   query ProjectTagsForDataDictionary($where: moped_tags_bool_exp) {
     moped_tags(where: $where, order_by: { name: asc }) {
       id
@@ -58,9 +58,9 @@ export const PROJECT_TAGS_QUERY = gql`
       is_deleted
     }
   }
-`;
+`);
 
-export const ADD_PROJECT_TAG_LOOKUP = gql`
+export const ADD_PROJECT_TAG_LOOKUP = graphql(`
   mutation AddProjectTagLookup($object: moped_tags_insert_input!) {
     insert_moped_tags_one(object: $object) {
       id
@@ -71,9 +71,9 @@ export const ADD_PROJECT_TAG_LOOKUP = gql`
       is_deleted
     }
   }
-`;
+`);
 
-export const UPDATE_PROJECT_TAG_LOOKUP = gql`
+export const UPDATE_PROJECT_TAG_LOOKUP = graphql(`
   mutation UpdateProjectTagLookup($id: Int!, $set: moped_tags_set_input!) {
     update_moped_tags_by_pk(pk_columns: { id: $id }, _set: $set) {
       id
@@ -84,9 +84,9 @@ export const UPDATE_PROJECT_TAG_LOOKUP = gql`
       is_deleted
     }
   }
-`;
+`);
 
-export const TABLE_LOOKUPS_QUERY = gql`
+export const TABLE_LOOKUPS_QUERY = graphql(`
   query TableLookupQuery {
     moped_phases(order_by: { phase_order: asc }) {
       phase_id
@@ -173,4 +173,4 @@ export const TABLE_LOOKUPS_QUERY = gql`
       funding_status_description
     }
   }
-`;
+`);

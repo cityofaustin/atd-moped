@@ -1,4 +1,3 @@
-import { gql } from "@apollo/client";
 import { graphql } from "src/gql";
 
 export const COMBINED_FUNDING_QUERY = graphql(`
@@ -112,7 +111,7 @@ export const GET_FUNDING_LOOKUPS = graphql(`
   }
 `);
 
-export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
+export const ECAPRIS_SUBPROJECT_FDU_QUERY = graphql(`
   query EcaprisFdusSubproject($ecapris_subproject_id: String!) {
     ecapris_subproject_funding(
       where: { ecapris_subproject_id: { _eq: $ecapris_subproject_id } }
@@ -126,7 +125,7 @@ export const ECAPRIS_SUBPROJECT_FDU_QUERY = gql`
       funding_program_id
     }
   }
-`;
+`);
 
 export const UPDATE_PROJECT_FUNDING = graphql(`
   mutation UpdateProjectFunding(
@@ -239,7 +238,7 @@ export const ADD_PROJECT_FUNDING_AND_REATTACH = graphql(`
   }
 `);
 
-export const WORK_ACTIVITY_QUERY = gql`
+export const WORK_ACTIVITY_QUERY = graphql(`
   query ProjectWorkActivity($projectId: Int) {
     moped_proj_work_activity(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -287,26 +286,26 @@ export const WORK_ACTIVITY_QUERY = gql`
       }
     }
   }
-`;
+`);
 
-export const WORK_ACTIVITY_STATUSES_QUERY = gql`
+export const WORK_ACTIVITY_STATUSES_QUERY = graphql(`
   query WorkActivityStatusOptions {
     moped_proj_work_activity_status(where: { is_deleted: { _eq: false } }) {
       value: id
       label: name
     }
   }
-`;
+`);
 
-export const ADD_WORK_ACTIVITY = gql`
+export const ADD_WORK_ACTIVITY = graphql(`
   mutation AddWorkActivity($object: moped_proj_work_activity_insert_input!) {
     insert_moped_proj_work_activity_one(object: $object) {
       id
     }
   }
-`;
+`);
 
-export const UPDATE_WORK_ACTIVITY = gql`
+export const UPDATE_WORK_ACTIVITY = graphql(`
   mutation UpdateWorkActivity(
     $id: Int!
     $object: moped_proj_work_activity_set_input!
@@ -322,9 +321,9 @@ export const UPDATE_WORK_ACTIVITY = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const DELETE_WORK_ACTIVITY = gql`
+export const DELETE_WORK_ACTIVITY = graphql(`
   mutation DeleteWorkActivity($id: Int!) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
@@ -339,4 +338,4 @@ export const DELETE_WORK_ACTIVITY = gql`
       affected_rows
     }
   }
-`;
+`);

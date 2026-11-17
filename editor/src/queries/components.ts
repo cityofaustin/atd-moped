@@ -1,7 +1,6 @@
-import { gql } from "@apollo/client";
 import { graphql } from "src/gql";
 
-export const GET_COMPONENTS_FORM_OPTIONS = gql`
+export const GET_COMPONENTS_FORM_OPTIONS = graphql(`
   query GetComponentsFormOptions {
     moped_components(
       order_by: [{ component_name: asc }, { component_subtype: asc }]
@@ -50,17 +49,17 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       full_name
     }
   }
-`;
+`);
 
-export const ADD_PROJECT_COMPONENT = gql`
+export const ADD_PROJECT_COMPONENT = graphql(`
   mutation AddProjectComponent($object: moped_proj_components_insert_input!) {
     insert_moped_proj_components_one(object: $object) {
       component_id
     }
   }
-`;
+`);
 
-export const PROJECT_COMPONENT_FIELDS = gql`
+export const PROJECT_COMPONENT_FIELDS = graphql(`
   fragment projectComponentFields on moped_proj_components {
     project_component_id
     component_id
@@ -165,7 +164,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       beacon_name
     }
   }
-`;
+`);
 
 export const PROJECT_COMPONENT_FIELDS_FRAGMENT = graphql(`
   fragment projectComponentFields on moped_proj_components {
@@ -274,7 +273,7 @@ export const PROJECT_COMPONENT_FIELDS_FRAGMENT = graphql(`
   }
 `);
 
-export const GET_PROJECT_COMPONENTS = gql`
+export const GET_PROJECT_COMPONENTS = graphql(`
   ${PROJECT_COMPONENT_FIELDS}
   query GetProjectComponents($projectId: Int!, $parentProjectId: Int = 0) {
     moped_proj_components(
@@ -322,14 +321,14 @@ export const GET_PROJECT_COMPONENTS = gql`
       }
     }
   }
-`;
+`);
 
 // This mutation updates component subcomponents and component tags by first updating *all* existing
 // subcomponents and tags to is_deleted = true and then inserting the new subcomponents and tags
 // with is_deleted = false on conflict (Attributes that are not deleted in the UI by the user
 // are switched to is_deleted = false by the mutation). It also handles deleting/creating of signal
 // features and intersection/point features as needed when component type is changed
-export const UPDATE_COMPONENT_ATTRIBUTES = gql`
+export const UPDATE_COMPONENT_ATTRIBUTES = graphql(`
   mutation UpdateProjectComponent(
     $projectComponentId: Int!
     $componentId: Int!
@@ -418,9 +417,9 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const UPDATE_COMPONENT_FEATURES = gql`
+export const UPDATE_COMPONENT_FEATURES = graphql(`
   mutation UpdateComponentFeatures(
     $updates: [features_updates!]!
     $streetSegments: [feature_street_segments_insert_input!]!
@@ -460,9 +459,9 @@ export const UPDATE_COMPONENT_FEATURES = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT_COMPONENT = gql`
+export const DELETE_PROJECT_COMPONENT = graphql(`
   mutation DeleteMopedComponent($projectComponentId: Int!) {
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
@@ -477,10 +476,10 @@ export const DELETE_PROJECT_COMPONENT = gql`
       affected_rows
     }
   }
-`;
+`);
 
 // Move a component to another project
-export const UPDATE_COMPONENT_PROJECT_ID = gql`
+export const UPDATE_COMPONENT_PROJECT_ID = graphql(`
   mutation UpdateComponentAttributes($componentId: Int!, $projectId: Int!) {
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $componentId }
@@ -489,4 +488,4 @@ export const UPDATE_COMPONENT_PROJECT_ID = gql`
       project_component_id
     }
   }
-`;
+`);

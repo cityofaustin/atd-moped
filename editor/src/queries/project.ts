@@ -1,7 +1,6 @@
-import { gql } from "@apollo/client";
 import { graphql } from "src/gql";
 
-export const ADD_PROJECT = gql`
+export const ADD_PROJECT = graphql(`
   mutation AddProject($object: moped_project_insert_input!) {
     insert_moped_project_one(object: $object) {
       added_by
@@ -15,7 +14,7 @@ export const ADD_PROJECT = gql`
       }
     }
   }
-`;
+`);
 
 export const SUMMARY_QUERY = graphql(`
   query ProjectSummary($projectId: Int, $userId: Int) {
@@ -149,7 +148,7 @@ export const SUMMARY_QUERY = graphql(`
   }
 `);
 
-export const TEAM_QUERY = gql`
+export const TEAM_QUERY = graphql(`
   query TeamQuery($projectId: Int!) {
     moped_project_by_pk(project_id: $projectId) {
       project_id
@@ -212,17 +211,17 @@ export const TEAM_QUERY = gql`
       workgroup_name
     }
   }
-`;
+`);
 
-export const INSERT_PROJECT_PERSONNEL = gql`
+export const INSERT_PROJECT_PERSONNEL = graphql(`
   mutation InserProjectPersonnel($object: moped_proj_personnel_insert_input!) {
     insert_moped_proj_personnel_one(object: $object) {
       project_personnel_id
     }
   }
-`;
+`);
 
-export const UPDATE_PROJECT_PERSONNEL = gql`
+export const UPDATE_PROJECT_PERSONNEL = graphql(`
   mutation UpdateProjectPersonnel(
     $deleteIds: [Int!]
     $id: Int!
@@ -245,9 +244,9 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT_PERSONNEL = gql`
+export const DELETE_PROJECT_PERSONNEL = graphql(`
   mutation DeleteProjectPersonnel($id: Int!) {
     update_moped_proj_personnel_by_pk(
       pk_columns: { project_personnel_id: $id }
@@ -257,9 +256,9 @@ export const DELETE_PROJECT_PERSONNEL = gql`
       project_personnel_id
     }
   }
-`;
+`);
 
-export const TIMELINE_QUERY = gql`
+export const TIMELINE_QUERY = graphql(`
   query TeamTimeline($projectId: Int) {
     moped_phases(order_by: { phase_order: asc }) {
       phase_id
@@ -332,14 +331,14 @@ export const TIMELINE_QUERY = gql`
       slug
     }
   }
-`;
+`);
 
 /**
  * For all the following project phase mutations, the mutation to set
  * current phases to false must run first or unique constraint could be violated
  */
 
-export const ADD_PROJECT_PHASE = gql`
+export const ADD_PROJECT_PHASE = graphql(`
   mutation AddProjectPhase(
     $objects: [moped_proj_phases_insert_input!]!
     $current_phase_id_to_clear: [Int!] = []
@@ -362,9 +361,9 @@ export const ADD_PROJECT_PHASE = gql`
       }
     }
   }
-`;
+`);
 
-export const ADD_PROJECT_PHASE_AND_STATUS_UPDATE = gql`
+export const ADD_PROJECT_PHASE_AND_STATUS_UPDATE = graphql(`
   mutation AddProjectPhaseWithStatusUpdate(
     $objects: [moped_proj_phases_insert_input!]!
     $current_phase_id_to_clear: [Int!] = []
@@ -394,9 +393,9 @@ export const ADD_PROJECT_PHASE_AND_STATUS_UPDATE = gql`
       }
     }
   }
-`;
+`);
 
-export const UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE = gql`
+export const UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE = graphql(`
   mutation ProjectPhasesMutation(
     $project_phase_id: Int!
     $object: moped_proj_phases_set_input!
@@ -429,10 +428,10 @@ export const UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE = gql`
       }
     }
   }
-`;
+`);
 
 // Delete a project phase **and** make it not current
-export const DELETE_PROJECT_PHASE = gql`
+export const DELETE_PROJECT_PHASE = graphql(`
   mutation DeleteProjectPhase($project_phase_id: Int!) {
     update_moped_proj_phases(
       _set: { is_deleted: true, is_current_phase: false }
@@ -441,9 +440,9 @@ export const DELETE_PROJECT_PHASE = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
+export const UPDATE_PROJECT_MILESTONES_MUTATION = graphql(`
   mutation ProjectMilestonesMutation(
     $description: String
     $completed: Boolean
@@ -470,9 +469,9 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
       description
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT_MILESTONE = gql`
+export const DELETE_PROJECT_MILESTONE = graphql(`
   mutation DeleteProjectMilestone($project_milestone_id: Int!) {
     update_moped_proj_milestones(
       _set: { is_deleted: true }
@@ -481,9 +480,9 @@ export const DELETE_PROJECT_MILESTONE = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const ADD_PROJECT_MILESTONE = gql`
+export const ADD_PROJECT_MILESTONE = graphql(`
   mutation AddProjectMilestone(
     $objects: [moped_proj_milestones_insert_input!]!
   ) {
@@ -499,7 +498,7 @@ export const ADD_PROJECT_MILESTONE = gql`
       }
     }
   }
-`;
+`);
 
 export const PROJECT_FOLLOW = graphql(`
   mutation FollowProject($object: moped_user_followed_projects_insert_input!) {
@@ -520,7 +519,7 @@ export const PROJECT_UNFOLLOW = graphql(`
   }
 `);
 
-export const PROJECT_ACTIVITY_LOG = gql`
+export const PROJECT_ACTIVITY_LOG = graphql(`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
@@ -599,9 +598,9 @@ export const PROJECT_ACTIVITY_LOG = gql`
       record_type
     }
   }
-`;
+`);
 
-export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
+export const PROJECT_ACTIVITY_LOG_DETAILS = graphql(`
   query getMopedProjectChangeDetails($activityId: uuid!) {
     moped_activity_log(where: { activity_id: { _eq: $activityId } }) {
       activity_id
@@ -631,9 +630,9 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
       record_type
     }
   }
-`;
+`);
 
-export const PROJECT_FILE_ATTACHMENTS = gql`
+export const PROJECT_FILE_ATTACHMENTS = graphql(`
   query MopedProjectFiles($projectId: Int!) {
     moped_project_files(
       order_by: { created_at: desc }
@@ -662,9 +661,9 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       name
     }
   }
-`;
+`);
 
-export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
+export const PROJECT_FILE_ATTACHMENTS_UPDATE = graphql(`
   mutation UpdateProjectFileAttachment(
     $fileId: Int!
     $fileName: String!
@@ -684,9 +683,9 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
+export const PROJECT_FILE_ATTACHMENTS_DELETE = graphql(`
   mutation DeleteProjectFileAttachment($fileId: Int!) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
@@ -713,17 +712,17 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
+export const PROJECT_FILE_ATTACHMENTS_CREATE = graphql(`
   mutation insert_single_article($object: moped_project_files_insert_input!) {
     insert_moped_project_files(objects: [$object]) {
       affected_rows
     }
   }
-`;
+`);
 
-export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = graphql(`
   mutation InsertFileWithEcaprisConnection(
     $object: moped_project_files_insert_input!
   ) {
@@ -734,9 +733,9 @@ export const CREATE_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
       }
     }
   }
-`;
+`);
 
-export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
+export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = graphql(`
   mutation DetachFileEcaprisFunding($id: Int!) {
     update_files_ecapris_funding_by_pk(
       pk_columns: { id: $id }
@@ -745,9 +744,9 @@ export const DETACH_FILE_ECAPRIS_FUNDING_ATTACHMENT = gql`
       id
     }
   }
-`;
+`);
 
-export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
+export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = graphql(`
   mutation InsertFileWithMopedFundingConnection(
     $object: moped_project_files_insert_input!
   ) {
@@ -758,9 +757,9 @@ export const CREATE_FILE_MOPED_FUNDING_ATTACHMENT = gql`
       }
     }
   }
-`;
+`);
 
-export const DETACH_FILE_MOPED_FUNDING_ATTACHMENT = gql`
+export const DETACH_FILE_MOPED_FUNDING_ATTACHMENT = graphql(`
   mutation DetachFileMopedFunding($id: Int!) {
     update_files_project_funding_by_pk(
       pk_columns: { id: $id }
@@ -769,9 +768,9 @@ export const DETACH_FILE_MOPED_FUNDING_ATTACHMENT = gql`
       id
     }
   }
-`;
+`);
 
-export const ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING = gql`
+export const ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING = graphql(`
   mutation AttachExistingFileToEcaprisFunding(
     $object: files_ecapris_funding_insert_input!
   ) {
@@ -785,9 +784,9 @@ export const ATTACH_EXISTING_FILE_TO_ECAPRIS_FUNDING = gql`
       id
     }
   }
-`;
+`);
 
-export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
+export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = graphql(`
   mutation AttachExistingFileToMopedFunding(
     $object: files_project_funding_insert_input!
   ) {
@@ -801,9 +800,9 @@ export const ATTACH_EXISTING_FILE_TO_MOPED_FUNDING = gql`
       id
     }
   }
-`;
+`);
 
-export const CREATE_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
+export const CREATE_FILE_WORK_ACTIVITY_ATTACHMENT = graphql(`
   mutation InsertFileWithWorkActivityConnection(
     $object: moped_project_files_insert_input!
   ) {
@@ -814,9 +813,9 @@ export const CREATE_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
       }
     }
   }
-`;
+`);
 
-export const ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY = gql`
+export const ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY = graphql(`
   mutation AttachExistingFileToWorkActivity(
     $object: files_project_work_activities_insert_input!
   ) {
@@ -830,9 +829,9 @@ export const ATTACH_EXISTING_FILE_TO_WORK_ACTIVITY = gql`
       id
     }
   }
-`;
+`);
 
-export const DETACH_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
+export const DETACH_FILE_WORK_ACTIVITY_ATTACHMENT = graphql(`
   mutation DetachFileWorkActivity($id: Int!) {
     update_files_project_work_activities_by_pk(
       pk_columns: { id: $id }
@@ -841,18 +840,18 @@ export const DETACH_FILE_WORK_ACTIVITY_ATTACHMENT = gql`
       id
     }
   }
-`;
+`);
 
-export const FILE_TYPES_LOOKUP = gql`
+export const FILE_TYPES_LOOKUP = graphql(`
   query FileTypesLookup {
     moped_file_types {
       id
       name
     }
   }
-`;
+`);
 
-export const PROJECT_ARCHIVE = gql`
+export const PROJECT_ARCHIVE = graphql(`
   mutation ArchiveMopedProject($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -867,9 +866,9 @@ export const PROJECT_ARCHIVE = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const SIGNAL_COMPONENTS_QUERY = gql`
+export const SIGNAL_COMPONENTS_QUERY = graphql(`
   query GetSignalComponents {
     moped_components(where: { component_name: { _ilike: "signal" } }) {
       component_name
@@ -878,12 +877,12 @@ export const SIGNAL_COMPONENTS_QUERY = gql`
       line_representation
     }
   }
-`;
+`);
 
 /**
  * Inserts a project summary status update
  */
-export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
+export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = graphql(`
   mutation ProjectStatusUpdateInsert(
     $statusUpdate: [moped_proj_notes_insert_input!]!
   ) {
@@ -892,9 +891,9 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
       __typename
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_SPONSOR = gql`
+export const PROJECT_UPDATE_SPONSOR = graphql(`
   mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
@@ -903,9 +902,9 @@ export const PROJECT_UPDATE_SPONSOR = gql`
       project_sponsor
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_LEAD = gql`
+export const PROJECT_UPDATE_LEAD = graphql(`
   mutation ProjectUpdateLead($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
@@ -914,9 +913,9 @@ export const PROJECT_UPDATE_LEAD = gql`
       project_lead_id
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
+export const PROJECT_UPDATE_PUBLIC_PROCESS = graphql(`
   mutation ProjectUpdatePublicProcess($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
@@ -925,9 +924,9 @@ export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
       public_process_status_id
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_PARTNERS = gql`
+export const PROJECT_UPDATE_PARTNERS = graphql(`
   mutation UpdateMopedProjectPartners(
     $partners: [moped_proj_partners_insert_input!]!
     $deleteList: [Int!]!
@@ -942,9 +941,9 @@ export const PROJECT_UPDATE_PARTNERS = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_WEBSITE = gql`
+export const PROJECT_UPDATE_WEBSITE = graphql(`
   mutation UpdateProjectWebsite($projectId: Int!, $website: String) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -953,9 +952,9 @@ export const PROJECT_UPDATE_WEBSITE = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_DESCRIPTION = gql`
+export const PROJECT_UPDATE_DESCRIPTION = graphql(`
   mutation UpdateProjectDescription($projectId: Int!, $description: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -964,9 +963,9 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
+export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = graphql(`
   mutation UpdateProjectECapris(
     $projectId: Int!
     $eCaprisSubprojectId: String
@@ -982,9 +981,9 @@ export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
+export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = graphql(`
   mutation UpdateProjectECaprisClear($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -997,9 +996,9 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_INTERIM_ID = gql`
+export const PROJECT_UPDATE_INTERIM_ID = graphql(`
   mutation UpdateProjectInterimId($projectId: Int!, $interimProjectId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
@@ -1008,9 +1007,9 @@ export const PROJECT_UPDATE_INTERIM_ID = gql`
       interim_project_id
     }
   }
-`;
+`);
 
-export const PROJECT_CLEAR_INTERIM_ID = gql`
+export const PROJECT_CLEAR_INTERIM_ID = graphql(`
   mutation ClearProjectInterimId($projectId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
@@ -1019,9 +1018,9 @@ export const PROJECT_CLEAR_INTERIM_ID = gql`
       interim_project_id
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_ECAPRIS_SYNC = gql`
+export const PROJECT_UPDATE_ECAPRIS_SYNC = graphql(`
   mutation UpdateProjectECaprisSync($projectId: Int!, $shouldSync: Boolean!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -1030,9 +1029,9 @@ export const PROJECT_UPDATE_ECAPRIS_SYNC = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC = gql`
+export const PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC = graphql(`
   mutation UpdateProjectECaprisFundingSync(
     $projectId: Int!
     $shouldSync: Boolean!
@@ -1044,9 +1043,9 @@ export const PROJECT_UPDATE_ECAPRIS_FUNDING_SYNC = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const UPDATE_PROJECT_NAMES_QUERY = gql`
+export const UPDATE_PROJECT_NAMES_QUERY = graphql(`
   mutation UpdateProjectName(
     $projectId: Int!
     $projectName: String!
@@ -1063,9 +1062,9 @@ export const UPDATE_PROJECT_NAMES_QUERY = gql`
       project_name_secondary
     }
   }
-`;
+`);
 
-export const LOOKUP_TABLES_QUERY = gql`
+export const LOOKUP_TABLES_QUERY = graphql(`
   query ProjectLookups {
     moped_fund_sources(order_by: { funding_source_name: asc }) {
       funding_source_id
@@ -1118,9 +1117,9 @@ export const LOOKUP_TABLES_QUERY = gql`
       name
     }
   }
-`;
+`);
 
-export const PROJECT_OPTIONS = gql`
+export const PROJECT_OPTIONS = graphql(`
   query ProjectOptions($projectId: Int!) {
     moped_project(
       where: {
@@ -1134,9 +1133,9 @@ export const PROJECT_OPTIONS = gql`
       project_name_full
     }
   }
-`;
+`);
 
-export const GET_PROJECTS_GEOGRAPHIES = gql`
+export const GET_PROJECTS_GEOGRAPHIES = graphql(`
   query GetProjectsComponents($projectIds: [Int!]) {
     project_geography(
       where: { project_id: { _in: $projectIds }, is_deleted: { _eq: false } }
@@ -1150,4 +1149,4 @@ export const GET_PROJECTS_GEOGRAPHIES = gql`
       line_representation
     }
   }
-`;
+`);

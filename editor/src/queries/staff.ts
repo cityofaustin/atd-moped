@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const GET_ALL_USERS = gql`
+export const GET_ALL_USERS = graphql(`
   query GetAllUsers {
     moped_users(order_by: { first_name: asc }) {
       last_name
@@ -19,9 +19,9 @@ export const GET_ALL_USERS = gql`
       note
     }
   }
-`;
+`);
 
-export const GET_USER = gql`
+export const GET_USER = graphql(`
   query GetUser($userId: Int) {
     moped_users(where: { user_id: { _eq: $userId } }) {
       date_added
@@ -39,9 +39,9 @@ export const GET_USER = gql`
       note
     }
   }
-`;
+`);
 
-export const ADD_NON_MOPED_USER = gql`
+export const ADD_NON_MOPED_USER = graphql(`
   mutation AddNonMopedUser($object: moped_users_insert_input!) {
     insert_moped_users_one(
       object: $object
@@ -62,9 +62,9 @@ export const ADD_NON_MOPED_USER = gql`
       note
     }
   }
-`;
+`);
 
-export const UPDATE_NON_MOPED_USER = gql`
+export const UPDATE_NON_MOPED_USER = graphql(`
   mutation AddNonMopedUser($userId: Int!, $changes: moped_users_set_input) {
     update_moped_users_by_pk(pk_columns: { user_id: $userId }, _set: $changes) {
       date_added
@@ -82,16 +82,16 @@ export const UPDATE_NON_MOPED_USER = gql`
       note
     }
   }
-`;
+`);
 
 /**
  * This mutation insers a new moped_user_events row which will in turn trigger an
  * updates to users' last_seen_date based on the user ID session variable
  */
-export const INSERT_USER_EVENT = gql`
+export const INSERT_USER_EVENT = graphql(`
   mutation InsertUserEvent($event_name: String!) {
     insert_moped_user_events(objects: { event_name: $event_name }) {
       affected_rows
     }
   }
-`;
+`);
