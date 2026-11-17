@@ -65,7 +65,7 @@ export const ADD_NON_MOPED_USER = graphql(`
 `);
 
 export const UPDATE_NON_MOPED_USER = graphql(`
-  mutation AddNonMopedUser($userId: Int!, $changes: moped_users_set_input) {
+  mutation UpdateNonMopedUser($userId: Int!, $changes: moped_users_set_input) {
     update_moped_users_by_pk(pk_columns: { user_id: $userId }, _set: $changes) {
       date_added
       first_name

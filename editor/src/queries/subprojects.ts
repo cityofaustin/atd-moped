@@ -81,7 +81,7 @@ export const UPDATE_PROJECT_SUBPROJECT = graphql(`
 `);
 
 export const DELETE_PROJECT_SUBPROJECT = graphql(`
-  mutation UpdateProjectSubproject($childProjectId: Int!) {
+  mutation DeleteProjectSubproject($childProjectId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $childProjectId }
       _set: { parent_project_id: null }

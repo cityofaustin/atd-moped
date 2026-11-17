@@ -600,38 +600,6 @@ export const PROJECT_ACTIVITY_LOG = graphql(`
   }
 `);
 
-export const PROJECT_ACTIVITY_LOG_DETAILS = graphql(`
-  query getMopedProjectChangeDetails($activityId: uuid!) {
-    moped_activity_log(where: { activity_id: { _eq: $activityId } }) {
-      activity_id
-      created_at
-      record_project_id
-      record_type
-      record_data
-      description
-      operation_type
-      moped_user {
-        first_name
-        last_name
-        user_id
-      }
-      updated_by_user {
-        first_name
-        last_name
-        picture
-        email
-        user_id
-      }
-    }
-    activity_log_lookup_tables: moped_activity_log(
-      where: { activity_id: { _eq: $activityId } }
-      distinct_on: record_type
-    ) {
-      record_type
-    }
-  }
-`);
-
 export const PROJECT_FILE_ATTACHMENTS = graphql(`
   query MopedProjectFiles($projectId: Int!) {
     moped_project_files(
@@ -882,17 +850,6 @@ export const SIGNAL_COMPONENTS_QUERY = graphql(`
 /**
  * Inserts a project summary status update
  */
-export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = graphql(`
-  mutation ProjectStatusUpdateInsert(
-    $statusUpdate: [moped_proj_notes_insert_input!]!
-  ) {
-    insert_moped_proj_notes(objects: $statusUpdate) {
-      affected_rows
-      __typename
-    }
-  }
-`);
-
 export const PROJECT_UPDATE_SPONSOR = graphql(`
   mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(

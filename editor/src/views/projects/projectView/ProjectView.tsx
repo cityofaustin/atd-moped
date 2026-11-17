@@ -283,7 +283,7 @@ const ProjectView = () => {
 
     // run the mutation
     archiveProject({
-      variables: { projectId },
+      variables: { projectId: Number(projectId) },
     })
       .then(() => {
         // Do not close the dialog, redirect will take care
