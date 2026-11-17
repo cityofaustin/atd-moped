@@ -99,35 +99,35 @@ export type Bigint_Comparison_Exp = {
 
 /** Boolean expression to compare columns of type "citext". All fields are combined with logical 'AND'. */
 export type Citext_Comparison_Exp = {
-  _eq?: unknown;
-  _gt?: unknown;
-  _gte?: unknown;
+  _eq?: string | null | undefined;
+  _gt?: string | null | undefined;
+  _gte?: string | null | undefined;
   /** does the column match the given case-insensitive pattern */
-  _ilike?: unknown;
-  _in?: Array<unknown> | null | undefined;
+  _ilike?: string | null | undefined;
+  _in?: Array<string> | null | undefined;
   /** does the column match the given POSIX regular expression, case insensitive */
-  _iregex?: unknown;
+  _iregex?: string | null | undefined;
   _is_null?: boolean | null | undefined;
   /** does the column match the given pattern */
-  _like?: unknown;
-  _lt?: unknown;
-  _lte?: unknown;
-  _neq?: unknown;
+  _like?: string | null | undefined;
+  _lt?: string | null | undefined;
+  _lte?: string | null | undefined;
+  _neq?: string | null | undefined;
   /** does the column NOT match the given case-insensitive pattern */
-  _nilike?: unknown;
-  _nin?: Array<unknown> | null | undefined;
+  _nilike?: string | null | undefined;
+  _nin?: Array<string> | null | undefined;
   /** does the column NOT match the given POSIX regular expression, case insensitive */
-  _niregex?: unknown;
+  _niregex?: string | null | undefined;
   /** does the column NOT match the given pattern */
-  _nlike?: unknown;
+  _nlike?: string | null | undefined;
   /** does the column NOT match the given POSIX regular expression, case sensitive */
-  _nregex?: unknown;
+  _nregex?: string | null | undefined;
   /** does the column NOT match the given SQL regular expression */
-  _nsimilar?: unknown;
+  _nsimilar?: string | null | undefined;
   /** does the column match the given POSIX regular expression, case sensitive */
-  _regex?: unknown;
+  _regex?: string | null | undefined;
   /** does the column match the given SQL regular expression */
-  _similar?: unknown;
+  _similar?: string | null | undefined;
 };
 
 /** Boolean expression to filter rows from the table "combined_project_funding_view". All fields are combined with a logical 'AND'. */
@@ -167,6 +167,30 @@ export type Combined_Project_Funding_View_Bool_Exp = {
   status_name?: String_Comparison_Exp | null | undefined;
   unit_long_name?: String_Comparison_Exp | null | undefined;
   updated_at?: Timestamptz_Comparison_Exp | null | undefined;
+};
+
+/** Boolean expression to filter rows from the table "combined_project_notes_view". All fields are combined with a logical 'AND'. */
+export type Combined_Project_Notes_View_Bool_Exp = {
+  _and?: Array<Combined_Project_Notes_View_Bool_Exp> | null | undefined;
+  _not?: Combined_Project_Notes_View_Bool_Exp | null | undefined;
+  _or?: Array<Combined_Project_Notes_View_Bool_Exp> | null | undefined;
+  author?: String_Comparison_Exp | null | undefined;
+  created_at?: Timestamptz_Comparison_Exp | null | undefined;
+  created_by_user_id?: Int_Comparison_Exp | null | undefined;
+  ecapris_subproject_id?: String_Comparison_Exp | null | undefined;
+  id?: String_Comparison_Exp | null | undefined;
+  is_editable?: Boolean_Comparison_Exp | null | undefined;
+  is_status_update?: Boolean_Comparison_Exp | null | undefined;
+  note_type_id?: Int_Comparison_Exp | null | undefined;
+  note_type_name?: String_Comparison_Exp | null | undefined;
+  note_type_slug?: String_Comparison_Exp | null | undefined;
+  note_type_source?: String_Comparison_Exp | null | undefined;
+  original_id?: Bigint_Comparison_Exp | null | undefined;
+  phase_id?: Int_Comparison_Exp | null | undefined;
+  phase_key?: String_Comparison_Exp | null | undefined;
+  phase_name?: String_Comparison_Exp | null | undefined;
+  project_id?: Int_Comparison_Exp | null | undefined;
+  project_note?: String_Comparison_Exp | null | undefined;
 };
 
 /** Boolean expression to filter rows from the table "current_phase_view". All fields are combined with a logical 'AND'. */
@@ -922,6 +946,7 @@ export type Feature_School_Beacons_Bool_Exp = {
 
 /** input type for inserting data into table "feature_school_beacons" */
 export type Feature_School_Beacons_Insert_Input = {
+  /** Identifier of the beacon in correlating to a unique beacon clock. Used to identify one of multiple beacons correlating to a single beacon clock. */
   beacon_id?: string | null | undefined;
   beacon_name?: string | null | undefined;
   component_id?: number | null | undefined;
@@ -933,12 +958,15 @@ export type Feature_School_Beacons_Insert_Input = {
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
   knack_id?: string | null | undefined;
+  /** Canonical name of the location at which the beacon is located. Includes nearest cross street in parenthesis. */
   location_name?: string | null | undefined;
+  /** Unique identifier of the school zone beacon */
   school_zone_beacon_id?: string | null | undefined;
   /** Timestamp of the last update of the school beacon feature */
   updated_at?: string | null | undefined;
   /** User ID of the last updater of the school beacon feature */
   updated_by_user_id?: number | null | undefined;
+  /** Annotated name for a group of school beacons. Contains a group of beacons in spacial proximity to one or more schools. */
   zone_name?: string | null | undefined;
 };
 
@@ -1045,8 +1073,11 @@ export type Feature_Signals_Insert_Input = {
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
   knack_id?: string | null | undefined;
+  /** Canonical name of the location at which the traffic signal is located. */
   location_name?: string | null | undefined;
+  /** Unique identifier of the traffic or pedestrian signal. */
   signal_id?: number | null | undefined;
+  /** The type of signal. Either traffic or PHB (pedestrian hybrid beacon). */
   signal_type?: string | null | undefined;
   /** Timestamp of the last update of the signal feature */
   updated_at?: string | null | undefined;
@@ -1817,6 +1848,15 @@ export type Moped_Component_Tags_On_Conflict = {
   constraint: Moped_Component_Tags_Constraint;
   update_columns?: Array<Moped_Component_Tags_Update_Column>;
   where?: Moped_Component_Tags_Bool_Exp | null | undefined;
+};
+
+/** input type for updating data in table "moped_component_tags" */
+export type Moped_Component_Tags_Set_Input = {
+  id?: number | null | undefined;
+  is_deleted?: boolean | null | undefined;
+  name?: string | null | undefined;
+  slug?: string | null | undefined;
+  type?: string | null | undefined;
 };
 
 /** update columns of table "moped_component_tags" */
@@ -5587,6 +5627,15 @@ export type Moped_Tags_On_Conflict = {
   where?: Moped_Tags_Bool_Exp | null | undefined;
 };
 
+/** input type for updating data in table "moped_tags" */
+export type Moped_Tags_Set_Input = {
+  id?: number | null | undefined;
+  is_deleted?: boolean | null | undefined;
+  name?: string | null | undefined;
+  slug?: string | null | undefined;
+  type?: string | null | undefined;
+};
+
 /** update columns of table "moped_tags" */
 export type Moped_Tags_Update_Column =
   /** column name */
@@ -5607,6 +5656,27 @@ export type Moped_User_Followed_Projects_Insert_Input = {
   project?: Moped_Project_Obj_Rel_Insert_Input | null | undefined;
   project_id?: number | null | undefined;
   user_id?: number | null | undefined;
+};
+
+/** input type for inserting data into table "moped_user_saved_views" */
+export type Moped_User_Saved_Views_Insert_Input = {
+  /** Timestamp of when the view was created */
+  created_at?: string | null | undefined;
+  /** User ID of the creator of the view */
+  created_by_user_id?: number | null | undefined;
+  /** Description entered by the creator of the view */
+  description?: string | null | undefined;
+  id?: number | null | undefined;
+  /** Boolean indicating whether the view has been soft deleted and thereby not rendered in the UI */
+  is_deleted?: boolean | null | undefined;
+  /** JSON blob of filters that make up the query */
+  query_filters?: unknown;
+  /** Timestamp of the last update of the view */
+  updated_at?: string | null | undefined;
+  /** User ID of the last updater of the view */
+  updated_by_user_id?: number | null | undefined;
+  /** URL string associated with the view (may break if database fields or operators are changed) */
+  url?: string | null | undefined;
 };
 
 /** Boolean expression to filter rows from the table "moped_users". All fields are combined with a logical 'AND'. */
@@ -5650,7 +5720,7 @@ export type Moped_Users_Insert_Input = {
   /** Identifier for the user in AWS Cognito */
   cognito_user_id?: unknown;
   date_added?: string | null | undefined;
-  email?: unknown;
+  email?: string | null | undefined;
   first_name?: string | null | undefined;
   /** Indicates if the user is a COA staff member or not */
   is_coa_staff?: boolean | null | undefined;
@@ -5685,6 +5755,33 @@ export type Moped_Users_On_Conflict = {
   constraint: Moped_Users_Constraint;
   update_columns?: Array<Moped_Users_Update_Column>;
   where?: Moped_Users_Bool_Exp | null | undefined;
+};
+
+/** input type for updating data in table "moped_users" */
+export type Moped_Users_Set_Input = {
+  /** Identifier for the user in AWS Cognito */
+  cognito_user_id?: unknown;
+  date_added?: string | null | undefined;
+  email?: string | null | undefined;
+  first_name?: string | null | undefined;
+  /** Indicates if the user is a COA staff member or not */
+  is_coa_staff?: boolean | null | undefined;
+  /** Indicates soft deletion */
+  is_deleted?: boolean | null | undefined;
+  /** Tracks if the user is a member of the Moped User Group, aka the MUG. */
+  is_user_group_member?: boolean | null | undefined;
+  last_name?: string | null | undefined;
+  /** Tracks the last time a user loaded the Moped app in their browser. This value is set by the set_last_seen_date function. This value is not 100% reliable because it is updated by an API call that can be blocked by the client. */
+  last_seen_date?: string | null | undefined;
+  /** A place to add any notes about this user, e.g. why they were deactivated. */
+  note?: string | null | undefined;
+  /** Deprecated column to store the S3 path to uploaded profile image file */
+  picture?: string | null | undefined;
+  /** Roles assigned to the user to determine platform access (Hasura) */
+  roles?: unknown;
+  title?: string | null | undefined;
+  user_id?: number | null | undefined;
+  workgroup_id?: number | null | undefined;
 };
 
 /** update columns of table "moped_users" */
@@ -6217,7 +6314,7 @@ export type GetUserProfileQuery = {
   moped_users: Array<{
     user_id: number;
     cognito_user_id: unknown;
-    email: unknown;
+    email: string;
     first_name: string;
     last_name: string;
     is_coa_staff: boolean;
@@ -6352,7 +6449,7 @@ export type ProjectComponentFieldsFragment = {
     beacon_name: string;
     geometry: unknown;
   }>;
-} & { " $fragmentName"?: "ProjectComponentFieldsFragment" };
+};
 
 export type GetProjectComponentsQueryVariables = Exact<{
   projectId: number;
@@ -6361,9 +6458,88 @@ export type GetProjectComponentsQueryVariables = Exact<{
 
 export type GetProjectComponentsQuery = {
   moped_proj_components: Array<{
-    " $fragmentRefs"?: {
-      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    project_component_id: number;
+    component_id: number;
+    description: string | null;
+    phase_id: number | null;
+    subphase_id: number | null;
+    completion_date: string | null;
+    project_id: number;
+    srts_id: string | null;
+    location_description: string | null;
+    moped_components: {
+      component_id: number;
+      component_name: string;
+      component_subtype: string | null;
+      line_representation: boolean;
+      feature_layer: { internal_table: string };
+      asset_feature_layer: { internal_table: string } | null;
     };
+    moped_proj_components_subcomponents: Array<{
+      subcomponent_id: number;
+      moped_subcomponent: { subcomponent_name: string };
+    }>;
+    moped_proj_component_work_types: Array<{
+      moped_work_type: { id: number; name: string };
+    }>;
+    moped_proj_component_tags: Array<{
+      component_tag_id: number;
+      moped_component_tag: { full_name: string | null };
+    }>;
+    moped_phase: {
+      phase_id: number;
+      phase_name: string;
+      phase_name_simple: string;
+      phase_key: string;
+      moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+    } | null;
+    moped_subphase: { subphase_id: number; subphase_name: string } | null;
+    feature_street_segments: Array<{
+      id: number;
+      source_layer: string;
+      ctn_segment_id: number;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_intersections: Array<{
+      id: number;
+      source_layer: string;
+      intersection_id: number;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_signals: Array<{
+      id: number;
+      component_id: number;
+      location_name: string;
+      signal_id: number;
+      signal_type: string;
+      knack_id: string;
+      geometry: unknown;
+    }>;
+    feature_drawn_lines: Array<{
+      id: number;
+      source_layer: string;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_drawn_points: Array<{
+      id: number;
+      source_layer: string;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_school_beacons: Array<{
+      id: number;
+      component_id: number;
+      knack_id: string;
+      location_name: string;
+      beacon_id: string;
+      school_zone_beacon_id: string;
+      zone_name: string;
+      beacon_name: string;
+      geometry: unknown;
+    }>;
   }>;
   project_geography: Array<{
     component_id: number | null;
@@ -6373,22 +6549,259 @@ export type GetProjectComponentsQuery = {
     geometry: unknown;
   }>;
   parentProjectComponents: Array<{
-    " $fragmentRefs"?: {
-      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    project_component_id: number;
+    component_id: number;
+    description: string | null;
+    phase_id: number | null;
+    subphase_id: number | null;
+    completion_date: string | null;
+    project_id: number;
+    srts_id: string | null;
+    location_description: string | null;
+    moped_components: {
+      component_id: number;
+      component_name: string;
+      component_subtype: string | null;
+      line_representation: boolean;
+      feature_layer: { internal_table: string };
+      asset_feature_layer: { internal_table: string } | null;
     };
+    moped_proj_components_subcomponents: Array<{
+      subcomponent_id: number;
+      moped_subcomponent: { subcomponent_name: string };
+    }>;
+    moped_proj_component_work_types: Array<{
+      moped_work_type: { id: number; name: string };
+    }>;
+    moped_proj_component_tags: Array<{
+      component_tag_id: number;
+      moped_component_tag: { full_name: string | null };
+    }>;
+    moped_phase: {
+      phase_id: number;
+      phase_name: string;
+      phase_name_simple: string;
+      phase_key: string;
+      moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+    } | null;
+    moped_subphase: { subphase_id: number; subphase_name: string } | null;
+    feature_street_segments: Array<{
+      id: number;
+      source_layer: string;
+      ctn_segment_id: number;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_intersections: Array<{
+      id: number;
+      source_layer: string;
+      intersection_id: number;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_signals: Array<{
+      id: number;
+      component_id: number;
+      location_name: string;
+      signal_id: number;
+      signal_type: string;
+      knack_id: string;
+      geometry: unknown;
+    }>;
+    feature_drawn_lines: Array<{
+      id: number;
+      source_layer: string;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_drawn_points: Array<{
+      id: number;
+      source_layer: string;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_school_beacons: Array<{
+      id: number;
+      component_id: number;
+      knack_id: string;
+      location_name: string;
+      beacon_id: string;
+      school_zone_beacon_id: string;
+      zone_name: string;
+      beacon_name: string;
+      geometry: unknown;
+    }>;
   }>;
   siblingProjects: Array<{
     moped_proj_components: Array<{
-      " $fragmentRefs"?: {
-        ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+      project_component_id: number;
+      component_id: number;
+      description: string | null;
+      phase_id: number | null;
+      subphase_id: number | null;
+      completion_date: string | null;
+      project_id: number;
+      srts_id: string | null;
+      location_description: string | null;
+      moped_components: {
+        component_id: number;
+        component_name: string;
+        component_subtype: string | null;
+        line_representation: boolean;
+        feature_layer: { internal_table: string };
+        asset_feature_layer: { internal_table: string } | null;
       };
+      moped_proj_components_subcomponents: Array<{
+        subcomponent_id: number;
+        moped_subcomponent: { subcomponent_name: string };
+      }>;
+      moped_proj_component_work_types: Array<{
+        moped_work_type: { id: number; name: string };
+      }>;
+      moped_proj_component_tags: Array<{
+        component_tag_id: number;
+        moped_component_tag: { full_name: string | null };
+      }>;
+      moped_phase: {
+        phase_id: number;
+        phase_name: string;
+        phase_name_simple: string;
+        phase_key: string;
+        moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+      } | null;
+      moped_subphase: { subphase_id: number; subphase_name: string } | null;
+      feature_street_segments: Array<{
+        id: number;
+        source_layer: string;
+        ctn_segment_id: number;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_intersections: Array<{
+        id: number;
+        source_layer: string;
+        intersection_id: number;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_signals: Array<{
+        id: number;
+        component_id: number;
+        location_name: string;
+        signal_id: number;
+        signal_type: string;
+        knack_id: string;
+        geometry: unknown;
+      }>;
+      feature_drawn_lines: Array<{
+        id: number;
+        source_layer: string;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_drawn_points: Array<{
+        id: number;
+        source_layer: string;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_school_beacons: Array<{
+        id: number;
+        component_id: number;
+        knack_id: string;
+        location_name: string;
+        beacon_id: string;
+        school_zone_beacon_id: string;
+        zone_name: string;
+        beacon_name: string;
+        geometry: unknown;
+      }>;
     }>;
   }>;
   childProjects: Array<{
     moped_proj_components: Array<{
-      " $fragmentRefs"?: {
-        ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+      project_component_id: number;
+      component_id: number;
+      description: string | null;
+      phase_id: number | null;
+      subphase_id: number | null;
+      completion_date: string | null;
+      project_id: number;
+      srts_id: string | null;
+      location_description: string | null;
+      moped_components: {
+        component_id: number;
+        component_name: string;
+        component_subtype: string | null;
+        line_representation: boolean;
+        feature_layer: { internal_table: string };
+        asset_feature_layer: { internal_table: string } | null;
       };
+      moped_proj_components_subcomponents: Array<{
+        subcomponent_id: number;
+        moped_subcomponent: { subcomponent_name: string };
+      }>;
+      moped_proj_component_work_types: Array<{
+        moped_work_type: { id: number; name: string };
+      }>;
+      moped_proj_component_tags: Array<{
+        component_tag_id: number;
+        moped_component_tag: { full_name: string | null };
+      }>;
+      moped_phase: {
+        phase_id: number;
+        phase_name: string;
+        phase_name_simple: string;
+        phase_key: string;
+        moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+      } | null;
+      moped_subphase: { subphase_id: number; subphase_name: string } | null;
+      feature_street_segments: Array<{
+        id: number;
+        source_layer: string;
+        ctn_segment_id: number;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_intersections: Array<{
+        id: number;
+        source_layer: string;
+        intersection_id: number;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_signals: Array<{
+        id: number;
+        component_id: number;
+        location_name: string;
+        signal_id: number;
+        signal_type: string;
+        knack_id: string;
+        geometry: unknown;
+      }>;
+      feature_drawn_lines: Array<{
+        id: number;
+        source_layer: string;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_drawn_points: Array<{
+        id: number;
+        source_layer: string;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_school_beacons: Array<{
+        id: number;
+        component_id: number;
+        knack_id: string;
+        location_name: string;
+        beacon_id: string;
+        school_zone_beacon_id: string;
+        zone_name: string;
+        beacon_name: string;
+        geometry: unknown;
+      }>;
     }>;
   }>;
 };
@@ -6487,6 +6900,66 @@ export type UpdateComponentAttributesMutationVariables = Exact<{
 
 export type UpdateComponentAttributesMutation = {
   update_moped_proj_components_by_pk: { project_component_id: number } | null;
+};
+
+export type DashboardQueryQueryVariables = Exact<{
+  userId?: number | null | undefined;
+}>;
+
+export type DashboardQueryQuery = {
+  moped_proj_personnel: Array<{
+    project_id: number;
+    user_id: number;
+    project: {
+      project_id: number;
+      ecapris_subproject_id: string | null;
+      project_name: string;
+      project_name_full: string | null;
+      should_sync_ecapris_statuses: boolean;
+      moped_proj_phases: Array<{
+        moped_phase: {
+          phase_name: string;
+          phase_key: string;
+          phase_id: number;
+        };
+      }>;
+      moped_proj_milestones: Array<{
+        project_id: number;
+        completed: boolean | null;
+      }>;
+      project_list_view: {
+        project_status_update: string | null;
+        project_status_update_date_created: string | null;
+        project_status_update_author: string | null;
+      } | null;
+    };
+  }>;
+  moped_user_followed_projects: Array<{
+    project: {
+      project_id: number;
+      ecapris_subproject_id: string | null;
+      project_name: string;
+      project_name_full: string | null;
+      should_sync_ecapris_statuses: boolean;
+      moped_proj_phases: Array<{
+        moped_phase: {
+          phase_name: string;
+          phase_key: string;
+          phase_id: number;
+        };
+      }>;
+      moped_proj_milestones: Array<{
+        project_id: number;
+        completed: boolean | null;
+      }>;
+      project_list_view: {
+        project_status_update: string | null;
+        project_status_update_date_created: string | null;
+        project_status_update_author: string | null;
+      } | null;
+    };
+  }>;
+  moped_note_types: Array<{ id: number; name: string; slug: string }>;
 };
 
 export type GetCombinedProjectFundingQueryVariables = Exact<{
@@ -6752,6 +7225,61 @@ export type DeleteWorkActivityMutation = {
   update_files_project_work_activities: { affected_rows: number } | null;
 };
 
+export type GetCombinedProjectNotesQueryVariables = Exact<{
+  projectNoteConditions: Combined_Project_Notes_View_Bool_Exp;
+}>;
+
+export type GetCombinedProjectNotesQuery = {
+  combined_project_notes_view: Array<{
+    author: string | null;
+    created_at: string | null;
+    ecapris_subproject_id: string | null;
+    id: string | null;
+    is_editable: boolean | null;
+    note_type_name: string | null;
+    note_type_slug: string | null;
+    note_type_id: number | null;
+    phase_id: number | null;
+    project_id: number | null;
+    project_note: string | null;
+    created_by_user_id: number | null;
+    original_id: unknown;
+    phase_key: string | null;
+    phase_name: string | null;
+    is_status_update: boolean | null;
+  }>;
+};
+
+export type AddProjectNoteMutationVariables = Exact<{
+  objects: Array<Moped_Proj_Notes_Insert_Input> | Moped_Proj_Notes_Insert_Input;
+}>;
+
+export type AddProjectNoteMutation = {
+  insert_moped_proj_notes: {
+    returning: Array<{ project_id: number; project_note: string }>;
+  } | null;
+};
+
+export type UpdateProjectNoteMutationVariables = Exact<{
+  projectId: number;
+  projectNoteId: number;
+  projectNote: string;
+  projectNoteType?: number | null | undefined;
+}>;
+
+export type UpdateProjectNoteMutation = {
+  update_moped_proj_notes: { affected_rows: number } | null;
+};
+
+export type DeleteProjectComentMutationVariables = Exact<{
+  projectId: number;
+  projectNoteId: number;
+}>;
+
+export type DeleteProjectComentMutation = {
+  update_moped_proj_notes: { affected_rows: number } | null;
+};
+
 export type AddProjectMutationVariables = Exact<{
   object: Moped_Project_Insert_Input;
 }>;
@@ -6843,16 +7371,174 @@ export type ProjectSummaryQuery = {
     geometry: unknown;
   }>;
   moped_proj_components: Array<{
-    " $fragmentRefs"?: {
-      ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+    project_component_id: number;
+    component_id: number;
+    description: string | null;
+    phase_id: number | null;
+    subphase_id: number | null;
+    completion_date: string | null;
+    project_id: number;
+    srts_id: string | null;
+    location_description: string | null;
+    moped_components: {
+      component_id: number;
+      component_name: string;
+      component_subtype: string | null;
+      line_representation: boolean;
+      feature_layer: { internal_table: string };
+      asset_feature_layer: { internal_table: string } | null;
     };
+    moped_proj_components_subcomponents: Array<{
+      subcomponent_id: number;
+      moped_subcomponent: { subcomponent_name: string };
+    }>;
+    moped_proj_component_work_types: Array<{
+      moped_work_type: { id: number; name: string };
+    }>;
+    moped_proj_component_tags: Array<{
+      component_tag_id: number;
+      moped_component_tag: { full_name: string | null };
+    }>;
+    moped_phase: {
+      phase_id: number;
+      phase_name: string;
+      phase_name_simple: string;
+      phase_key: string;
+      moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+    } | null;
+    moped_subphase: { subphase_id: number; subphase_name: string } | null;
+    feature_street_segments: Array<{
+      id: number;
+      source_layer: string;
+      ctn_segment_id: number;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_intersections: Array<{
+      id: number;
+      source_layer: string;
+      intersection_id: number;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_signals: Array<{
+      id: number;
+      component_id: number;
+      location_name: string;
+      signal_id: number;
+      signal_type: string;
+      knack_id: string;
+      geometry: unknown;
+    }>;
+    feature_drawn_lines: Array<{
+      id: number;
+      source_layer: string;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_drawn_points: Array<{
+      id: number;
+      source_layer: string;
+      component_id: number;
+      geometry: unknown;
+    }>;
+    feature_school_beacons: Array<{
+      id: number;
+      component_id: number;
+      knack_id: string;
+      location_name: string;
+      beacon_id: string;
+      school_zone_beacon_id: string;
+      zone_name: string;
+      beacon_name: string;
+      geometry: unknown;
+    }>;
   }>;
   childProjects: Array<{
     project_geography: Array<{ council_districts: Array<number> | null }>;
     moped_proj_components: Array<{
-      " $fragmentRefs"?: {
-        ProjectComponentFieldsFragment: ProjectComponentFieldsFragment;
+      project_component_id: number;
+      component_id: number;
+      description: string | null;
+      phase_id: number | null;
+      subphase_id: number | null;
+      completion_date: string | null;
+      project_id: number;
+      srts_id: string | null;
+      location_description: string | null;
+      moped_components: {
+        component_id: number;
+        component_name: string;
+        component_subtype: string | null;
+        line_representation: boolean;
+        feature_layer: { internal_table: string };
+        asset_feature_layer: { internal_table: string } | null;
       };
+      moped_proj_components_subcomponents: Array<{
+        subcomponent_id: number;
+        moped_subcomponent: { subcomponent_name: string };
+      }>;
+      moped_proj_component_work_types: Array<{
+        moped_work_type: { id: number; name: string };
+      }>;
+      moped_proj_component_tags: Array<{
+        component_tag_id: number;
+        moped_component_tag: { full_name: string | null };
+      }>;
+      moped_phase: {
+        phase_id: number;
+        phase_name: string;
+        phase_name_simple: string;
+        phase_key: string;
+        moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
+      } | null;
+      moped_subphase: { subphase_id: number; subphase_name: string } | null;
+      feature_street_segments: Array<{
+        id: number;
+        source_layer: string;
+        ctn_segment_id: number;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_intersections: Array<{
+        id: number;
+        source_layer: string;
+        intersection_id: number;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_signals: Array<{
+        id: number;
+        component_id: number;
+        location_name: string;
+        signal_id: number;
+        signal_type: string;
+        knack_id: string;
+        geometry: unknown;
+      }>;
+      feature_drawn_lines: Array<{
+        id: number;
+        source_layer: string;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_drawn_points: Array<{
+        id: number;
+        source_layer: string;
+        component_id: number;
+        geometry: unknown;
+      }>;
+      feature_school_beacons: Array<{
+        id: number;
+        component_id: number;
+        knack_id: string;
+        location_name: string;
+        beacon_id: string;
+        school_zone_beacon_id: string;
+        zone_name: string;
+        beacon_name: string;
+        geometry: unknown;
+      }>;
     }>;
   }>;
   ecapris_subproject_funding: Array<{
@@ -6879,7 +7565,7 @@ export type TeamQueryQuery = {
         last_name: string;
         user_id: number;
         is_deleted: boolean;
-        email: unknown;
+        email: string;
         moped_workgroup: {
           workgroup_id: number;
           workgroup_name: string;
@@ -6908,7 +7594,7 @@ export type TeamQueryQuery = {
     workgroup_id: number | null;
     user_id: number;
     is_deleted: boolean;
-    email: unknown;
+    email: string;
   }>;
   moped_workgroup: Array<{ workgroup_id: number; workgroup_name: string }>;
 };
@@ -7164,7 +7850,7 @@ export type GetMopedProjectChangesQuery = {
       first_name: string;
       last_name: string;
       picture: string | null;
-      email: unknown;
+      email: string;
       user_id: number;
     } | null;
   }>;
@@ -7172,7 +7858,7 @@ export type GetMopedProjectChangesQuery = {
     first_name: string;
     last_name: string;
     user_id: number;
-    email: unknown;
+    email: string;
   }>;
   moped_phases: Array<{ phase_id: number; phase_name: string }>;
   moped_subphases: Array<{ subphase_id: number; subphase_name: string }>;
@@ -7198,35 +7884,6 @@ export type GetMopedProjectChangesQuery = {
     component_subtype: string | null;
   }>;
   deprecated_moped_types: Array<{ type_id: number; type_name: string }>;
-  activity_log_lookup_tables: Array<{ record_type: string }>;
-};
-
-export type GetMopedProjectChangeDetailsQueryVariables = Exact<{
-  activityId: unknown;
-}>;
-
-export type GetMopedProjectChangeDetailsQuery = {
-  moped_activity_log: Array<{
-    activity_id: unknown;
-    created_at: string | null;
-    record_project_id: number | null;
-    record_type: string;
-    record_data: unknown;
-    description: unknown;
-    operation_type: string | null;
-    moped_user: {
-      first_name: string;
-      last_name: string;
-      user_id: number;
-    } | null;
-    updated_by_user: {
-      first_name: string;
-      last_name: string;
-      picture: string | null;
-      email: unknown;
-      user_id: number;
-    } | null;
-  }>;
   activity_log_lookup_tables: Array<{ record_type: string }>;
 };
 
@@ -7388,18 +8045,6 @@ export type GetSignalComponentsQuery = {
     component_id: number;
     line_representation: boolean;
   }>;
-};
-
-export type ProjectStatusUpdateInsertMutationVariables = Exact<{
-  statusUpdate:
-    Array<Moped_Proj_Notes_Insert_Input> | Moped_Proj_Notes_Insert_Input;
-}>;
-
-export type ProjectStatusUpdateInsertMutation = {
-  insert_moped_proj_notes: {
-    __typename: "moped_proj_notes_mutation_response";
-    affected_rows: number;
-  } | null;
 };
 
 export type ProjectUpdateSponsorMutationVariables = Exact<{
@@ -7578,6 +8223,386 @@ export type GetProjectsComponentsQuery = {
     component_name: string | null;
     line_representation: boolean | null;
   }>;
+};
+
+export type GetAllUsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetAllUsersQuery = {
+  moped_users: Array<{
+    last_name: string;
+    first_name: string;
+    user_id: number;
+    email: string;
+    roles: unknown;
+    title: string;
+    is_deleted: boolean;
+    last_seen_date: string | null;
+    is_user_group_member: boolean;
+    note: string | null;
+    moped_workgroup: { workgroup_id: number; workgroup_name: string } | null;
+  }>;
+};
+
+export type GetUserQueryVariables = Exact<{
+  userId?: number | null | undefined;
+}>;
+
+export type GetUserQuery = {
+  moped_users: Array<{
+    date_added: string | null;
+    first_name: string;
+    is_coa_staff: boolean;
+    last_name: string;
+    title: string;
+    user_id: number;
+    workgroup_id: number | null;
+    cognito_user_id: unknown;
+    email: string;
+    roles: unknown;
+    is_deleted: boolean;
+    is_user_group_member: boolean;
+    note: string | null;
+  }>;
+};
+
+export type AddNonMopedUserMutationVariables = Exact<{
+  object: Moped_Users_Insert_Input;
+}>;
+
+export type AddNonMopedUserMutation = {
+  insert_moped_users_one: {
+    date_added: string | null;
+    first_name: string;
+    last_name: string;
+    title: string;
+    email: string;
+    roles: unknown;
+    is_deleted: boolean;
+    is_user_group_member: boolean;
+    note: string | null;
+    moped_workgroup: { workgroup_id: number; workgroup_name: string } | null;
+  } | null;
+};
+
+export type UpdateNonMopedUserMutationVariables = Exact<{
+  userId: number;
+  changes?: Moped_Users_Set_Input | null | undefined;
+}>;
+
+export type UpdateNonMopedUserMutation = {
+  update_moped_users_by_pk: {
+    date_added: string | null;
+    first_name: string;
+    last_name: string;
+    title: string;
+    email: string;
+    roles: unknown;
+    is_deleted: boolean;
+    is_user_group_member: boolean;
+    note: string | null;
+    moped_workgroup: { workgroup_id: number; workgroup_name: string } | null;
+  } | null;
+};
+
+export type InsertUserEventMutationVariables = Exact<{
+  event_name: string;
+}>;
+
+export type InsertUserEventMutation = {
+  insert_moped_user_events: { affected_rows: number } | null;
+};
+
+export type SubprojectSummaryQueryVariables = Exact<{
+  projectId?: number | null | undefined;
+}>;
+
+export type SubprojectSummaryQuery = {
+  subprojects: Array<{
+    project_name: string;
+    project_name_full: string | null;
+    project_id: number;
+    moped_proj_phases: Array<{
+      moped_phase: { phase_name: string; phase_key: string };
+    }>;
+  }>;
+};
+
+export type ParentProjectSummaryQueryVariables = Exact<{
+  projectId?: number | null | undefined;
+}>;
+
+export type ParentProjectSummaryQuery = {
+  parentProject: Array<{
+    parent_project_id: number | null;
+    moped_project: {
+      project_name: string;
+      project_name_full: string | null;
+      project_id: number;
+      moped_proj_phases: Array<{
+        moped_phase: { phase_name: string; phase_key: string };
+      }>;
+    } | null;
+  }>;
+};
+
+export type SubprojectOptionsQueryVariables = Exact<{
+  projectId?: number | null | undefined;
+}>;
+
+export type SubprojectOptionsQuery = {
+  subprojectOptions: Array<{
+    project_id: number;
+    project_name_full: string | null;
+    moped_proj_phases: Array<{
+      moped_phase: { phase_name: string; phase_key: string };
+    }>;
+  }>;
+};
+
+export type UpdateProjectSubprojectMutationVariables = Exact<{
+  parentProjectId: number;
+  childProjectId: number;
+}>;
+
+export type UpdateProjectSubprojectMutation = {
+  update_moped_project_by_pk: { parent_project_id: number | null } | null;
+};
+
+export type DeleteProjectSubprojectMutationVariables = Exact<{
+  childProjectId: number;
+}>;
+
+export type DeleteProjectSubprojectMutation = {
+  update_moped_project_by_pk: { parent_project_id: number | null } | null;
+};
+
+export type ComponentTagsForDataDictionaryQueryVariables = Exact<{
+  where?: Moped_Component_Tags_Bool_Exp | null | undefined;
+}>;
+
+export type ComponentTagsForDataDictionaryQuery = {
+  moped_component_tags: Array<{
+    id: number;
+    name: string | null;
+    type: string | null;
+    slug: string;
+    full_name: string | null;
+    is_deleted: boolean;
+  }>;
+};
+
+export type AddComponentTagMutationVariables = Exact<{
+  object: Moped_Component_Tags_Insert_Input;
+}>;
+
+export type AddComponentTagMutation = {
+  insert_moped_component_tags_one: {
+    id: number;
+    name: string | null;
+    type: string | null;
+    slug: string;
+    full_name: string | null;
+    is_deleted: boolean;
+  } | null;
+};
+
+export type UpdateComponentTagMutationVariables = Exact<{
+  id: number;
+  set: Moped_Component_Tags_Set_Input;
+}>;
+
+export type UpdateComponentTagMutation = {
+  update_moped_component_tags_by_pk: {
+    id: number;
+    name: string | null;
+    type: string | null;
+    slug: string;
+    full_name: string | null;
+    is_deleted: boolean;
+  } | null;
+};
+
+export type ProjectTagsForDataDictionaryQueryVariables = Exact<{
+  where?: Moped_Tags_Bool_Exp | null | undefined;
+}>;
+
+export type ProjectTagsForDataDictionaryQuery = {
+  moped_tags: Array<{
+    id: number;
+    name: string;
+    type: string;
+    slug: string;
+    full_name: string | null;
+    is_deleted: boolean;
+  }>;
+};
+
+export type AddProjectTagLookupMutationVariables = Exact<{
+  object: Moped_Tags_Insert_Input;
+}>;
+
+export type AddProjectTagLookupMutation = {
+  insert_moped_tags_one: {
+    id: number;
+    name: string;
+    type: string;
+    slug: string;
+    full_name: string | null;
+    is_deleted: boolean;
+  } | null;
+};
+
+export type UpdateProjectTagLookupMutationVariables = Exact<{
+  id: number;
+  set: Moped_Tags_Set_Input;
+}>;
+
+export type UpdateProjectTagLookupMutation = {
+  update_moped_tags_by_pk: {
+    id: number;
+    name: string;
+    type: string;
+    slug: string;
+    full_name: string | null;
+    is_deleted: boolean;
+  } | null;
+};
+
+export type TableLookupQueryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type TableLookupQueryQuery = {
+  moped_phases: Array<{
+    phase_id: number;
+    phase_key: string;
+    phase_name: string;
+    phase_name_simple: string;
+    phase_description: string | null;
+    phase_order: number | null;
+    moped_subphases: Array<{
+      subphase_id: number;
+      subphase_description: string | null;
+      subphase_name: string;
+    }>;
+  }>;
+  moped_milestones: Array<{
+    milestone_id: number;
+    milestone_name: string;
+    milestone_description: string | null;
+    moped_phase: { phase_name: string } | null;
+  }>;
+  moped_components: Array<{
+    component_name: string;
+    component_subtype: string | null;
+    component_id: number;
+    line_representation: boolean;
+    moped_components_subcomponents: Array<{
+      moped_subcomponent: {
+        subcomponent_id: number;
+        subcomponent_name: string;
+      };
+    }>;
+    moped_component_work_types: Array<{
+      moped_work_type: { id: number; name: string };
+    }>;
+  }>;
+  moped_tags: Array<{ id: number; name: string; slug: string; type: string }>;
+  moped_entity: Array<{ entity_id: number; entity_name: string }>;
+  moped_component_tags: Array<{
+    id: number;
+    slug: string;
+    full_name: string | null;
+  }>;
+  moped_project_roles: Array<{
+    project_role_id: number;
+    project_role_name: string;
+    project_role_description: string | null;
+  }>;
+  moped_fund_status: Array<{
+    funding_status_name: string;
+    funding_status_id: number;
+    funding_status_description: string | null;
+  }>;
+};
+
+export type TagsQueryQueryVariables = Exact<{
+  projectId: number;
+}>;
+
+export type TagsQueryQuery = {
+  moped_proj_tags: Array<{
+    id: number;
+    moped_tag: { name: string; id: number };
+  }>;
+  moped_tags: Array<{ id: number; name: string }>;
+};
+
+export type DeleteProjectTagMutationVariables = Exact<{
+  id: number;
+}>;
+
+export type DeleteProjectTagMutation = {
+  update_moped_proj_tags_by_pk: { id: number } | null;
+};
+
+export type AddProjectTagsMutationVariables = Exact<{
+  objects: Array<Moped_Proj_Tags_Insert_Input> | Moped_Proj_Tags_Insert_Input;
+}>;
+
+export type AddProjectTagsMutation = {
+  insert_moped_proj_tags: { returning: Array<{ id: number }> } | null;
+};
+
+export type UserSavedViewsQueryVariables = Exact<{
+  userId?: number | null | undefined;
+}>;
+
+export type UserSavedViewsQuery = {
+  moped_user_saved_views: Array<{
+    id: number;
+    description: string;
+    url: string;
+    query_filters: unknown;
+    created_by_user_id: number;
+    updated_by_user_id: number;
+    created_at: string;
+    updated_at: string;
+    is_deleted: boolean;
+  }>;
+};
+
+export type AddUserSavedViewMutationVariables = Exact<{
+  object: Moped_User_Saved_Views_Insert_Input;
+}>;
+
+export type AddUserSavedViewMutation = {
+  insert_moped_user_saved_views_one: {
+    description: string;
+    url: string;
+    query_filters: unknown;
+  } | null;
+};
+
+export type UpdateUserSavedViewMutationVariables = Exact<{
+  id: number;
+  description: string;
+}>;
+
+export type UpdateUserSavedViewMutation = {
+  update_moped_user_saved_views: { affected_rows: number } | null;
+};
+
+export type DeleteUserSavedViewMutationVariables = Exact<{
+  id: number;
+}>;
+
+export type DeleteUserSavedViewMutation = {
+  update_moped_user_saved_views: { affected_rows: number } | null;
+};
+
+export type GetWorkgroupsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetWorkgroupsQuery = {
+  moped_workgroup: Array<{ workgroup_id: number; workgroup_name: string }>;
 };
 
 export const ProjectComponentFieldsFragmentDoc = {
@@ -11047,6 +12072,515 @@ export const UpdateComponentAttributesDocument = {
   UpdateComponentAttributesMutation,
   UpdateComponentAttributesMutationVariables
 >;
+export const DashboardQueryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "DashboardQuery" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_proj_personnel" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "user_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "userId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "is_deleted" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "_eq" },
+                                  value: { kind: "BooleanValue", value: false },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "project_id" } },
+                { kind: "Field", name: { kind: "Name", value: "user_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "ecapris_subproject_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_name_full" },
+                      },
+                      {
+                        kind: "Field",
+                        name: {
+                          kind: "Name",
+                          value: "should_sync_ecapris_statuses",
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_proj_phases" },
+                        arguments: [
+                          {
+                            kind: "Argument",
+                            name: { kind: "Name", value: "where" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: {
+                                    kind: "Name",
+                                    value: "is_current_phase",
+                                  },
+                                  value: {
+                                    kind: "ObjectValue",
+                                    fields: [
+                                      {
+                                        kind: "ObjectField",
+                                        name: { kind: "Name", value: "_eq" },
+                                        value: {
+                                          kind: "BooleanValue",
+                                          value: true,
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "moped_phase" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_name" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_key" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_id" },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_proj_milestones" },
+                        arguments: [
+                          {
+                            kind: "Argument",
+                            name: { kind: "Name", value: "where" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "is_deleted" },
+                                  value: {
+                                    kind: "ObjectValue",
+                                    fields: [
+                                      {
+                                        kind: "ObjectField",
+                                        name: { kind: "Name", value: "_eq" },
+                                        value: {
+                                          kind: "BooleanValue",
+                                          value: false,
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "project_id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "completed" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_list_view" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: {
+                                kind: "Name",
+                                value: "project_status_update",
+                              },
+                            },
+                            {
+                              kind: "Field",
+                              name: {
+                                kind: "Name",
+                                value: "project_status_update_date_created",
+                              },
+                            },
+                            {
+                              kind: "Field",
+                              name: {
+                                kind: "Name",
+                                value: "project_status_update_author",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_user_followed_projects" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "user_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "userId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "is_deleted" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "_eq" },
+                                  value: { kind: "BooleanValue", value: false },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "ecapris_subproject_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_name_full" },
+                      },
+                      {
+                        kind: "Field",
+                        name: {
+                          kind: "Name",
+                          value: "should_sync_ecapris_statuses",
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_proj_phases" },
+                        arguments: [
+                          {
+                            kind: "Argument",
+                            name: { kind: "Name", value: "where" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: {
+                                    kind: "Name",
+                                    value: "is_current_phase",
+                                  },
+                                  value: {
+                                    kind: "ObjectValue",
+                                    fields: [
+                                      {
+                                        kind: "ObjectField",
+                                        name: { kind: "Name", value: "_eq" },
+                                        value: {
+                                          kind: "BooleanValue",
+                                          value: true,
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "moped_phase" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_name" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_key" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_id" },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_proj_milestones" },
+                        arguments: [
+                          {
+                            kind: "Argument",
+                            name: { kind: "Name", value: "where" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "is_deleted" },
+                                  value: {
+                                    kind: "ObjectValue",
+                                    fields: [
+                                      {
+                                        kind: "ObjectField",
+                                        name: { kind: "Name", value: "_eq" },
+                                        value: {
+                                          kind: "BooleanValue",
+                                          value: false,
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "project_id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "completed" },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_list_view" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: {
+                                kind: "Name",
+                                value: "project_status_update",
+                              },
+                            },
+                            {
+                              kind: "Field",
+                              name: {
+                                kind: "Name",
+                                value: "project_status_update_date_created",
+                              },
+                            },
+                            {
+                              kind: "Field",
+                              name: {
+                                kind: "Name",
+                                value: "project_status_update_author",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_note_types" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DashboardQueryQuery, DashboardQueryQueryVariables>;
 export const GetCombinedProjectFundingDocument = {
   kind: "Document",
   definitions: [
@@ -13132,6 +14666,453 @@ export const DeleteWorkActivityDocument = {
 } as unknown as DocumentNode<
   DeleteWorkActivityMutation,
   DeleteWorkActivityMutationVariables
+>;
+export const GetCombinedProjectNotesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetCombinedProjectNotes" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectNoteConditions" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: {
+                kind: "Name",
+                value: "combined_project_notes_view_bool_exp",
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "combined_project_notes_view" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "projectNoteConditions" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "created_at" },
+                      value: { kind: "EnumValue", value: "desc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "author" } },
+                { kind: "Field", name: { kind: "Name", value: "created_at" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "ecapris_subproject_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "is_editable" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "note_type_name" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "note_type_slug" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "note_type_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "phase_id" } },
+                { kind: "Field", name: { kind: "Name", value: "project_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_note" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "created_by_user_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "original_id" } },
+                { kind: "Field", name: { kind: "Name", value: "phase_key" } },
+                { kind: "Field", name: { kind: "Name", value: "phase_name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_status_update" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCombinedProjectNotesQuery,
+  GetCombinedProjectNotesQueryVariables
+>;
+export const AddProjectNoteDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddProjectNote" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "objects" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: {
+                  kind: "NamedType",
+                  name: {
+                    kind: "Name",
+                    value: "moped_proj_notes_insert_input",
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_proj_notes" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "objects" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "returning" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_note" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddProjectNoteMutation,
+  AddProjectNoteMutationVariables
+>;
+export const UpdateProjectNoteDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateProjectNote" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectNoteId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectNote" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectNoteType" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_proj_notes" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_note" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "projectNote" },
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_note_type" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "projectNoteType" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_note_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectNoteId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateProjectNoteMutation,
+  UpdateProjectNoteMutationVariables
+>;
+export const DeleteProjectComentDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteProjectComent" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectNoteId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_proj_notes" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_note_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectNoteId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteProjectComentMutation,
+  DeleteProjectComentMutationVariables
 >;
 export const AddProjectDocument = {
   kind: "Document",
@@ -17641,178 +19622,6 @@ export const GetMopedProjectChangesDocument = {
   GetMopedProjectChangesQuery,
   GetMopedProjectChangesQueryVariables
 >;
-export const GetMopedProjectChangeDetailsDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "query",
-      name: { kind: "Name", value: "getMopedProjectChangeDetails" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "activityId" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "uuid" } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "moped_activity_log" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "where" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "activity_id" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "_eq" },
-                            value: {
-                              kind: "Variable",
-                              name: { kind: "Name", value: "activityId" },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "activity_id" } },
-                { kind: "Field", name: { kind: "Name", value: "created_at" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "record_project_id" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "record_type" } },
-                { kind: "Field", name: { kind: "Name", value: "record_data" } },
-                { kind: "Field", name: { kind: "Name", value: "description" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "operation_type" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "moped_user" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "first_name" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "last_name" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "user_id" },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "updated_by_user" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "first_name" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "last_name" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "picture" },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "email" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "user_id" },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            alias: { kind: "Name", value: "activity_log_lookup_tables" },
-            name: { kind: "Name", value: "moped_activity_log" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "where" },
-                value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "activity_id" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "_eq" },
-                            value: {
-                              kind: "Variable",
-                              name: { kind: "Name", value: "activityId" },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "distinct_on" },
-                value: { kind: "EnumValue", value: "record_type" },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "record_type" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetMopedProjectChangeDetailsQuery,
-  GetMopedProjectChangeDetailsQueryVariables
->;
 export const MopedProjectFilesDocument = {
   kind: "Document",
   definitions: [
@@ -19351,73 +21160,6 @@ export const GetSignalComponentsDocument = {
 } as unknown as DocumentNode<
   GetSignalComponentsQuery,
   GetSignalComponentsQueryVariables
->;
-export const ProjectStatusUpdateInsertDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "ProjectStatusUpdateInsert" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "statusUpdate" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "ListType",
-              type: {
-                kind: "NonNullType",
-                type: {
-                  kind: "NamedType",
-                  name: {
-                    kind: "Name",
-                    value: "moped_proj_notes_insert_input",
-                  },
-                },
-              },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "insert_moped_proj_notes" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "objects" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "statusUpdate" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "affected_rows" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "__typename" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  ProjectStatusUpdateInsertMutation,
-  ProjectStatusUpdateInsertMutationVariables
 >;
 export const ProjectUpdateSponsorDocument = {
   kind: "Document",
@@ -21303,3 +23045,2837 @@ export const GetProjectsComponentsDocument = {
   GetProjectsComponentsQuery,
   GetProjectsComponentsQueryVariables
 >;
+export const GetAllUsersDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetAllUsers" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_users" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "first_name" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "last_name" } },
+                { kind: "Field", name: { kind: "Name", value: "first_name" } },
+                { kind: "Field", name: { kind: "Name", value: "user_id" } },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "roles" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "last_seen_date" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_workgroup" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "workgroup_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "workgroup_name" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_user_group_member" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "note" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetAllUsersQuery, GetAllUsersQueryVariables>;
+export const GetUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_users" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "user_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "userId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "date_added" } },
+                { kind: "Field", name: { kind: "Name", value: "first_name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_coa_staff" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "last_name" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                { kind: "Field", name: { kind: "Name", value: "user_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "workgroup_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "cognito_user_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "roles" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_user_group_member" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "note" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;
+export const AddNonMopedUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddNonMopedUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "moped_users_insert_input" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_users_one" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "object" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "on_conflict" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "constraint" },
+                      value: {
+                        kind: "EnumValue",
+                        value: "moped_users_email_key",
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "date_added" } },
+                { kind: "Field", name: { kind: "Name", value: "first_name" } },
+                { kind: "Field", name: { kind: "Name", value: "last_name" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_workgroup" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "workgroup_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "workgroup_name" },
+                      },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "roles" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_user_group_member" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "note" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddNonMopedUserMutation,
+  AddNonMopedUserMutationVariables
+>;
+export const UpdateNonMopedUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateNonMopedUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "changes" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "moped_users_set_input" },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_users_by_pk" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "user_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "userId" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "changes" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "date_added" } },
+                { kind: "Field", name: { kind: "Name", value: "first_name" } },
+                { kind: "Field", name: { kind: "Name", value: "last_name" } },
+                { kind: "Field", name: { kind: "Name", value: "title" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_workgroup" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "workgroup_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "workgroup_name" },
+                      },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "email" } },
+                { kind: "Field", name: { kind: "Name", value: "roles" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "is_user_group_member" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "note" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateNonMopedUserMutation,
+  UpdateNonMopedUserMutationVariables
+>;
+export const InsertUserEventDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "InsertUserEvent" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "event_name" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_user_events" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "event_name" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "event_name" },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  InsertUserEventMutation,
+  InsertUserEventMutationVariables
+>;
+export const SubprojectSummaryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SubprojectSummary" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "subprojects" },
+            name: { kind: "Name", value: "moped_project" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "parent_project_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_name" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_name_full" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "project_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_proj_phases" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "where" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "is_current_phase" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "_eq" },
+                                  value: { kind: "BooleanValue", value: true },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_phase" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "phase_name" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "phase_key" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  SubprojectSummaryQuery,
+  SubprojectSummaryQueryVariables
+>;
+export const ParentProjectSummaryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "ParentProjectSummary" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "parentProject" },
+            name: { kind: "Name", value: "moped_project" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "parent_project_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_project" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_name" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_name_full" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "project_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_proj_phases" },
+                        arguments: [
+                          {
+                            kind: "Argument",
+                            name: { kind: "Name", value: "where" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: {
+                                    kind: "Name",
+                                    value: "is_current_phase",
+                                  },
+                                  value: {
+                                    kind: "ObjectValue",
+                                    fields: [
+                                      {
+                                        kind: "ObjectField",
+                                        name: { kind: "Name", value: "_eq" },
+                                        value: {
+                                          kind: "BooleanValue",
+                                          value: true,
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "moped_phase" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_name" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "phase_key" },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ParentProjectSummaryQuery,
+  ParentProjectSummaryQueryVariables
+>;
+export const SubprojectOptionsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SubprojectOptions" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "subprojectOptions" },
+            name: { kind: "Name", value: "moped_project" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "_and" },
+                      value: {
+                        kind: "ListValue",
+                        values: [
+                          {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "is_deleted" },
+                                value: {
+                                  kind: "ObjectValue",
+                                  fields: [
+                                    {
+                                      kind: "ObjectField",
+                                      name: { kind: "Name", value: "_eq" },
+                                      value: {
+                                        kind: "BooleanValue",
+                                        value: false,
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: {
+                                  kind: "Name",
+                                  value: "parent_project_id",
+                                },
+                                value: {
+                                  kind: "ObjectValue",
+                                  fields: [
+                                    {
+                                      kind: "ObjectField",
+                                      name: { kind: "Name", value: "_is_null" },
+                                      value: {
+                                        kind: "BooleanValue",
+                                        value: true,
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "project_id" },
+                                value: {
+                                  kind: "ObjectValue",
+                                  fields: [
+                                    {
+                                      kind: "ObjectField",
+                                      name: { kind: "Name", value: "_neq" },
+                                      value: {
+                                        kind: "Variable",
+                                        name: {
+                                          kind: "Name",
+                                          value: "projectId",
+                                        },
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "_not" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "moped_projects" },
+                            value: { kind: "ObjectValue", fields: [] },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "project_id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_name_full" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_proj_phases" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "where" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "is_current_phase" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "_eq" },
+                                  value: { kind: "BooleanValue", value: true },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_phase" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "phase_name" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "phase_key" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  SubprojectOptionsQuery,
+  SubprojectOptionsQueryVariables
+>;
+export const UpdateProjectSubprojectDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateProjectSubproject" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "parentProjectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "childProjectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_project_by_pk" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "childProjectId" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "parent_project_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "parentProjectId" },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "parent_project_id" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateProjectSubprojectMutation,
+  UpdateProjectSubprojectMutationVariables
+>;
+export const DeleteProjectSubprojectDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteProjectSubproject" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "childProjectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_project_by_pk" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "childProjectId" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "parent_project_id" },
+                      value: { kind: "NullValue" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "parent_project_id" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteProjectSubprojectMutation,
+  DeleteProjectSubprojectMutationVariables
+>;
+export const ComponentTagsForDataDictionaryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "ComponentTagsForDataDictionary" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "where" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "moped_component_tags_bool_exp" },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_component_tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "where" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "type" },
+                          value: { kind: "EnumValue", value: "asc" },
+                        },
+                      ],
+                    },
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "name" },
+                          value: { kind: "EnumValue", value: "asc" },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ComponentTagsForDataDictionaryQuery,
+  ComponentTagsForDataDictionaryQueryVariables
+>;
+export const AddComponentTagDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddComponentTag" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: {
+                kind: "Name",
+                value: "moped_component_tags_insert_input",
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_component_tags_one" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "object" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddComponentTagMutation,
+  AddComponentTagMutationVariables
+>;
+export const UpdateComponentTagDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateComponentTag" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "set" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "moped_component_tags_set_input" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_component_tags_by_pk" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "id" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "set" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateComponentTagMutation,
+  UpdateComponentTagMutationVariables
+>;
+export const ProjectTagsForDataDictionaryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "ProjectTagsForDataDictionary" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "where" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "moped_tags_bool_exp" },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "where" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "name" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ProjectTagsForDataDictionaryQuery,
+  ProjectTagsForDataDictionaryQueryVariables
+>;
+export const AddProjectTagLookupDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddProjectTagLookup" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "moped_tags_insert_input" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_tags_one" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "object" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddProjectTagLookupMutation,
+  AddProjectTagLookupMutationVariables
+>;
+export const UpdateProjectTagLookupDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateProjectTagLookup" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "set" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "moped_tags_set_input" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_tags_by_pk" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "id" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "set" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateProjectTagLookupMutation,
+  UpdateProjectTagLookupMutationVariables
+>;
+export const TableLookupQueryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TableLookupQuery" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_phases" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "phase_order" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "phase_id" } },
+                { kind: "Field", name: { kind: "Name", value: "phase_key" } },
+                { kind: "Field", name: { kind: "Name", value: "phase_name" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "phase_name_simple" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "phase_description" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "phase_order" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_subphases" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "subphase_id" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "subphase_description" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "subphase_name" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_milestones" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "milestone_id" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "milestone_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "milestone_name" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "milestone_description" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_phase" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "phase_name" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_components" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "component_name" },
+                          value: { kind: "EnumValue", value: "asc" },
+                        },
+                      ],
+                    },
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "component_subtype" },
+                          value: { kind: "EnumValue", value: "asc" },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "component_name" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "component_subtype" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "component_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "line_representation" },
+                },
+                {
+                  kind: "Field",
+                  name: {
+                    kind: "Name",
+                    value: "moped_components_subcomponents",
+                  },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "order_by" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "moped_subcomponent" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: {
+                                    kind: "Name",
+                                    value: "subcomponent_name",
+                                  },
+                                  value: { kind: "EnumValue", value: "asc" },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_subcomponent" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "subcomponent_id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: {
+                                kind: "Name",
+                                value: "subcomponent_name",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_component_work_types" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "order_by" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "moped_work_type" },
+                            value: {
+                              kind: "ObjectValue",
+                              fields: [
+                                {
+                                  kind: "ObjectField",
+                                  name: { kind: "Name", value: "name" },
+                                  value: { kind: "EnumValue", value: "asc" },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "moped_work_type" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "id" },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "name" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "name" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "type" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_entity" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "entity_name" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "entity_id" } },
+                { kind: "Field", name: { kind: "Name", value: "entity_name" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_component_tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "type" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "name" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "slug" } },
+                { kind: "Field", name: { kind: "Name", value: "full_name" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_project_roles" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "active_role" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: true },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "role_order" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_role_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_role_name" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "project_role_description" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_fund_status" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "funding_status_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_neq" },
+                            value: { kind: "IntValue", value: "0" },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_status_name" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_status_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "funding_status_description" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  TableLookupQueryQuery,
+  TableLookupQueryQueryVariables
+>;
+export const TagsQueryDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "TagsQuery" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "projectId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_proj_tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "project_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "projectId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "moped_tag" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "name" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TagsQueryQuery, TagsQueryQueryVariables>;
+export const DeleteProjectTagDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteProjectTag" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_proj_tags_by_pk" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "pk_columns" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "id" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteProjectTagMutation,
+  DeleteProjectTagMutationVariables
+>;
+export const AddProjectTagsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddProjectTags" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "objects" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: {
+                  kind: "NamedType",
+                  name: { kind: "Name", value: "moped_proj_tags_insert_input" },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_proj_tags" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "objects" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "returning" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddProjectTagsMutation,
+  AddProjectTagsMutationVariables
+>;
+export const UserSavedViewsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "userSavedViews" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_user_saved_views" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "created_by_user_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "userId" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "url" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "query_filters" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "created_by_user_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "updated_by_user_id" },
+                },
+                { kind: "Field", name: { kind: "Name", value: "created_at" } },
+                { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+                { kind: "Field", name: { kind: "Name", value: "is_deleted" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UserSavedViewsQuery, UserSavedViewsQueryVariables>;
+export const AddUserSavedViewDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddUserSavedView" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "object" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: {
+                kind: "Name",
+                value: "moped_user_saved_views_insert_input",
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insert_moped_user_saved_views_one" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "object" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "object" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "description" } },
+                { kind: "Field", name: { kind: "Name", value: "url" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "query_filters" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddUserSavedViewMutation,
+  AddUserSavedViewMutationVariables
+>;
+export const UpdateUserSavedViewDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateUserSavedView" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "description" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_user_saved_views" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "description" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "description" },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "id" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateUserSavedViewMutation,
+  UpdateUserSavedViewMutationVariables
+>;
+export const DeleteUserSavedViewDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "DeleteUserSavedView" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "update_moped_user_saved_views" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "_set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: { kind: "BooleanValue", value: true },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "id" },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "affected_rows" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteUserSavedViewMutation,
+  DeleteUserSavedViewMutationVariables
+>;
+export const GetWorkgroupsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetWorkgroups" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "moped_workgroup" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "order_by" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "workgroup_name" },
+                      value: { kind: "EnumValue", value: "asc" },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "where" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_deleted" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "_eq" },
+                            value: { kind: "BooleanValue", value: false },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "workgroup_id" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "workgroup_name" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetWorkgroupsQuery, GetWorkgroupsQueryVariables>;
