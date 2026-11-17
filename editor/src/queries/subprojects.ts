@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const SUBPROJECT_SUMMARY_QUERY = gql`
+export const SUBPROJECT_SUMMARY_QUERY = graphql(`
   query SubprojectSummary($projectId: Int) {
     subprojects: moped_project(
       where: {
@@ -19,9 +19,9 @@ export const SUBPROJECT_SUMMARY_QUERY = gql`
       }
     }
   }
-`;
+`);
 
-export const PARENT_PROJECT_SUMMARY_QUERY = gql`
+export const PARENT_PROJECT_SUMMARY_QUERY = graphql(`
   query ParentProjectSummary($projectId: Int) {
     parentProject: moped_project(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -40,9 +40,9 @@ export const PARENT_PROJECT_SUMMARY_QUERY = gql`
       }
     }
   }
-`;
+`);
 
-export const SUBPROJECT_OPTIONS_QUERY = gql`
+export const SUBPROJECT_OPTIONS_QUERY = graphql(`
   query SubprojectOptions($projectId: Int) {
     subprojectOptions: moped_project(
       where: {
@@ -64,9 +64,9 @@ export const SUBPROJECT_OPTIONS_QUERY = gql`
       }
     }
   }
-`;
+`);
 
-export const UPDATE_PROJECT_SUBPROJECT = gql`
+export const UPDATE_PROJECT_SUBPROJECT = graphql(`
   mutation UpdateProjectSubproject(
     $parentProjectId: Int!
     $childProjectId: Int!
@@ -78,10 +78,10 @@ export const UPDATE_PROJECT_SUBPROJECT = gql`
       parent_project_id
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT_SUBPROJECT = gql`
-  mutation UpdateProjectSubproject($childProjectId: Int!) {
+export const DELETE_PROJECT_SUBPROJECT = graphql(`
+  mutation DeleteProjectSubproject($childProjectId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $childProjectId }
       _set: { parent_project_id: null }
@@ -89,4 +89,4 @@ export const DELETE_PROJECT_SUBPROJECT = gql`
       parent_project_id
     }
   }
-`;
+`);

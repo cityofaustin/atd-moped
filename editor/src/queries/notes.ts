@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const COMBINED_NOTES_QUERY = gql`
+export const COMBINED_NOTES_QUERY = graphql(`
   query GetCombinedProjectNotes(
     $projectNoteConditions: combined_project_notes_view_bool_exp!
   ) {
@@ -26,9 +26,9 @@ export const COMBINED_NOTES_QUERY = gql`
       is_status_update
     }
   }
-`;
+`);
 
-export const ADD_PROJECT_NOTE = gql`
+export const ADD_PROJECT_NOTE = graphql(`
   mutation AddProjectNote($objects: [moped_proj_notes_insert_input!]!) {
     insert_moped_proj_notes(objects: $objects) {
       returning {
@@ -37,9 +37,9 @@ export const ADD_PROJECT_NOTE = gql`
       }
     }
   }
-`;
+`);
 
-export const UPDATE_PROJECT_NOTE = gql`
+export const UPDATE_PROJECT_NOTE = graphql(`
   mutation UpdateProjectNote(
     $projectId: Int!
     $projectNoteId: Int!
@@ -56,9 +56,9 @@ export const UPDATE_PROJECT_NOTE = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT_NOTE = gql`
+export const DELETE_PROJECT_NOTE = graphql(`
   mutation DeleteProjectComent($projectId: Int!, $projectNoteId: Int!) {
     update_moped_proj_notes(
       _set: { is_deleted: true }
@@ -70,4 +70,4 @@ export const DELETE_PROJECT_NOTE = gql`
       affected_rows
     }
   }
-`;
+`);

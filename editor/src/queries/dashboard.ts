@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const DASHBOARD_QUERY = gql`
+export const DASHBOARD_QUERY = graphql(`
   query DashboardQuery($userId: Int) {
     moped_proj_personnel(
       where: {
@@ -71,4 +71,4 @@ export const DASHBOARD_QUERY = gql`
       slug
     }
   }
-`;
+`);

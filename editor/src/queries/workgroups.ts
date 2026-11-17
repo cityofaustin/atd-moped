@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const WORKGROUPS_QUERY = gql`
+export const WORKGROUPS_QUERY = graphql(`
   query GetWorkgroups {
     moped_workgroup(
       order_by: { workgroup_name: asc }
@@ -10,4 +10,4 @@ export const WORKGROUPS_QUERY = gql`
       workgroup_name
     }
   }
-`;
+`);

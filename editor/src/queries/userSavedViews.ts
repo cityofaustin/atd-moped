@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { graphql } from "src/gql";
 
-export const USER_SAVED_VIEWS_QUERY = gql`
+export const USER_SAVED_VIEWS_QUERY = graphql(`
   query userSavedViews($userId: Int) {
     moped_user_saved_views(
       where: {
@@ -19,9 +19,9 @@ export const USER_SAVED_VIEWS_QUERY = gql`
       is_deleted
     }
   }
-`;
+`);
 
-export const ADD_USER_SAVED_VIEW = gql`
+export const ADD_USER_SAVED_VIEW = graphql(`
   mutation AddUserSavedView($object: moped_user_saved_views_insert_input!) {
     insert_moped_user_saved_views_one(object: $object) {
       description
@@ -29,9 +29,9 @@ export const ADD_USER_SAVED_VIEW = gql`
       query_filters
     }
   }
-`;
+`);
 
-export const UPDATE_USER_SAVED_VIEW = gql`
+export const UPDATE_USER_SAVED_VIEW = graphql(`
   mutation UpdateUserSavedView($id: Int!, $description: String!) {
     update_moped_user_saved_views(
       _set: { description: $description }
@@ -40,9 +40,9 @@ export const UPDATE_USER_SAVED_VIEW = gql`
       affected_rows
     }
   }
-`;
+`);
 
-export const DELETE_USER_SAVED_VIEW = gql`
+export const DELETE_USER_SAVED_VIEW = graphql(`
   mutation DeleteUserSavedView($id: Int!) {
     update_moped_user_saved_views(
       _set: { is_deleted: true }
@@ -51,4 +51,4 @@ export const DELETE_USER_SAVED_VIEW = gql`
       affected_rows
     }
   }
-`;
+`);

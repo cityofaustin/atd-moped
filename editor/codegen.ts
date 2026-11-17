@@ -8,20 +8,20 @@ const config: CodegenConfig = {
       },
     },
   },
-  documents: [
-    "src/queries/project.js",
-    "src/queries/components.js",
-    "src/queries/funding.js",
-    "src/queries/account.ts",
-  ],
+  documents: ["src/queries/*.ts"],
   generates: {
     "./src/gql/": {
       preset: "client",
+      presetConfig: {
+        /* Spread fragment fields into the parent type instead of exposing $fragmentRefs */
+        fragmentMasking: false,
+      },
       config: {
         skipTypeNameForRoot: true,
         useTypeImports: true,
         scalars: {
           timestamptz: "string",
+          citext: "string",
         },
       },
     },

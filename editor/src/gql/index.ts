@@ -1,2 +1,2 @@
-export * from "./fragment-masking";
+/* eslint-disable */
 export * from "./gql";
