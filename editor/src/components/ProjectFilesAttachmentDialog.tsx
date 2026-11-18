@@ -1,0 +1,210 @@
+import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { Box, Tabs, Tab } from "@mui/material";
+
+import FileUploadSingle from "src/components/FileUpload/FileUploadSingle";
+import FormDialog from "src/components/FormDialog";
+import { useFileUploadForm } from "src/components/FileUpload/useFileUploadForm";
+import AttachExistingFileTable from "src/views/projects/projectView/ProjectFunding/AttachExistingFileTable";
+
+function AttachmentTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      aria-hidden={value !== index}
+      id={`attachment-tabpanel-${index}`}
+      aria-labelledby={`attachment-tab-${index}`}
+      // Keep inactive tab content mounted but hidden with CSS rather than the
+      // `hidden` attribute to avoid UI shift on tab selection
+      // TODO: fix parent DOM element of the Data Grid has an empty width. issue 29378
+      style={{
+        position: value === index ? "static" : "absolute",
+        visibility: value === index ? "visible" : "hidden",
+        display: value === index ? "inherit" : "none",
+        width: "100%",
+      }}
+      {...other}
+    >
+      {<Box sx={{ p: 0 }}>{children}</Box>}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `attachment-tab-${index}`,
+    "aria-controls": `attachment-tabpanel-${index}`,
+  };
+}
+
+/**
+ * Dialog for attaching files to records in data grid table, used in funding and work activities
+ * @param {number} projectId - ID of the project to which the record (and thus file attachment) belongs
+ * @param {number} fileAttachmentId - ID of the record to which files are being attached/detached
+ * @param {function} handleSnackbar - Snackbar handler function for user feedback on success/failure of attaching/detaching files
+ * @param {boolean} isFileAttachmentDialogOpen - Boolean state for whether the dialog is open
+ * @param {function} onClose - Fires when closing this dialog
+ * @param {function} refetch - Refetch project data after attaching/detaching files
+ * @param {Array} dataLookups - Lookup data for file types
+ * @param {function} addFileMutation - the graphql mutation used to add a new file
+ * @param {function} existingFileMutation - the graphql mutation used to associate an existing file with the record
+ * @param {string} filesType - file type relationship name, one of moped_funding_files, ecapris_funding_files or work_activity_files
+ * @param {object} fileConnectionData - additional file specific information needed in mutation
+ * @returns {JSX.Element}
+ */
+const ProjectFilesAttachmentDialog = ({
+  projectId,
+  handleSnackbar,
+  isFileAttachmentDialogOpen,
+  onClose,
+  refetch,
+  dataLookups,
+  addFileMutation,
+  existingFileMutation,
+  filesType,
+  fileConnectionData,
+  fileAttachmentParentRecord,
+}) => {
+  const [addFileAttachment, { loading: addFileLoading }] =
+    useMutation(addFileMutation);
+  const [attachExistingFile, { loading: attachFileLoading }] =
+    useMutation(existingFileMutation);
+
+  const isLoading = addFileLoading || attachFileLoading;
+
+  /* Array of files on parent record  */
+  const filesAttachedToId = fileAttachmentParentRecord[filesType];
+
+  /* File upload form state and handlers */
+  const handleClickSaveFile = (fileDataBundle) => {
+    addFileAttachment({
+      variables: {
+        object: {
+          project_id: projectId,
+          file_name: fileDataBundle?.name,
+          file_type: fileDataBundle?.type,
+          file_description: fileDataBundle?.description,
+          file_key: fileDataBundle?.key,
+          file_size: fileDataBundle?.file?.fileSize ?? 0,
+          file_url: fileDataBundle?.url,
+          ...fileConnectionData.addFileConnection,
+        },
+      },
+    })
+      .then(() => {
+        onClose();
+        handleSnackbar(true, "File attachment linked", "success");
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error linking file attachment", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
+  };
+
+  const { fileReady, buildFileBundle, clearState, ...formProps } =
+    useFileUploadForm();
+
+  const handleSave = () => {
+    const fileBundle = buildFileBundle();
+    handleClickSaveFile(fileBundle);
+    clearState();
+  };
+
+  const handleDialogClose = () => {
+    clearState();
+    onClose();
+  };
+
+  /* Tabs state and handlers */
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleChange = (_, newValue) => {
+    setTabValue(newValue);
+  };
+
+  /* Existing file attachment tab state and handlers */
+  const [existingFileIdToAttach, setExistingFileIdToAttach] = useState("");
+  const handleRowSelection = (newSelection) => {
+    setExistingFileIdToAttach([...newSelection.ids][0]);
+  };
+
+  const handleAttach = () => {
+    attachExistingFile({
+      variables: {
+        object: {
+          file_id: existingFileIdToAttach,
+          entity_id: fileConnectionData.entityId,
+          is_deleted: false,
+          ...(fileConnectionData.project_id && {
+            project_id: fileConnectionData.project_id,
+          }),
+        },
+      },
+    })
+      .then(() => {
+        setExistingFileIdToAttach("");
+        onClose();
+        handleSnackbar(true, "File attached", "success");
+      })
+      .catch((error) => {
+        setExistingFileIdToAttach("");
+        handleSnackbar(true, "Error attaching file", "error", error);
+      })
+      .finally(() => {
+        refetch();
+      });
+  };
+
+  const newFileLabel = formProps.externalFile
+    ? "Save and attach"
+    : "Upload and attach";
+  const isExistingFileTab = tabValue === 1;
+
+  return (
+    <FormDialog
+      title="Attach files"
+      open={isFileAttachmentDialogOpen}
+      handleClose={handleDialogClose}
+      handleSave={isExistingFileTab ? handleAttach : handleSave}
+      saveDisabled={
+        isLoading || (isExistingFileTab ? !existingFileIdToAttach : !fileReady)
+      }
+      saveButtonLabel={isExistingFileTab ? "Attach" : newFileLabel}
+      showDialogActions={true}
+      dialogProps={{ maxWidth: "md" }}
+    >
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={tabValue}
+            onChange={handleChange}
+            aria-label="add new or existing file attachment tabs"
+          >
+            <Tab label="New" {...a11yProps(0)} />
+            <Tab label="Existing" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <AttachmentTabPanel value={tabValue} index={0}>
+          <FileUploadSingle
+            projectId={projectId}
+            fileTypesLookup={dataLookups?.moped_file_types ?? []}
+            {...formProps}
+          />
+        </AttachmentTabPanel>
+        <AttachmentTabPanel value={tabValue} index={1}>
+          <AttachExistingFileTable
+            projectId={projectId}
+            handleRowSelection={handleRowSelection}
+            attachedFiles={filesAttachedToId}
+          />
+        </AttachmentTabPanel>
+      </Box>
+    </FormDialog>
+  );
+};
+
+export default ProjectFilesAttachmentDialog;
