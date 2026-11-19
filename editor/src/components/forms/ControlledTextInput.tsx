@@ -1,63 +1,85 @@
-import { Controller } from "react-hook-form";
-import TextField from "@mui/material/TextField";
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
+import TextField, { type TextFieldProps } from "@mui/material/TextField";
 
 /**
  * Coerces empty strings to `null`
- * @param {string} value  - the current input value
- * @param {*} field - the react-hook-form field object
- * @returns undefined
  */
-const defaultOnChangeHandler = (value, field) => field.onChange(value || null);
+const defaultOnChangeHandler = (
+  value: string,
+  field: { onChange: (value: unknown) => void }
+) => field.onChange(value || null);
 
 /**
  * Coerces falsey values to an empty string
- * @param {string} value  - the current field value safed in react-hook-form state
- * @returns {string} the field value or an empty string
  */
-const defaultValueHandler = (value) => value || "";
+const defaultValueHandler = (value: string): string =>
+  value ? String(value) : "";
+
+export type ControlledTextInputProps<T extends FieldValues> = {
+  /** Unique field name used in the react-hook-form data object. */
+  name: Path<T>;
+  /** react-hook-form `control` object from `useForm`. */
+  control: Control<T>;
+  /**
+   * Callback fired when the input value changes. Keeps react-hook-form state
+   * in sync with the field input state.
+   *
+   * @param value - the current input value (raw string from the event)
+   * @param field - the react-hook-form field object
+   */
+  onChangeHandler?: (
+    value: string,
+    field: { onChange: (value: unknown) => void }
+  ) => void;
+  /**
+   * Optional transform from the value stored in react-hook-form state to the
+   * value rendered in the input.
+   */
+  valueHandler?: (value: unknown) => string;
+} & Omit<TextFieldProps, "name" | "value" | "onChange" | "control">;
 
 /**
- * A react-hook-form wrapper of the MUI TextField component. Enables custom transform
- * of the value saved in form state, which by default coerces empty strings to `null`
- * @param {object} control - react-hook-form `control` object from useController - required
- * @param {string} name - unique field name which be used in react-hook-form data object
- * @param {function} onChangeHandler -  Defines the callback handler for when a field value
- * changes. This function keeps react-hook-form state in sync with the field input state.
- * must have the signature (field, option) => void. where `field` is the react-hook-form field object and
- * `option` is the selected option.
- * @param {function} valueHandler - optional function which transforms the field's value  from
- * what is saved in Rreact-hook-formFH state vs what is rendered in the input. The value returned by this
- * function is passed to the `isOptionEqualToValue` test.
- * @param {object} inputProps - optional additional MUI TextField props
- * @return {JSX.Element}
+ * A react-hook-form wrapper of the MUI `TextField` component. Enables custom
+ * transforms of the value saved in form state, which by default coerces empty
+ * strings to `null`.
  */
-export default function ControlledTextInput({
+export default function ControlledTextInput<T extends FieldValues>({
   name,
   control,
   onChangeHandler = defaultOnChangeHandler,
   valueHandler = defaultValueHandler,
-  ...inputProps
-}) {
-  // Parse out the global TextField props from the inputProps object so that InputProps can be passed separately to the input slot
-  const { InputProps, ...textFieldProps } = inputProps || {};
-
+  slotProps,
+  onBlur,
+  ...textFieldProps
+}: ControlledTextInputProps<T>) {
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field }) => {
-        return (
-          <TextField
-            {...field}
-            {...textFieldProps}
-            onChange={(e) => onChangeHandler(e.target.value, field)}
-            value={valueHandler(field.value)}
-            slotProps={{
-              input: { ...InputProps },
-            }}
-          />
-        );
-      }}
+      render={({ field }) => (
+        <TextField
+          {...textFieldProps}
+          name={field.name}
+          ref={field.ref}
+          value={valueHandler(field.value)}
+          onChange={(e) => onChangeHandler(e.target.value, field)}
+          onBlur={(e) => {
+            field.onBlur();
+            onBlur?.(e);
+          }}
+          slotProps={{
+            ...slotProps,
+            input: {
+              ...(typeof slotProps?.input === "object" ? slotProps.input : {}),
+            },
+          }}
+        />
+      )}
     />
   );
 }
