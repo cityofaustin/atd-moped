@@ -281,19 +281,14 @@ export type Deprecated_Moped_Project_Types_Constraint =
 
 /** input type for inserting data into table "deprecated.moped_project_types" */
 export type Deprecated_Moped_Project_Types_Insert_Input = {
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_type?: Deprecated_Moped_Types_Obj_Rel_Insert_Input | null | undefined;
   project_id?: number | null | undefined;
   project_type_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -494,28 +489,22 @@ export type Feature_Drawn_Lines_Bool_Exp = {
 /** input type for incrementing numeric columns in table "feature_drawn_lines" */
 export type Feature_Drawn_Lines_Inc_Input = {
   component_id?: number | null | undefined;
-  /** User ID of the creator of the line feature */
   created_by_user_id?: number | null | undefined;
   id?: number | null | undefined;
-  /** User ID of the last updater of the line feature */
   updated_by_user_id?: number | null | undefined;
 };
 
 /** input type for inserting data into table "feature_drawn_lines" */
 export type Feature_Drawn_Lines_Insert_Input = {
   component_id?: number | null | undefined;
-  /** Timestamp of when the line feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the line feature */
   created_by_user_id?: number | null | undefined;
   geography?: unknown;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
   project_extent_id?: string | null | undefined;
   source_layer?: string | null | undefined;
-  /** Timestamp of the last update of the line feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the line feature */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -557,18 +546,14 @@ export type Feature_Drawn_Lines_Select_Column_Feature_Drawn_Lines_Aggregate_Bool
 /** input type for updating data in table "feature_drawn_lines" */
 export type Feature_Drawn_Lines_Set_Input = {
   component_id?: number | null | undefined;
-  /** Timestamp of when the line feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the line feature */
   created_by_user_id?: number | null | undefined;
   geography?: unknown;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
   project_extent_id?: string | null | undefined;
   source_layer?: string | null | undefined;
-  /** Timestamp of the last update of the line feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the line feature */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -634,28 +619,22 @@ export type Feature_Drawn_Points_Bool_Exp = {
 /** input type for incrementing numeric columns in table "feature_drawn_points" */
 export type Feature_Drawn_Points_Inc_Input = {
   component_id?: number | null | undefined;
-  /** User ID of the creator of the point feature */
   created_by_user_id?: number | null | undefined;
   id?: number | null | undefined;
-  /** User ID of the last updater of the point feature */
   updated_by_user_id?: number | null | undefined;
 };
 
 /** input type for inserting data into table "feature_drawn_points" */
 export type Feature_Drawn_Points_Insert_Input = {
   component_id?: number | null | undefined;
-  /** Timestamp of when the point feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the point feature */
   created_by_user_id?: number | null | undefined;
   geography?: unknown;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
   project_extent_id?: string | null | undefined;
   source_layer?: string | null | undefined;
-  /** Timestamp of the last update of the point feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the point feature */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -695,18 +674,14 @@ export type Feature_Drawn_Points_Select_Column_Feature_Drawn_Points_Aggregate_Bo
 /** input type for updating data in table "feature_drawn_points" */
 export type Feature_Drawn_Points_Set_Input = {
   component_id?: number | null | undefined;
-  /** Timestamp of when the point feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the point feature */
   created_by_user_id?: number | null | undefined;
   geography?: unknown;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
   project_extent_id?: string | null | undefined;
   source_layer?: string | null | undefined;
-  /** Timestamp of the last update of the point feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the point feature */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -772,18 +747,14 @@ export type Feature_Intersections_Bool_Exp = {
 /** input type for inserting data into table "feature_intersections" */
 export type Feature_Intersections_Insert_Input = {
   component_id?: number | null | undefined;
-  /** Timestamp of when the intersection feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the intersection feature */
   created_by_user_id?: number | null | undefined;
   geography?: unknown;
   id?: number | null | undefined;
   intersection_id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
   source_layer?: string | null | undefined;
-  /** Timestamp of the last update of the intersection feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the intersection feature */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -925,9 +896,7 @@ export type Feature_School_Beacons_Insert_Input = {
   beacon_id?: string | null | undefined;
   beacon_name?: string | null | undefined;
   component_id?: number | null | undefined;
-  /** Timestamp of when the school beacon feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the school beacon feature */
   created_by_user_id?: number | null | undefined;
   geography?: unknown;
   id?: number | null | undefined;
@@ -935,9 +904,7 @@ export type Feature_School_Beacons_Insert_Input = {
   knack_id?: string | null | undefined;
   location_name?: string | null | undefined;
   school_zone_beacon_id?: string | null | undefined;
-  /** Timestamp of the last update of the school beacon feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the school beacon feature */
   updated_by_user_id?: number | null | undefined;
   zone_name?: string | null | undefined;
 };
@@ -1037,9 +1004,7 @@ export type Feature_Signals_Bool_Exp = {
 /** input type for inserting data into table "feature_signals" */
 export type Feature_Signals_Insert_Input = {
   component_id?: number | null | undefined;
-  /** Timestamp of when the signal feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the signal feature */
   created_by_user_id?: number | null | undefined;
   geography?: unknown;
   id?: number | null | undefined;
@@ -1048,9 +1013,7 @@ export type Feature_Signals_Insert_Input = {
   location_name?: string | null | undefined;
   signal_id?: number | null | undefined;
   signal_type?: string | null | undefined;
-  /** Timestamp of the last update of the signal feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the signal feature */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -1151,9 +1114,7 @@ export type Feature_Street_Segments_Bool_Exp = {
 /** input type for inserting data into table "feature_street_segments" */
 export type Feature_Street_Segments_Insert_Input = {
   component_id?: number | null | undefined;
-  /** Timestamp of when the street segment feature was created */
   created_at?: string | null | undefined;
-  /** User ID of the creator of the street segment feature */
   created_by_user_id?: number | null | undefined;
   ctn_segment_id?: number | null | undefined;
   from_address_min?: number | null | undefined;
@@ -1165,9 +1126,7 @@ export type Feature_Street_Segments_Insert_Input = {
   source_layer?: string | null | undefined;
   symbol?: number | null | undefined;
   to_address_max?: number | null | undefined;
-  /** Timestamp of the last update of the street segment feature */
   updated_at?: string | null | undefined;
-  /** User ID of the last updater of the street segment feature */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -1236,7 +1195,6 @@ export type Features_Inc_Input = {
 export type Features_Set_Input = {
   component_id?: number | null | undefined;
   id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
 };
 
@@ -1310,24 +1268,16 @@ export type Files_Ecapris_Funding_Constraint =
 
 /** input type for inserting data into table "files_ecapris_funding" */
 export type Files_Ecapris_Funding_Insert_Input = {
-  /** Timestamp for when the record was created. */
   created_at?: string | null | undefined;
-  /** References the user who created the file attachment record. */
   created_by_user_id?: number | null | undefined;
-  /** References the ecapris_subproject_funding primary key to which the file attachment belongs. */
   entity_id?: number | null | undefined;
-  /** References the file that is attached to the eCAPRIS funding row. */
   file_id?: number | null | undefined;
   id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_project_file?:
     Moped_Project_Files_Obj_Rel_Insert_Input | null | undefined;
-  /** References the Moped project to which the file attachment belongs. */
   project_id?: number | null | undefined;
-  /** Timestamp for when the record was last updated. */
   updated_at?: string | null | undefined;
-  /** References the user who last updated the file attachment record. */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -1450,22 +1400,15 @@ export type Files_Project_Funding_Constraint =
 
 /** input type for inserting data into table "files_project_funding" */
 export type Files_Project_Funding_Insert_Input = {
-  /** Timestamp for when the record was created. */
   created_at?: string | null | undefined;
-  /** References the user who created the file attachment record. */
   created_by_user_id?: number | null | undefined;
-  /** References the Moped project funding record to which the file attachment belongs. */
   entity_id?: number | null | undefined;
-  /** References the file that is attached to the moped funding row. */
   file_id?: number | null | undefined;
   id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_project_file?:
     Moped_Project_Files_Obj_Rel_Insert_Input | null | undefined;
-  /** Timestamp for when the record was last updated. */
   updated_at?: string | null | undefined;
-  /** References the user who last updated the file attachment record. */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -1589,22 +1532,15 @@ export type Files_Project_Work_Activities_Constraint =
 
 /** input type for inserting data into table "files_project_work_activities" */
 export type Files_Project_Work_Activities_Insert_Input = {
-  /** Timestamp for when the record was created. */
   created_at?: string | null | undefined;
-  /** References the user who created the file attachment record. */
   created_by_user_id?: number | null | undefined;
-  /** References the Moped project work activity record to which the file attachment belongs. */
   entity_id?: number | null | undefined;
-  /** References the file that is attached to the work activity row. */
   file_id?: number | null | undefined;
   id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_project_file?:
     Moped_Project_Files_Obj_Rel_Insert_Input | null | undefined;
-  /** Timestamp for when the record was last updated. */
   updated_at?: string | null | undefined;
-  /** References the user who last updated the file attachment record. */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -1941,14 +1877,12 @@ export type Moped_Components_Constraint =
 /** input type for inserting data into table "moped_components" */
 export type Moped_Components_Insert_Input = {
   asset_feature_layer?: Feature_Layers_Obj_Rel_Insert_Input | null | undefined;
-  /** Foreign key which indicates if the component supports storing data from a reference asset layer, and in which layer that data should be stored */
   asset_feature_layer_id?: number | null | undefined;
   component_id?: number | null | undefined;
   component_name?: string | null | undefined;
   component_subtype?: string | null | undefined;
   feature_layer?: Feature_Layers_Obj_Rel_Insert_Input | null | undefined;
   feature_layer_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   line_representation?: boolean | null | undefined;
   moped_component_work_types?:
@@ -2122,7 +2056,6 @@ export type Moped_Department_Insert_Input = {
   department_abbreviation?: string | null | undefined;
   department_id?: number | null | undefined;
   department_name?: string | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   organization_id?: number | null | undefined;
 };
@@ -2470,7 +2403,6 @@ export type Moped_Note_Types_Insert_Input = {
   id?: number | null | undefined;
   name?: string | null | undefined;
   slug?: string | null | undefined;
-  /** Source of the note type, e.g., Moped or eCapris applications */
   source?: string | null | undefined;
 };
 
@@ -2597,7 +2529,6 @@ export type Moped_Phases_Insert_Input = {
   phase_average_length?: number | null | undefined;
   phase_description?: string | null | undefined;
   phase_id?: number | null | undefined;
-  /** Unique machine-readable phase name */
   phase_key?: string | null | undefined;
   phase_name?: string | null | undefined;
   phase_name_simple?: string | null | undefined;
@@ -2701,9 +2632,7 @@ export type Moped_Proj_Component_Tags_Constraint =
 /** input type for inserting data into table "moped_proj_component_tags" */
 export type Moped_Proj_Component_Tags_Insert_Input = {
   component_tag_id?: number | null | undefined;
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
@@ -2712,9 +2641,7 @@ export type Moped_Proj_Component_Tags_Insert_Input = {
   moped_proj_component?:
     Moped_Proj_Components_Obj_Rel_Insert_Input | null | undefined;
   project_component_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -2841,9 +2768,7 @@ export type Moped_Proj_Component_Work_Types_Constraint =
 
 /** input type for inserting data into table "moped_proj_component_work_types" */
 export type Moped_Proj_Component_Work_Types_Insert_Input = {
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
@@ -2851,9 +2776,7 @@ export type Moped_Proj_Component_Work_Types_Insert_Input = {
     Moped_Proj_Components_Obj_Rel_Insert_Input | null | undefined;
   moped_work_type?: Moped_Work_Types_Obj_Rel_Insert_Input | null | undefined;
   project_component_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
   work_type_id?: number | null | undefined;
 };
@@ -3014,7 +2937,6 @@ export type Moped_Proj_Components_Insert_Input = {
   completion_date?: string | null | undefined;
   component_id?: number | null | undefined;
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   description?: string | null | undefined;
   feature_drawn_lines?:
@@ -3029,7 +2951,6 @@ export type Moped_Proj_Components_Insert_Input = {
   feature_street_segments?:
     Feature_Street_Segments_Arr_Rel_Insert_Input | null | undefined;
   interim_project_component_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   location_description?: string | null | undefined;
   moped_components?: Moped_Components_Obj_Rel_Insert_Input | null | undefined;
@@ -3045,11 +2966,9 @@ export type Moped_Proj_Components_Insert_Input = {
   phase_id?: number | null | undefined;
   project_component_id?: number | null | undefined;
   project_id?: number | null | undefined;
-  /** The Safe Routes to School infrastructure plan record identifier */
   srts_id?: string | null | undefined;
   subphase_id?: number | null | undefined;
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -3181,19 +3100,14 @@ export type Moped_Proj_Components_Subcomponents_Constraint =
 /** input type for inserting data into table "moped_proj_components_subcomponents" */
 export type Moped_Proj_Components_Subcomponents_Insert_Input = {
   component_subcomponent_id?: number | null | undefined;
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_subcomponent?:
     Moped_Subcomponents_Obj_Rel_Insert_Input | null | undefined;
   project_component_id?: number | null | undefined;
   subcomponent_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -3358,49 +3272,30 @@ export type Moped_Proj_Funding_Constraint =
 
 /** input type for inserting data into table "moped_proj_funding" */
 export type Moped_Proj_Funding_Insert_Input = {
-  /** Timestamp when the record was last created */
   created_at?: string | null | undefined;
-  /** ID of the user who last created the record */
   created_by_user_id?: number | null | undefined;
-  /** Legacy JSONB object containing additional department/unit details from eCAPRIS (Socrata bgrt-2m2z) */
   dept_unit?: unknown;
-  /** References the eCAPRIS FDU unique fao_id of imported eCAPRIS funding records */
   ecapris_funding_id?: number | null | undefined;
-  /** eCapris subproject ID number associated with imported or synced eCAPRIS FDU */
   ecapris_subproject_id?: string | null | undefined;
-  /** The FDU (Fund-Dept-Unit) code associated with this funding record from eCAPRIS */
   fdu?: string | null | undefined;
   files_project_fundings?:
     Files_Project_Funding_Arr_Rel_Insert_Input | null | undefined;
-  /** Legacy JSONB object containing additional fund details from eCAPRIS (Socrata jega-nqf6) */
   fund?: unknown;
-  /** The amount of funding allocated from this funding source */
   funding_amount?: number | null | undefined;
-  /** A description of the funding source */
   funding_description?: string | null | undefined;
-  /** References the funding program for this funding record */
   funding_program_id?: number | null | undefined;
-  /** References the funding source for this funding record */
   funding_source_id?: number | null | undefined;
-  /** References the current status of this funding record */
   funding_status_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
-  /** Indicates if the funding record was created before eCAPRIS sync integration (Jan 2026) */
   is_legacy_funding_record?: boolean | null | undefined;
   moped_fund_program?:
     Moped_Fund_Programs_Obj_Rel_Insert_Input | null | undefined;
   moped_fund_source?:
     Moped_Fund_Sources_Obj_Rel_Insert_Input | null | undefined;
-  /** Primary key for the project funding record */
   proj_funding_id?: number | null | undefined;
-  /** References the project this funding record is associated with */
   project_id?: number | null | undefined;
-  /** The long name of the unit associated with this funding record from eCAPRIS */
   unit_long_name?: string | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -3579,12 +3474,10 @@ export type Moped_Proj_Milestones_Constraint =
 export type Moped_Proj_Milestones_Insert_Input = {
   completed?: boolean | null | undefined;
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   date_actual?: unknown;
   date_estimate?: unknown;
   description?: string | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   milestone_id?: number | null | undefined;
   milestone_order?: number | null | undefined;
@@ -3592,9 +3485,7 @@ export type Moped_Proj_Milestones_Insert_Input = {
   moped_project?: Moped_Project_Obj_Rel_Insert_Input | null | undefined;
   project_id?: number | null | undefined;
   project_milestone_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -3742,9 +3633,7 @@ export type Moped_Proj_Notes_Constraint =
 /** input type for inserting data into table "moped_proj_notes" */
 export type Moped_Proj_Notes_Insert_Input = {
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_note_type?: Moped_Note_Types_Obj_Rel_Insert_Input | null | undefined;
   moped_phase?: Moped_Phases_Obj_Rel_Insert_Input | null | undefined;
@@ -3755,9 +3644,7 @@ export type Moped_Proj_Notes_Insert_Input = {
   project_note?: string | null | undefined;
   project_note_id?: number | null | undefined;
   project_note_type?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -3883,19 +3770,14 @@ export type Moped_Proj_Partners_Constraint =
 
 /** input type for inserting data into table "moped_proj_partners" */
 export type Moped_Proj_Partners_Insert_Input = {
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   entity_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_entity?: Moped_Entity_Obj_Rel_Insert_Input | null | undefined;
   proj_partner_id?: number | null | undefined;
   project_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -4022,11 +3904,8 @@ export type Moped_Proj_Personnel_Constraint =
 
 /** input type for inserting data into table "moped_proj_personnel" */
 export type Moped_Proj_Personnel_Insert_Input = {
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_proj_personnel_roles?:
     Moped_Proj_Personnel_Roles_Arr_Rel_Insert_Input | null | undefined;
@@ -4035,9 +3914,7 @@ export type Moped_Proj_Personnel_Insert_Input = {
   project?: Moped_Project_Obj_Rel_Insert_Input | null | undefined;
   project_id?: number | null | undefined;
   project_personnel_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
   user_id?: number | null | undefined;
 };
@@ -4118,9 +3995,7 @@ export type Moped_Proj_Personnel_Roles_Constraint =
 
 /** input type for inserting data into table "moped_proj_personnel_roles" */
 export type Moped_Proj_Personnel_Roles_Insert_Input = {
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
@@ -4130,9 +4005,7 @@ export type Moped_Proj_Personnel_Roles_Insert_Input = {
     Moped_Project_Roles_Obj_Rel_Insert_Input | null | undefined;
   project_personnel_id?: number | null | undefined;
   project_role_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -4224,18 +4097,13 @@ export type Moped_Proj_Personnel_Select_Column_Moped_Proj_Personnel_Aggregate_Bo
 
 /** input type for updating data in table "moped_proj_personnel" */
 export type Moped_Proj_Personnel_Set_Input = {
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   notes?: string | null | undefined;
   project_id?: number | null | undefined;
   project_personnel_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
   user_id?: number | null | undefined;
 };
@@ -4331,7 +4199,6 @@ export type Moped_Proj_Phases_Insert_Input = {
   created_at?: string | null | undefined;
   created_by_user_id?: number | null | undefined;
   is_current_phase?: boolean | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   is_phase_end_confirmed?: boolean | null | undefined;
   is_phase_start_confirmed?: boolean | null | undefined;
@@ -4344,9 +4211,7 @@ export type Moped_Proj_Phases_Insert_Input = {
   project_id?: number | null | undefined;
   project_phase_id?: number | null | undefined;
   subphase_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -4424,7 +4289,6 @@ export type Moped_Proj_Phases_Set_Input = {
   created_at?: string | null | undefined;
   created_by_user_id?: number | null | undefined;
   is_current_phase?: boolean | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   is_phase_end_confirmed?: boolean | null | undefined;
   is_phase_start_confirmed?: boolean | null | undefined;
@@ -4435,9 +4299,7 @@ export type Moped_Proj_Phases_Set_Input = {
   project_id?: number | null | undefined;
   project_phase_id?: number | null | undefined;
   subphase_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -4534,9 +4396,7 @@ export type Moped_Proj_Tags_Constraint =
 
 /** input type for inserting data into table "moped_proj_tags" */
 export type Moped_Proj_Tags_Insert_Input = {
-  /** Timestamp when the record was created */
   created_at?: string | null | undefined;
-  /** ID of the user who created the record */
   created_by_user_id?: number | null | undefined;
   id?: number | null | undefined;
   is_deleted?: boolean | null | undefined;
@@ -4546,9 +4406,7 @@ export type Moped_Proj_Tags_Insert_Input = {
   moped_user_updated_by?: Moped_Users_Obj_Rel_Insert_Input | null | undefined;
   project_id?: number | null | undefined;
   tag_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -4706,7 +4564,6 @@ export type Moped_Proj_Work_Activity_Insert_Input = {
   work_activity_files?:
     Files_Project_Work_Activities_Arr_Rel_Insert_Input | null | undefined;
   work_assignment_id?: string | null | undefined;
-  /** (Deprecated) External link to a related work order. E.g., to the Knack Data Tracker */
   work_order_url?: string | null | undefined;
   workgroup_contractor?: string | null | undefined;
 };
@@ -4784,7 +4641,6 @@ export type Moped_Proj_Work_Activity_Set_Input = {
   updated_at?: string | null | undefined;
   updated_by_user_id?: number | null | undefined;
   work_assignment_id?: string | null | undefined;
-  /** (Deprecated) External link to a related work order. E.g., to the Knack Data Tracker */
   work_order_url?: string | null | undefined;
   workgroup_contractor?: string | null | undefined;
 };
@@ -5054,16 +4910,13 @@ export type Moped_Project_Files_Insert_Input = {
     Files_Project_Funding_Arr_Rel_Insert_Input | null | undefined;
   files_project_work_activities?:
     Files_Project_Work_Activities_Arr_Rel_Insert_Input | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   is_scanned?: boolean | null | undefined;
   moped_project?: Moped_Project_Obj_Rel_Insert_Input | null | undefined;
   moped_user?: Moped_Users_Obj_Rel_Insert_Input | null | undefined;
   project_file_id?: number | null | undefined;
   project_id?: number | null | undefined;
-  /** Timestamp when the record was last updated */
   updated_at?: string | null | undefined;
-  /** ID of the user who last updated the record */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -5127,7 +4980,6 @@ export type Moped_Project_Insert_Input = {
   ecapris_subproject_id?: string | null | undefined;
   geography?: Project_Geography_Arr_Rel_Insert_Input | null | undefined;
   interim_project_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   is_migrated_from_access_db?: boolean | null | undefined;
   knack_project_id?: string | null | undefined;
@@ -5166,12 +5018,9 @@ export type Moped_Project_Insert_Input = {
   project_sponsor?: number | null | undefined;
   project_website?: string | null | undefined;
   public_process_status_id?: number | null | undefined;
-  /** Indicates if project funding should be synced from eCAPRIS */
   should_sync_ecapris_funding?: boolean | null | undefined;
-  /** Indicates if project statuses should be synced from eCAPRIS */
   should_sync_ecapris_statuses?: boolean | null | undefined;
   updated_at?: string | null | undefined;
-  /** User ID of the person who last updated the project */
   updated_by_user_id?: number | null | undefined;
 };
 
@@ -5647,26 +5496,18 @@ export type Moped_Users_Constraint =
 
 /** input type for inserting data into table "moped_users" */
 export type Moped_Users_Insert_Input = {
-  /** Identifier for the user in AWS Cognito */
   cognito_user_id?: unknown;
   date_added?: string | null | undefined;
   email?: unknown;
   first_name?: string | null | undefined;
-  /** Indicates if the user is a COA staff member or not */
   is_coa_staff?: boolean | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
-  /** Tracks if the user is a member of the Moped User Group, aka the MUG. */
   is_user_group_member?: boolean | null | undefined;
   last_name?: string | null | undefined;
-  /** Tracks the last time a user loaded the Moped app in their browser. This value is set by the set_last_seen_date function. This value is not 100% reliable because it is updated by an API call that can be blocked by the client. */
   last_seen_date?: string | null | undefined;
   moped_workgroup?: Moped_Workgroup_Obj_Rel_Insert_Input | null | undefined;
-  /** A place to add any notes about this user, e.g. why they were deactivated. */
   note?: string | null | undefined;
-  /** Deprecated column to store the S3 path to uploaded profile image file */
   picture?: string | null | undefined;
-  /** Roles assigned to the user to determine platform access (Hasura) */
   roles?: unknown;
   title?: string | null | undefined;
   user_id?: number | null | undefined;
@@ -5842,7 +5683,6 @@ export type Moped_Workgroup_Constraint =
 export type Moped_Workgroup_Insert_Input = {
   date_added?: string | null | undefined;
   department_id?: number | null | undefined;
-  /** Indicates soft deletion */
   is_deleted?: boolean | null | undefined;
   moped_department?: Moped_Department_Obj_Rel_Insert_Input | null | undefined;
   workgroup_abbreviation?: string | null | undefined;

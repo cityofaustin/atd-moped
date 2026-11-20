@@ -94,7 +94,7 @@ const FileUpload = (props) => {
               .then((data) => {
                 setErrors([]);
                 if (data?.credentials) {
-                  console.log(data)
+                  console.log(JSON.stringify(data))
                   const newFileSignatureState = { ...fileSignatures };
                   newFileSignatureState[item.filename] = data.credentials;
                   setFileSignatures(newFileSignatureState);
@@ -133,7 +133,7 @@ const FileUpload = (props) => {
    * @param {Object} file - The file object, including metadata.
    */
   const handleFileAdded = (error, file) => {
-    console.log(file)
+    console.log("file", file)
     if (error) {
       setErrors([
         `Error attempting to add file '${file.filename}'. \
@@ -173,7 +173,7 @@ const FileUpload = (props) => {
 
     // First, retrieve the signature from state that we got from S3
     const fileSignature = fileSignatures[file.name];
-    console.log(fileSignatures)
+    console.log(file.name)
 
     // If the signature is invalid, might as well stop it!
     if (fileSignature == null) {
@@ -223,6 +223,7 @@ const FileUpload = (props) => {
       }
     };
 
+    console.log("formData ", JSON.stringify(formData))
     request.send(formData);
 
     // Should expose an abort method so the request can be cancelled
