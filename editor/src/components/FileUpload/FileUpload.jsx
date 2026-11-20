@@ -23,9 +23,6 @@ registerPlugin(
 );
 
 const FileUpload = (props) => {
-  /**
-   * Constants
-   */
   const maxFiles = props?.limit ?? 1;
 
   /**
@@ -137,7 +134,8 @@ const FileUpload = (props) => {
   const handleFileAdded = (error, file) => {
     if (error) {
       setErrors([
-        `Error attempting to add file '${file.filename}'. Please reload your page and try again or contact the Data & Technology Services department. Feedback message: ${errors}`,
+        `Error attempting to add file '${file.filename}'. \
+        Please reload your page and try again or contact the Data & Technology Services department. Feedback message: ${errors}`,
       ]);
       return;
     }
@@ -173,6 +171,7 @@ const FileUpload = (props) => {
 
     // First, retrieve the signature from state that we got from S3
     const fileSignature = fileSignatures[file.name];
+    console.log(fileSignature)
 
     // If the signature is invalid, might as well stop it!
     if (fileSignature == null) {
